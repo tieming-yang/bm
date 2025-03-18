@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { ImageGallery } from "../../components/image-gallery"
 import { artworks } from "../../data/artworks"
+import { Suspense } from "react"
 
 export default function Gallery() {
   return (
@@ -21,8 +22,9 @@ export default function Gallery() {
         </p>
       </motion.div>
 
-      <ImageGallery artworks={artworks} infiniteScroll={true} />
+      <Suspense>
+        <ImageGallery artworks={artworks} infiniteScroll={true} />
+      </Suspense>
     </div>
   )
 }
-
