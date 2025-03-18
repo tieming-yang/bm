@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { ImageGallery } from "../components/image-gallery"
 import { artworks } from "../data/artworks"
+import { Suspense } from "react"
 
 export default function Home() {
   return (
@@ -21,7 +22,9 @@ export default function Home() {
         </p>
       </motion.div>
 
-      <ImageGallery artworks={artworks} initialLimit={4} />
+      <Suspense>
+        <ImageGallery artworks={artworks} initialLimit={4} />
+      </Suspense>
     </div>
   )
 }
