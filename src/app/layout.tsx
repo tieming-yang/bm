@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "彼岸媒體",
-  description: "Showcasing the artwork of Yi Yang, founder of 彼岸媒體",
+  description: "彼岸媒體是一家專業的多媒體公司，主打3D動畫、VR等新媒體技術。",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
