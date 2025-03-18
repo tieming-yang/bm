@@ -1,4 +1,4 @@
-export interface Artwork {
+export type Artwork = {
   id: string
   title: string
   description: string
@@ -9,4 +9,3 @@ export interface Artwork {
   imageUrl: string
   customFields?: Record<string, string>
 }
-
