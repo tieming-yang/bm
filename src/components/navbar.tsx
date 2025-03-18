@@ -53,8 +53,8 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-primary/10">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="Beyond Media" width={40} height={40} />
-            <span className="font-bold text-xl">Beyond Media</span>
+            <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
+            <span className="font-bold text-xl">彼岸媒體</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
@@ -91,10 +91,14 @@ export default function Navbar() {
               aria-expanded={isMenuOpen}
             >
               <span
-                className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${isMenuOpen ? "rotate-45 translate-y-0.5" : "-translate-y-1"}`}
+                className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
+                  isMenuOpen ? "rotate-45 translate-y-0.5" : "-translate-y-1"
+                }`}
               ></span>
               <span
-                className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${isMenuOpen ? "-rotate-45 -translate-y-0" : "translate-y-1"}`}
+                className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
+                  isMenuOpen ? "-rotate-45 -translate-y-0" : "translate-y-1"
+                }`}
               ></span>
             </button>
           </div>
@@ -139,7 +143,9 @@ export default function Navbar() {
                 className="mt-auto flex flex-col gap-4"
               >
                 <div className="border-t border-primary/10 pt-6">
-                  <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Beyond Media</p>
+                  <p className="text-sm text-muted-foreground">
+                    &copy; {new Date().getFullYear()} 彼岸媒體
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -149,4 +155,3 @@ export default function Navbar() {
     </>
   )
 }
-

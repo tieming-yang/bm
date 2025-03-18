@@ -14,7 +14,7 @@ export default function Home() {
         className="mb-16 text-center"
       >
         <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent mb-6">
-          Beyond Media
+          彼岸媒體
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           Exploring the boundaries of art and media through the visionary work of Yi Yang
@@ -25,4 +25,3 @@ export default function Home() {
     </div>
   )
 }
-

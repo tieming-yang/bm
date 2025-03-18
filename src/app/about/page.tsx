@@ -41,16 +41,17 @@ export default function About() {
         >
           <h2 className="text-3xl font-bold">Yi Yang, Founder & Artist</h2>
           <p className="text-lg text-muted-foreground">
-            Yi Yang is a visionary artist and the founder of Beyond Media, dedicated to pushing the boundaries of
-            contemporary art and digital media.
+            Yi Yang is a visionary artist and the founder of 彼岸媒體, dedicated to pushing the
+            boundaries of contemporary art and digital media.
           </p>
           <p className="text-lg text-muted-foreground">
-            With over 15 years of experience in various artistic disciplines, Yi's work explores the intersection of
-            traditional art forms and cutting-edge technology.
+            With over 15 years of experience in various artistic disciplines, Yi's work explores the
+            intersection of traditional art forms and cutting-edge technology.
           </p>
           <p className="text-lg text-muted-foreground">
-            Born in China and educated internationally, Yi brings a unique cultural perspective to every creation,
-            blending Eastern philosophical concepts with Western artistic techniques.
+            Born in China and educated internationally, Yi brings a unique cultural perspective to
+            every creation, blending Eastern philosophical concepts with Western artistic
+            techniques.
           </p>
         </motion.div>
       </div>
@@ -63,12 +64,11 @@ export default function About() {
       >
         <h2 className="text-3xl font-bold mb-6 text-center">Our Mission</h2>
         <p className="text-lg text-muted-foreground text-center max-w-4xl mx-auto">
-          At Beyond Media, we believe in the transformative power of art. Our mission is to create immersive experiences
-          that challenge perceptions, inspire dialogue, and connect people across cultural boundaries through innovative
-          artistic expression.
+          At 彼岸媒體, we believe in the transformative power of art. Our mission is to create
+          immersive experiences that challenge perceptions, inspire dialogue, and connect people
+          across cultural boundaries through innovative artistic expression.
         </p>
       </motion.div>
     </div>
   )
 }
-

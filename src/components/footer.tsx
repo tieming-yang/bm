@@ -11,37 +11,54 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Beyond Media" width={40} height={40} />
-              <span className="font-bold text-xl">Beyond Media</span>
+              <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
+              <span className="font-bold text-xl">彼岸媒體</span>
             </Link>
-            <p className="text-sm text-muted-foreground">Exploring the boundaries of art and media</p>
+            <p className="text-sm text-muted-foreground">
+              Exploring the boundaries of art and media
+            </p>
           </div>
 
           <div>
             <h3 className="font-medium text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/about"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/gallery" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/gallery"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   Gallery
                 </Link>
               </li>
               <li>
-                <Link href="/donate" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/donate"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   Donate
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   Contact
                 </Link>
               </li>
@@ -52,17 +69,26 @@ export default function Footer() {
             <h3 className="font-medium text-lg mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
                   Cookie Policy
                 </Link>
               </li>
@@ -94,11 +120,10 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-primary/10 text-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Beyond Media. All rights reserved.
+            &copy; {new Date().getFullYear()} 彼岸媒體. All rights reserved.
           </p>
         </div>
       </div>
     </footer>
   )
 }
-
