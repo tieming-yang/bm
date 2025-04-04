@@ -53,7 +53,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-primary/10">
+      <header className="fixed top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-primary/10">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
