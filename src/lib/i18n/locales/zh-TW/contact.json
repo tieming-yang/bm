@@ -1,0 +1,32 @@
+{
+  "contact": {
+    "title": "聯繫我們",
+    "subtitle": "如果您有任何問題或建議，請隨時聯繫我們。",
+    "email": {
+      "title": "電子郵件",
+      "value": "info@beyondmedia.com"
+    },
+    "phone": {
+      "title": "致電我們",
+      "value": "+1 (555) 123-4567"
+    },
+    "address": {
+      "title": "拜訪我們",
+      "line1": "123 Art Street, Creative District",
+      "line2": "New York, NY 10001"
+    },
+    "form": {
+      "title": "發送訊息",
+      "description": "填寫以下表單，我們將盡快與您聯繫。",
+      "name": "姓名",
+      "name_placeholder": "您的姓名",
+      "email": "電子郵件",
+      "email_placeholder": "您的電子郵件地址",
+      "subject": "主題",
+      "subject_placeholder": "這是關於什麼的？",
+      "message": "訊息",
+      "message_placeholder": "您的訊息...",
+      "send": "發送訊息"
+    }
+  }
+}

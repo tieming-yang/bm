@@ -1,0 +1,17 @@
+{
+  "donate": {
+    "title": "支持我們的願景",
+    "subtitle": "您的捐款幫助我們繼續創作創新的藝術和媒體體驗。",
+    "card": {
+      "title": "捐款支持",
+      "description": "選擇金額以支持我們的藝術計劃",
+      "amount": "選擇金額",
+      "custom": "自訂",
+      "name": "姓名",
+      "name_placeholder": "您的姓名",
+      "email": "電子郵件",
+      "email_placeholder": "您的電子郵件地址",
+      "complete": "完成捐款"
+    }
+  }
+}

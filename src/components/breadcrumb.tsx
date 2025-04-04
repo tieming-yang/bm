@@ -1,24 +1,13 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-
-const routeTranslations: Record<string, string> = {
-  home: "首頁",
-  about: "關於我們",
-  contact: "聯絡我們",
-  gallery: "畫廊",
-  services: "服務",
-  donate: "捐款",
-  // Add more route translations as needed
-};
-
-function translateRoute(segment: string): string {
-  return routeTranslations[segment] || segment;
-}
+import useTranslation from "../hooks/useTranslation";
 
 export function Breadcrumb() {
   const router = useRouter();
   const pathname = usePathname();
+  const { t } = useTranslation();
+
   if (!pathname || pathname === "/") return null; // Don't show breadcrumb on the homepage
   const segments = pathname.split("/").filter(Boolean);
 
@@ -27,12 +16,25 @@ export function Breadcrumb() {
     router.push(path);
   };
 
+  // Map route segments to translation keys
+  const getTranslationKey = (segment: string): string => {
+    const routeMap: Record<string, string> = {
+      about: "nav.about",
+      contact: "nav.contact",
+      gallery: "nav.gallery",
+      services: "nav.services",
+      donate: "nav.donate",
+    };
+
+    return routeMap[segment] || segment;
+  };
+
   return (
     <nav className="text-sm text-muted-foreground mt-4 ml-4">
       <ul className="flex items-center space-x-2">
         <li>
           <button onClick={() => router.push("/")} className="hover:underline text-primary">
-            {translateRoute("home")}
+            {t("nav.home")}
           </button>
         </li>
         {segments.map((segment, index) => (
@@ -42,7 +44,7 @@ export function Breadcrumb() {
               onClick={() => handleNavigation(index)}
               className="hover:underline text-primary"
             >
-              {translateRoute(decodeURIComponent(segment))}
+              {t(getTranslationKey(decodeURIComponent(segment)))}
             </button>
           </li>
         ))}

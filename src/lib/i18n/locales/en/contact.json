@@ -1,0 +1,32 @@
+{
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "If you have any questions or suggestions, please don't hesitate to get in touch.",
+    "email": {
+      "title": "Email",
+      "value": "info@beyondmedia.com"
+    },
+    "phone": {
+      "title": "Call Us",
+      "value": "+1 (555) 123-4567"
+    },
+    "address": {
+      "title": "Visit Us",
+      "line1": "123 Art Street, Creative District",
+      "line2": "New York, NY 10001"
+    },
+    "form": {
+      "title": "Send a Message",
+      "description": "Fill out the form below and we'll get back to you as soon as possible.",
+      "name": "Name",
+      "name_placeholder": "Your name",
+      "email": "Email",
+      "email_placeholder": "Your email address",
+      "subject": "Subject",
+      "subject_placeholder": "What is this regarding?",
+      "message": "Message",
+      "message_placeholder": "Your message...",
+      "send": "Send Message"
+    }
+  }
+}

@@ -8,10 +8,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
+import LanguageSwitcher from "./language-switcher";
+import useTranslation from "../hooks/useTranslation";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -37,11 +40,11 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   const routes = [
-    { href: "/", label: "首頁" },
-    { href: "/about", label: "關於我們" },
-    { href: "/gallery", label: "畫廊" },
-    { href: "/donate", label: "捐款" }, // Updated to Traditional Chinese
-    { href: "/contact", label: "聯繫我們" },
+    { href: "/", label: t("nav.home") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/gallery", label: t("nav.gallery") },
+    { href: "/donate", label: t("nav.donate") },
+    { href: "/contact", label: t("nav.contact") },
   ];
 
   const toggleMenu = () => {
@@ -72,15 +75,18 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2 z-50">
             {isMounted && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="rounded-full"
-              >
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                <span className="sr-only">Toggle theme</span>
-              </Button>
+              <>
+                <LanguageSwitcher />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="rounded-full"
+                >
+                  {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </>
             )}
 
             <button

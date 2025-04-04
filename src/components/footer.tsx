@@ -1,10 +1,13 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { Instagram, Twitter, Facebook, Youtube } from "lucide-react"
+import Link from "next/link";
+import Image from "next/image";
+import { Instagram, Twitter, Facebook, Youtube } from "lucide-react";
+import useTranslation from "../hooks/useTranslation";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="border-t border-primary/10 backdrop-blur-lg bg-background/80">
       <div className="container mx-auto px-4 py-12">
@@ -12,22 +15,20 @@ export default function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
               <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
-              <span className="font-bold text-xl">彼岸媒體</span>
+              <span className="font-bold text-xl">{t("home.title")}</span>
             </Link>
-            <p className="text-sm text-muted-foreground">
-              探索藝術與媒體的邊界
-            </p>
+            <p className="text-sm text-muted-foreground">{t("footer.explore")}</p>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">快速連結</h3>
+            <h3 className="font-medium text-lg mb-4">{t("footer.quickLinks")}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  首頁
+                  {t("nav.home")}
                 </Link>
               </li>
               <li>
@@ -35,7 +36,7 @@ export default function Footer() {
                   href="/about"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  關於我們
+                  {t("nav.about")}
                 </Link>
               </li>
               <li>
@@ -43,7 +44,7 @@ export default function Footer() {
                   href="/gallery"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  畫廊
+                  {t("nav.gallery")}
                 </Link>
               </li>
               <li>
@@ -51,7 +52,7 @@ export default function Footer() {
                   href="/donate"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  捐款
+                  {t("nav.donate")}
                 </Link>
               </li>
               <li>
@@ -59,21 +60,21 @@ export default function Footer() {
                   href="/contact"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  聯絡我們
+                  {t("nav.contact")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">法律</h3>
+            <h3 className="font-medium text-lg mb-4">{t("footer.legal")}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="#"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  隱私政策
+                  {t("footer.privacyPolicy")}
                 </Link>
               </li>
               <li>
@@ -81,7 +82,7 @@ export default function Footer() {
                   href="#"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  服務條款
+                  {t("footer.termsOfService")}
                 </Link>
               </li>
               <li>
@@ -89,14 +90,14 @@ export default function Footer() {
                   href="#"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Cookie 政策
+                  {t("footer.cookiePolicy")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">關注我們</h3>
+            <h3 className="font-medium text-lg mb-4">{t("footer.followUs")}</h3>
             <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Instagram className="h-5 w-5" />
@@ -120,13 +121,11 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-primary/10 text-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} 彼岸媒體. 保留所有權利。
+            {t("footer.copyright", { year: new Date().getFullYear() })}
           </p>
-          <p className="text-sm text-muted-foreground">
-            設計與開發由彼岸媒體團隊完成。
-          </p>
+          <p className="text-sm text-muted-foreground">{t("footer.designDev")}</p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

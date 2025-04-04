@@ -1,11 +1,14 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { ImageGallery } from "../components/image-gallery"
-import { artworks } from "../data/artworks"
-import { Suspense } from "react"
+import { motion } from "framer-motion";
+import { ImageGallery } from "../components/image-gallery";
+import { artworks } from "../data/artworks";
+import { Suspense } from "react";
+import useTranslation from "../hooks/useTranslation";
 
 export default function Home() {
+  const { t } = useTranslation();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <motion.div
@@ -15,10 +18,10 @@ export default function Home() {
         className="mb-16 text-center"
       >
         <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent mb-6">
-          彼岸媒體
+          {t("home.title")}
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          探索楊毅多樣化的藝術視野作品集。
+          {t("home.subtitle")}
         </p>
       </motion.div>
 
@@ -26,5 +29,5 @@ export default function Home() {
         <ImageGallery artworks={artworks} initialLimit={4} />
       </Suspense>
     </div>
-  )
+  );
 }

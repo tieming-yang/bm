@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import useTranslation from "../../hooks/useTranslation";
 
 export default function About() {
+  const { t } = useTranslation();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <motion.div
@@ -13,10 +16,10 @@ export default function About() {
         className="mb-16 text-center"
       >
         <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent mb-6">
-          關於我們
+          {t("about.title")}
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          彼岸媒體是一家專注於創新藝術和媒體體驗的公司，致力於探索藝術與技術的交匯點。
+          {t("about.subtitle")}
         </p>
       </motion.div>
 
@@ -42,16 +45,10 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="space-y-6"
         >
-          <h2 className="text-3xl font-bold">楊毅，創始人與藝術家</h2>
-          <p className="text-lg text-muted-foreground">
-            楊毅是一位富有遠見的藝術家，也是彼岸媒體的創始人，致力於推動當代藝術和數位媒體的邊界。
-          </p>
-          <p className="text-lg text-muted-foreground">
-            擁有超過15年的多學科藝術經驗，楊毅的作品探索了傳統藝術形式與尖端技術的交匯點。
-          </p>
-          <p className="text-lg text-muted-foreground">
-            楊毅出生於中國，接受了國際教育，將東方哲學概念與西方藝術技術相結合，為每件創作帶來獨特的文化視角。
-          </p>
+          <h2 className="text-3xl font-bold">{t("about.founder.title")}</h2>
+          <p className="text-lg text-muted-foreground">{t("about.founder.description1")}</p>
+          <p className="text-lg text-muted-foreground">{t("about.founder.description2")}</p>
+          <p className="text-lg text-muted-foreground">{t("about.founder.description3")}</p>
         </motion.div>
       </div>
 
@@ -61,9 +58,9 @@ export default function About() {
         transition={{ duration: 0.8, delay: 0.6 }}
         className="mt-24 bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl p-8 border border-primary/10"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center">我們的使命</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">{t("about.mission.title")}</h2>
         <p className="text-lg text-muted-foreground text-center max-w-4xl mx-auto">
-          我們的使命是通過創新和技術，將藝術帶入新的高度。我們相信藝術可以啟發、教育並改變世界。
+          {t("about.mission.description")}
         </p>
       </motion.div>
 
@@ -73,9 +70,9 @@ export default function About() {
         transition={{ duration: 0.8, delay: 0.6 }}
         className="mt-24 bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl p-8 border border-primary/10"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center">我們的願景</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">{t("about.vision.title")}</h2>
         <p className="text-lg text-muted-foreground text-center max-w-4xl mx-auto">
-          我們的願景是成為藝術與媒體創新的領導者，為全球觀眾創造令人難忘的體驗。
+          {t("about.vision.description")}
         </p>
       </motion.div>
     </div>

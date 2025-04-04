@@ -1,0 +1,17 @@
+{
+  "donate": {
+    "title": "Support Our Vision",
+    "subtitle": "Your donation helps us continue creating innovative art and media experiences.",
+    "card": {
+      "title": "Donate",
+      "description": "Choose an amount to support our artistic programs",
+      "amount": "Choose Amount",
+      "custom": "Custom",
+      "name": "Name",
+      "name_placeholder": "Your name",
+      "email": "Email",
+      "email_placeholder": "Your email address",
+      "complete": "Complete Donation"
+    }
+  }
+}

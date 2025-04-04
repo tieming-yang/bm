@@ -1,27 +1,50 @@
-import type React from "react";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { Inter, Noto_Sans_TC } from "next/font/google";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { ThemeProvider } from "../components/theme-provider";
 import { Breadcrumb } from "../components/breadcrumb";
 import "../styles/globals.css";
+import "../lib/i18n";
+import useTranslation from "../hooks/useTranslation";
 
-const inter = Inter({ subsets: ["latin"] });
+// Load Inter for Latin characters
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
-export const metadata: Metadata = {
-  title: "彼岸媒體",
-  description: "彼岸媒體是一家專業的多媒體公司，主打3D動畫、VR等新媒體技術。",
-  openGraph: {
-    images: "/logo.png",
-  },
-};
+// Load Noto Sans TC for Chinese characters
+const notoSansTC = Noto_Sans_TC({
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
+  variable: "--font-noto-sans-tc",
+  display: "swap",
+});
+
+// Metadata moved to a separate file to avoid using both 'use client' and exporting metadata
+// in the same file, which isn't allowed in Next.js app router
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const { currentLanguage } = useTranslation();
+  const [mounted, setMounted] = useState(false);
+
+  // Fix for hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <html lang="zh" suppressHydrationWarning>
-      <head>{/* <link rel="icon" href="/favicon.ico" sizes="any" /> */}</head>
-      <body className={inter.className}>
+    <html lang={mounted ? currentLanguage : "zh-TW"} suppressHydrationWarning>
+      <head>
+        <meta charSet="UTF-8" />
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body className={`${inter.variable} ${notoSansTC.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
