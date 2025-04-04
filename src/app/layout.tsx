@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import Navbar from "../components/navbar"
 import Footer from "../components/footer"
 import { ThemeProvider } from "../components/theme-provider"
+import { Breadcrumb } from "../components/breadcrumb"
 import "../styles/globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -25,7 +26,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange
         >
           <div className="flex min-h-screen flex-col bg-gradient-to-br from-background to-background/80">
-            <Navbar />
+            <header>
+              <Navbar />
+            </header>
+            <Breadcrumb />
             <main className="flex-1">{children}</main>
             <Footer />
           </div>

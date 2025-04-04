@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Download,
   Share,
+  Loader2, // Import the loading icon
 } from "lucide-react";
 import { Button } from "./ui/button";
 import type { Artwork } from "../types/artwork";
@@ -40,6 +41,7 @@ export function ImageGallery({
   const [showDonationSheet, setShowDonationSheet] = useState(false);
   const [visibleArtworks, setVisibleArtworks] = useState<Artwork[]>([]);
   const [displayCount, setDisplayCount] = useState(initialLimit);
+  const [imageLoading, setImageLoading] = useState<boolean[]>([]);
 
   const observerRef = useRef<HTMLDivElement>(null);
 
@@ -47,6 +49,11 @@ export function ImageGallery({
   useEffect(() => {
     setVisibleArtworks(artworks.slice(0, displayCount));
   }, [artworks, displayCount]);
+
+  // Initialize loading state for images
+  useEffect(() => {
+    setImageLoading(new Array(artworks.length).fill(true));
+  }, [artworks]);
 
   // Load more artworks
   const loadMore = useCallback(() => {
@@ -194,6 +201,14 @@ export function ImageGallery({
     }
   };
 
+  const handleImageLoad = (index: number) => {
+    setImageLoading((prev) => {
+      const updated = [...prev];
+      updated[index] = false;
+      return updated;
+    });
+  };
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -232,11 +247,19 @@ export function ImageGallery({
             onClick={() => handleImageClick(artwork, index)}
           >
             <div className="relative aspect-square overflow-hidden rounded-2xl">
+              {imageLoading[index] && (
+                <div className="absolute inset-0 flex items-center justify-center bg-muted animate-pulse">
+                  <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                </div>
+              )}
               <Image
                 src={artwork.imageUrl || "/placeholder.svg"}
                 alt={artwork.title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                className={`object-cover transition-transform duration-500 group-hover:scale-110 ${
+                  imageLoading[index] ? "opacity-0" : "opacity-100"
+                }`}
+                onLoadingComplete={() => handleImageLoad(index)}
               />
             </div>
             <div className="mt-3">
