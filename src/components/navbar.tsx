@@ -54,7 +54,6 @@ export default function Navbar() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
-            <span className="font-bold text-xl">彼岸媒體</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
