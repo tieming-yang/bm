@@ -179,15 +179,15 @@ export function ImageGallery({
         .writeText(url)
         .then(() => {
           toast({
-            title: "Link copied to clipboard",
-            description: "You can now share this artwork with others",
+            title: "連結已複製到剪貼簿",
+            description: "您現在可以與他人分享這件藝術品",
           });
         })
         .catch((err) => {
           console.error("Failed to copy: ", err);
           toast({
-            title: "Failed to copy link",
-            description: "Please try again",
+            title: "複製連結失敗",
+            description: "請再試一次",
             variant: "destructive",
           });
         });
@@ -282,7 +282,7 @@ export function ImageGallery({
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-background/50 backdrop-blur-sm hover:bg-background/70 transition-colors"
               >
                 <X className="h-5 w-5" />
-                <span className="sr-only">Close</span>
+                <span className="sr-only">關閉</span>
               </button>
             </div>
 
@@ -311,7 +311,7 @@ export function ImageGallery({
                       className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
                     >
                       <Share className="h-5 w-5" />
-                      <span className="sr-only">Share</span>
+                      <span className="sr-only">分享</span>
                     </button>
                     <button
                       type="button"
@@ -319,7 +319,7 @@ export function ImageGallery({
                       className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
                     >
                       <Download className="h-5 w-5" />
-                      <span className="sr-only">Download</span>
+                      <span className="sr-only">下載</span>
                     </button>
                   </div>
                 </div>
@@ -330,7 +330,7 @@ export function ImageGallery({
 
                 <div className="mt-6 space-y-4">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-medium">Artwork Details</h3>
+                    <h3 className="font-medium">藝術品詳細資訊</h3>
                     <button
                       type="button"
                       onClick={toggleDetails}
@@ -342,7 +342,7 @@ export function ImageGallery({
                         <ChevronDown className="h-4 w-4" />
                       )}
                       <span className="sr-only">
-                        {showDetails ? "Hide details" : "Show details"}
+                        {showDetails ? "隱藏詳細資訊" : "顯示詳細資訊"}
                       </span>
                     </button>
                   </div>
@@ -350,16 +350,16 @@ export function ImageGallery({
                   {showDetails && (
                     <div className="space-y-2 pt-2">
                       <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Medium</span>
+                        <span className="text-sm text-muted-foreground">媒材</span>
                         <span className="text-sm">{selectedImage.medium}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Dimensions</span>
+                        <span className="text-sm text-muted-foreground">尺寸</span>
                         <span className="text-sm">{selectedImage.dimensions}</span>
                       </div>
                       {selectedImage.location && (
                         <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground">Location</span>
+                          <span className="text-sm text-muted-foreground">位置</span>
                           <span className="text-sm">{selectedImage.location}</span>
                         </div>
                       )}
@@ -412,9 +412,9 @@ export function ImageGallery({
       <Sheet open={showDonationSheet} onOpenChange={setShowDonationSheet}>
         <SheetContent side="bottom" className="h-[80vh] rounded-t-3xl">
           <SheetHeader className="text-center">
-            <SheetTitle className="text-2xl">Support the Artist</SheetTitle>
+            <SheetTitle className="text-2xl">支持藝術家</SheetTitle>
             <SheetDescription>
-              Your donation helps us continue creating innovative art and media experiences
+              您的捐款幫助我們繼續創作創新的藝術和媒體體驗
             </SheetDescription>
           </SheetHeader>
           <div className="flex flex-col items-center justify-center gap-8 mt-8">
@@ -428,14 +428,13 @@ export function ImageGallery({
               />
             </div>
             <div className="text-center max-w-md">
-              <h3 className="text-lg font-medium mb-2">Scan to Donate</h3>
+              <h3 className="text-lg font-medium mb-2">掃描以捐款</h3>
               <p className="text-muted-foreground">
-                Your support enables Yi Yang to continue pushing the boundaries of art and media.
-                Every contribution, no matter the size, makes a difference in our creative journey.
+                您的支持使易揚能夠繼續突破藝術和媒體的界限。每一份貢獻，不論大小，都對我們的創作旅程產生影響。
               </p>
             </div>
             <Button className="mt-4 rounded-3xl px-8" onClick={() => setShowDonationSheet(false)}>
-              Maybe Later
+              也許以後再說
             </Button>
           </div>
         </SheetContent>

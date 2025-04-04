@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function About() {
   return (
@@ -29,7 +29,7 @@ export default function About() {
           <div className="relative h-[500px] w-full rounded-3xl overflow-hidden">
             <Image
               src="https://images.unsplash.com/photo-1508186225823-0963cf9ab0de?q=80&w=1000"
-              alt="Yi Yang"
+              alt="楊毅"
               fill
               className="object-cover"
             />
@@ -42,19 +42,15 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="space-y-6"
         >
-          <h2 className="text-3xl font-bold">Yi Yang, Founder & Artist</h2>
+          <h2 className="text-3xl font-bold">楊毅，創始人與藝術家</h2>
           <p className="text-lg text-muted-foreground">
-            Yi Yang is a visionary artist and the founder of 彼岸媒體, dedicated to pushing the
-            boundaries of contemporary art and digital media.
+            楊毅是一位富有遠見的藝術家，也是彼岸媒體的創始人，致力於推動當代藝術和數位媒體的邊界。
           </p>
           <p className="text-lg text-muted-foreground">
-            With over 15 years of experience in various artistic disciplines, Yi's work explores the
-            intersection of traditional art forms and cutting-edge technology.
+            擁有超過15年的多學科藝術經驗，楊毅的作品探索了傳統藝術形式與尖端技術的交匯點。
           </p>
           <p className="text-lg text-muted-foreground">
-            Born in China and educated internationally, Yi brings a unique cultural perspective to
-            every creation, blending Eastern philosophical concepts with Western artistic
-            techniques.
+            楊毅出生於中國，接受了國際教育，將東方哲學概念與西方藝術技術相結合，為每件創作帶來獨特的文化視角。
           </p>
         </motion.div>
       </div>
@@ -83,5 +79,5 @@ export default function About() {
         </p>
       </motion.div>
     </div>
-  )
+  );
 }
