@@ -4,25 +4,26 @@ export type Artwork = {
   description: string;
   year: string;
   medium: string;
-  dimensions: string;
+  dimensions?: string;
   location?: string;
   imageUrl: string;
-  customFields?: Record<string, string>;
-};
-
-// Bible scripture reference structure
-export type BibleScripture = {
-  reference: string; // e.g., "John 3:16-17"
-  textEn: string; // English text of the verse
-  textZh: string; // Chinese text of the verse
-  book?: string; // Optional: Book name (e.g., "John")
-  chapter?: number; // Optional: Chapter number
-  verseStart?: number; // Optional: Starting verse number
-  verseEnd?: number; // Optional: Ending verse number (if range)
+  customFields?: Record<string, string | undefined>;
 };
 
 // Extended type for Bible-themed artworks
 export type BibleArtwork = Artwork & {
-  scriptures: BibleScripture[]; // One artwork can reference multiple scriptures
+  // Scripture data directly in the artwork
+  scriptureReference: string; // e.g., "John 3:16-17"
+  scriptureTextEn: string; // English text
+  scriptureTextZh: string; // Chinese text
+  bibleBook: string; // e.g., "John", "Genesis"
+  bibleChapter: number; // e.g., 3
+  bibleVerseStart: number; // e.g., 16
+  bibleVerseEnd?: number; // Optional: e.g., 17 (if a range)
   bibleTheme?: string; // Optional thematic categorization
 };
+
+// Helper function to check if an artwork is a Bible artwork
+export function isBibleArtwork(artwork: Artwork): artwork is BibleArtwork {
+  return "scriptureReference" in artwork && "scriptureTextEn" in artwork;
+}

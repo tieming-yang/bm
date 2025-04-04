@@ -18,6 +18,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { DonationSheet } from "./donation-sheet";
+import { translateBibleReference } from "@/utils/bible-utils";
 
 interface ImageGalleryProps {
   artworks: Artwork[];
@@ -33,7 +34,7 @@ export function ImageGallery({
   // Core state
   const [displayCount, setDisplayCount] = useState(initialLimit);
   const [selectedArtworkId, setSelectedArtworkId] = useState<string | null>(null);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const [showDonationSheet, setShowDonationSheet] = useState(false);
   const [lightboxCarouselInitialized, setLightboxCarouselInitialized] = useState(false);
 
@@ -45,7 +46,7 @@ export function ImageGallery({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { t } = useTranslation("gallery");
+  const { t, currentLanguage } = useTranslation("gallery");
 
   // Derived values
   const visibleArtworks = artworks.slice(0, displayCount);
@@ -408,8 +409,15 @@ export function ImageGallery({
                             selectedArtwork.customFields.參考) && (
                             <div className="mt-2 text-xs text-muted-foreground/70">
                               <span className="font-medium">
-                                {selectedArtwork.customFields.Reference ||
-                                  selectedArtwork.customFields.參考}
+                                {currentLanguage === "zh-TW" ||
+                                document.documentElement.lang?.includes("zh")
+                                  ? translateBibleReference(
+                                      selectedArtwork.customFields.Reference ||
+                                        selectedArtwork.customFields.參考 ||
+                                        ""
+                                    )
+                                  : selectedArtwork.customFields.Reference ||
+                                    selectedArtwork.customFields.參考}
                               </span>
                             </div>
                           )}
@@ -449,10 +457,12 @@ export function ImageGallery({
                           <span className="text-sm">{selectedArtwork.medium}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground">
-                            {t("artwork.dimensions") || "Dimensions"}
-                          </span>
-                          <span className="text-sm">{selectedArtwork.dimensions}</span>
+                          {selectedArtwork.dimensions && (
+                            <span className="text-sm text-muted-foreground">
+                              {t("artwork.dimensions") || "Dimensions"}
+                              <span className="text-sm">{selectedArtwork.dimensions}</span>
+                            </span>
+                          )}
                         </div>
                         {selectedArtwork.location && (
                           <div className="flex justify-between">
