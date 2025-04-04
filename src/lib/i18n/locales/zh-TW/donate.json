@@ -2,6 +2,9 @@
   "donate": {
     "title": "支持我們的願景",
     "subtitle": "您的捐款幫助我們繼續創作創新的藝術和媒體體驗。",
+    "scanTitle": "掃描以捐款",
+    "scanDescription": "您的支持使我們能夠繼續突破藝術和媒體的界限。",
+    "later": "或許稍後再說",
     "card": {
       "title": "捐款支持",
       "description": "選擇金額以支持我們的藝術計劃",

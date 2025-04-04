@@ -46,6 +46,14 @@
     "copyFailed": {
       "title": "複製連結失敗",
       "description": "請再試一次"
+    },
+    "downloadSuccess": {
+      "title": "下載已開始",
+      "description": "您的藝術品正在下載中"
+    },
+    "downloadFailed": {
+      "title": "下載失敗",
+      "description": "請稍後再試"
     }
   },
   "loadMore": "載入更多"

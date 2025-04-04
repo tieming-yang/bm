@@ -46,6 +46,14 @@
     "copyFailed": {
       "title": "Failed to copy link",
       "description": "Please try again"
+    },
+    "downloadSuccess": {
+      "title": "Download started",
+      "description": "Your artwork is being downloaded"
+    },
+    "downloadFailed": {
+      "title": "Download failed",
+      "description": "Please try again later"
     }
   },
   "loadMore": "Load More"

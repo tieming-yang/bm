@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import { X, ChevronDown, ChevronUp, Download, Share, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import type { Artwork } from "../types/artwork";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./ui/sheet";
 import { toast } from "./ui/use-toast";
 import { Toaster } from "./ui/toaster";
 import useTranslation from "../hooks/useTranslation";
@@ -18,6 +17,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { DonationSheet } from "./donation-sheet";
 
 interface ImageGalleryProps {
   artworks: Artwork[];
@@ -162,6 +162,69 @@ export function ImageGallery({
     setSelectedArtworkId(artworkId);
   };
 
+  const handleDownload = () => {
+    if (!selectedArtwork) return;
+
+    // Show the donation sheet first
+    setShowDonationSheet(true);
+
+    // Then trigger the download
+    setTimeout(() => {
+      try {
+        // Use fetch to get the image as a blob first to prevent redirection
+        fetch(selectedArtwork.imageUrl)
+          .then((response) => response.blob())
+          .then((blob) => {
+            // Create a blob URL
+            const blobUrl = URL.createObjectURL(blob);
+
+            // Create link element
+            const link = document.createElement("a");
+            const filename = `${selectedArtwork.title.replace(/\s+/g, "-").toLowerCase()}-${
+              selectedArtwork.id
+            }.jpg`;
+
+            // Configure link for download
+            link.href = blobUrl;
+            link.download = filename;
+            link.target = "_blank"; // Ensures it doesn't redirect in the same window
+            link.rel = "noopener"; // Security best practice
+            link.style.display = "none";
+
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up
+            setTimeout(() => {
+              document.body.removeChild(link);
+              URL.revokeObjectURL(blobUrl); // Free up memory
+            }, 100);
+
+            toast({
+              title: t("toast.downloadSuccess.title"),
+              description: t("toast.downloadSuccess.description"),
+            });
+          })
+          .catch((error) => {
+            console.error("Download failed:", error);
+            toast({
+              title: t("toast.downloadFailed.title"),
+              description: t("toast.downloadFailed.description"),
+              variant: "destructive",
+            });
+          });
+      } catch (error) {
+        console.error("Fatal download error:", error);
+        toast({
+          title: t("toast.downloadFailed.title"),
+          description: t("toast.downloadFailed.description"),
+          variant: "destructive",
+        });
+      }
+    }, 100); // Small delay to ensure sheet appears first
+  };
+
   const handleShare = () => {
     if (!selectedArtwork) return;
 
@@ -261,7 +324,7 @@ export function ImageGallery({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowDonationSheet(true)}
+                  onClick={handleDownload}
                   className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
                 >
                   <Download className="h-5 w-5" />
@@ -410,41 +473,7 @@ export function ImageGallery({
       )}
 
       {/* Donation Sheet */}
-      <Sheet open={showDonationSheet} onOpenChange={setShowDonationSheet}>
-        <SheetContent side="bottom" className="h-[80vh] rounded-t-3xl">
-          <SheetHeader className="text-center">
-            <SheetTitle className="text-2xl">
-              {t("donate.title") || "Support the Artist"}
-            </SheetTitle>
-            <SheetDescription>
-              {t("donate.subtitle") || "Your donation helps us continue creating innovative art"}
-            </SheetDescription>
-          </SheetHeader>
-          <div className="flex flex-col items-center justify-center gap-8 mt-8">
-            <div className="relative w-48 h-48 bg-white p-4 rounded-xl">
-              <Image
-                src="/placeholders/qr-code-placeholder.png"
-                alt="QR Code for donation"
-                width={200}
-                height={200}
-                className="rounded-lg"
-              />
-            </div>
-            <div className="text-center max-w-md">
-              <h3 className="text-lg font-medium mb-2">
-                {t("donate.scanTitle") || "Scan to Donate"}
-              </h3>
-              <p className="text-muted-foreground">
-                {t("donate.scanDescription") ||
-                  "Your support allows us to continue pushing the boundaries of art and media."}
-              </p>
-            </div>
-            <Button className="mt-4 rounded-3xl px-8" onClick={() => setShowDonationSheet(false)}>
-              {t("donate.later") || "Maybe Later"}
-            </Button>
-          </div>
-        </SheetContent>
-      </Sheet>
+      <DonationSheet open={showDonationSheet} onOpenChange={setShowDonationSheet} />
 
       <Toaster />
     </>

@@ -2,6 +2,9 @@
   "donate": {
     "title": "Support Our Vision",
     "subtitle": "Your donation helps us continue creating innovative art and media experiences.",
+    "scanTitle": "Scan to Donate",
+    "scanDescription": "Your support allows us to continue pushing the boundaries of art and media.",
+    "later": "Maybe Later",
     "card": {
       "title": "Donate",
       "description": "Choose an amount to support our artistic programs",
