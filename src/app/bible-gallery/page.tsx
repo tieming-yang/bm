@@ -9,7 +9,8 @@ import { useSearchParams } from "next/navigation";
 import type { Artwork } from "@/types/artwork";
 import { translateBibleReference } from "@/utils/bible-utils";
 
-export default function BibleGallery() {
+// This component uses useSearchParams and needs to be wrapped in Suspense
+function BibleGalleryContent() {
   const { t } = useTranslation("gallery");
   const [currentLanguage, setCurrentLanguage] = useState<string>("en");
   const searchParams = useSearchParams();
@@ -83,7 +84,7 @@ export default function BibleGallery() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -98,8 +99,17 @@ export default function BibleGallery() {
         </p>
       </motion.div>
 
-      <Suspense>
-        <ImageGallery artworks={processedArtworks} infiniteScroll={true} />
+      <ImageGallery artworks={processedArtworks} infiniteScroll={true} />
+    </>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function BibleGallery() {
+  return (
+    <div className="container mx-auto px-4 py-12">
+      <Suspense fallback={<div className="flex justify-center py-20">Loading...</div>}>
+        <BibleGalleryContent />
       </Suspense>
     </div>
   );
