@@ -1,20 +1,28 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from "react"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { X, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Download, Share } from "lucide-react"
-import { Button } from "./ui/button"
-import type { Artwork } from "../types/artwork"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./ui/sheet"
-import { toast } from "./ui/use-toast"
-import { Toaster } from "./ui/toaster"
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import {
+  X,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Share,
+} from "lucide-react";
+import { Button } from "./ui/button";
+import type { Artwork } from "../types/artwork";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./ui/sheet";
+import { toast } from "./ui/use-toast";
+import { Toaster } from "./ui/toaster";
 
 interface ImageGalleryProps {
-  artworks: Artwork[]
-  infiniteScroll?: boolean
-  initialLimit?: number
+  artworks: Artwork[];
+  infiniteScroll?: boolean;
+  initialLimit?: number;
 }
 
 export function ImageGallery({
@@ -22,149 +30,149 @@ export function ImageGallery({
   infiniteScroll = false,
   initialLimit = 8,
 }: ImageGalleryProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const [selectedImage, setSelectedImage] = useState<Artwork | null>(null)
-  const [selectedIndex, setSelectedIndex] = useState<number>(-1)
-  const [showDetails, setShowDetails] = useState(false)
-  const [showDonationSheet, setShowDonationSheet] = useState(false)
-  const [visibleArtworks, setVisibleArtworks] = useState<Artwork[]>([])
-  const [displayCount, setDisplayCount] = useState(initialLimit)
+  const [selectedImage, setSelectedImage] = useState<Artwork | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showDonationSheet, setShowDonationSheet] = useState(false);
+  const [visibleArtworks, setVisibleArtworks] = useState<Artwork[]>([]);
+  const [displayCount, setDisplayCount] = useState(initialLimit);
 
-  const observerRef = useRef<HTMLDivElement>(null)
+  const observerRef = useRef<HTMLDivElement>(null);
 
   // Initialize visible artworks
   useEffect(() => {
-    setVisibleArtworks(artworks.slice(0, displayCount))
-  }, [artworks, displayCount])
+    setVisibleArtworks(artworks.slice(0, displayCount));
+  }, [artworks, displayCount]);
 
   // Load more artworks
   const loadMore = useCallback(() => {
     if (displayCount < artworks.length) {
-      setDisplayCount((prev) => Math.min(prev + 8, artworks.length))
+      setDisplayCount((prev) => Math.min(prev + 8, artworks.length));
     }
-  }, [displayCount, artworks.length])
+  }, [displayCount, artworks.length]);
 
   // Set up intersection observer for infinite scroll
   useEffect(() => {
-    if (!infiniteScroll || !observerRef.current) return
+    if (!infiniteScroll || !observerRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          loadMore()
+          loadMore();
         }
       },
       { threshold: 0.1 }
-    )
+    );
 
-    observer.observe(observerRef.current)
+    observer.observe(observerRef.current);
 
     return () => {
       if (observerRef.current) {
-        observer.unobserve(observerRef.current)
+        observer.unobserve(observerRef.current);
       }
-    }
-  }, [infiniteScroll, loadMore])
+    };
+  }, [infiniteScroll, loadMore]);
 
   // Check URL for image ID on mount
   useEffect(() => {
     if (!searchParams) {
-      console.error("No search params available")
-      return
+      console.error("No search params available");
+      return;
     }
-    const imageId = searchParams.get("image")
+    const imageId = searchParams.get("image");
     if (imageId) {
-      const index = artworks.findIndex((artwork) => artwork.id === imageId)
+      const index = artworks.findIndex((artwork) => artwork.id === imageId);
       if (index !== -1) {
-        setSelectedImage(artworks[index])
-        setSelectedIndex(index)
+        setSelectedImage(artworks[index]);
+        setSelectedIndex(index);
       }
     }
-  }, [artworks, searchParams])
+  }, [artworks, searchParams]);
 
   // Update URL when selected image changes
   useEffect(() => {
     if (selectedImage) {
       // Create a new URLSearchParams object
-      const params = new URLSearchParams(searchParams?.toString() || "")
-      params.set("image", selectedImage.id)
+      const params = new URLSearchParams(searchParams?.toString() || "");
+      params.set("image", selectedImage.id);
 
       // Update the URL without refreshing the page
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     } else {
       // If no image is selected, remove the image parameter
       if (searchParams?.has("image")) {
-        const params = new URLSearchParams(searchParams?.toString())
-        params.delete("image")
+        const params = new URLSearchParams(searchParams?.toString());
+        params.delete("image");
 
         // If there are other params, keep them, otherwise just use the pathname
-        const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+        const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
         if (!newUrl) {
-          console.error("Error: No URL to replace")
-          return
+          console.error("Error: No URL to replace");
+          return;
         }
-        router.replace(newUrl, { scroll: false })
+        router.replace(newUrl, { scroll: false });
       }
     }
-  }, [selectedImage, pathname, router, searchParams])
+  }, [selectedImage, pathname, router, searchParams]);
 
   // Handle body scroll lock when lightbox is open
   useEffect(() => {
     if (selectedImage) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto"
+      document.body.style.overflow = "auto";
     }
 
     return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [selectedImage])
+      document.body.style.overflow = "auto";
+    };
+  }, [selectedImage]);
 
   const handleImageClick = (artwork: Artwork, index: number) => {
-    setSelectedImage(artwork)
-    setSelectedIndex(index)
-    setShowDetails(false)
-  }
+    setSelectedImage(artwork);
+    setSelectedIndex(index);
+    setShowDetails(false);
+  };
 
   const handleClose = () => {
-    setSelectedImage(null)
-    setSelectedIndex(-1)
-  }
+    setSelectedImage(null);
+    setSelectedIndex(-1);
+  };
 
   const toggleDetails = () => {
-    setShowDetails(!showDetails)
-  }
+    setShowDetails(!showDetails);
+  };
 
   const handlePrevious = () => {
     if (selectedIndex > 0) {
-      setSelectedImage(artworks[selectedIndex - 1])
-      setSelectedIndex(selectedIndex - 1)
-      setShowDetails(false)
+      setSelectedImage(artworks[selectedIndex - 1]);
+      setSelectedIndex(selectedIndex - 1);
+      setShowDetails(false);
     }
-  }
+  };
 
   const handleNext = () => {
     if (selectedIndex < artworks.length - 1) {
-      setSelectedImage(artworks[selectedIndex + 1])
-      setSelectedIndex(selectedIndex + 1)
-      setShowDetails(false)
+      setSelectedImage(artworks[selectedIndex + 1]);
+      setSelectedIndex(selectedIndex + 1);
+      setShowDetails(false);
     }
-  }
+  };
 
   const handleDownload = () => {
     // In a real app, you would implement actual download functionality
     // For this demo, we'll just show the donation sheet
-    setShowDonationSheet(true)
-  }
+    setShowDonationSheet(true);
+  };
 
   const handleShare = () => {
     if (selectedImage) {
       // Create the full URL to share
-      const url = `${window.location.origin}${pathname}?image=${selectedImage.id}`
+      const url = `${window.location.origin}${pathname}?image=${selectedImage.id}`;
 
       // Copy to clipboard
       navigator.clipboard
@@ -173,38 +181,38 @@ export function ImageGallery({
           toast({
             title: "Link copied to clipboard",
             description: "You can now share this artwork with others",
-          })
+          });
         })
         .catch((err) => {
-          console.error("Failed to copy: ", err)
+          console.error("Failed to copy: ", err);
           toast({
             title: "Failed to copy link",
             description: "Please try again",
             variant: "destructive",
-          })
-        })
+          });
+        });
     }
-  }
+  };
 
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (selectedImage) {
         if (e.key === "ArrowLeft") {
-          handlePrevious()
+          handlePrevious();
         } else if (e.key === "ArrowRight") {
-          handleNext()
+          handleNext();
         } else if (e.key === "Escape") {
-          handleClose()
+          handleClose();
         }
       }
-    }
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [selectedImage, selectedIndex])
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImage, selectedIndex]);
 
   return (
     <>
@@ -435,5 +443,5 @@ export function ImageGallery({
 
       <Toaster />
     </>
-  )
+  );
 }
