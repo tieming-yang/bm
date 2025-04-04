@@ -13,8 +13,11 @@ export default function About() {
         className="mb-16 text-center"
       >
         <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent mb-6">
-          About Us
+          關於我們
         </h1>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          彼岸媒體是一家專注於創新藝術和媒體體驗的公司，致力於探索藝術與技術的交匯點。
+        </p>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -62,11 +65,21 @@ export default function About() {
         transition={{ duration: 0.8, delay: 0.6 }}
         className="mt-24 bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl p-8 border border-primary/10"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center">Our Mission</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">我們的使命</h2>
         <p className="text-lg text-muted-foreground text-center max-w-4xl mx-auto">
-          At 彼岸媒體, we believe in the transformative power of art. Our mission is to create
-          immersive experiences that challenge perceptions, inspire dialogue, and connect people
-          across cultural boundaries through innovative artistic expression.
+          我們的使命是通過創新和技術，將藝術帶入新的高度。我們相信藝術可以啟發、教育並改變世界。
+        </p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="mt-24 bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl p-8 border border-primary/10"
+      >
+        <h2 className="text-3xl font-bold mb-6 text-center">我們的願景</h2>
+        <p className="text-lg text-muted-foreground text-center max-w-4xl mx-auto">
+          我們的願景是成為藝術與媒體創新的領導者，為全球觀眾創造令人難忘的體驗。
         </p>
       </motion.div>
     </div>

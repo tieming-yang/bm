@@ -15,10 +15,10 @@ export default function Gallery() {
         className="mb-16 text-center"
       >
         <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent mb-6">
-          Gallery
+          畫廊
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Explore the diverse portfolio of Yi Yang's artistic vision
+          探索楊毅多樣化的藝術視野作品集。
         </p>
       </motion.div>
 

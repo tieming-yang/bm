@@ -17,7 +17,11 @@ interface ImageGalleryProps {
   initialLimit?: number
 }
 
-export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 8 }: ImageGalleryProps) {
+export function ImageGallery({
+  artworks,
+  infiniteScroll = false,
+  initialLimit = 8,
+}: ImageGalleryProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -53,7 +57,7 @@ export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 
           loadMore()
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     )
 
     observer.observe(observerRef.current)
@@ -231,7 +235,7 @@ export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 
       {!infiniteScroll && displayCount < artworks.length && (
         <div className="mt-12 text-center">
           <Button onClick={loadMore} className="rounded-3xl px-8">
-            Load More
+            加載更多
           </Button>
         </div>
       )}
@@ -239,7 +243,7 @@ export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 
       {/* Infinite Scroll Observer */}
       {infiniteScroll && displayCount < artworks.length && (
         <div ref={observerRef} className="w-full h-20 flex items-center justify-center mt-8">
-          <div className="animate-pulse text-muted-foreground">Loading more...</div>
+          <p className="text-muted-foreground">加載中...</p>
         </div>
       )}
 
@@ -247,7 +251,10 @@ export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 
       {selectedImage && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           {/* Backdrop - clicking this will close the lightbox */}
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-lg" onClick={handleClose} />
+          <div
+            className="absolute inset-0 bg-background/80 backdrop-blur-lg"
+            onClick={handleClose}
+          />
 
           {/* Lightbox Content */}
           <div className="relative z-[101] max-w-5xl w-full bg-background/90 backdrop-blur-lg rounded-3xl overflow-hidden border border-primary/10 m-4">
@@ -313,8 +320,14 @@ export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 
                       onClick={toggleDetails}
                       className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-background/70 transition-colors"
                     >
-                      {showDetails ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                      <span className="sr-only">{showDetails ? "Hide details" : "Show details"}</span>
+                      {showDetails ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                      <span className="sr-only">
+                        {showDetails ? "Hide details" : "Show details"}
+                      </span>
                     </button>
                   </div>
 
@@ -401,8 +414,8 @@ export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 
             <div className="text-center max-w-md">
               <h3 className="text-lg font-medium mb-2">Scan to Donate</h3>
               <p className="text-muted-foreground">
-                Your support enables Yi Yang to continue pushing the boundaries of art and media. Every contribution, no
-                matter the size, makes a difference in our creative journey.
+                Your support enables Yi Yang to continue pushing the boundaries of art and media.
+                Every contribution, no matter the size, makes a difference in our creative journey.
               </p>
             </div>
             <Button className="mt-4 rounded-3xl px-8" onClick={() => setShowDonationSheet(false)}>
@@ -416,4 +429,3 @@ export function ImageGallery({ artworks, infiniteScroll = false, initialLimit = 
     </>
   )
 }
-

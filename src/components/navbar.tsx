@@ -37,11 +37,11 @@ export default function Navbar() {
   }, [isMenuOpen])
 
   const routes = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/gallery", label: "Gallery" },
-    { href: "/donate", label: "Donate" },
-    { href: "/contact", label: "Contact Us" },
+    { href: "/", label: "首頁" },
+    { href: "/about", label: "關於我們" },
+    { href: "/gallery", label: "畫廊" },
+    { href: "/donate", label: "捐款" }, // Updated to Traditional Chinese
+    { href: "/contact", label: "聯繫我們" },
   ]
 
   const toggleMenu = () => {

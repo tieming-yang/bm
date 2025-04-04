@@ -18,7 +18,7 @@ export default function Home() {
           彼岸媒體
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Exploring the boundaries of art and media through the visionary work of Yi Yang
+          探索楊毅多樣化的藝術視野作品集。
         </p>
       </motion.div>
 

@@ -15,19 +15,19 @@ export default function Footer() {
               <span className="font-bold text-xl">彼岸媒體</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Exploring the boundaries of art and media
+              探索藝術與媒體的邊界
             </p>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">Quick Links</h3>
+            <h3 className="font-medium text-lg mb-4">快速連結</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Home
+                  首頁
                 </Link>
               </li>
               <li>
@@ -35,7 +35,7 @@ export default function Footer() {
                   href="/about"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  About
+                  關於我們
                 </Link>
               </li>
               <li>
@@ -43,7 +43,7 @@ export default function Footer() {
                   href="/gallery"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Gallery
+                  畫廊
                 </Link>
               </li>
               <li>
@@ -51,7 +51,7 @@ export default function Footer() {
                   href="/donate"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Donate
+                  捐款
                 </Link>
               </li>
               <li>
@@ -59,21 +59,21 @@ export default function Footer() {
                   href="/contact"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Contact
+                  聯絡我們
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">Legal</h3>
+            <h3 className="font-medium text-lg mb-4">法律</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="#"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Privacy Policy
+                  隱私政策
                 </Link>
               </li>
               <li>
@@ -81,7 +81,7 @@ export default function Footer() {
                   href="#"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Terms of Service
+                  服務條款
                 </Link>
               </li>
               <li>
@@ -89,14 +89,14 @@ export default function Footer() {
                   href="#"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Cookie Policy
+                  Cookie 政策
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">Follow Us</h3>
+            <h3 className="font-medium text-lg mb-4">關注我們</h3>
             <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Instagram className="h-5 w-5" />
@@ -120,7 +120,10 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-primary/10 text-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} 彼岸媒體. All rights reserved.
+            &copy; {new Date().getFullYear()} 彼岸媒體. 保留所有權利。
+          </p>
+          <p className="text-sm text-muted-foreground">
+            設計與開發由彼岸媒體團隊完成。
           </p>
         </div>
       </div>
