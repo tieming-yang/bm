@@ -1,18 +1,21 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import Navbar from "../components/navbar"
-import Footer from "../components/footer"
-import { ThemeProvider } from "../components/theme-provider"
-import { Breadcrumb } from "../components/breadcrumb"
-import "../styles/globals.css"
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import Navbar from "../components/navbar";
+import Footer from "../components/footer";
+import { ThemeProvider } from "../components/theme-provider";
+import { Breadcrumb } from "../components/breadcrumb";
+import "../styles/globals.css";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "彼岸媒體",
   description: "彼岸媒體是一家專業的多媒體公司，主打3D動畫、VR等新媒體技術。",
-}
+  openGraph: {
+    images: "/logo.png",
+  },
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -36,5 +39,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
