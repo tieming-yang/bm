@@ -1,40 +1,40 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Moon, Sun } from "lucide-react"
-import { Button } from "./ui/button"
-import { useTheme } from "next-themes"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun } from "lucide-react";
+import { Button } from "./ui/button";
+import { useTheme } from "next-themes";
 
 export default function Navbar() {
-  const pathname = usePathname()
-  const { theme, setTheme } = useTheme()
-  const [isMounted, setIsMounted] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   // Close menu when route changes
   useEffect(() => {
-    setIsMenuOpen(false)
-  }, [pathname])
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   // Prevent scrolling when menu is open
   useEffect(() => {
     if (isMenuOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset"
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isMenuOpen])
+      document.body.style.overflow = "unset";
+    };
+  }, [isMenuOpen]);
 
   const routes = [
     { href: "/", label: "首頁" },
@@ -42,11 +42,11 @@ export default function Navbar() {
     { href: "/gallery", label: "畫廊" },
     { href: "/donate", label: "捐款" }, // Updated to Traditional Chinese
     { href: "/contact", label: "聯繫我們" },
-  ]
+  ];
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <>
@@ -153,5 +153,5 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }
