@@ -2,5 +2,40 @@
   "gallery": {
     "title": "畫廊",
     "subtitle": "探索楊毅多樣化的藝術視野作品集。"
+  },
+  "artwork": {
+    "details": "藝術品詳細資訊",
+    "showDetails": "顯示詳細資訊",
+    "hideDetails": "隱藏詳細資訊",
+    "medium": "媒材",
+    "dimensions": "尺寸",
+    "location": "位置",
+    "year": "年份"
+  },
+  "bibleGallery": {
+    "title": "聖經畫廊",
+    "subtitle": "通過視覺藝術探索聖經主題和經文",
+    "scripture": {
+      "view": "查看經文",
+      "hide": "隱藏經文",
+      "english": "英文",
+      "chinese": "中文"
+    },
+    "filter": {
+      "all": "全部",
+      "byBook": "按書卷篩選",
+      "creation": "創造",
+      "salvation": "救恩",
+      "guidance": "引導"
+    },
+    "properties": {
+      "medium": "媒材",
+      "dimensions": "尺寸",
+      "location": "位置",
+      "year": "年份",
+      "scripture": "經文",
+      "reference": "參考",
+      "biblicalPeriod": "聖經時期"
+    }
   }
 }

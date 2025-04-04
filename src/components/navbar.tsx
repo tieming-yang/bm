@@ -43,6 +43,7 @@ export default function Navbar() {
     { href: "/", label: t("nav.home") },
     { href: "/about", label: t("nav.about") },
     { href: "/gallery", label: t("nav.gallery") },
+    { href: "/bible-gallery", label: t("nav.bibleGallery") },
     { href: "/donate", label: t("nav.donate") },
     { href: "/contact", label: t("nav.contact") },
   ];

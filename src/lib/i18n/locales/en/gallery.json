@@ -2,5 +2,40 @@
   "gallery": {
     "title": "Gallery",
     "subtitle": "Explore Yang Yi's diverse artistic vision portfolio."
+  },
+  "artwork": {
+    "details": "Artwork Details",
+    "showDetails": "Show Details",
+    "hideDetails": "Hide Details",
+    "medium": "Medium",
+    "dimensions": "Dimensions",
+    "location": "Location",
+    "year": "Year"
+  },
+  "bibleGallery": {
+    "title": "Bible Gallery",
+    "subtitle": "Exploring biblical themes and scriptures through visual art",
+    "scripture": {
+      "view": "View Scripture",
+      "hide": "Hide Scripture",
+      "english": "English",
+      "chinese": "Chinese"
+    },
+    "filter": {
+      "all": "All",
+      "byBook": "Filter by Book",
+      "creation": "Creation",
+      "salvation": "Salvation",
+      "guidance": "Guidance"
+    },
+    "properties": {
+      "medium": "Medium",
+      "dimensions": "Dimensions",
+      "location": "Location",
+      "year": "Year",
+      "scripture": "Scripture",
+      "reference": "Reference",
+      "biblicalPeriod": "Biblical Period"
+    }
   }
 }
