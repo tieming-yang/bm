@@ -9,6 +9,7 @@ import { Breadcrumb } from "../components/breadcrumb";
 import "../styles/globals.css";
 import "../lib/i18n";
 import useTranslation from "../hooks/useTranslation";
+import { Analytics } from "@vercel/analytics/react";
 
 // Load Inter for Latin characters
 const inter = Inter({
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
