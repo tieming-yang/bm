@@ -71,6 +71,10 @@ export function ImageGallery({
 
   // Check URL for image ID on mount
   useEffect(() => {
+    if (!searchParams) {
+      console.error("No search params available")
+      return
+    }
     const imageId = searchParams.get("image")
     if (imageId) {
       const index = artworks.findIndex((artwork) => artwork.id === imageId)
@@ -85,19 +89,23 @@ export function ImageGallery({
   useEffect(() => {
     if (selectedImage) {
       // Create a new URLSearchParams object
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(searchParams?.toString() || "")
       params.set("image", selectedImage.id)
 
       // Update the URL without refreshing the page
       router.replace(`${pathname}?${params.toString()}`, { scroll: false })
     } else {
       // If no image is selected, remove the image parameter
-      if (searchParams.has("image")) {
-        const params = new URLSearchParams(searchParams.toString())
+      if (searchParams?.has("image")) {
+        const params = new URLSearchParams(searchParams?.toString())
         params.delete("image")
 
         // If there are other params, keep them, otherwise just use the pathname
         const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+        if (!newUrl) {
+          console.error("Error: No URL to replace")
+          return
+        }
         router.replace(newUrl, { scroll: false })
       }
     }
