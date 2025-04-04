@@ -170,13 +170,14 @@ export function ImageGallery({
       .writeText(url)
       .then(() => {
         toast({
-          title: "Link copied",
-          description: "You can now share this artwork",
+          title: t("toast.linkCopied.title"),
+          description: t("toast.linkCopied.description"),
         });
       })
       .catch(() => {
         toast({
-          title: "Failed to copy link",
+          title: t("toast.copyFailed.title"),
+          description: t("toast.copyFailed.description"),
           variant: "destructive",
         });
       });
@@ -220,7 +221,7 @@ export function ImageGallery({
             onClick={() => setDisplayCount((prev) => Math.min(prev + 8, artworks.length))}
             className="rounded-3xl px-8"
           >
-            {t("gallery.loadMore") || "Load More"}
+            {t("loadMore")}
           </Button>
         </div>
       )}

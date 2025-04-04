@@ -37,5 +37,16 @@
       "reference": "參考",
       "biblicalPeriod": "聖經時期"
     }
-  }
+  },
+  "toast": {
+    "linkCopied": {
+      "title": "連結已複製",
+      "description": "您現在可以分享這件藝術品"
+    },
+    "copyFailed": {
+      "title": "複製連結失敗",
+      "description": "請再試一次"
+    }
+  },
+  "loadMore": "載入更多"
 }

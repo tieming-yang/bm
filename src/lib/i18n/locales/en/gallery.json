@@ -37,5 +37,16 @@
       "reference": "Reference",
       "biblicalPeriod": "Biblical Period"
     }
-  }
+  },
+  "toast": {
+    "linkCopied": {
+      "title": "Link copied",
+      "description": "You can now share this artwork"
+    },
+    "copyFailed": {
+      "title": "Failed to copy link",
+      "description": "Please try again"
+    }
+  },
+  "loadMore": "Load More"
 }
