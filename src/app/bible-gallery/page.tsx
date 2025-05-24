@@ -3,11 +3,11 @@
 import { motion } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
 import useTranslation from "../../hooks/useTranslation";
-import { bibleArtworks } from "../../data/bible-artworks";
 import { ImageGallery } from "../../components/image-gallery";
 import { useSearchParams } from "next/navigation";
 import type { Artwork } from "@/types/artwork";
 import { translateBibleReference } from "@/utils/bible-utils";
+import BibleArtwork from "@/data/bible-artworks";
 
 // This component uses useSearchParams and needs to be wrapped in Suspense
 function BibleGalleryContent() {
@@ -23,12 +23,8 @@ function BibleGalleryContent() {
   }, []);
 
   // Map Bible artworks to standard Artwork format for the ImageGallery component
-  const processedArtworks: Artwork[] = bibleArtworks.map((artwork) => {
-    // Get translated reference if in Chinese mode
-    const translatedReference =
-      currentLanguage === "zh-TW"
-        ? translateBibleReference(artwork.scriptureReference)
-        : artwork.scriptureReference;
+  const processedArtworks: Artwork[] = BibleArtwork.data.map((artwork) => {
+    const scripture = currentLanguage === "zh-TW" ? artwork.scripture.zh : artwork.scripture.en;
 
     // Create localized custom fields with translated labels
     const localizedCustomFields: Record<string, string | undefined> = {
@@ -38,8 +34,8 @@ function BibleGalleryContent() {
       [t("bibleGallery.properties.dimensions")]: artwork.dimensions,
       // Scripture text and reference based on current language
       [t("bibleGallery.properties.scripture")]:
-        currentLanguage === "zh-TW" ? artwork.scriptureTextZh : artwork.scriptureTextEn,
-      [t("bibleGallery.properties.reference")]: translatedReference,
+        currentLanguage === "zh-TW" ? artwork.scripture.zh.text : artwork.scripture.en.text,
+      [t("bibleGallery.properties.reference")]: scripture.reference(),
     };
 
     // Add location if available
@@ -73,9 +69,7 @@ function BibleGalleryContent() {
     return {
       ...artwork,
       // Add scripture reference to description if not already included
-      description: artwork.description.includes(artwork.scriptureReference)
-        ? artwork.description
-        : `${artwork.description} (${translatedReference})`,
+      description: scripture.text,
       // Use our filtered custom fields
       customFields: filteredCustomFields,
       // This flag tells our component to show details by default

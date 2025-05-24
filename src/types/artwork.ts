@@ -10,18 +10,21 @@ export type Artwork = {
   customFields?: Record<string, string | undefined>;
 };
 
+export type Scripture = {
+  book: string; // e.g., "John"
+  chapter: number; // e.g., 3
+  verseStart: number; // e.g., 16
+  verseEnd?: number; // Optional: e.g., 17 (if a range)
+  text: string; // English scripture text
+  reference: () => string; // Function to get formatted reference
+  theme?: string; // Optional thematic categorization
+};
+
 // Extended type for Bible-themed artworks
 export type BibleArtwork = Artwork & {
   scripture: {
-    // Scripture data directly in the artwork
-    scriptureReference: string; // e.g., "John 3:16-17"
-    scriptureTextEn: string; // English text
-    scriptureTextZh: string; // Chinese text
-    bibleBook: string; // e.g., "John", "Genesis"
-    bibleChapter: number; // e.g., 3
-    bibleVerseStart: number; // e.g., 16
-    bibleVerseEnd?: number; // Optional: e.g., 17 (if a range)
-    bibleTheme?: string; // Optional thematic categorization
+    en: Scripture;
+    zh: Scripture; // Optional Chinese scripture
   };
 };
 
