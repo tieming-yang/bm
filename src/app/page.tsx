@@ -5,6 +5,7 @@ import { ImageGallery } from "../components/image-gallery";
 import { artworks } from "../data/artworks";
 import { Suspense } from "react";
 import useTranslation from "../hooks/useTranslation";
+import BibleGalleryContent from "@/components/bible-gallery";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export default function Home() {
       </motion.div>
 
       <Suspense>
-        <ImageGallery artworks={artworks} initialLimit={4} />
+        <BibleGalleryContent />
       </Suspense>
     </div>
   );
