@@ -29,7 +29,7 @@ function makeScripture(opts: {
 
 export const bibleArtworks: BibleArtwork[] = [
   {
-    id: randomUUID(),
+    id: crypto.randomUUID(),
     title: "Creation",
     description:
       "An artistic representation of the creation of the world as described in Genesis.",
@@ -61,7 +61,7 @@ export const bibleArtworks: BibleArtwork[] = [
     },
   },
   {
-    id: randomUUID(),
+    id: crypto.randomUUID(),
     title: "Salvation",
     description: "A visual meditation on God's love and the gift of salvation.",
     year: "2023",
@@ -91,7 +91,7 @@ export const bibleArtworks: BibleArtwork[] = [
     },
   },
   {
-    id: randomUUID(),
+    id: crypto.randomUUID(),
     title: "The Good Shepherd",
     description:
       "An exploration of God's guidance and provision as described in Psalm 23.",
