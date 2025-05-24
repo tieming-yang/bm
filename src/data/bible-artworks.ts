@@ -1,9 +1,10 @@
 import type { BibleArtwork } from "@/types/artwork";
+import { randomUUID } from "crypto";
 
 // Bible artwork collection
 export const bibleArtworks: BibleArtwork[] = [
   {
-    id: "bible-1",
+    id: randomUUID(),
     title: "Creation",
     description: "An artistic representation of the creation of the world as described in Genesis.",
     year: "2023",
@@ -24,7 +25,7 @@ export const bibleArtworks: BibleArtwork[] = [
     },
   },
   {
-    id: "bible-2",
+    id: randomUUID(),
     title: "Salvation",
     description: "A visual meditation on God's love and the gift of salvation.",
     year: "2023",
@@ -44,7 +45,7 @@ export const bibleArtworks: BibleArtwork[] = [
     },
   },
   {
-    id: "bible-3",
+    id: randomUUID(), 
     title: "The Good Shepherd",
     description: "An exploration of God's guidance and provision as described in Psalm 23.",
     year: "2023",
