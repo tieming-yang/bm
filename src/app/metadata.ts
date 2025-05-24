@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "彼岸媒體 | Beyond Media",
-  description: "彼岸媒體是一家專業的多媒體公司，主打3D動畫、VR等新媒體技術。",
+  description: "彼岸媒體 | Beyond Media 是一個致力於推廣基督教藝術和文化的非營利組織，旨在透過藝術作品傳遞福音信息。",
   openGraph: {
     images: "/logo.png",
   },
