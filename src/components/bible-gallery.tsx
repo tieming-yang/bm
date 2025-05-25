@@ -1,7 +1,7 @@
 // This component uses useSearchParams and needs to be wrapped in Suspense
 import { motion } from "framer-motion";
 import type { Artwork } from "@/types/artwork";
-import BibleArtwork from "@/data/bible-artworks";
+import BibleArtwork from "@/models/bible-artworks";
 import useTranslation from "@/hooks/useTranslation";
 import { ImageGallery } from "./image-gallery";
 

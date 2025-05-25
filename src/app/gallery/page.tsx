@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ImageGallery } from "../../components/image-gallery";
-import { artworks } from "../../data/artworks";
+import { artworks } from "../../models/artworks";
 import { Suspense } from "react";
 import useTranslation from "../../hooks/useTranslation";
 import Loading from "@/components/loading";
