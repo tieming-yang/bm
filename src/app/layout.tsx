@@ -17,6 +17,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
 
 // Load Inter for Latin characters
 const inter = Inter({
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </header>
               <Breadcrumb />
               <main className="flex-1">{children}</main>
+              <Toaster />
               <Footer />
             </div>
           </ThemeProvider>

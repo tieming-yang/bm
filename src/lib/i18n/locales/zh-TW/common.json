@@ -45,5 +45,14 @@
     "designDev": "設計與開發由彼岸媒體團隊完成。"
   },
   "yes": "是",
-  "no": "否"
+  "no": "否",
+  "toast": {
+    "signInSuccess": "登入成功！",
+    "signInError": "登入失敗。請檢查您的資料。",
+    "signUpSuccess": "註冊成功！",
+    "signUpError": "註冊失敗。請再試一次。",
+    "signOutError": "登出失敗。",
+    "donateSuccess": "感謝您的慷慨捐款！您的支持為我們持續推動我們的使命。",
+    "donateError": "捐款失敗。請檢查您的付款資訊並再試一次。"
+  }
 }
