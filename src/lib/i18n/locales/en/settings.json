@@ -5,10 +5,12 @@
   "donator": {
     "title": "Personal Information",
     "name": "Name",
-    "email": "Email"
+    "email": "Email",
+    "preferredLanguage": "Preferred Language",
+    "newsletter": "Newsletter Subscription",
+    "total": "Total Donation"
   },
   "donation": {
-    "total": "Total Donation",
     "donate": "Donate"
   } 
 }

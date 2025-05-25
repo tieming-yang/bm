@@ -5,10 +5,12 @@
   "donator": {
     "title": "個人資訊",
     "name": "姓名",
-    "email": "電子郵件"
+    "email": "電子郵件",
+    "preferredLanguage": "偏好語言",
+    "newsletter": "訂閱電子報",
+    "total": "總捐款"
   },
   "donation": {
-    "total": "總捐款",
     "donate": "捐款"
   } 
 }

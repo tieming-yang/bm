@@ -43,5 +43,7 @@
     "cookiePolicy": "Cookie 政策",
     "copyright": "© {{year}} 彼岸媒體. 保留所有權利。",
     "designDev": "設計與開發由彼岸媒體團隊完成。"
-  }
+  },
+  "yes": "是",
+  "no": "否"
 }

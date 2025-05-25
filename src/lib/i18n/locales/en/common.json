@@ -42,5 +42,7 @@
     "cookiePolicy": "Cookie Policy",
     "copyright": "© {{year}} Beyond Media. All rights reserved.",
     "designDev": "Designed and developed by the Beyond Media team."
-  }
+  },
+  "yes": "Yes",
+  "no": "No"
 }

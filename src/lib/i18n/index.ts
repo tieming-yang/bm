@@ -8,12 +8,16 @@ import enCommon from "./locales/en/common.json";
 import enGallery from "./locales/en/gallery.json";
 import enDonate from "./locales/en/donate.json";
 import enContact from "./locales/en/contact.json";
+import enUi from "./locales/en/ui.json";
+import enSettings from "./locales/en/settings.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
 import zhGallery from "./locales/zh-TW/gallery.json";
 import zhDonate from "./locales/zh-TW/donate.json";
 import zhContact from "./locales/zh-TW/contact.json";
+import zhUi from "./locales/zh-TW/ui.json";
+import zhSettings from "./locales/zh-TW/settings.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -24,6 +28,8 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhGallery, "zh-TW/gallery.json");
   verifyTranslationEncoding(zhDonate, "zh-TW/donate.json");
   verifyTranslationEncoding(zhContact, "zh-TW/contact.json");
+  verifyTranslationEncoding(zhUi, "zh-TW/ui.json");
+  verifyTranslationEncoding(zhSettings, "zh-TW/settings.json");
 }
 
 // Initialize i18n instance
@@ -37,12 +43,16 @@ i18n
         gallery: enGallery,
         donate: enDonate,
         contact: enContact,
+        ui: enUi,
+        settings: enSettings,
       },
       "zh-TW": {
         common: zhCommon,
         gallery: zhGallery,
         donate: zhDonate,
         contact: zhContact,
+        ui: zhUi,
+        settings: zhSettings,
       },
     },
     fallbackLng: "zh-TW",
