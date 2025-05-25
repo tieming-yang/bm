@@ -7,8 +7,6 @@ import { motion } from "framer-motion";
 import { X, ChevronDown, ChevronUp, Download, Share, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import type { Artwork } from "../types/artwork";
-import { toast } from "./ui/use-toast";
-import { Toaster } from "./ui/toaster";
 import useTranslation from "../hooks/useTranslation";
 import {
   Carousel,
@@ -201,27 +199,12 @@ export function ImageGallery({
               document.body.removeChild(link);
               URL.revokeObjectURL(blobUrl); // Free up memory
             }, 100);
-
-            toast({
-              title: t("toast.downloadSuccess.title"),
-              description: t("toast.downloadSuccess.description"),
-            });
           })
           .catch((error) => {
             console.error("Download failed:", error);
-            toast({
-              title: t("toast.downloadFailed.title"),
-              description: t("toast.downloadFailed.description"),
-              variant: "destructive",
-            });
           });
       } catch (error) {
         console.error("Fatal download error:", error);
-        toast({
-          title: t("toast.downloadFailed.title"),
-          description: t("toast.downloadFailed.description"),
-          variant: "destructive",
-        });
       }
     }, 100); // Small delay to ensure sheet appears first
   };
@@ -232,19 +215,8 @@ export function ImageGallery({
     const url = `${window.location.origin}${pathname}?image=${selectedArtwork.id}`;
     navigator.clipboard
       .writeText(url)
-      .then(() => {
-        toast({
-          title: t("toast.linkCopied.title"),
-          description: t("toast.linkCopied.description"),
-        });
-      })
-      .catch(() => {
-        toast({
-          title: t("toast.copyFailed.title"),
-          description: t("toast.copyFailed.description"),
-          variant: "destructive",
-        });
-      });
+      .then(() => {})
+      .catch(() => {});
   };
 
   return (
@@ -484,8 +456,6 @@ export function ImageGallery({
 
       {/* Donation Sheet */}
       <DonationSheet open={showDonationSheet} onOpenChange={setShowDonationSheet} />
-
-      <Toaster />
     </>
   );
 }
