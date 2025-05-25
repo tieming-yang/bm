@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { motion } from "framer-motion";
 
 type Props = {};
 
@@ -42,7 +43,12 @@ export default function SettingsPage({}: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-dvh">
+    <motion.div
+      className="flex flex-col items-center justify-center min-h-dvh"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
       <Card className="md:w-[750px] w-[90%]">
         <CardHeader>
           <CardTitle>{t("settings.title")}</CardTitle>
@@ -80,6 +86,6 @@ export default function SettingsPage({}: Props) {
           <SignOutButton />
         </CardFooter>
       </Card>
-    </div>
+    </motion.div>
   );
 }

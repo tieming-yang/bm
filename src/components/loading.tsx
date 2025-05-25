@@ -4,7 +4,7 @@ export default function Loading() {
   const { t } = useTranslation("ui");
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#0f0f10] text-white">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center gap-4">
         <div className="relative h-16 w-16">
           <div className="absolute inset-0 rounded-full border-t-2 border-[#7ec0cd] animate-spin"></div>
