@@ -10,6 +10,13 @@ import "../styles/globals.css";
 import "../lib/i18n";
 import useTranslation from "../hooks/useTranslation";
 import { Analytics } from "@vercel/analytics/react";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 // Load Inter for Latin characters
 const inter = Inter({
@@ -38,6 +45,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     setMounted(true);
   }, []);
 
+  const queryClient = new QueryClient();
+
   return (
     <html lang={mounted ? currentLanguage : "zh-TW"} suppressHydrationWarning>
       <head>
@@ -46,21 +55,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={`${inter.variable} ${notoSansTC.variable} font-sans`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="flex min-h-screen flex-col bg-gradient-to-br from-background to-background/80">
-            <header>
-              <Navbar />
-            </header>
-            <Breadcrumb />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="flex min-h-screen flex-col bg-gradient-to-br from-background to-background/80">
+              <header>
+                <Navbar />
+              </header>
+              <Breadcrumb />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </ThemeProvider>
+        </QueryClientProvider>
         <Analytics />
       </body>
     </html>
