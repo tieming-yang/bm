@@ -4,13 +4,12 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Auth from "@/lib/firebase/auth";
 import useTranslation from "@/hooks/useTranslation";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 type Props = {};
 export default function SignOutButton({}: Props) {
   const router = useRouter();
   const { t } = useTranslation("common");
-  const { toast } = useToast();
 
   return (
     <Button
@@ -18,16 +17,11 @@ export default function SignOutButton({}: Props) {
       onMouseDown={async () => {
         try {
           await Auth.signOut();
-          toast({
-            description: t("toast.signOutSuccess"),
-          });
+          toast.success(t("toast.signOutSuccess"));
           router.push("/");
         } catch (error) {
           console.error(error);
-          toast({
-            description: t("toast.signOutError"),
-            variant: "destructive",
-          });
+          toast.error(t("toast.signOutError"), {});
         }
       }}
     >

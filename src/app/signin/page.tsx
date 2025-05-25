@@ -7,14 +7,13 @@ import Loading from "@/components/loading";
 import Auth from "@/lib/firebase/auth";
 import useFirebaseUser from "@/hooks/use-firebae-user";
 import useTranslation from "@/hooks/useTranslation";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 type Props = {};
 export default function SignInPage({}: Props) {
   const router = useRouter();
   const { user, initializing } = useFirebaseUser();
   const { t, currentLanguage } = useTranslation();
-  const { toast } = useToast();
 
   if (initializing) {
     return <Loading />;
@@ -32,16 +31,11 @@ export default function SignInPage({}: Props) {
             await Auth.signInWithGoogle({
               preferredLanguage: currentLanguage,
             });
-            toast({
-              description: t("toast.signInSuccess"),
-            });
+            toast.success(t("toast.signInSuccess"));
             router.push("/");
           } catch (error) {
             console.error(error);
-            toast({
-              description: t("toast.signInError"),
-              variant: "destructive",
-            });
+            toast.error(t("toast.signInError"));
           }
         }}
       >
