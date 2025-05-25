@@ -65,7 +65,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
+          {/* 
           <div>
             <h3 className="font-medium text-lg mb-4">{t("footer.legal")}</h3>
             <ul className="space-y-2">
@@ -116,7 +116,7 @@ export default function Footer() {
                 <span className="sr-only">YouTube</span>
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-12 pt-8 border-t border-primary/10 text-center">
