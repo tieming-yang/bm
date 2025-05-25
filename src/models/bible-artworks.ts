@@ -1,6 +1,6 @@
 import type { BibleArtwork } from "@/types/artwork";
 import { randomUUID } from "crypto";
-import { bibleArtworks } from "./bible-artworks-data";
+import { bibleArtworks } from "@/data/bible-artworks-data";
 
 const BibleArtwork = {
   data: bibleArtworks,
