@@ -47,17 +47,6 @@ export default function SignInPage({}: Props) {
       >
         {t("nav.signin")}
       </Button>
-      <button
-        onClick={() => {
-          console.log("Test button clicked");
-          toast({
-            title: "Test",
-            description: "This is a test button",
-          });
-        }}
-      >
-        test
-      </button>
     </div>
   );
 }
