@@ -20,7 +20,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// Only initialize analytics on the client side, not during SSR
+let analytics = null;
+if (typeof window !== 'undefined') {
+  analytics = getAnalytics(app);
+}
 const db = getFirestore(app);
 const auth = getAuth(app);
 
