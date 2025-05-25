@@ -27,15 +27,32 @@ export default function SignInPage({}: Props) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-dvh">
+    <div className="flex flex-col gap-y-5 items-center justify-center min-h-dvh">
       <Button
         variant="secondary"
         className="flex items-center gap-3"
         onMouseDown={async () => {
           try {
-            await Auth.signInWithGoogle({
+            await Auth.signUpWithGoogle({
               preferredLanguage: currentLanguage,
             });
+            toast.success(t("toast.signUpSuccess"));
+            router.push(redirectTo);
+          } catch (error) {
+            console.error(error);
+            toast.error(t("toast.signUpError"));
+          }
+        }}
+      >
+        <FcGoogle className="w-7 h-7" />
+        {t("nav.signupWithGoogle")}
+      </Button>
+      <Button
+        variant="secondary"
+        className="flex items-center gap-3"
+        onMouseDown={async () => {
+          try {
+            await Auth.signInWithGoogle();
             toast.success(t("toast.signInSuccess"));
             router.push(redirectTo);
           } catch (error) {

@@ -18,7 +18,7 @@ const Auth = {
     return _onAuthStateChanged(firebase.auth, cb);
   },
 
-  async signInWithGoogle(fields: {
+  async signUpWithGoogle(fields: {
     preferredLanguage: string;
   }) {
     const provider = new GoogleAuthProvider();
@@ -26,6 +26,13 @@ const Auth = {
     try {
       const { user } = await signInWithPopup(firebase.auth, provider);
       const { uid, displayName, email, photoURL } = user;
+
+      const donator = await Donator.isExits(uid);
+      if (donator) {
+        console.warn("Donator already sign up");
+        return;
+      }
+
       const { preferredLanguage } = fields;
 
       await Donator.create({
@@ -35,6 +42,15 @@ const Auth = {
         preferredLanguage,
         photoURL: photoURL || null,
       });
+    } catch (error) {
+      console.error("Error signingup in with Google", error);
+    }
+  },
+
+  async signInWithGoogle() {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(firebase.auth, provider);
     } catch (error) {
       console.error("Error signing in with Google", error);
     }
