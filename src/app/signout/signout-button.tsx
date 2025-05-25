@@ -12,6 +12,7 @@ export default function SignOutButton({}: Props) {
 
   return (
     <Button
+      className="w-full max-w-md"
       onMouseDown={async () => {
         await Auth.signOut();
         router.push("/");
