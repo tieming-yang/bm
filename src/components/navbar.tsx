@@ -10,6 +10,8 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/useTranslation";
+import useFirebaseUser from "@/hooks/use-firebae-user";
+import Auth from "@/lib/firebase/auth";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -46,11 +48,14 @@ export default function Navbar() {
     { href: "/bible-gallery", label: t("nav.bibleGallery") },
     { href: "/donate", label: t("nav.donate") },
     { href: "/contact", label: t("nav.contact") },
+    { href: "/signin", label: t("nav.signin") },
   ];
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const { user } = useFirebaseUser();
 
   return (
     <>
@@ -77,6 +82,15 @@ export default function Navbar() {
           <div className="flex items-center gap-2 z-50">
             {isMounted && (
               <>
+                {user ? (
+                  <Link href="/settings" className="text-sm font-medium">
+                    {t("nav.settings")}
+                  </Link>
+                ) : (
+                  <Link href="/signin" className="text-sm font-medium">
+                    {t("nav.signin")}
+                  </Link>
+                )}
                 <LanguageSwitcher />
                 <Button
                   variant="ghost"

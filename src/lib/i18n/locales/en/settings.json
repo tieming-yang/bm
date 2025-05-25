@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "title": "Settings"
+  },
+  "donator": {
+    "title": "Personal Information",
+    "name": "Name",
+    "email": "Email"
+  },
+  "donation": {
+    "total": "Total Donation",
+    "donate": "Donate"
+  } 
+}

@@ -5,7 +5,11 @@
     "gallery": "畫廊",
     "bibleGallery": "聖經畫廊",
     "donate": "捐款",
-    "contact": "聯繫我們"
+    "contact": "聯繫我們",
+    "signin": "登入",
+    "signup": "註冊",
+    "signout": "登出",
+    "settings": "設定"
   },
   "home": {
     "title": "彼岸媒體",

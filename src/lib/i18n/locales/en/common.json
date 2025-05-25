@@ -5,7 +5,10 @@
     "gallery": "Gallery",
     "bibleGallery": "Bible Gallery",
     "donate": "Donate",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "signin": "Sign In",
+    "signup": "Sign Up",
+    "signout": "Sign Out"
   },
   "home": {
     "title": "Beyond Media",
