@@ -8,6 +8,7 @@ import Auth from "@/lib/firebase/auth";
 import useFirebaseUser from "@/hooks/use-firebae-user";
 import useTranslation from "@/hooks/useTranslation";
 import { toast } from "sonner";
+import { FaGoogle } from "react-icons/fa";
 
 type Props = {};
 export default function SignInPage({}: Props) {
@@ -41,7 +42,8 @@ export default function SignInPage({}: Props) {
           }
         }}
       >
-        {t("nav.signin")}
+        <FaGoogle className="mr-2" />
+        {t("nav.signinWithGoogle")}
       </Button>
     </div>
   );
