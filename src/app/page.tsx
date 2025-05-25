@@ -6,6 +6,7 @@ import { artworks } from "../data/artworks";
 import { Suspense } from "react";
 import useTranslation from "../hooks/useTranslation";
 import BibleGalleryContent from "@/components/bible-gallery";
+import Loading from "@/components/loading";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export default function Home() {
         </p>
       </motion.div>
 
-      <Suspense>
+      <Suspense fallback={<Loading />}>
         <BibleGalleryContent />
       </Suspense>
     </div>

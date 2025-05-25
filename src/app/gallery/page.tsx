@@ -5,6 +5,7 @@ import { ImageGallery } from "../../components/image-gallery";
 import { artworks } from "../../data/artworks";
 import { Suspense } from "react";
 import useTranslation from "../../hooks/useTranslation";
+import Loading from "@/components/loading";
 
 export default function Gallery() {
   const { t } = useTranslation("gallery");
@@ -25,7 +26,7 @@ export default function Gallery() {
         </p>
       </motion.div>
 
-      <Suspense>
+      <Suspense fallback={<Loading />}>
         <ImageGallery artworks={artworks} infiniteScroll={true} />
       </Suspense>
     </div>
