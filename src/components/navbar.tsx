@@ -48,7 +48,7 @@ export default function Navbar() {
     { href: "/bible-gallery", label: t("nav.bibleGallery") },
     { href: "/donate", label: t("nav.donate") },
     { href: "/contact", label: t("nav.contact") },
-    { href: "/signin", label: t("nav.signin") },
+    // { href: "/signin", label: t("nav.signin") },
   ];
 
   const toggleMenu = () => {
