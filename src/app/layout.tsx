@@ -18,6 +18,8 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
+import { Suspense } from "react";
+import Loading from "@/components/loading";
 
 // Load Inter for Latin characters
 const inter = Inter({
@@ -68,9 +70,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Navbar />
               </header>
               <Breadcrumb />
-              <main className="flex-1">{children}</main>
-              <Toaster position="top-center" />
-              <Footer />
+              <Suspense fallback={<Loading />}>
+                <main className="flex-1">{children}</main>
+                <Toaster position="top-center" />
+                <Footer />
+              </Suspense>
             </div>
           </ThemeProvider>
         </QueryClientProvider>
