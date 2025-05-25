@@ -53,6 +53,7 @@
     "signUpError": "註冊失敗。請再試一次。",
     "signOutError": "登出失敗。",
     "donateSuccess": "感謝您的慷慨捐款！您的支持為我們持續推動我們的使命。",
-    "donateError": "捐款失敗。請檢查您的付款資訊並再試一次。"
+    "donateError": "捐款失敗。請檢查您的付款資訊並再試一次。",
+    "mustSignIn": "請先登入。"
   }
 }

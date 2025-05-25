@@ -53,6 +53,7 @@
     "signOutSuccess": "Sign out successful! See you next time!",
     "signOutError": "Sign out failed. Please try again later.",
     "donateSuccess": "Thank you for your generous donation! Your support helps us continue our mission.",
-    "donateError": "Donation failed. Please check your payment details and try again."
+    "donateError": "Donation failed. Please check your payment details and try again.",
+    "mustSignIn": "Please sign in to proceed."
   }
 }
