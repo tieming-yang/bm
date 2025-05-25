@@ -26,11 +26,12 @@ const Auth = {
     try {
       const { user } = await signInWithPopup(firebase.auth, provider);
       const { uid, displayName, email, photoURL } = user;
-
-      const donator = await Donator.isExits(uid);
-      if (donator) {
+      
+      let isDonatorSignedUp = false;
+      isDonatorSignedUp = await Donator.isExits(uid);
+      if (isDonatorSignedUp) {
         console.warn("Donator already sign up");
-        return;
+        return isDonatorSignedUp;
       }
 
       const { preferredLanguage } = fields;
@@ -42,6 +43,8 @@ const Auth = {
         preferredLanguage,
         photoURL: photoURL || null,
       });
+
+      return isDonatorSignedUp;
     } catch (error) {
       console.error("Error signingup in with Google", error);
     }

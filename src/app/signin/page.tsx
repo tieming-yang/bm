@@ -33,10 +33,15 @@ export default function SignInPage({}: Props) {
         className="flex items-center gap-3"
         onMouseDown={async () => {
           try {
-            await Auth.signUpWithGoogle({
+            const isDonatorSignup = await Auth.signUpWithGoogle({
               preferredLanguage: currentLanguage,
             });
-            toast.success(t("toast.signUpSuccess"));
+
+            if (!isDonatorSignup) {
+              toast.success(t("toast.signUpSuccess"));
+            } else {
+              toast.success(t("toast.signInSuccess"));
+            }
             router.push(redirectTo);
           } catch (error) {
             console.error(error);
