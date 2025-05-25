@@ -8,7 +8,7 @@ import Auth from "@/lib/firebase/auth";
 import useFirebaseUser from "@/hooks/use-firebae-user";
 import useTranslation from "@/hooks/useTranslation";
 import { toast } from "sonner";
-import { FaGoogle } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 type Props = {};
 export default function SignInPage({}: Props) {
@@ -29,6 +29,8 @@ export default function SignInPage({}: Props) {
   return (
     <div className="flex items-center justify-center min-h-dvh">
       <Button
+        variant="secondary"
+        className="flex items-center gap-3"
         onMouseDown={async () => {
           try {
             await Auth.signInWithGoogle({
@@ -42,7 +44,7 @@ export default function SignInPage({}: Props) {
           }
         }}
       >
-        <FaGoogle className="mr-2" />
+        <FcGoogle className="w-7 h-7" />
         {t("nav.signinWithGoogle")}
       </Button>
     </div>
