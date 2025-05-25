@@ -29,7 +29,7 @@ export default function SettingsPage({}: Props) {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-dvh">
-      <h1 className="text-5xl font-bold mb-4">{t("settings.title")}</h1>
+      <h1 className="text-3xl font-bold mb-4">{t("settings.title")}</h1>
       <div className="w-full max-w-md p-4 space-y-5 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-2">{t("donator.title")}</h2>
         <Image src={donator?.photoURL || ""} alt={donator?.name || ""} width={100} height={100} />
