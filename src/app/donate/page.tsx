@@ -16,7 +16,7 @@ import {
 import { Heart } from "lucide-react";
 import useTranslation from "../../hooks/useTranslation";
 import useFirebaseUser from "@/hooks/use-firebae-user";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/loading";
 
@@ -25,13 +25,15 @@ export default function Donate() {
   const { t: tCommon } = useTranslation("common");
   const { user, initializing } = useFirebaseUser();
   const router = useRouter();
+  const path = usePathname();
 
   if (initializing) {
     return <Loading />;
   }
   if (!user) {
     toast.error(tCommon("toast.mustSignIn"));
-    router.push("/signin");
+
+    router.push(`/signin?redirectTo=${encodeURIComponent(path)}`);
   }
 
   return (

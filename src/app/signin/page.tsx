@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Loading from "@/components/loading";
 import Auth from "@/lib/firebase/auth";
@@ -14,12 +14,14 @@ export default function SignInPage({}: Props) {
   const router = useRouter();
   const { user, initializing } = useFirebaseUser();
   const { t, currentLanguage } = useTranslation();
+  const params = useSearchParams();
+  const redirectTo = params.get("redirectTo") ?? "/";
 
   if (initializing) {
     return <Loading />;
   }
   if (user) {
-    router.push("/");
+    router.push(redirectTo);
     return null;
   }
 
@@ -32,7 +34,7 @@ export default function SignInPage({}: Props) {
               preferredLanguage: currentLanguage,
             });
             toast.success(t("toast.signInSuccess"));
-            router.push("/");
+            router.push(redirectTo);
           } catch (error) {
             console.error(error);
             toast.error(t("toast.signInError"));
