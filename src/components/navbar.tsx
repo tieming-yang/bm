@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
@@ -84,7 +84,7 @@ export default function Navbar() {
               <>
                 {user ? (
                   <Link href="/settings" className="text-sm font-medium">
-                    {t("nav.settings")}
+                    <User className="h-5 w-5" />
                   </Link>
                 ) : (
                   <Link href="/signin" className="text-sm font-medium">
