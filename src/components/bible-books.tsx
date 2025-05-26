@@ -2,6 +2,6 @@
 
 type Props = {};
 
-export default function BibleCollections({}: Props) {
+export default function BibleBooks({}: Props) {
   return <div>BibleCollections</div>;
 }
