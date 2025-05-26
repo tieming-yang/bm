@@ -40,9 +40,9 @@ export function Breadcrumb() {
             {t("nav.home")}
           </button>
         </li>
+        <span className="text-gray-500 dark:text-gray-400">/</span>
         {segments.map((segment, index) => (
-          <li key={index} className="flex items-center">
-            <span className="mx-2">/</span>
+          <li key={index} className="">
             <button
               onClick={() => handleNavigation(index)}
               className="hover:underline text-primary"
