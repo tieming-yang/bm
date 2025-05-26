@@ -82,7 +82,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2 z-50">
             {isMounted && (
-              <>
+              <section className="flex items-center gap-2">
                 <LanguageSwitcher />
                 <Button
                   variant="ghost"
@@ -104,7 +104,7 @@ export default function Navbar() {
                     <Button>{t("nav.signin")}</Button>
                   </Link>
                 )}
-              </>
+              </section>
             )}
 
             <button
