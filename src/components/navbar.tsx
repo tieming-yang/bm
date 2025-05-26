@@ -106,7 +106,7 @@ export default function Navbar() {
 
             <button
               onClick={toggleMenu}
-              className="md:hidden flex flex-col justify-center items-center w-10 h-10 relative focus:outline-none z-50"
+              className="md:hidden flex flex-col justify-center items-center size-10 relative focus:outline-none z-50"
               aria-label="Menu"
               aria-expanded={isMenuOpen}
             >
