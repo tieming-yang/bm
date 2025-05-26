@@ -196,7 +196,7 @@ export function ImageGallery({
       link.click();
     };
   };
-
+  // TODO: Fix share functionality
   const handleShare = () => {
     if (!selectedArtwork) return;
 
