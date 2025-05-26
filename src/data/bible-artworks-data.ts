@@ -1,5 +1,4 @@
 import { BibleArtwork, Scripture } from "@/types/artwork";
-import { randomUUID } from "crypto";
 
 /**
  * Factory to build a Scripture object with a dynamic reference() method.
@@ -9,18 +8,26 @@ function makeScripture(opts: {
   chapter: number;
   verseStart: number;
   verseEnd?: number;
+  chapterEnd?: number;
   text: string;
   theme?: string;
 }): Scripture {
-  const { book, chapter, verseStart, verseEnd, text, theme } = opts;
+  const { book, chapter, verseStart, verseEnd, text, theme, chapterEnd } = opts;
   return {
     book,
     chapter,
     verseStart,
     verseEnd,
+    chapterEnd,
     text,
     theme,
     reference() {
+      if (chapterEnd && verseEnd) {
+        if (chapterEnd === chapter) {
+          return `${book} ${chapter}:${verseStart}-${verseEnd}`;
+        }
+        return `${book} ${chapter}:${verseStart}-${chapterEnd}:${verseEnd}`;
+      }
       return `${book} ${chapter}:${verseStart}` +
         (verseEnd ? `-${verseEnd}` : "");
     },

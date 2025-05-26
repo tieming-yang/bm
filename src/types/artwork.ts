@@ -15,6 +15,7 @@ export type Scripture = {
   chapter: number; // e.g., 3
   verseStart: number; // e.g., 16
   verseEnd?: number; // Optional: e.g., 17 (if a range)
+  chapterEnd?: number; // Optional: e.g., 4
   text: string; // English scripture text
   reference: () => string; // Function to get formatted reference
   theme?: string; // Optional thematic categorization
