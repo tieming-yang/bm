@@ -21,7 +21,7 @@ export function Breadcrumb() {
     const routeMap: Record<string, string> = {
       about: "nav.about",
       contact: "nav.contact",
-      gallery: "nav.gallery",
+      "bible-gallery": "nav.bibleGallery",
       services: "nav.services",
       donate: "nav.donate",
     };
