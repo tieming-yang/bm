@@ -3,14 +3,14 @@
 // This component uses useSearchParams and needs to be wrapped in Suspense
 import { motion } from "framer-motion";
 import type { Artwork } from "@/types/artwork";
-import BibleArtwork from "@/models/bible-artworks";
 import useTranslation from "@/hooks/useTranslation";
 import { ImageGallery } from "./image-gallery";
+import BibleArtworks from "@/data/bible-artworks-data";
 
 export default function BibleGalleryContent() {
   const { t, currentLanguage } = useTranslation("gallery");
 
-  const processedArtworks: Artwork[] = BibleArtwork.data.map((artwork) => {
+  const processedArtworks: Artwork[] = BibleArtworks.data.map((artwork) => {
     const scripture = currentLanguage.split("-").includes("zh")
       ? artwork.scripture.zh
       : artwork.scripture.en;

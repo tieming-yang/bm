@@ -35,7 +35,7 @@ function makeScripture(opts: {
   };
 }
 
-export const bibleArtworks: BibleArtwork[] = [
+const bibleArtworks: BibleArtwork[] = [
   {
     id: crypto.randomUUID(),
     title: "Creation",
@@ -79,7 +79,7 @@ export const bibleArtworks: BibleArtwork[] = [
     },
     scripture: {
       en: makeScripture({
-        book: "John",
+        book: "Genesis",
         chapter: 3,
         verseStart: 16,
         text:
@@ -87,12 +87,43 @@ export const bibleArtworks: BibleArtwork[] = [
         theme: "Salvation",
       }),
       zh: makeScripture({
-        book: "約翰福音",
+        book: "創世紀",
         chapter: 3,
         verseStart: 16,
-        text:
-          "神愛世人，甚至將他的獨生子賜給他們，叫一切信他的，不致滅亡，反得永生。",
+        text: "",
         theme: "救恩",
+      }),
+    },
+  },
+  {
+    id: crypto.randomUUID(),
+    title: "Guidance",
+    description:
+      "An exploration of God's guidance and provision as described in Psalm 23.",
+    year: "2023",
+    medium: "Watercolor on paper",
+    imageUrl: exodus_18v1_10v1,
+    customFields: {
+      "Biblical Period": "Old Testament",
+    },
+    scripture: {
+      en: makeScripture({
+        book: "Exodus",
+        chapter: 23,
+        verseStart: 1,
+        verseEnd: 3,
+        text:
+          "The LORD is my shepherd; I shall not want. He makes me lie down in green pastures. He leads me beside still waters. He restores my soul. He leads me in paths of righteousness for his name's sake.",
+        theme: "Guidance",
+      }),
+      zh: makeScripture({
+        book: "出埃及記",
+        chapter: 23,
+        verseStart: 1,
+        verseEnd: 3,
+        text:
+          "耶和華是我的牧羊人，我不缺食。他使我在綠草的平原上坐下。他使我在靜水的旁邊。他使我得到靈魂的恢復。他使我在正義的路上行走。",
+        theme: "引導",
       }),
     },
   },
@@ -109,7 +140,7 @@ export const bibleArtworks: BibleArtwork[] = [
     },
     scripture: {
       en: makeScripture({
-        book: "Psalm",
+        book: "Exodus",
         chapter: 23,
         verseStart: 1,
         verseEnd: 3,
@@ -118,7 +149,7 @@ export const bibleArtworks: BibleArtwork[] = [
         theme: "Guidance",
       }),
       zh: makeScripture({
-        book: "詩篇",
+        book: "出埃及記",
         chapter: 23,
         verseStart: 1,
         verseEnd: 3,
@@ -129,3 +160,21 @@ export const bibleArtworks: BibleArtwork[] = [
     },
   },
 ];
+
+const bibleArtworksByBook = bibleArtworks.reduce(
+  (acc, artwork) => {
+    const book = artwork.scripture.en.book;
+    return {
+      ...acc,
+      [book]: [...(acc[book] || []), artwork],
+    };
+  },
+  {} as { [book: string]: BibleArtwork[] },
+);
+
+const BibleArtworks = {
+  data: bibleArtworks,
+  dataByBook: bibleArtworksByBook,
+};
+
+export default BibleArtworks;
