@@ -84,7 +84,7 @@ export default function Navbar() {
               <>
                 {user ? (
                   <Link href="/settings" className="text-sm font-medium">
-                    <User className="h-5 w-5" />
+                    <User className="size-5" />
                   </Link>
                 ) : (
                   <Link href="/signin" className="text-sm font-medium">
@@ -98,7 +98,7 @@ export default function Navbar() {
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                   className="rounded-full"
                 >
-                  {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
                   <span className="sr-only">Toggle theme</span>
                 </Button>
               </>
