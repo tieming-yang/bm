@@ -31,6 +31,14 @@ export type BibleArtwork = Artwork & {
   };
 };
 
+export type BibleArtworksLocale = Artwork & {
+  scripture: Scripture;
+};
+
+export type BibleArtworksGrouped = {
+  [book: string]: BibleArtworksLocale[];
+};
+
 // Helper function to check if an artwork is a Bible artwork
 export function isBibleArtwork(artwork: Artwork): artwork is BibleArtwork {
   return "scriptureReference" in artwork && "scriptureTextEn" in artwork;

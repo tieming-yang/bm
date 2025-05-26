@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import useTranslation from "../hooks/useTranslation";
+import { settings } from "firebase/analytics";
 
 export function Breadcrumb() {
   const router = useRouter();
@@ -24,6 +25,8 @@ export function Breadcrumb() {
       "bible-gallery": "nav.bibleGallery",
       services: "nav.services",
       donate: "nav.donate",
+      signin: "nav.signin",
+      settings: "nav.settings",
     };
 
     return routeMap[segment] || segment;

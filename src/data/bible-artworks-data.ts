@@ -161,20 +161,4 @@ const bibleArtworks: BibleArtwork[] = [
   },
 ];
 
-const bibleArtworksByBook = bibleArtworks.reduce(
-  (acc, artwork) => {
-    const book = artwork.scripture.en.book;
-    return {
-      ...acc,
-      [book]: [...(acc[book] || []), artwork],
-    };
-  },
-  {} as { [book: string]: BibleArtwork[] },
-);
-
-const BibleArtworks = {
-  data: bibleArtworks,
-  dataByBook: bibleArtworksByBook,
-};
-
-export default BibleArtworks;
+export default bibleArtworks;

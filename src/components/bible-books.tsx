@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import BibleArtworks from "../data/bible-artworks-data";
+
 import { AspectRatio } from "./ui/aspect-ratio";
 import Image from "next/image";
 import useTranslation from "@/hooks/useTranslation";
 import { motion } from "framer-motion";
 import Config from "@/models/config";
+import BibleArtworks from "@/models/bible-artworks";
 
 type Props = {};
 
 export default function BibleBooks({}: Props) {
-  const { t } = useTranslation("books");
+  const { t, currentLanguage } = useTranslation("books");
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -20,7 +21,7 @@ export default function BibleBooks({}: Props) {
       className="h-svh"
     >
       <ul className="grid grid-cols-1 md:grid-cols-2 w-full place-content-center gap-7">
-        {Object.entries(BibleArtworks.dataByBook).map(([book, collections]) => (
+        {Object.entries(BibleArtworks.groupedByBook(currentLanguage)).map(([book, collections]) => (
           <li key={collections[0].id} className="flex flex-col gap-y-3">
             <h2 className="text-3xl text-primary font-serif font-semibold">{t(book)}</h2>
 

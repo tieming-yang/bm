@@ -6,7 +6,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { X, ChevronDown, ChevronUp, Download, Share, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
-import type { Artwork } from "../types/artwork";
+import type { BibleArtworksLocale, BibleArtworksGrouped } from "../types/artwork";
 import useTranslation from "../hooks/useTranslation";
 import {
   Carousel,
@@ -16,20 +16,21 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { DonationSheet } from "./donation-sheet";
-import { translateBibleReference } from "@/utils/bible-utils";
+
 import { AspectRatio } from "./ui/aspect-ratio";
-import Link from "next/link";
+
 import Config from "@/models/config";
-import BibleArtworks from "@/data/bible-artworks-data";
 
 interface ImageGalleryProps {
-  artworks: Artwork[];
+  bibleArtworks: BibleArtworksLocale[];
+  groupedBibleArtworks: BibleArtworksGrouped;
   infiniteScroll?: boolean;
   initialLimit?: number;
 }
 
 export function ImageGallery({
-  artworks,
+  bibleArtworks,
+  groupedBibleArtworks,
   infiniteScroll = false,
   initialLimit = 8,
 }: ImageGalleryProps) {
@@ -52,14 +53,13 @@ export function ImageGallery({
   const { t: booksT } = useTranslation("books");
 
   // Derived values
-  const visibleArtworks = artworks.slice(0, displayCount);
   const selectedArtwork = selectedArtworkId
-    ? artworks.find((a) => a.id === selectedArtworkId) || null
+    ? bibleArtworks.find((a) => a.id === selectedArtworkId) || null
     : null;
+
   const selectedIndex = selectedArtworkId
-    ? artworks.findIndex((a) => a.id === selectedArtworkId)
+    ? bibleArtworks.findIndex((a) => a.id === selectedArtworkId)
     : -1;
-  console.log("selectedArtworkId", selectedArtworkId);
 
   // Initialize selectedArtworkId from URL if present
   useEffect(() => {
@@ -67,12 +67,12 @@ export function ImageGallery({
 
     const imageId = searchParams?.get("image");
     if (imageId && !selectedArtworkId) {
-      const artwork = artworks.find((a) => a.id === imageId);
+      const artwork = bibleArtworks.find((a) => a.id === imageId);
       if (artwork) {
         setSelectedArtworkId(artwork.id);
       }
     }
-  }, [searchParams, artworks, selectedArtworkId]);
+  }, [searchParams, bibleArtworks, selectedArtworkId]);
 
   // Update URL when selectedArtworkId changes (avoid circular updates)
   useEffect(() => {
@@ -103,8 +103,8 @@ export function ImageGallery({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && displayCount < artworks.length) {
-          setDisplayCount((prev) => Math.min(prev + 8, artworks.length));
+        if (entries[0].isIntersecting && displayCount < bibleArtworks.length) {
+          setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length));
         }
       },
       { threshold: 0.1 }
@@ -112,7 +112,7 @@ export function ImageGallery({
 
     observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [infiniteScroll, displayCount, artworks.length]);
+  }, [infiniteScroll, displayCount, bibleArtworks.length]);
 
   // Body scroll lock when lightbox is open
   useEffect(() => {
@@ -208,7 +208,7 @@ export function ImageGallery({
       {/* Gallery Grid */}
 
       <ul className="flex flex-col w-full gap-y-10">
-        {Object.entries(BibleArtworks.dataByBook).map(([book, collections]) => (
+        {Object.entries(groupedBibleArtworks).map(([book, collections]) => (
           <li key={collections[0].id} className="flex flex-col gap-y-3">
             <a href={`#${book}`} className="anchor">
               <h2
@@ -252,39 +252,12 @@ export function ImageGallery({
           </li>
         ))}
       </ul>
-      {/* {visibleArtworks.map((artwork, index) => (
-          <motion.div
-            key={artwork.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
-            className="group cursor-pointer"
-            onClick={() => handleImageClick(artwork.id)}
-          >
-            <AspectRatio ratio={1.74 / 1} className="relative  overflow-hidden">
-              <Image
-                src={artwork.imageUrl}
-                alt={artwork.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                priority
-                placeholder="blur"
-              />
-            </AspectRatio>
-
-            <div className="mt-3">
-              <h3 className="font-medium text-lg">{artwork.title}</h3>
-              <p className="text-sm text-muted-foreground">{artwork.year}</p>
-            </div>
-          </motion.div>
-        ))} */}
 
       {/* Load More Button */}
-      {!infiniteScroll && displayCount < artworks.length && (
+      {!infiniteScroll && displayCount < bibleArtworks.length && (
         <div className="mt-12 text-center">
           <Button
-            onClick={() => setDisplayCount((prev) => Math.min(prev + 8, artworks.length))}
+            onClick={() => setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length))}
             className="rounded-3xl px-8"
           >
             {t("loadMore")}
@@ -293,7 +266,7 @@ export function ImageGallery({
       )}
 
       {/* Infinite Scroll Observer */}
-      {infiniteScroll && displayCount < artworks.length && (
+      {infiniteScroll && displayCount < bibleArtworks.length && (
         <div ref={observerRef} className="w-full h-20 flex items-center justify-center mt-8">
           <Loader2 className="h-6 w-6 text-primary animate-spin" />
         </div>
@@ -310,42 +283,11 @@ export function ImageGallery({
 
           {/* Lightbox Content */}
           <div
-            className="relative z-[101] max-w-5xl w-full bg-background/90 backdrop-blur-lg rounded-3xl overflow-hidden border border-primary/10 m-4 max-h-[90vh] flex flex-col"
+            className="relative z-[101] max-w-5xl w-full bg-background/90 backdrop-blur-lg rounded-sm overflow-hidden border border-primary/10 m-4 max-h-[99vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-6 pb-2 border-b border-border/30">
-              <h2 className="text-2xl font-bold">{selectedArtwork.title}</h2>
-              <div className="flex gap-4 items-center">
-                <button
-                  type="button"
-                  onClick={handleShare}
-                  className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
-                >
-                  <Share className="h-5 w-5" />
-                  <span className="sr-only">Share</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
-                >
-                  <Download className="h-5 w-5" />
-                  <span className="sr-only">Download</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-background/50 hover:bg-background/70 transition-colors"
-                >
-                  <X className="h-5 w-5" />
-                  <span className="sr-only">Close</span>
-                </button>
-              </div>
-            </div>
-
             {/* Main Content */}
-            <div className="overflow-y-auto flex-grow p-4">
+            <section className="overflow-y-auto flex-grow">
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Image Carousel */}
                 <div className="w-full lg:w-3/5">
@@ -362,14 +304,17 @@ export function ImageGallery({
                     }}
                   >
                     <CarouselContent>
-                      {artworks.map((artwork) => (
+                      {bibleArtworks.map((artwork) => (
                         <CarouselItem key={artwork.id}>
-                          <div className="relative h-[50vh] rounded-xl overflow-hidden">
+                          <AspectRatio
+                            ratio={Config.aspectRatio}
+                            className="relative overflow-hidden"
+                          >
                             <Image
                               src={artwork.imageUrl}
                               alt={artwork.title}
                               fill
-                              className="object-cover"
+                              className="object-contain"
                               sizes="(max-width: 1024px) 90vw, 60vw"
                               priority
                               placeholder="blur"
@@ -382,53 +327,34 @@ export function ImageGallery({
                                 }
                               }}
                             />
-                          </div>
+                          </AspectRatio>
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="lg:-left-4 left-2" />
-                    <CarouselNext className="lg:-right-4 right-2" />
+                    <CarouselPrevious className="lg:left-4 left-0" />
+                    <CarouselNext className="lg:right-4 right-0" />
                   </Carousel>
                 </div>
 
                 {/* Details */}
-                <div className="w-full lg:w-2/5 flex flex-col gap-4">
+                <section className="w-full lg:w-2/5 flex flex-col gap-4">
                   <div>
                     <p className="text-muted-foreground">{selectedArtwork.year}</p>
 
-                    {/* Scripture section (for Bible artworks) */}
-                    {selectedArtwork.customFields &&
-                      (selectedArtwork.customFields.Scripture ||
-                        selectedArtwork.customFields.經文) && (
-                        <div className="mt-4 mb-2 bg-muted/50 p-4 rounded-md">
-                          <h3 className="font-medium mb-2">
-                            {t("bibleGallery.properties.scripture") || "Scripture"}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {selectedArtwork.customFields.Scripture ||
-                              selectedArtwork.customFields.經文}
-                          </p>
-                          {(selectedArtwork.customFields.Reference ||
-                            selectedArtwork.customFields.參考) && (
-                            <div className="mt-2 text-xs text-muted-foreground/70">
-                              <span className="font-medium">
-                                {currentLanguage === "zh-TW" ||
-                                document.documentElement.lang?.includes("zh")
-                                  ? translateBibleReference(
-                                      selectedArtwork.customFields.Reference ||
-                                        selectedArtwork.customFields.參考 ||
-                                        ""
-                                    )
-                                  : selectedArtwork.customFields.Reference ||
-                                    selectedArtwork.customFields.參考}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                    {/* Scripture section (for Bible bibleArtworks) */}
 
-                    {/* Artwork Description */}
-                    <p className="mt-4 text-muted-foreground">{selectedArtwork.description}</p>
+                    <div className="mt-4 mb-2 bg-muted/50 p-4 rounded-md">
+                      <h3 className="font-medium mb-2">
+                        {t("bibleGallery.properties.scripture") || "Scripture"}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedArtwork.scripture.text}
+                      </p>
+
+                      <div className="mt-2 text-xs text-muted-foreground/70">
+                        <span className="font-medium">{selectedArtwork.scripture.reference()}</span>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Details Section */}
@@ -478,9 +404,40 @@ export function ImageGallery({
                       </div>
                     )}
                   </div>
-                </div>
+                </section>
               </div>
-            </div>
+            </section>
+
+            {/* Tool Bar */}
+            <section className="flex items-center justify-between px-6 pt-6 pb-2 border-b border-border/30">
+              <h2 className="text-2xl font-bold">{selectedArtwork.title}</h2>
+              <div className="flex gap-4 items-center">
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
+                >
+                  <Share className="h-5 w-5" />
+                  <span className="sr-only">Share</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
+                >
+                  <Download className="h-5 w-5" />
+                  <span className="sr-only">Download</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-background/50 hover:bg-background/70 transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Close</span>
+                </button>
+              </div>
+            </section>
           </div>
         </div>
       )}

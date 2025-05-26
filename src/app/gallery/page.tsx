@@ -27,7 +27,7 @@ export default function Gallery() {
       </motion.div>
 
       <Suspense fallback={<Loading />}>
-        <ImageGallery artworks={artworks} infiniteScroll={true} />
+        <ImageGallery bibleArtworks={artworks} infiniteScroll={true} />
       </Suspense>
     </div>
   );

@@ -1,13 +1,43 @@
-import type { BibleArtwork } from "@/types/artwork";
-import { randomUUID } from "crypto";
-import { bibleArtworks } from "@/data/bible-artworks-data";
+import bibleArtworks from "@/data/bible-artworks-data";
+import { BibleArtworksGrouped, BibleArtworksLocale } from "@/types/artwork";
 
-const BibleArtwork = {
+const BibleArtworks = {
   data: bibleArtworks,
 
-  getById: (id: string): BibleArtwork | undefined => {
-    return bibleArtworks.find((artwork) => artwork.id === id);
+  toLocaleScripture: (
+    currentLanguage: string,
+  ): BibleArtworksLocale[] => {
+    const localedArtworks = bibleArtworks.map((artwork) => {
+      const scripture = currentLanguage.split("-").includes("zh")
+        ? artwork.scripture.zh
+        : artwork.scripture.en;
+
+      return {
+        ...artwork,
+        scripture,
+        description: scripture.text,
+        showDetailsByDefault: true,
+      };
+    });
+
+    return localedArtworks;
+  },
+
+  groupedByBook: (currentLanguage: string): BibleArtworksGrouped => {
+    const localedArtworks = BibleArtworks.toLocaleScripture(currentLanguage);
+    const grouped = localedArtworks.reduce(
+      (acc, artwork) => {
+        const book = artwork.scripture.book;
+        return {
+          ...acc,
+          [book]: [...(acc[book] || []), artwork],
+        };
+      },
+      {} as { [book: string]: BibleArtworksLocale[] },
+    );
+
+    return grouped;
   },
 };
 
-export default BibleArtwork;
+export default BibleArtworks;

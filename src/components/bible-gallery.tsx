@@ -2,61 +2,16 @@
 
 // This component uses useSearchParams and needs to be wrapped in Suspense
 import { motion } from "framer-motion";
-import type { Artwork } from "@/types/artwork";
+import type { Artwork, BibleArtwork, BibleArtworksLocale } from "@/types/artwork";
 import useTranslation from "@/hooks/useTranslation";
 import { ImageGallery } from "./image-gallery";
-import BibleArtworks from "@/data/bible-artworks-data";
+import BibleArtworks from "@/models/bible-artworks";
 
 export default function BibleGalleryContent() {
   const { t, currentLanguage } = useTranslation("gallery");
 
-  const processedArtworks: Artwork[] = BibleArtworks.data.map((artwork) => {
-    const scripture = currentLanguage.split("-").includes("zh")
-      ? artwork.scripture.zh
-      : artwork.scripture.en;
-
-    const localizedCustomFields: Record<string, string | undefined> = {
-      // Basic artwork properties with translated labels
-      [t("bibleGallery.properties.year")]: artwork.year,
-      [t("bibleGallery.properties.medium")]: artwork.medium,
-      [t("bibleGallery.properties.dimensions")]: artwork.dimensions,
-
-      // Scripture text and reference based on current language
-      [t("bibleGallery.properties.scripture")]: scripture.text,
-      [t("bibleGallery.properties.reference")]: scripture.reference(),
-    };
-
-    if (artwork.location) {
-      localizedCustomFields[t("bibleGallery.properties.location")] = artwork.location;
-    }
-
-    if (artwork.customFields?.["Biblical Period"]) {
-      localizedCustomFields[t("bibleGallery.properties.biblicalPeriod")] =
-        artwork.customFields["Biblical Period"];
-    }
-
-    if (artwork.customFields) {
-      Object.entries(artwork.customFields).forEach(([key, value]) => {
-        if (!localizedCustomFields[key] && value !== undefined) {
-          localizedCustomFields[key] = value;
-        }
-      });
-    }
-
-    const filteredCustomFields: Record<string, string> = {};
-    Object.entries(localizedCustomFields).forEach(([key, value]) => {
-      if (value !== undefined) {
-        filteredCustomFields[key] = value;
-      }
-    });
-
-    return {
-      ...artwork,
-      description: scripture.text,
-      customFields: filteredCustomFields,
-      showDetailsByDefault: true,
-    };
-  });
+  const localedArtworks: BibleArtworksLocale[] = BibleArtworks.toLocaleScripture(currentLanguage);
+  const localedGroudedArtworks = BibleArtworks.groupedByBook(currentLanguage);
 
   return (
     <>
@@ -74,7 +29,11 @@ export default function BibleGalleryContent() {
         </p>
       </motion.div>
 
-      <ImageGallery artworks={processedArtworks} infiniteScroll={true} />
+      <ImageGallery
+        bibleArtworks={localedArtworks}
+        groupedBibleArtworks={localedGroudedArtworks}
+        infiniteScroll={true}
+      />
     </>
   );
 }
