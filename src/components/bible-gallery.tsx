@@ -1,3 +1,5 @@
+"use client";
+
 // This component uses useSearchParams and needs to be wrapped in Suspense
 import { motion } from "framer-motion";
 import type { Artwork } from "@/types/artwork";
@@ -18,9 +20,9 @@ export default function BibleGalleryContent() {
       [t("bibleGallery.properties.year")]: artwork.year,
       [t("bibleGallery.properties.medium")]: artwork.medium,
       [t("bibleGallery.properties.dimensions")]: artwork.dimensions,
+
       // Scripture text and reference based on current language
-      [t("bibleGallery.properties.scripture")]:
-        currentLanguage === "zh-TW" ? artwork.scripture.zh.text : artwork.scripture.en.text,
+      [t("bibleGallery.properties.scripture")]: scripture.text,
       [t("bibleGallery.properties.reference")]: scripture.reference(),
     };
 
