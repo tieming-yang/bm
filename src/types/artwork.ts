@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export type Artwork = {
   id: string;
   title: string;
@@ -6,7 +8,7 @@ export type Artwork = {
   medium: string;
   dimensions?: string;
   location?: string;
-  imageUrl: string;
+  imageUrl: StaticImageData;
   customFields?: Record<string, string | undefined>;
 };
 

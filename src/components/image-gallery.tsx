@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/carousel";
 import { DonationSheet } from "./donation-sheet";
 import { translateBibleReference } from "@/utils/bible-utils";
+import { AspectRatio } from "./ui/aspect-ratio";
 
 interface ImageGalleryProps {
   artworks: Artwork[];
@@ -54,6 +55,7 @@ export function ImageGallery({
   const selectedIndex = selectedArtworkId
     ? artworks.findIndex((a) => a.id === selectedArtworkId)
     : -1;
+  console.log("selectedArtworkId", selectedArtworkId);
 
   // Initialize selectedArtworkId from URL if present
   useEffect(() => {
@@ -157,7 +159,8 @@ export function ImageGallery({
   };
 
   const handleImageClick = (artworkId: string) => {
-    if (urlUpdatingRef.current) return;
+    console.log("handleImageClick", artworkId);
+    // if (urlUpdatingRef.current) return;
     setSelectedArtworkId(artworkId);
   };
 
@@ -167,46 +170,23 @@ export function ImageGallery({
     // Show the donation sheet first
     setShowDonationSheet(true);
 
-    // Then trigger the download
-    setTimeout(() => {
-      try {
-        // Use fetch to get the image as a blob first to prevent redirection
-        fetch(selectedArtwork.imageUrl)
-          .then((response) => response.blob())
-          .then((blob) => {
-            // Create a blob URL
-            const blobUrl = URL.createObjectURL(blob);
-
-            // Create link element
-            const link = document.createElement("a");
-            const filename = `${selectedArtwork.title.replace(/\s+/g, "-").toLowerCase()}-${
-              selectedArtwork.id
-            }.jpg`;
-
-            // Configure link for download
-            link.href = blobUrl;
-            link.download = filename;
-            link.target = "_blank"; // Ensures it doesn't redirect in the same window
-            link.rel = "noopener"; // Security best practice
-            link.style.display = "none";
-
-            // Trigger download
-            document.body.appendChild(link);
-            link.click();
-
-            // Clean up
-            setTimeout(() => {
-              document.body.removeChild(link);
-              URL.revokeObjectURL(blobUrl); // Free up memory
-            }, 100);
-          })
-          .catch((error) => {
-            console.error("Download failed:", error);
-          });
-      } catch (error) {
-        console.error("Fatal download error:", error);
-      }
-    }, 100); // Small delay to ensure sheet appears first
+    const image = new window.Image();
+    image.src =
+      typeof selectedArtwork.imageUrl === "string"
+        ? selectedArtwork.imageUrl
+        : selectedArtwork.imageUrl.src;
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const ctx = canvas.getContext("2d");
+      ctx?.drawImage(image, 0, 0);
+      const dataUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${selectedArtwork.title}.png`;
+      link.click();
+    };
   };
 
   const handleShare = () => {
@@ -232,16 +212,18 @@ export function ImageGallery({
             className="group cursor-pointer"
             onClick={() => handleImageClick(artwork.id)}
           >
-            <div className="relative aspect-square overflow-hidden rounded-2xl">
+            <AspectRatio ratio={1.74 / 1} className="relative  overflow-hidden">
               <Image
-                src={artwork.imageUrl || "/placeholders/artwork-placeholder.svg"}
+                src={artwork.imageUrl}
                 alt={artwork.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                loading="lazy"
+                priority
+                placeholder="blur"
               />
-            </div>
+            </AspectRatio>
+
             <div className="mt-3">
               <h3 className="font-medium text-lg">{artwork.title}</h3>
               <p className="text-sm text-muted-foreground">{artwork.year}</p>
@@ -336,12 +318,13 @@ export function ImageGallery({
                         <CarouselItem key={artwork.id}>
                           <div className="relative h-[50vh] rounded-xl overflow-hidden">
                             <Image
-                              src={artwork.imageUrl || "/placeholders/artwork-placeholder.svg"}
+                              src={artwork.imageUrl}
                               alt={artwork.title}
                               fill
                               className="object-cover"
                               sizes="(max-width: 1024px) 90vw, 60vw"
-                              loading="eager"
+                              priority
+                              placeholder="blur"
                               onLoadingComplete={() => {
                                 if (
                                   artwork.id === selectedArtworkId &&

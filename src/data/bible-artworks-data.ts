@@ -1,4 +1,5 @@
 import { BibleArtwork, Scripture } from "@/types/artwork";
+import { exodus_18v1_10v1 } from "../../public/Exodus";
 
 /**
  * Factory to build a Scripture object with a dynamic reference() method.
@@ -42,8 +43,7 @@ export const bibleArtworks: BibleArtwork[] = [
       "An artistic representation of the creation of the world as described in Genesis.",
     year: "2023",
     medium: "Oil on canvas",
-    imageUrl:
-      "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?q=80&w=1000",
+    imageUrl: exodus_18v1_10v1,
     customFields: {
       "Biblical Period": "Beginning",
     },
@@ -73,8 +73,7 @@ export const bibleArtworks: BibleArtwork[] = [
     description: "A visual meditation on God's love and the gift of salvation.",
     year: "2023",
     medium: "Digital art",
-    imageUrl:
-      "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?q=80&w=1000",
+    imageUrl: exodus_18v1_10v1,
     customFields: {
       "Biblical Period": "New Testament",
     },
@@ -104,8 +103,7 @@ export const bibleArtworks: BibleArtwork[] = [
       "An exploration of God's guidance and provision as described in Psalm 23.",
     year: "2023",
     medium: "Watercolor on paper",
-    imageUrl:
-      "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?q=80&w=1000",
+    imageUrl: exodus_18v1_10v1,
     customFields: {
       "Biblical Period": "Old Testament",
     },
