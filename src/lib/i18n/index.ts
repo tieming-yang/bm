@@ -10,6 +10,7 @@ import enDonate from "./locales/en/donate.json";
 import enContact from "./locales/en/contact.json";
 import enUi from "./locales/en/ui.json";
 import enSettings from "./locales/en/settings.json";
+import enBooks from "./locales/en/books.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
@@ -18,6 +19,7 @@ import zhDonate from "./locales/zh-TW/donate.json";
 import zhContact from "./locales/zh-TW/contact.json";
 import zhUi from "./locales/zh-TW/ui.json";
 import zhSettings from "./locales/zh-TW/settings.json";
+import zhBooks from "./locales/zh-TW/books.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -30,6 +32,7 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhContact, "zh-TW/contact.json");
   verifyTranslationEncoding(zhUi, "zh-TW/ui.json");
   verifyTranslationEncoding(zhSettings, "zh-TW/settings.json");
+  verifyTranslationEncoding(zhBooks, "zh-TW/books.json");
 }
 
 // Initialize i18n instance
@@ -45,6 +48,7 @@ i18n
         contact: enContact,
         ui: enUi,
         settings: enSettings,
+        books: enBooks
       },
       "zh-TW": {
         common: zhCommon,
@@ -53,6 +57,7 @@ i18n
         contact: zhContact,
         ui: zhUi,
         settings: zhSettings,
+        books: zhBooks
       },
     },
     fallbackLng: "zh-TW",
