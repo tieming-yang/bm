@@ -61,6 +61,11 @@ export function ImageGallery({
     ? bibleArtworks.findIndex((a) => a.id === selectedArtworkId)
     : -1;
 
+  const currentGroup = Object.values(groupedBibleArtworks).find((group) =>
+    group.some((artwork) => artwork.id === selectedArtworkId)
+  );
+  const groupIndex = currentGroup?.findIndex((artwork) => artwork.id === selectedArtworkId);
+
   // Initialize selectedArtworkId from URL if present
   useEffect(() => {
     if (urlUpdatingRef.current) return;
@@ -163,8 +168,7 @@ export function ImageGallery({
   };
 
   const handleImageClick = (artworkId: string) => {
-    console.log("handleImageClick", artworkId);
-    // if (urlUpdatingRef.current) return;
+    if (urlUpdatingRef.current) return;
     setSelectedArtworkId(artworkId);
   };
 
@@ -331,8 +335,27 @@ export function ImageGallery({
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious className="lg:left-4 left-0" />
-                    <CarouselNext className="lg:right-4 right-0" />
+                    <CarouselPrevious
+                      className="lg:left-4 left-0"
+                      onMouseDown={() => {
+                        if (!currentGroup || groupIndex === undefined) return;
+
+                        const nextIndex = (groupIndex + 1) % currentGroup.length;
+                        const nextArtwork = currentGroup[nextIndex];
+                        setSelectedArtworkId(nextArtwork.id);
+                      }}
+                    />
+                    <CarouselNext
+                      className="lg:right-4 right-0"
+                      onMouseDown={() => {
+                        if (!currentGroup || groupIndex === undefined) return;
+
+                        const prevIndex =
+                          (groupIndex - 1 + currentGroup.length) % currentGroup.length;
+                        const prevArtwork = currentGroup[prevIndex];
+                        setSelectedArtworkId(prevArtwork.id);
+                      }}
+                    />
                   </Carousel>
                 </div>
 
