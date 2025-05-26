@@ -6,12 +6,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, User } from "lucide-react";
-import { Button } from "./ui/button";
+
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/useTranslation";
 import useFirebaseUser from "@/hooks/use-firebae-user";
 import Auth from "@/lib/firebase/auth";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -82,15 +83,6 @@ export default function Navbar() {
           <div className="flex items-center gap-2 z-50">
             {isMounted && (
               <>
-                {user ? (
-                  <Link href="/settings" className="text-sm font-medium">
-                    <User className="size-5" />
-                  </Link>
-                ) : (
-                  <Link href="/signin" className="text-sm font-medium">
-                    {t("nav.signin")}
-                  </Link>
-                )}
                 <LanguageSwitcher />
                 <Button
                   variant="ghost"
@@ -101,6 +93,17 @@ export default function Navbar() {
                   {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
                   <span className="sr-only">Toggle theme</span>
                 </Button>
+                {user ? (
+                  <Link href="/settings" className="text-sm font-medium">
+                    <Button size="icon">
+                      <User className="size-5" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/signin" className="text-sm font-medium">
+                    <Button>{t("nav.signin")}</Button>
+                  </Link>
+                )}
               </>
             )}
 
