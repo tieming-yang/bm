@@ -283,14 +283,14 @@ export function ImageGallery({
 
           {/* Lightbox Content */}
           <div
-            className="relative z-[101] max-w-5xl w-full bg-background/90 backdrop-blur-lg rounded-sm overflow-hidden border border-primary/10 m-4 max-h-[99vh] flex flex-col"
+            className="relative z-[101] max-w-9xl w-full bg-background/90 backdrop-blur-lg rounded-sm overflow-hidden border border-primary/10 m-4 max-h-[99vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Main Content */}
-            <section className="overflow-y-auto flex-grow">
-              <div className="flex flex-col lg:flex-row gap-6">
+            <section className="overflow-y-auto flex-grow w-full">
+              <div className="flex flex-col 2xl:flex-row gap-6">
                 {/* Image Carousel */}
-                <div className="w-full lg:w-3/5">
+                <div className="w-full">
                   <Carousel
                     opts={{
                       loop: true,
@@ -337,23 +337,21 @@ export function ImageGallery({
                 </div>
 
                 {/* Details */}
-                <section className="w-full lg:w-2/5 flex flex-col gap-4">
-                  <div>
-                    <p className="text-muted-foreground">{selectedArtwork.year}</p>
+                <section className="w-full flex flex-col gap-4 px-3 md:px-5">
+                  <p className="text-muted-foreground">{selectedArtwork.year}</p>
 
-                    {/* Scripture section (for Bible bibleArtworks) */}
+                  {/* Scripture section (for Bible bibleArtworks) */}
 
-                    <div className="mt-4 mb-2 bg-muted/50 p-4 rounded-md">
-                      <h3 className="font-medium mb-2">
-                        {t("bibleGallery.properties.scripture") || "Scripture"}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {selectedArtwork.scripture.text}
-                      </p>
+                  <div className="bg-muted/50 p-4 rounded-md">
+                    <h3 className="font-medium mb-2">
+                      {t("bibleGallery.properties.scripture") || "Scripture"}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedArtwork.scripture.text}
+                    </p>
 
-                      <div className="mt-2 text-xs text-muted-foreground/70">
-                        <span className="font-medium">{selectedArtwork.scripture.reference()}</span>
-                      </div>
+                    <div className="mt-2 text-xs text-muted-foreground/70">
+                      <span className="font-medium">{selectedArtwork.scripture.reference()}</span>
                     </div>
                   </div>
 

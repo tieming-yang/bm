@@ -14,12 +14,12 @@
     "settings": "Settings"
   },
   "home": {
-    "title": "Beyond Media",
-    "subtitle": "Explore Yang Yi's diverse artistic vision portfolio."
+    "title": "Beyond Digital Media",
+    "subtitle": "Showcasing the Art of the Bible through Digital Technology."
   },
   "about": {
     "title": "About Us",
-    "subtitle": "Beyond Media is a company focused on innovative art and media experiences, committed to exploring the intersection of art and technology.",
+    "subtitle": "Beyond Digital Media is a company focused on innovative art and media experiences, committed to exploring the intersection of art and technology.",
     "founder": {
       "title": "Yang Yi, Founder and Artist",
       "description1": "Yang Yi is a visionary artist and the founder of Beyond Media, dedicated to pushing the boundaries of contemporary art and digital media.",
@@ -43,7 +43,7 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookiePolicy": "Cookie Policy",
-    "copyright": "© {{year}} Beyond Media. All rights reserved.",
+    "copyright": "© {{year}} Beyond Digital Media LLC. All rights reserved.",
     "designDev": "Designed and developed by the Beyond Media team."
   },
   "yes": "Yes",
