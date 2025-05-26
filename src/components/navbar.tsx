@@ -11,7 +11,6 @@ import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/useTranslation";
 import useFirebaseUser from "@/hooks/use-firebae-user";
-import Auth from "@/lib/firebase/auth";
 import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
