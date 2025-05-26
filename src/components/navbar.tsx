@@ -60,7 +60,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-primary/10">
+      <header className="fixed top-0 z-50 w-full backdrop-blur-lg bg-background/80 shadow-md border-b border-primary/10">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
@@ -80,9 +80,9 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 z-50">
+          <section className="flex items-center gap-2 z-50">
             {isMounted && (
-              <section className="flex items-center gap-2">
+              <>
                 <LanguageSwitcher />
                 <Button
                   variant="ghost"
@@ -104,7 +104,7 @@ export default function Navbar() {
                     <Button>{t("nav.signin")}</Button>
                   </Link>
                 )}
-              </section>
+              </>
             )}
 
             <button
@@ -124,7 +124,7 @@ export default function Navbar() {
                 }`}
               ></span>
             </button>
-          </div>
+          </section>
         </div>
       </header>
 
