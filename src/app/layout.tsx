@@ -66,9 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange
           >
             <div className="flex min-h-screen flex-col bg-gradient-to-br from-background to-background/80">
-              <header>
-                <Navbar />
-              </header>
+              <Navbar />
               <Breadcrumb />
               <Suspense fallback={<Loading />}>
                 <main className="flex-1">{children}</main>
