@@ -15,7 +15,7 @@ export default function About() {
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
-        <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent mb-6">
+        <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
           {t("about.title")}
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">

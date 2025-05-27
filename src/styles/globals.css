@@ -10,9 +10,10 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 346 77% 49%;
+    /* --primary: 346 77% 49%; */
+    --primary: #B4C5B3; /* Using hex for primary color */
     --primary-foreground: 355 100% 97%;
-    --secondary: 240 4.8% 95.9%;
+    --secondary: #D3C7AD;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -33,9 +34,9 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 346 77% 49%;
+    --primary: #98a68a;
     --primary-foreground: 355 100% 97%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: #F1D7A4;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;

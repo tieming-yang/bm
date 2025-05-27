@@ -70,8 +70,8 @@ export default function Navbar() {
                 key={route.href}
                 href={route.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
-                  pathname?.includes(route.href) && route.href !== "/" ? "text-primary" : ""
-                } ${pathname === route.href && route.href === "/" ? "text-primary" : ""}`}
+                  pathname?.includes(route.href) && route.href !== "/" ? "text-secondary" : ""
+                } ${pathname === route.href && route.href === "/" ? "text-secondary" : ""}`}
               >
                 {route.label}
               </Link>
@@ -92,7 +92,7 @@ export default function Navbar() {
                   <span className="sr-only">Toggle theme</span>
                 </Button>
                 {user ? (
-                  <Link href="/settings" className="text-sm font-medium">
+                  <Link href="/settings" className="text-sm font-medium text-primary-foreground">
                     <Button size="icon">
                       <User className="size-5" />
                     </Button>

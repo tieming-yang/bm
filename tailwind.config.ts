@@ -20,7 +20,12 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "var(--font-noto-sans-tc)", "system-ui", "sans-serif"],
+        sans: [
+          "var(--font-inter)",
+          "var(--font-noto-sans-tc)",
+          "system-ui",
+          "sans-serif",
+        ],
         chinese: ["var(--font-noto-sans-tc)", "system-ui", "sans-serif"],
       },
       colors: {
@@ -30,11 +35,11 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "var(--primary)",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "var(--secondary)",
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
