@@ -61,7 +61,7 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed bottom-0 h-fit z-50 w-full px-3 2xl:px-0">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 rounded-full my-2  backdrop-blur-lg bg-background/80 shadow-md border border-white/10">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 rounded-full my-2  backdrop-blur-lg bg-background/80 shadow-md border dark:border-white/10 border-black/10">
           <Logo />
 
           <nav className="hidden md:flex items-center gap-6">
