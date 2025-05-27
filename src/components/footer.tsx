@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { Instagram, Twitter, Facebook, Youtube } from "lucide-react";
 import useTranslation from "../hooks/useTranslation";
+import Logo from "./logo";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -13,10 +12,10 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2">
-              <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
+            <Logo>
               <span className="font-bold text-xl">{t("home.title")}</span>
-            </Link>
+            </Logo>
+
             <p className="text-sm text-muted-foreground">{t("footer.explore")}</p>
           </div>
 

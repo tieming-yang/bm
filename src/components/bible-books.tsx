@@ -23,8 +23,6 @@ export default function BibleBooks({}: Props) {
       <ul className="grid grid-cols-1 md:grid-cols-2 w-full place-content-center gap-7">
         {Object.entries(BibleArtworks.groupedByBook(currentLanguage)).map(([book, collections]) => (
           <li key={collections[0].id} className="flex flex-col gap-y-3">
-            <h2 className="text-3xl text-primary font-serif font-semibold">{t(book)}</h2>
-
             <Link href={`/bible-gallery/#${book}`}>
               <AspectRatio
                 ratio={Config.aspectRatio}
@@ -41,6 +39,7 @@ export default function BibleBooks({}: Props) {
                 />
               </AspectRatio>
             </Link>
+            <h2 className="text-3xl text-primary font-serif font-semibold">{t(book)}</h2>
           </li>
         ))}
       </ul>

@@ -12,6 +12,7 @@ import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/useTranslation";
 import useFirebaseUser from "@/hooks/use-firebae-user";
 import { Button } from "@/components/ui/button";
+import Logo from "./logo";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -61,9 +62,7 @@ export default function Navbar() {
     <>
       <header className="fixed bottom-0 h-fit z-50 w-full px-3 2xl:px-0">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 rounded-full my-2  backdrop-blur-lg bg-background/80 shadow-md border border-white/10">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="彼岸媒體" width={40} height={40} />
-          </Link>
+          <Logo />
 
           <nav className="hidden md:flex items-center gap-6">
             {routes.map((route) => (

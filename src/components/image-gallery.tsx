@@ -11,6 +11,7 @@ import useTranslation from "../hooks/useTranslation";
 import {
   Carousel,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
@@ -60,11 +61,11 @@ export function ImageGallery({
   const selectedIndex = selectedArtworkId
     ? bibleArtworks.findIndex((a) => a.id === selectedArtworkId)
     : -1;
-
-  const currentGroup = Object.values(groupedBibleArtworks).find((group) =>
+  const currentBookName = Object.entries(groupedBibleArtworks).find(([bookName, group]) =>
     group.some((artwork) => artwork.id === selectedArtworkId)
-  );
-  const groupIndex = currentGroup?.findIndex((artwork) => artwork.id === selectedArtworkId);
+  )?.[0];
+  const currentBook = groupedBibleArtworks[currentBookName || ""] || [];
+  const currentIndexInBook = currentBook.findIndex((a) => a.id === selectedArtworkId);
 
   // Initialize selectedArtworkId from URL if present
   useEffect(() => {
@@ -308,7 +309,7 @@ export function ImageGallery({
                     }}
                   >
                     <CarouselContent>
-                      {bibleArtworks.map((artwork) => (
+                      {currentBook.map((artwork) => (
                         <CarouselItem key={artwork.id}>
                           <AspectRatio
                             ratio={Config.aspectRatio}
@@ -338,24 +339,31 @@ export function ImageGallery({
                     <CarouselPrevious
                       className="lg:left-4 left-0"
                       onMouseDown={() => {
-                        if (!currentGroup || groupIndex === undefined) return;
+                        setSelectedArtworkId((prevId) => {
+                          if (!prevId) return prevId;
 
-                        const nextIndex = (groupIndex + 1) % currentGroup.length;
-                        const nextArtwork = currentGroup[nextIndex];
-                        setSelectedArtworkId(nextArtwork.id);
+                          const prevIndex =
+                            (currentIndexInBook - 1 + currentBook.length) % currentBook.length;
+                          const prevArtwork = currentBook[prevIndex];
+
+                          return prevArtwork.id;
+                        });
                       }}
                     />
                     <CarouselNext
                       className="lg:right-4 right-0"
                       onMouseDown={() => {
-                        if (!currentGroup || groupIndex === undefined) return;
+                        setSelectedArtworkId((prevId) => {
+                          if (!prevId) return prevId;
 
-                        const prevIndex =
-                          (groupIndex - 1 + currentGroup.length) % currentGroup.length;
-                        const prevArtwork = currentGroup[prevIndex];
-                        setSelectedArtworkId(prevArtwork.id);
+                          const nextIndex = (currentIndexInBook + 1) % currentBook.length;
+                          const nextArtwork = currentBook[nextIndex];
+
+                          return nextArtwork.id;
+                        });
                       }}
                     />
+                    <CarouselDots />
                   </Carousel>
                 </div>
 
