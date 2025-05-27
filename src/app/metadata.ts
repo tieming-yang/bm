@@ -1,0 +1,91 @@
+const _metadata = {
+  title: {
+    default: "彼岸數位媒體 | Beyond Digital Media",
+    template: "%s | 彼岸數位媒體",
+  },
+  description:
+    "彼岸數位媒體 | Beyond Digital Media 是一個致力於推廣基督教藝術和文化的非營利組織，旨在透過藝術作品傳遞福音信息。",
+  keywords: [
+    "彼岸數位媒體",
+    "Beyond Digital Media",
+    "基督教藝術",
+    "聖經畫作",
+    "數位福音",
+    "基督教文化",
+    "Christian art",
+    "Bible media",
+    "Gospel through art",
+    "Christian culture",
+    "Digital evangelism",
+    "Christian digital media",
+    "基督教數位媒體",
+    "基督教藝術平台",
+    "基督教藝術作品",
+    "基督教藝術推廣",
+    "基督教藝術展覽",
+    "基督教藝術收藏",
+    "基督教藝術教育",
+    "基督教藝術社群",
+    "基督教藝術創作",
+    "基督教藝術家",
+    "基督教藝術歷史",
+    "基督教藝術靈感",
+    "基督教藝術與文化",
+    "基督教藝術與信仰",
+    "基督教藝術與社會",
+    "基督教藝術與美學",
+    "基督教藝術與創意",
+    "基督教藝術與科技",
+    "基督教藝術與媒體",
+    "基督教藝術與設計",
+    "基督教藝術與視覺傳達",
+  ],
+  authors: [{ name: "彼岸數位媒體", url: "https://beyond-media.art" }],
+  creator: "彼岸數位媒體",
+  publisher: "彼岸數位媒體",
+  metadataBase: new URL("https://beyond-media.art"),
+  openGraph: {
+    title: "彼岸數位媒體 | Beyond Digital Media",
+    description:
+      "推廣基督教藝術與文化的非營利平台，透過創新媒體與視覺藝術傳遞福音信息。",
+    url: "https://beyond-media.art",
+    siteName: "彼岸數位媒體 | Beyond Digital Media",
+    images: [
+      {
+        url: "https://beyond-media.art/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "彼岸數位媒體主視覺",
+      },
+    ],
+    locale: "zh_TW",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "彼岸數位媒體 | Beyond Digital Media",
+    description:
+      "推廣基督教藝術與文化的非營利平台，透過創新媒體與視覺藝術傳遞福音信息。",
+    site: "@beyonddigitalmedia",
+    images: ["https://beyond-media.art/opengraph-image.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  // manifest: "/site.webmanifest",
+  alternates: {
+    canonical: "https://beyond-media.art",
+    languages: {
+      "zh-TW": "https://beyond-media.art",
+      en: "https://beyond-media.art/en",
+    },
+  },
+  other: {
+    charset: "utf-8",
+    "content-type": "text/html; charset=utf-8",
+  },
+};
+
+export default _metadata;

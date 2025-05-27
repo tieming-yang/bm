@@ -11,6 +11,7 @@ import Loading from "@/components/loading";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import ClientRoot from "./client-layout";
 import { Metadata } from "next";
+import _metadata from "./metadata";
 
 // Load Inter for Latin characters
 const inter = Inter({
@@ -27,15 +28,7 @@ const notoSansTC = Noto_Sans_TC({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "彼岸數位媒體 | Beyond Digital Media",
-  description:
-    "彼岸數位媒體 | Beyond Digital Media 是一個致力於推廣基督教藝術和文化的非營利組織，旨在透過藝術作品傳遞福音信息。",
-  other: {
-    charset: "utf-8",
-    "content-type": "text/html; charset=utf-8",
-  },
-};
+export const metadata: Metadata = _metadata;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
