@@ -1,4 +1,7 @@
+"use client";
+
 import { useTranslation as useI18nTranslation } from "react-i18next";
+
 import { useEffect } from "react";
 
 export const useTranslation = (namespace = "common") => {

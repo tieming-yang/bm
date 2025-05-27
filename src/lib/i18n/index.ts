@@ -48,7 +48,7 @@ i18n
         contact: enContact,
         ui: enUi,
         settings: enSettings,
-        books: enBooks
+        books: enBooks,
       },
       "zh-TW": {
         common: zhCommon,
@@ -57,7 +57,7 @@ i18n
         contact: zhContact,
         ui: zhUi,
         settings: zhSettings,
-        books: zhBooks
+        books: zhBooks,
       },
     },
     fallbackLng: "zh-TW",

@@ -58,7 +58,7 @@ const bibleArtworks: BibleArtwork[] = [
         theme: "Creation",
       }),
       zh: makeScripture({
-        book: "創世記",
+        book: "創世紀",
         chapter: 1,
         verseStart: 1,
         verseEnd: 2,

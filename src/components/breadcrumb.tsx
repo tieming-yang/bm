@@ -2,14 +2,13 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import useTranslation from "../hooks/useTranslation";
-import { settings } from "firebase/analytics";
 
 export function Breadcrumb() {
   const router = useRouter();
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  if (!pathname || pathname === "/") return null; // Don't show breadcrumb on the homepage
+  if (!pathname || pathname === "/") return null;
   const segments = pathname.split("/").filter(Boolean);
 
   const handleNavigation = (index: number) => {
