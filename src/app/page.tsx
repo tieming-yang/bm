@@ -1,11 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ImageGallery } from "../components/image-gallery";
-import { artworks } from "../models/artworks";
 import { Suspense } from "react";
 import useTranslation from "../hooks/useTranslation";
-import BibleGalleryContent from "@/components/bible-gallery";
 import Loading from "@/components/loading";
 import BibleBooks from "../components/bible-books";
 
