@@ -154,8 +154,14 @@ export default function Navbar() {
                     <Link
                       href={route.href}
                       className={`text-2xl font-medium transition-colors hover:text-primary ${
-                        pathname?.includes(route.href) && route.href !== "/" ? "text-primary" : ""
-                      } ${pathname === route.href && route.href === "/" ? "text-primary" : ""}`}
+                        pathname?.includes(route.href) && route.href !== "/"
+                          ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                          : ""
+                      } ${
+                        pathname === route.href && route.href === "/"
+                          ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                          : ""
+                      }`}
                     >
                       {route.label}
                     </Link>

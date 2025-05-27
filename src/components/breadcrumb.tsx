@@ -35,16 +35,16 @@ export function Breadcrumb() {
     <nav className="text-sm text-muted-foreground mt-4 ml-4">
       <ul className="flex items-center space-x-2">
         <li>
-          <button onClick={() => router.push("/")} className="hover:underline text-primary">
+          <button onClick={() => router.push("/")} className="hover:underline text-muted-foreground">
             {t("nav.home")}
           </button>
         </li>
-        <span className="text-gray-500 dark:text-gray-400">/</span>
+        <span className="text-gray-600 dark:text-gray-400">/</span>
         {segments.map((segment, index) => (
           <li key={index} className="">
             <button
               onClick={() => handleNavigation(index)}
-              className="hover:underline text-primary"
+              className="hover:underline text-primary-foreground"
             >
               {t(getTranslationKey(decodeURIComponent(segment)))}
             </button>
