@@ -70,8 +70,14 @@ export default function Navbar() {
                 key={route.href}
                 href={route.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
-                  pathname?.includes(route.href) && route.href !== "/" ? "text-secondary" : ""
-                } ${pathname === route.href && route.href === "/" ? "text-secondary" : ""}`}
+                  pathname?.includes(route.href) && route.href !== "/"
+                    ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                    : ""
+                } ${
+                  pathname === route.href && route.href === "/"
+                    ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                    : ""
+                }`}
               >
                 {route.label}
               </Link>
