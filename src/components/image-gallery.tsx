@@ -4,7 +4,17 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { X, ChevronDown, ChevronUp, Download, Share, Loader2 } from "lucide-react";
+import {
+  X,
+  ChevronDown,
+  ChevronUp,
+  Download,
+  Share,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import type { EmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
 import type { BibleArtworksLocale, BibleArtworksGrouped } from "../types/artwork";
 import useTranslation from "../hooks/useTranslation";
@@ -42,6 +52,8 @@ export function ImageGallery({
   const [showDonationSheet, setShowDonationSheet] = useState(false);
   const [lightboxCarouselInitialized, setLightboxCarouselInitialized] = useState(false);
 
+  const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
+
   // Refs
   const observerRef = useRef<HTMLDivElement>(null);
   const urlUpdatingRef = useRef(false);
@@ -65,7 +77,24 @@ export function ImageGallery({
     group.some((artwork) => artwork.id === selectedArtworkId)
   )?.[0];
   const currentBook = groupedBibleArtworks[currentBookName || ""] || [];
-  const currentIndexInBook = currentBook.findIndex((a) => a.id === selectedArtworkId);
+
+  // Sync selectedArtworkId when carousel changes
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => {
+      const idx = emblaApi.selectedScrollSnap();
+      const artwork = currentBook[idx];
+      if (artwork) {
+        setSelectedArtworkId(artwork.id);
+      }
+    };
+    emblaApi.on("select", onSelect);
+    // initialize selection
+    onSelect();
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, currentBook]);
 
   // Initialize selectedArtworkId from URL if present
   useEffect(() => {
@@ -288,13 +317,13 @@ export function ImageGallery({
 
           {/* Lightbox Content */}
           <div
-            className="relative z-[101] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 m-4 max-h-[99vh] flex flex-col"
+            className="relative mx-1 md:mx-5 z-[101] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 max-h-[99vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Main Content */}
             <section className="overflow-y-auto flex-grow w-full">
-              <div className="flex flex-col 2xl:flex-row gap-6">
-                <section className="w-full flex flex-col gap-4 px-3 md:px-5">
+              <div className="flex flex-col gap-6">
+                <section className="w-full flex flex-col gap-4 px-1 md:px-5">
                   {/* Scripture section (for Bible bibleArtworks) */}
 
                   <div className="bg-muted/50 p-4 rounded-md">
@@ -323,6 +352,7 @@ export function ImageGallery({
                         setLightboxCarouselInitialized(true);
                       }
                     }}
+                    setApi={setEmblaApi}
                   >
                     <CarouselContent>
                       {currentBook.map((artwork) => (
@@ -352,33 +382,6 @@ export function ImageGallery({
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <CarouselPrevious
-                      className="lg:left-4 left-0"
-                      onMouseDown={() => {
-                        setSelectedArtworkId((prevId) => {
-                          if (!prevId) return prevId;
-
-                          const prevIndex =
-                            (currentIndexInBook - 1 + currentBook.length) % currentBook.length;
-                          const prevArtwork = currentBook[prevIndex];
-
-                          return prevArtwork.id;
-                        });
-                      }}
-                    />
-                    <CarouselNext
-                      className="lg:right-4 right-0"
-                      onMouseDown={() => {
-                        setSelectedArtworkId((prevId) => {
-                          if (!prevId) return prevId;
-
-                          const nextIndex = (currentIndexInBook + 1) % currentBook.length;
-                          const nextArtwork = currentBook[nextIndex];
-
-                          return nextArtwork.id;
-                        });
-                      }}
-                    />
                   </Carousel>
                 </div>
 
@@ -406,7 +409,6 @@ export function ImageGallery({
 
                     {showDetails && (
                       <div className="space-y-2 border-t border-border pt-2">
-                        
                         <div className="flex justify-between">
                           <span className="text-sm text-muted-foreground">
                             {t("artwork.year") || "Year"}
@@ -444,34 +446,62 @@ export function ImageGallery({
             </section>
 
             {/* Tool Bar */}
-            <section className="flex items-center justify-between px-6 pt-6 pb-2 border-b border-border/30">
-              <h2 className="text-2xl font-bold">{selectedArtwork.title}</h2>
+            <section className="flex items-center justify-end px-6 pt-6 pb-2 border-b border-border">
               <div className="flex gap-4 items-center">
-                <button
-                  type="button"
+                <Button
+                  variant={"ghost"}
                   onClick={handleShare}
-                  className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
+                  className="flex items-center justify-center rounded-full hover:bg-background/70 transition-colors"
                 >
-                  <Share className="h-5 w-5" />
+                  <Share className="size-5" />
                   <span className="sr-only">Share</span>
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant={"ghost"}
                   onClick={handleDownload}
-                  className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-background/70 transition-colors"
+                  className="flex items-center justify-center rounded-full hover:bg-background/70 transition-colors"
                 >
-                  <Download className="h-5 w-5" />
+                  <Download className="size-5" />
                   <span className="sr-only">Download</span>
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant={"ghost"}
                   onClick={handleClose}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-background/50 hover:bg-background/70 transition-colors"
+                  className="flex items-center justify-center rounded-full bg-background/50 hover:bg-background/70 transition-colors"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="size-5" />
                   <span className="sr-only">Close</span>
-                </button>
+                </Button>
               </div>
+            </section>
+
+            <section className="flex items-center justify-between">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  emblaApi?.scrollPrev();
+                  // selectedArtworkId will sync via effect
+                }}
+                disabled={!emblaApi?.canScrollPrev()}
+                className="flex items-center justify-center w-full border-r-[1px] rounded-none py-7"
+              >
+                <ChevronLeft className="size-10" />
+                <span className="sr-only">Previous</span>
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  emblaApi?.scrollNext();
+                  // selectedArtworkId will sync via effect
+                }}
+                disabled={!emblaApi?.canScrollNext()}
+                className="flex items-center justify-center w-full border-l-[1px] rounded-none py-7"
+              >
+                <ChevronRight className="size-10" />
+                <span className="sr-only">Next</span>
+              </Button>
             </section>
           </div>
         </div>
