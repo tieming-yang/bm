@@ -60,9 +60,9 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed bottom-0 h-fit z-50 w-full px-3 2xl:px-0 font-serif">
-        <div className="container flex h-16 items-center justify-between px-4 rounded-full my-2  backdrop-blur-xl bg-background/30 shadow-md border dark:border-white/10 border-black/10">
-          <nav className="hidden md:flex items-center gap-6">
+      <header className="fixed bottom-0 z-50 w-full px-3 font-serif h-fit 2xl:px-0">
+        <div className="container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10">
+          <nav className="items-center hidden md:flex gap-6">
             {routes.map((route) => (
               <Link
                 key={route.href}
@@ -82,7 +82,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <section className="flex gap-2 z-50">
+          <section className="z-50 flex gap-2">
             {isMounted && (
               <>
                 <LanguageSwitcher />
@@ -112,7 +112,7 @@ export default function Navbar() {
           </section>
           <button
             onClick={toggleMenu}
-            className="md:hidden flex flex-col justify-center items-center size-10 relative focus:outline-none z-50"
+            className="relative z-50 flex flex-col items-center justify-center md:hidden size-10 focus:outline-none"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
           >
@@ -140,8 +140,8 @@ export default function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 font-serif md:hidden bg-background dark:bg-background/30 backdrop-blur-lg"
           >
-            <div className="flex flex-col h-full pt-20 px-6 pb-10">
-              <div className="flex flex-col gap-6 sm:gap-12 items-center justify-center">
+            <div className="flex flex-col h-full px-6 pt-20 pb-10">
+              <div className="flex flex-col items-center justify-center gap-6 sm:gap-12">
                 {routes.map((route, index) => (
                   <motion.div
                     key={route.href}
@@ -171,9 +171,9 @@ export default function Navbar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.5 }}
-                className="mt-auto flex flex-col gap-4"
+                className="flex flex-col mt-auto gap-4"
               >
-                <div className="border-t border-primary/10 pt-6">
+                <div className="pt-6 border-t border-primary/10">
                   <p className="text-sm text-muted-foreground">
                     &copy; {new Date().getFullYear()} 彼岸媒體
                   </p>

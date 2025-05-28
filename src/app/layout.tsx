@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               // enableSystem
               disableTransitionOnChange
             >
-              <div className="flex min-h-screen flex-col">
+              <div className="flex flex-col min-h-screen">
                 <Suspense fallback={<Loading />}>
                   <Header />
                   <Breadcrumb />

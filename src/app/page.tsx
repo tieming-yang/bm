@@ -4,7 +4,7 @@ import { AuroraHero } from "@/components/aurora-hero";
 
 export default function Home() {
   return (
-    <div className=" ">
+    <div className="">
       <AuroraHero />
     </div>
   );

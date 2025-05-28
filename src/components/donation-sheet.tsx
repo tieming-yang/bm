@@ -20,8 +20,8 @@ export function DonationSheet({ open, onOpenChange }: DonationSheetProps) {
           <SheetTitle className="text-2xl">{t("donate.title")}</SheetTitle>
           <SheetDescription>{t("donate.subtitle")}</SheetDescription>
         </SheetHeader>
-        <div className="flex flex-col items-center justify-center gap-8 mt-8">
-          <div className="relative w-48 h-48 bg-white p-4 rounded-xl">
+        <div className="flex flex-col items-center justify-center mt-8 gap-8">
+          <div className="relative w-48 h-48 p-4 bg-white rounded-xl">
             <Image
               src="/placeholders/qr-code-placeholder.png"
               alt="QR Code for donation"
@@ -30,11 +30,11 @@ export function DonationSheet({ open, onOpenChange }: DonationSheetProps) {
               className="rounded-lg"
             />
           </div>
-          <div className="text-center max-w-md">
-            <h3 className="text-lg font-medium mb-2">{t("donate.scanTitle")}</h3>
+          <div className="max-w-md text-center">
+            <h3 className="mb-2 text-lg font-medium">{t("donate.scanTitle")}</h3>
             <p className="text-muted-foreground">{t("donate.scanDescription")}</p>
           </div>
-          <Button className="mt-4 rounded-3xl px-8" onClick={() => onOpenChange(false)}>
+          <Button className="px-8 mt-4 rounded-3xl" onClick={() => onOpenChange(false)}>
             {t("donate.later")}
           </Button>
         </div>

@@ -20,17 +20,17 @@ export default function Contact() {
   const { t } = useTranslation("contact");
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container px-4 py-12 mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
-        <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
+        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-gradient-to-r from-primary to-secondary bg-clip-text">
           {t("contact.title")}
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+        <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
           {t("contact.subtitle")}
         </p>
       </motion.div>
@@ -43,8 +43,8 @@ export default function Contact() {
           className="space-y-8"
         >
           <div className="flex items-start gap-4">
-            <div className="bg-primary/10 p-3 rounded-full">
-              <Mail className="h-6 w-6 text-primary" />
+            <div className="p-3 rounded-full bg-primary/10">
+              <Mail className="w-6 h-6 text-primary" />
             </div>
             <div>
               <h3 className="text-lg font-medium">{t("contact.email.title")}</h3>
@@ -53,8 +53,8 @@ export default function Contact() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="bg-primary/10 p-3 rounded-full">
-              <Phone className="h-6 w-6 text-primary" />
+            <div className="p-3 rounded-full bg-primary/10">
+              <Phone className="w-6 h-6 text-primary" />
             </div>
             <div>
               <h3 className="text-lg font-medium">{t("contact.phone.title")}</h3>
@@ -63,8 +63,8 @@ export default function Contact() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="bg-primary/10 p-3 rounded-full">
-              <MapPin className="h-6 w-6 text-primary" />
+            <div className="p-3 rounded-full bg-primary/10">
+              <MapPin className="w-6 h-6 text-primary" />
             </div>
             <div>
               <h3 className="text-lg font-medium">{t("contact.address.title")}</h3>
@@ -79,7 +79,7 @@ export default function Contact() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <Card className="backdrop-blur-lg bg-background/80 border border-primary/10">
+          <Card className="border backdrop-blur-lg bg-background/80 border-primary/10">
             <CardHeader>
               <CardTitle>{t("contact.form.title")}</CardTitle>
               <CardDescription>{t("contact.form.description")}</CardDescription>

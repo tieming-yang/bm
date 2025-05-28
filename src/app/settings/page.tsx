@@ -62,7 +62,7 @@ export default function SettingsPage({}: Props) {
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold mb-2">{t("donator.title")}</h2>
+            <h2 className="mb-2 text-xl font-semibold">{t("donator.title")}</h2>
 
             <p>
               <strong>{t("donator.email")}:</strong> {donator?.email}

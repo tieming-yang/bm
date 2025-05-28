@@ -27,10 +27,10 @@ export default function SignInPage({}: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-y-5 items-center justify-center min-h-dvh">
+    <div className="flex flex-col items-center justify-center gap-y-5 min-h-dvh">
       <Button
         variant="outline"
-        className="flex items-center gap-3 shadow-lg"
+        className="flex items-center shadow-lg gap-3"
         onMouseDown={async () => {
           try {
             const isDonatorSignup = await Auth.signUpWithGoogle({
@@ -54,7 +54,7 @@ export default function SignInPage({}: Props) {
       </Button>
       <Button
         variant="outline"
-        className="flex items-center gap-3 shadow-lg"
+        className="flex items-center shadow-lg gap-3"
         onMouseDown={async () => {
           try {
             await Auth.signInWithGoogle();

@@ -31,16 +31,16 @@ export const AuroraHero = () => {
       style={{
         backgroundImage,
       }}
-      className="relative grid min-h-screen place-content-center overflow-hidden"
+      className="relative min-h-screen overflow-hidden grid place-content-center"
     >
       <div className="relative z-20">
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex flex-col justify-center items-center gap-y-5 h-svh mx-auto px-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent w-full"
+          className="flex flex-col items-center justify-center w-full px-3 mx-auto text-transparent gap-y-5 h-svh bg-gradient-to-r from-primary to-secondary bg-clip-text"
         >
-          <h1 className="md:text-5xl  sm:text-3xl text-2xl transition-all duration-300 flex text-center flex-col gap-y-4 md:gap-y-7 xl:text-7xl">
+          <h1 className="flex flex-col text-2xl text-center md:text-5xl  sm:text-3xl transition-all duration-300 gap-y-4 md:gap-y-7 xl:text-7xl">
             {t("home.subtitle")
               .split("\n")
               .map((line, index) => (

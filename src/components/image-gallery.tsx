@@ -247,21 +247,21 @@ export function ImageGallery({
             <a href={`#${book}`} className="anchor">
               <h2
                 id={book}
-                className="text-3xl text-primary md:scroll-mt-20 font-serif font-semibold"
+                className="font-serif text-3xl font-semibold text-primary md:scroll-mt-20"
               >
                 {booksT(book)}
               </h2>
             </a>
 
             {/* Paitings */}
-            <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 w-full gap-7">
+            <ul className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {collections.map((painting, index) => (
                 <motion.li
                   key={painting.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="group cursor-pointer"
+                  className="cursor-pointer group"
                   onClick={() => handleImageClick(painting.id)}
                 >
                   <AspectRatio
@@ -292,7 +292,7 @@ export function ImageGallery({
         <div className="mt-12 text-center">
           <Button
             onClick={() => setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length))}
-            className="rounded-3xl px-8"
+            className="px-8 rounded-3xl"
           >
             {t("loadMore")}
           </Button>
@@ -301,8 +301,8 @@ export function ImageGallery({
 
       {/* Infinite Scroll Observer */}
       {infiniteScroll && displayCount < bibleArtworks.length && (
-        <div ref={observerRef} className="w-full h-20 flex items-center justify-center mt-8">
-          <Loader2 className="h-6 w-6 text-primary animate-spin" />
+        <div ref={observerRef} className="flex items-center justify-center w-full h-20 mt-8">
+          <Loader2 className="w-6 h-6 text-primary animate-spin" />
         </div>
       )}
 
@@ -321,13 +321,13 @@ export function ImageGallery({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Main Content */}
-            <section className="overflow-y-auto flex-grow w-full">
+            <section className="flex-grow w-full overflow-y-auto">
               <div className="flex flex-col gap-6">
-                <section className="w-full flex flex-col gap-4 px-1 md:px-5">
+                <section className="flex flex-col w-full px-1 gap-4 md:px-5">
                   {/* Scripture section (for Bible bibleArtworks) */}
 
-                  <div className="bg-muted/50 p-4 rounded-md">
-                    <h3 className="font-medium mb-2 font-serif">
+                  <div className="p-4 bg-muted/50 rounded-md">
+                    <h3 className="mb-2 font-serif font-medium">
                       {t("bibleGallery.properties.scripture") || "Scripture"}
                     </h3>
                     <p className="text-sm md:text-xl text-foreground">
@@ -386,10 +386,10 @@ export function ImageGallery({
                 </div>
 
                 {/* Details */}
-                <section className="w-full flex flex-col gap-4 px-3 md:px-5">
+                <section className="flex flex-col w-full px-3 gap-4 md:px-5">
                   {/* Details Section */}
                   <div className="mt-2 font-serif">
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex items-center justify-between mb-2">
                       <h3 className="font-medium">{t("artwork.details") || "Artwork Details"}</h3>
                       <button
                         type="button"
@@ -397,9 +397,9 @@ export function ImageGallery({
                         className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-background/70 transition-colors"
                       >
                         {showDetails ? (
-                          <ChevronUp className="h-4 w-4" />
+                          <ChevronUp className="w-4 h-4" />
                         ) : (
-                          <ChevronDown className="h-4 w-4" />
+                          <ChevronDown className="w-4 h-4" />
                         )}
                         <span className="sr-only">
                           {showDetails ? "Hide Details" : "Show Details"}
@@ -408,7 +408,7 @@ export function ImageGallery({
                     </div>
 
                     {showDetails && (
-                      <div className="space-y-2 border-t border-border pt-2">
+                      <div className="pt-2 border-t space-y-2 border-border">
                         <div className="flex justify-between">
                           <span className="text-sm text-muted-foreground">
                             {t("artwork.year") || "Year"}
@@ -447,11 +447,11 @@ export function ImageGallery({
 
             {/* Tool Bar */}
             <section className="flex items-center justify-end px-6 pt-6 pb-2 border-b border-border">
-              <div className="flex gap-4 items-center">
+              <div className="flex items-center gap-4">
                 <Button
                   variant={"ghost"}
                   onClick={handleShare}
-                  className="flex items-center justify-center rounded-full hover:bg-background/70 transition-colors"
+                  className="flex items-center justify-center"
                 >
                   <Share className="size-5" />
                   <span className="sr-only">Share</span>
@@ -459,7 +459,7 @@ export function ImageGallery({
                 <Button
                   variant={"ghost"}
                   onClick={handleDownload}
-                  className="flex items-center justify-center rounded-full hover:bg-background/70 transition-colors"
+                  className="flex items-center justify-center"
                 >
                   <Download className="size-5" />
                   <span className="sr-only">Download</span>
@@ -467,7 +467,7 @@ export function ImageGallery({
                 <Button
                   variant={"ghost"}
                   onClick={handleClose}
-                  className="flex items-center justify-center rounded-full bg-background/50 hover:bg-background/70 transition-colors"
+                  className="flex items-center justify-center"
                 >
                   <X className="size-5" />
                   <span className="sr-only">Close</span>

@@ -37,17 +37,17 @@ export default function Donate() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container px-4 py-12 mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
-        <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
+        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-gradient-to-r from-primary to-secondary bg-clip-text">
           {t("donate.title")}
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+        <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
           {t("donate.subtitle")}
         </p>
       </motion.div>
@@ -58,10 +58,10 @@ export default function Donate() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <Card className="backdrop-blur-lg bg-background/80 border border-primary/10">
+          <Card className="border backdrop-blur-lg bg-background/80 border-primary/10">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-primary" />
+                <Heart className="w-5 h-5 text-primary" />
                 {t("donate.card.title")}
               </CardTitle>
               <CardDescription>{t("donate.card.description")}</CardDescription>
@@ -71,7 +71,7 @@ export default function Donate() {
                 <Label>{t("donate.card.amount")}</Label>
                 <RadioGroup defaultValue="50" className="flex flex-wrap gap-4">
                   <div>
-                    <RadioGroupItem value="25" id="amount-25" className="peer sr-only" />
+                    <RadioGroupItem value="25" id="amount-25" className="sr-only peer" />
                     <Label
                       htmlFor="amount-25"
                       className="flex cursor-pointer items-center justify-center rounded-3xl border-2 border-muted bg-popover px-6 py-2 text-center font-medium ring-offset-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary"
@@ -80,7 +80,7 @@ export default function Donate() {
                     </Label>
                   </div>
                   <div>
-                    <RadioGroupItem value="50" id="amount-50" className="peer sr-only" />
+                    <RadioGroupItem value="50" id="amount-50" className="sr-only peer" />
                     <Label
                       htmlFor="amount-50"
                       className="flex cursor-pointer items-center justify-center rounded-3xl border-2 border-muted bg-popover px-6 py-2 text-center font-medium ring-offset-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary"
@@ -89,7 +89,7 @@ export default function Donate() {
                     </Label>
                   </div>
                   <div>
-                    <RadioGroupItem value="100" id="amount-100" className="peer sr-only" />
+                    <RadioGroupItem value="100" id="amount-100" className="sr-only peer" />
                     <Label
                       htmlFor="amount-100"
                       className="flex cursor-pointer items-center justify-center rounded-3xl border-2 border-muted bg-popover px-6 py-2 text-center font-medium ring-offset-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary"
@@ -98,7 +98,7 @@ export default function Donate() {
                     </Label>
                   </div>
                   <div>
-                    <RadioGroupItem value="custom" id="amount-custom" className="peer sr-only" />
+                    <RadioGroupItem value="custom" id="amount-custom" className="sr-only peer" />
                     <Label
                       htmlFor="amount-custom"
                       className="flex cursor-pointer items-center justify-center rounded-3xl border-2 border-muted bg-popover px-6 py-2 text-center font-medium ring-offset-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary"
