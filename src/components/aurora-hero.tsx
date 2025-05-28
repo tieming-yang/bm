@@ -33,27 +33,27 @@ export const AuroraHero = () => {
       }}
       className="relative grid min-h-screen place-content-center overflow-hidden"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="flex relative flex-col justify-center items-center gap-y-5 h-svh mx-auto px-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent w-full"
-      >
-        <h1 className="md:text-5xl  sm:text-3xl text-2xl transition-all duration-300 flex text-center flex-col gap-y-4 md:gap-y-7 xl:text-7xl">
-          {t("home.subtitle")
-            .split("\n")
-            .map((line, index) => (
-              <span key={index}>
-                {line}
-                <br />
-              </span>
-            ))}
-        </h1>
-      </motion.div>
-
-      <Suspense fallback={<Loading />}>
+      <div className="relative z-20">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col justify-center items-center gap-y-5 h-svh mx-auto px-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent w-full"
+        >
+          <h1 className="md:text-5xl  sm:text-3xl text-2xl transition-all duration-300 flex text-center flex-col gap-y-4 md:gap-y-7 xl:text-7xl">
+            {t("home.subtitle")
+              .split("\n")
+              .map((line, index) => (
+                <span key={index}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+          </h1>
+        </motion.section>
         <BibleBooks />
-      </Suspense>
+      </div>
+
       <div className="absolute inset-0 z-0">
         <Canvas>
           <Stars radius={50} count={2500} factor={4} fade speed={2} />

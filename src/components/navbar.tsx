@@ -61,7 +61,7 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed bottom-0 h-fit z-50 w-full px-3 2xl:px-0 font-serif">
-        <div className="container flex h-16 items-center justify-evenly md:justify-between px-4 rounded-full my-2  backdrop-blur-xl bg-background/30 shadow-md border dark:border-white/10 border-black/10">
+        <div className="container flex h-16 items-center justify-between px-4 rounded-full my-2  backdrop-blur-xl bg-background/30 shadow-md border dark:border-white/10 border-black/10">
           <nav className="hidden md:flex items-center gap-6">
             {routes.map((route) => (
               <Link
@@ -82,7 +82,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <section className="flex items-center gap-2 z-50">
+          <section className="flex gap-2 z-50">
             {isMounted && (
               <>
                 <LanguageSwitcher />
@@ -104,7 +104,7 @@ export default function Navbar() {
                   </Link>
                 ) : (
                   <Link href="/signin" className="text-sm font-medium">
-                    <Button>{t("nav.signin")}</Button>
+                    <Button variant={"outline"}>{t("nav.signin")}</Button>
                   </Link>
                 )}
               </>
@@ -138,7 +138,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 font-serif md:hidden bg-background dark:bg-background"
+            className="fixed inset-0 z-40 font-serif md:hidden bg-background dark:bg-background/30 backdrop-blur-lg"
           >
             <div className="flex flex-col h-full pt-20 px-6 pb-10">
               <div className="flex flex-col gap-6 sm:gap-12 items-center justify-center">
