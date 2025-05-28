@@ -14,6 +14,7 @@ import { Metadata } from "next";
 import _metadata from "./metadata";
 import localFont from "next/font/local";
 import Header from "@/components/header";
+import { AuroraHero } from "@/components/aurora-hero";
 
 const kings = Kings({
   weight: ["400"],

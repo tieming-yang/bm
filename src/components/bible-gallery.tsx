@@ -14,7 +14,7 @@ export default function BibleGalleryContent() {
   const localedGroudedArtworks = BibleArtworks.groupedByBook(currentLanguage);
 
   return (
-    <>
+    <div className="z-50 relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -34,6 +34,6 @@ export default function BibleGalleryContent() {
         groupedBibleArtworks={localedGroudedArtworks}
         infiniteScroll={true}
       />
-    </>
+    </div>
   );
 }

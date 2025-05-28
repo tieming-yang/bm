@@ -34,7 +34,7 @@ export const AuroraHero = ({ children }: { children?: React.ReactNode }) => {
       style={{
         backgroundImage,
       }}
-      className="relative min-h-screen overflow-hidden grid place-content-center"
+      className="relative min-h-screen"
     >
       {children}
       <div className="absolute inset-0 z-0">

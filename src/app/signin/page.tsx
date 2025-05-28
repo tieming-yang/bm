@@ -27,7 +27,7 @@ export default function SignInPage({}: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-y-5 min-h-dvh">
+    <div className="flex font-mono flex-col items-center justify-center gap-y-5 min-h-dvh relative z-50">
       <Button
         variant="outline"
         className="flex items-center shadow-lg gap-3"
