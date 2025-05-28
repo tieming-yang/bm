@@ -44,10 +44,15 @@ export const AuroraHero = () => {
             {t("home.subtitle")
               .split("\n")
               .map((line, index) => (
-                <span key={index}>
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                >
                   {line}
                   <br />
-                </span>
+                </motion.span>
               ))}
           </h1>
         </motion.section>
