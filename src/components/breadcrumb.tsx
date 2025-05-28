@@ -32,7 +32,7 @@ export function Breadcrumb() {
   };
 
   return (
-    <nav className="mx-auto mt-4 font-serif text-sm text-muted-foreground">
+    <nav className="mx-auto mt-4 font-serif text-sm z-50 text-muted-foreground">
       <ul className="flex items-center space-x-2">
         <li>
           <button onClick={() => router.push("/")} className="hover:underline text-muted-foreground">
