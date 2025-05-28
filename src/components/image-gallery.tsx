@@ -240,7 +240,6 @@ export function ImageGallery({
         toast.error(t("toast.linkCopied.error"), {
           description: t("toast.linkCopied.description"),
         });
-        return;
       });
 
     toast.success(t("toast.linkCopied.title"), {
@@ -251,7 +250,6 @@ export function ImageGallery({
   return (
     <>
       {/* Gallery Grid */}
-
       <ul className="flex flex-col w-full gap-y-10">
         {Object.entries(groupedBibleArtworks).map(([book, collections]) => (
           <li key={collections[0].id} className="flex flex-col gap-y-3">

@@ -1,5 +1,5 @@
 import { BibleArtwork, Scripture } from "@/types/artwork";
-import { exodus_18v1_10v1 } from "../../public/Exodus";
+import { Exodus_18v1_10v1, Exodus_1_1v22 } from "../../public/Exodus";
 
 /**
  * Factory to build a Scripture object with a dynamic reference() method.
@@ -43,7 +43,7 @@ const bibleArtworks: BibleArtwork[] = [
       "An artistic representation of the creation of the world as described in Genesis.",
     year: "2023",
     medium: "Oil on canvas",
-    imageUrl: exodus_18v1_10v1,
+    imageUrl: Exodus_1_1v22,
     customFields: {
       "Biblical Period": "Beginning",
     },
@@ -73,7 +73,7 @@ const bibleArtworks: BibleArtwork[] = [
     description: "A visual meditation on God's love and the gift of salvation.",
     year: "2023",
     medium: "Digital art",
-    imageUrl: exodus_18v1_10v1,
+    imageUrl: Exodus_1_1v22,
     customFields: {
       "Biblical Period": "New Testament",
     },
@@ -102,7 +102,7 @@ const bibleArtworks: BibleArtwork[] = [
       "An exploration of God's guidance and provision as described in Psalm 23.",
     year: "2023",
     medium: "Watercolor on paper",
-    imageUrl: exodus_18v1_10v1,
+    imageUrl: Exodus_1_1v22,
     customFields: {
       "Biblical Period": "Old Testament",
     },
@@ -113,7 +113,7 @@ const bibleArtworks: BibleArtwork[] = [
         verseStart: 1,
         verseEnd: 3,
         text:
-          "The LORD is my shepherd; I shall not want. He makes me lie down in green pastures. He leads me beside still waters. He restores my soul. He leads me in paths of righteousness for his name's sake.",
+          "",
         theme: "Guidance",
       }),
       zh: makeScripture({
@@ -134,7 +134,7 @@ const bibleArtworks: BibleArtwork[] = [
       "An exploration of God's guidance and provision as described in Psalm 23.",
     year: "2023",
     medium: "Watercolor on paper",
-    imageUrl: exodus_18v1_10v1,
+    imageUrl: Exodus_18v1_10v1,
     customFields: {
       "Biblical Period": "Old Testament",
     },
