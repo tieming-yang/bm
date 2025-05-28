@@ -39,8 +39,7 @@ export const AuroraHero = () => {
         transition={{ duration: 0.8 }}
         className="flex relative flex-col justify-center items-center gap-y-5 h-svh mx-auto px-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent w-full"
       >
-        <h1 className="text-xl text-muted-foreground fixed top-5 left-5 md:text-2xl font-bold">{t("home.title")}</h1>
-        <h2 className="md:text-5xl  sm:text-3xl text-2xl transition-all duration-300 flex text-center flex-col gap-y-4 md:gap-y-7 xl:text-7xl">
+        <h1 className="md:text-5xl  sm:text-3xl text-2xl transition-all duration-300 flex text-center flex-col gap-y-4 md:gap-y-7 xl:text-7xl">
           {t("home.subtitle")
             .split("\n")
             .map((line, index) => (
@@ -49,7 +48,7 @@ export const AuroraHero = () => {
                 <br />
               </span>
             ))}
-        </h2>
+        </h1>
       </motion.div>
 
       <Suspense fallback={<Loading />}>

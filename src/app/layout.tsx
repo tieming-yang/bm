@@ -13,6 +13,7 @@ import ClientRoot from "./client-layout";
 import { Metadata } from "next";
 import _metadata from "./metadata";
 import localFont from "next/font/local";
+import Header from "@/components/header";
 
 const kings = Kings({
   weight: ["400"],
@@ -64,11 +65,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               enableSystem
               disableTransitionOnChange
             >
-              <div className="flex min-h-screen flex-col bg-gradient-to-br from-background to-background/80">
-                <Navbar />
-                <Breadcrumb />
+              <div className="flex min-h-screen flex-col">
                 <Suspense fallback={<Loading />}>
+                  <Header />
+                  <Breadcrumb />
                   <main className="flex-1">{children}</main>
+                  <Navbar />
                   <Toaster position="top-center" />
                   <Footer />
                 </Suspense>

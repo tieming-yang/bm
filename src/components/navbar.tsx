@@ -60,10 +60,8 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed bottom-0 h-fit z-50 w-full px-3 2xl:px-0">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 rounded-full my-2  backdrop-blur-xl bg-background/30 shadow-md border dark:border-white/10 border-black/10">
-          <Logo />
-
+      <header className="fixed bottom-0 h-fit z-50 w-full px-3 2xl:px-0 font-serif">
+        <div className="container flex h-16 items-center justify-evenly md:justify-between px-4 rounded-full my-2  backdrop-blur-xl bg-background/30 shadow-md border dark:border-white/10 border-black/10">
           <nav className="hidden md:flex items-center gap-6">
             {routes.map((route) => (
               <Link
@@ -110,25 +108,24 @@ export default function Navbar() {
                 )}
               </>
             )}
-
-            <button
-              onClick={toggleMenu}
-              className="md:hidden flex flex-col justify-center items-center size-10 relative focus:outline-none z-50"
-              aria-label="Menu"
-              aria-expanded={isMenuOpen}
-            >
-              <span
-                className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
-                  isMenuOpen ? "rotate-45 translate-y-0.5" : "-translate-y-1"
-                }`}
-              ></span>
-              <span
-                className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
-                  isMenuOpen ? "-rotate-45 -translate-y-0" : "translate-y-1"
-                }`}
-              ></span>
-            </button>
           </section>
+          <button
+            onClick={toggleMenu}
+            className="md:hidden flex flex-col justify-center items-center size-10 relative focus:outline-none z-50"
+            aria-label="Menu"
+            aria-expanded={isMenuOpen}
+          >
+            <span
+              className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
+                isMenuOpen ? "rotate-45 translate-y-0.5" : "-translate-y-1"
+              }`}
+            ></span>
+            <span
+              className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
+                isMenuOpen ? "-rotate-45 -translate-y-0" : "translate-y-1"
+              }`}
+            ></span>
+          </button>
         </div>
       </header>
 
@@ -140,7 +137,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 md:hidden bg-background dark:bg-background"
+            className="fixed inset-0 z-40 font-serif md:hidden bg-background dark:bg-background"
           >
             <div className="flex flex-col h-full pt-20 px-6 pb-10">
               <div className="flex flex-col gap-6 sm:gap-12 items-center justify-center">
