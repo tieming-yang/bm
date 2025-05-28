@@ -1,11 +1,10 @@
-"use client";
-
 import { AuroraHero } from "@/components/aurora-hero";
+import ClientHome from "./client-home";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className=" ">
-      <AuroraHero />
-    </div>
+    <AuroraHero>
+      <ClientHome />
+    </AuroraHero>
   );
 }
