@@ -1,4 +1,4 @@
-import { Inter, Noto_Sans_TC } from "next/font/google";
+import { Kings, Eagle_Lake, Yuji_Mai } from "next/font/google";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { ThemeProvider } from "../components/theme-provider";
@@ -12,33 +12,50 @@ import ReactQueryProvider from "@/providers/react-query-provider";
 import ClientRoot from "./client-layout";
 import { Metadata } from "next";
 import _metadata from "./metadata";
+import localFont from "next/font/local";
 
-// Load Inter for Latin characters
-const inter = Inter({
+const kings = Kings({
+  weight: ["400"],
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-kings",
   display: "swap",
 });
 
-// Load Noto Sans TC for Chinese characters
-const notoSansTC = Noto_Sans_TC({
-  weight: ["400", "500", "700"],
+const eagleLake = Eagle_Lake({
+  weight: ["400"],
   subsets: ["latin"],
-  variable: "--font-noto-sans-tc",
+  variable: "--font-eagle-lake",
   display: "swap",
 });
+
+const yujiMai = Yuji_Mai({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-yuji-mai",
+  display: "swap",
+});
+
+// TODO: Not working, bug in next.js
+// const chineseFont = localFont({
+//   src: "./YujiMai-Regular.woff2",
+//   display: "swap",
+// });
 
 export const metadata: Metadata = _metadata;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={"zh-TW"} suppressHydrationWarning>
+    <html
+      lang="zh-TW"
+      suppressHydrationWarning
+      className={`${eagleLake.variable} ${yujiMai.variable} antialiased`}
+    >
       <head>
         <meta charSet="UTF-8" />
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className={`${inter.variable} ${notoSansTC.variable} font-sans`}>
+      <body>
         <ReactQueryProvider>
           <ClientRoot>
             <ThemeProvider

@@ -21,12 +21,12 @@ const config = {
     extend: {
       fontFamily: {
         sans: [
-          "var(--font-inter)",
-          "var(--font-noto-sans-tc)",
+          "var(--font-eagle-lake)",
+          "var(--font-yuji-mai)",
           "system-ui",
           "sans-serif",
         ],
-        chinese: ["var(--font-noto-sans-tc)", "system-ui", "sans-serif"],
+        chinese: ["var(--font-yuji-mai)", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
