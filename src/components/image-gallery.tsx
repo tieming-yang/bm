@@ -282,18 +282,34 @@ export function ImageGallery({
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           {/* Backdrop with close handler */}
           <div
-            className="absolute inset-0 bg-background/80 backdrop-blur-lg"
+            className="absolute inset-0 bg-background/30 backdrop-blur-lg"
             onClick={handleClose}
           />
 
           {/* Lightbox Content */}
           <div
-            className="relative z-[101] max-w-9xl w-full bg-background/90 backdrop-blur-lg rounded-sm overflow-hidden border border-primary/10 m-4 max-h-[99vh] flex flex-col"
+            className="relative z-[101] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 m-4 max-h-[99vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Main Content */}
             <section className="overflow-y-auto flex-grow w-full">
               <div className="flex flex-col 2xl:flex-row gap-6">
+                <section className="w-full flex flex-col gap-4 px-3 md:px-5">
+                  {/* Scripture section (for Bible bibleArtworks) */}
+
+                  <div className="bg-muted/50 p-4 rounded-md">
+                    <h3 className="font-medium mb-2 font-serif">
+                      {t("bibleGallery.properties.scripture") || "Scripture"}
+                    </h3>
+                    <p className="text-sm md:text-xl text-foreground">
+                      {selectedArtwork.scripture.text}
+                    </p>
+
+                    <div className="mt-2 text-xs md:text-md text-muted-foreground">
+                      <span className="font-medium">{selectedArtwork.scripture.reference()}</span>
+                    </div>
+                  </div>
+                </section>
                 {/* Image Carousel */}
                 <div className="w-full">
                   <Carousel
@@ -363,31 +379,13 @@ export function ImageGallery({
                         });
                       }}
                     />
-                    <CarouselDots />
                   </Carousel>
                 </div>
 
                 {/* Details */}
                 <section className="w-full flex flex-col gap-4 px-3 md:px-5">
-                  <p className="text-muted-foreground">{selectedArtwork.year}</p>
-
-                  {/* Scripture section (for Bible bibleArtworks) */}
-
-                  <div className="bg-muted/50 p-4 rounded-md">
-                    <h3 className="font-medium mb-2">
-                      {t("bibleGallery.properties.scripture") || "Scripture"}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedArtwork.scripture.text}
-                    </p>
-
-                    <div className="mt-2 text-xs text-muted-foreground/70">
-                      <span className="font-medium">{selectedArtwork.scripture.reference()}</span>
-                    </div>
-                  </div>
-
                   {/* Details Section */}
-                  <div className="mt-2">
+                  <div className="mt-2 font-serif">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-medium">{t("artwork.details") || "Artwork Details"}</h3>
                       <button
@@ -408,6 +406,14 @@ export function ImageGallery({
 
                     {showDetails && (
                       <div className="space-y-2 border-t border-border pt-2">
+                        
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">
+                            {t("artwork.year") || "Year"}
+                          </span>
+                          <span className="text-sm">{selectedArtwork.year}</span>
+                        </div>
+
                         <div className="flex justify-between">
                           <span className="text-sm text-muted-foreground">
                             {t("artwork.medium") || "Medium"}
