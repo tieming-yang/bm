@@ -86,7 +86,8 @@ export default function Navbar() {
             {isMounted && (
               <>
                 <LanguageSwitcher />
-                <Button
+                {/* Theme Toggle */}
+                {/* <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -94,7 +95,7 @@ export default function Navbar() {
                 >
                   {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
                   <span className="sr-only">Toggle theme</span>
-                </Button>
+                </Button> */}
                 {user ? (
                   <Link href="/settings" className="text-sm font-medium text-primary-foreground">
                     <Button size="icon">
