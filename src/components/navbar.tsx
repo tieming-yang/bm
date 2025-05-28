@@ -60,7 +60,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed bottom-0 z-50 w-full px-3 font-serif h-fit 2xl:px-0">
+      <header className="fixed bottom-0 z-[100] w-full px-3 font-serif h-fit 2xl:px-0">
         <div className="container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10">
           <nav className="items-center hidden md:flex gap-6">
             {routes.map((route) => (
@@ -112,7 +112,7 @@ export default function Navbar() {
           </section>
           <button
             onClick={toggleMenu}
-            className="relative z-50 flex flex-col items-center justify-center md:hidden size-10 focus:outline-none"
+            className="relative z-60 flex flex-col items-center justify-center md:hidden size-10 focus:outline-none"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
           >
@@ -138,7 +138,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 font-serif md:hidden bg-background dark:bg-background/30 backdrop-blur-lg"
+            className="fixed inset-0 z-50 font-serif md:hidden bg-background dark:bg-background/30 backdrop-blur-lg"
           >
             <div className="flex flex-col h-full px-6 pt-20 pb-10">
               <div className="flex flex-col items-center justify-center gap-6 sm:gap-12">
