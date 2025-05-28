@@ -20,7 +20,7 @@ export default function BibleBooks({}: Props) {
       transition={{ duration: 0.8 }}
       className="h-svh"
     >
-      <ul className="grid grid-cols-1 md:grid-cols-2 w-full place-content-center gap-7">
+      <ul className="grid grid-cols-1 md:grid-cols-2 w-full place-content-center gap-2">
         {Object.entries(BibleArtworks.groupedByBook(currentLanguage)).map(([book, collections]) => (
           <li key={collections[0].id} className="flex flex-col gap-y-3">
             <Link href={`/bible-gallery/#${book}`}>
