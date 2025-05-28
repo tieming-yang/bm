@@ -2,10 +2,10 @@ import { StaticImageData } from "next/image";
 
 export type Artwork = {
   id: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   year: string;
-  medium: string;
+  medium?: string;
   dimensions?: string;
   location?: string;
   imageUrl: StaticImageData;

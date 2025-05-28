@@ -339,7 +339,7 @@ export function ImageGallery({
                     <h3 className="mb-2 font-serif font-medium">
                       {t("bibleGallery.properties.scripture") || "Scripture"}
                     </h3>
-                    <p className="text-sm md:text-xl text-foreground">
+                    <p className="text-sm md:text-xl text-foreground text-clip h-32 overflow-auto">
                       {selectedArtwork.scripture.text}
                     </p>
 
@@ -429,7 +429,9 @@ export function ImageGallery({
                           <span className="text-sm text-muted-foreground">
                             {t("artwork.medium") || "Medium"}
                           </span>
-                          <span className="text-sm">{selectedArtwork.medium}</span>
+                          <span className="text-sm">{`${
+                            selectedArtwork.medium || "Digital Artwork"
+                          }`}</span>
                         </div>
                         <div className="flex justify-between">
                           {selectedArtwork.dimensions && (
