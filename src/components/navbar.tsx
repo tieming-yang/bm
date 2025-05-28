@@ -69,7 +69,7 @@ export default function Navbar() {
               <Link
                 key={route.href}
                 href={route.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-sm md:text-md lg:text-lg font-medium transition-colors hover:text-primary ${
                   pathname?.includes(route.href) && route.href !== "/"
                     ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
                     : ""
@@ -143,7 +143,7 @@ export default function Navbar() {
             className="fixed inset-0 z-40 md:hidden bg-background dark:bg-background"
           >
             <div className="flex flex-col h-full pt-20 px-6 pb-10">
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 sm:gap-12 items-center justify-center">
                 {routes.map((route, index) => (
                   <motion.div
                     key={route.href}
@@ -153,7 +153,7 @@ export default function Navbar() {
                   >
                     <Link
                       href={route.href}
-                      className={`text-2xl font-medium transition-colors hover:text-primary ${
+                      className={`text-2xl sm:text-5xl duration-300 transition-all font-medium  hover:text-primary ${
                         pathname?.includes(route.href) && route.href !== "/"
                           ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
                           : ""
