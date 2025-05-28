@@ -31,6 +31,7 @@ import { DonationSheet } from "./donation-sheet";
 import { AspectRatio } from "./ui/aspect-ratio";
 
 import Config from "@/models/config";
+import { toast } from "sonner";
 
 interface ImageGalleryProps {
   bibleArtworks: BibleArtworksLocale[];
@@ -226,7 +227,7 @@ export function ImageGallery({
       link.click();
     };
   };
-  // TODO: Fix share functionality
+
   const handleShare = () => {
     if (!selectedArtwork) return;
 
@@ -234,7 +235,17 @@ export function ImageGallery({
     navigator.clipboard
       .writeText(url)
       .then(() => {})
-      .catch(() => {});
+      .catch((err) => {
+        console.error(err);
+        toast.error(t("toast.linkCopied.error"), {
+          description: t("toast.linkCopied.description"),
+        });
+        return;
+      });
+
+    toast.success(t("toast.linkCopied.title"), {
+      description: t("toast.linkCopied.description"),
+    });
   };
 
   return (
@@ -481,7 +492,6 @@ export function ImageGallery({
                 variant="ghost"
                 onClick={() => {
                   emblaApi?.scrollPrev();
-                  // selectedArtworkId will sync via effect
                 }}
                 disabled={!emblaApi?.canScrollPrev()}
                 className="flex items-center justify-center w-full border-r-[1px] rounded-none py-7"
@@ -494,7 +504,6 @@ export function ImageGallery({
                 variant="ghost"
                 onClick={() => {
                   emblaApi?.scrollNext();
-                  // selectedArtworkId will sync via effect
                 }}
                 disabled={!emblaApi?.canScrollNext()}
                 className="flex items-center justify-center w-full border-l-[1px] rounded-none py-7"
