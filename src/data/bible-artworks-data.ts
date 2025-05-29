@@ -38,7 +38,7 @@ function makeScripture(opts: {
 
 const bibleArtworks: BibleArtwork[] = [
   {
-    id: crypto.randomUUID(),
+    id: "Genesis1:1-31",
     title: "Creation",
     year: "2023",
     imageUrl: Genesis_1_1v31,
@@ -67,7 +67,7 @@ const bibleArtworks: BibleArtwork[] = [
     },
   },
   {
-    id: crypto.randomUUID(),
+    id: "Genesis1-1:22",
     title: "Salvation",
     description: "A visual meditation on God's love and the gift of salvation.",
     year: "2023",
@@ -78,23 +78,25 @@ const bibleArtworks: BibleArtwork[] = [
     scripture: {
       en: makeScripture({
         book: "Genesis",
-        chapter: 3,
-        verseStart: 16,
+        chapter: 1,
+        verseStart: 1,
+        verseEnd: 22,
         text:
           "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
         theme: "Salvation",
       }),
       zh: makeScripture({
         book: "創世記",
-        chapter: 3,
-        verseStart: 16,
+        chapter: 1,
+        verseStart: 1,
+        verseEnd: 22,
         text: "",
         theme: "救恩",
       }),
     },
   },
   {
-    id: crypto.randomUUID(),
+    id: "Exodus1-1:22",
     title: "Guidance",
     description:
       "An exploration of God's guidance and provision as described in Psalm 23.",
@@ -126,7 +128,7 @@ const bibleArtworks: BibleArtwork[] = [
     },
   },
   {
-    id: crypto.randomUUID(),
+    id: "Exodus18:1-27",
     title: "The Good Shepherd",
     description:
       "An exploration of God's guidance and provision as described in Psalm 23.",

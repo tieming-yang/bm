@@ -79,6 +79,18 @@ export function ImageGallery({
   )?.[0];
   const currentBook = groupedBibleArtworks[currentBookName || ""] || [];
 
+  useEffect(() => {
+    if (!selectedArtworkId) {
+      const imageId = searchParams?.get("image");
+      if (imageId) {
+        const artwork = bibleArtworks.find((a) => a.id === imageId);
+        if (artwork) {
+          setSelectedArtworkId(artwork.id);
+        }
+      }
+    }
+  }, []);
+
   // Sync selectedArtworkId when carousel changes
   useEffect(() => {
     if (!emblaApi) return;
