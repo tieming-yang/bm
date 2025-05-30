@@ -61,9 +61,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReactQueryProvider>
           <ClientRoot>
             <ThemeProvider
-              // attribute="class"
+              attribute="class"
               defaultTheme="dark"
-              // enableSystem
+              enableSystem={false}
               disableTransitionOnChange
             >
               <div className="flex flex-col min-h-screen">
