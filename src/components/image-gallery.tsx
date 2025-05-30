@@ -263,8 +263,8 @@ export function ImageGallery({
     <>
       {/* Gallery Grid */}
       <ul className="flex flex-col w-full gap-y-10">
-        {Object.entries(groupedBibleArtworks).map(([book, collections]) => (
-          <li key={collections[0].id} className="flex flex-col gap-y-3">
+        {Object.entries(groupedBibleArtworks).map(([book, artworks]) => (
+          <li key={artworks[0].id} className="flex flex-col gap-y-3">
             <a href={`#${book}`} className="anchor">
               <h2
                 id={book}
@@ -276,22 +276,22 @@ export function ImageGallery({
 
             {/* Paitings */}
             <ul className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
-              {collections.map((painting, index) => (
+              {artworks.map((artwork, index) => (
                 <motion.li
-                  key={painting.id}
+                  key={artwork.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   className="cursor-pointer group"
-                  onClick={() => handleImageClick(painting.id)}
+                  onClick={() => handleImageClick(artwork.id)}
                 >
                   <AspectRatio
                     ratio={Config.aspectRatio}
                     className="relative overflow-hidden shadow-xl"
                   >
                     <Image
-                      src={painting.imageUrl}
-                      alt={painting.title || "Bible Artwork"}
+                      src={artwork.imageUrl}
+                      alt={artwork.title || "Bible Artwork"}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -301,7 +301,7 @@ export function ImageGallery({
                     />
                   </AspectRatio>
 
-                  <h3>{painting.title}</h3>
+                  <h3>{artwork.title}</h3>
                 </motion.li>
               ))}
             </ul>
