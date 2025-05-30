@@ -1,4 +1,4 @@
-import { BibleArtwork, Scripture } from "@/types/artwork";
+import { BibleArtwork, Scripture } from "@/types/bible-artwork";
 import { Exodus_18v1_10v1, Exodus_1_1v22 } from "../../public/paintings/Exodus";
 import { Genesis_1_1v31 } from "../../public/paintings/Genesis";
 

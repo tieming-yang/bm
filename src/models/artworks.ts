@@ -1,4 +1,4 @@
-import type { Artwork } from "@/types/artwork"
+import type { Artwork } from "@/types/bible-artwork";
 
 // Generate artworks with real placeholder images
 const generateArtworks = () => {
@@ -11,7 +11,8 @@ const generateArtworks = () => {
       medium: "數位攝影",
       dimensions: "60 × 40 公分",
       location: "紐約市",
-      imageUrl: "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?q=80&w=1000",
       customFields: {
         Technique: "長時間曝光",
         Edition: "限量版 (1/10)",
@@ -24,7 +25,8 @@ const generateArtworks = () => {
       year: "2022",
       medium: "混合媒材畫布",
       dimensions: "100 × 80 公分",
-      imageUrl: "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=1000",
       customFields: {
         Materials: "Acrylic, Oil, Resin",
       },
@@ -36,7 +38,8 @@ const generateArtworks = () => {
       year: "2023",
       medium: "數位藝術",
       dimensions: "4K Resolution",
-      imageUrl: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?q=80&w=1000",
       customFields: {
         Software: "Adobe Photoshop, Blender",
         "Prints Available": "Yes",
@@ -50,7 +53,8 @@ const generateArtworks = () => {
       medium: "油畫畫布",
       dimensions: "120 × 90 公分",
       location: "私人收藏",
-      imageUrl: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?q=80&w=1000",
     },
     {
       id: "5",
@@ -59,7 +63,8 @@ const generateArtworks = () => {
       year: "2022",
       medium: "攝影與數位操控",
       dimensions: "50 × 70 公分",
-      imageUrl: "https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=1000",
       customFields: {
         Technique: "多重曝光",
         Edition: "開放版",
@@ -73,7 +78,8 @@ const generateArtworks = () => {
       medium: "數位攝影",
       dimensions: "80 × 60 公分",
       location: "東京，日本",
-      imageUrl: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=1000",
       customFields: {
         Technique: "夜間攝影",
         Edition: "限量版 (1/5)",
@@ -86,7 +92,8 @@ const generateArtworks = () => {
       year: "2021",
       medium: "水彩紙",
       dimensions: "40 × 30 公分",
-      imageUrl: "https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=1000",
     },
     {
       id: "8",
@@ -95,13 +102,14 @@ const generateArtworks = () => {
       year: "2023",
       medium: "3D 渲染",
       dimensions: "8K Resolution",
-      imageUrl: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=1000",
+      imageUrl:
+        "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=1000",
       customFields: {
         Software: "Cinema 4D, Octane Render",
         "Prints Available": "Yes",
       },
     },
-  ]
+  ];
 
   // Additional image URLs for pagination examples
   const additionalImageUrls = [
@@ -121,27 +129,27 @@ const generateArtworks = () => {
     "https://images.unsplash.com/photo-1501472312651-726afe119ff1?q=80&w=1000",
     "https://images.unsplash.com/photo-1515405295579-ba7b45403062?q=80&w=1000",
     "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=1000",
-  ]
+  ];
 
   // Create additional artworks for testing pagination
-  const additionalArtworks: Artwork[] = []
+  const additionalArtworks: Artwork[] = [];
 
   for (let i = 9; i <= 24; i++) {
-    const baseIndex = (i - 9) % 8
-    const baseArtwork = baseArtworks[baseIndex]
-    const imageIndex = (i - 9) % additionalImageUrls.length
+    const baseIndex = (i - 9) % 8;
+    const baseArtwork = baseArtworks[baseIndex];
+    const imageIndex = (i - 9) % additionalImageUrls.length;
 
     additionalArtworks.push({
       ...baseArtwork,
       id: i.toString(),
       title: `${baseArtwork.title} ${Math.ceil((i - 8) / 8)}`,
-      year: (Number.parseInt(baseArtwork.year) - Math.ceil((i - 8) / 8)).toString(),
+      year: (Number.parseInt(baseArtwork.year) - Math.ceil((i - 8) / 8))
+        .toString(),
       imageUrl: additionalImageUrls[imageIndex],
-    })
+    });
   }
 
-  return [...baseArtworks, ...additionalArtworks]
-}
+  return [...baseArtworks, ...additionalArtworks];
+};
 
-export const artworks: Artwork[] = generateArtworks()
-
+export const artworks: Artwork[] = generateArtworks();

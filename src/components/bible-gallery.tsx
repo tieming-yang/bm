@@ -1,17 +1,39 @@
 "use client";
 
-// This component uses useSearchParams and needs to be wrapped in Suspense
 import { motion } from "framer-motion";
-import type { Artwork, BibleArtwork, BibleArtworksLocale } from "@/types/artwork";
+import type { BibleArtwork, BibleArtworksLocale } from "@/types/bible-artwork";
 import useTranslation from "@/hooks/useTranslation";
 import { ImageGallery } from "./image-gallery";
 import BibleArtworks from "@/models/bible-artworks";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "./loading";
+import { toast } from "sonner";
 
 export default function BibleGalleryContent() {
   const { t, currentLanguage } = useTranslation("gallery");
+  const { t: tUI } = useTranslation("ui");
 
-  const localedArtworks: BibleArtworksLocale[] = BibleArtworks.toLocaleScripture(currentLanguage);
-  const localedGroudedArtworks = BibleArtworks.groupedByBook(currentLanguage);
+  const {
+    data: artworks,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["bibleArtworks", currentLanguage],
+    queryFn: () => BibleArtworks.getAll(),
+  });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error || !artworks) {
+    toast.error(tUI("loading.error.title"), {
+      description: tUI("loading.error.message"),
+    });
+  }
+
+  const localedArtworks = BibleArtworks.toLocaleScripture(artworks!, currentLanguage);
+  const groupedArtworks = BibleArtworks.toGrouped(localedArtworks);
 
   return (
     <div className="z-50 relative">
@@ -31,7 +53,7 @@ export default function BibleGalleryContent() {
 
       <ImageGallery
         bibleArtworks={localedArtworks}
-        groupedBibleArtworks={localedGroudedArtworks}
+        groupedBibleArtworks={groupedArtworks}
         infiniteScroll={true}
       />
     </div>

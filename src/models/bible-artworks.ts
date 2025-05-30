@@ -1,21 +1,32 @@
 import bibleArtworks from "@/data/bible-artworks-data";
-import { BibleArtworksGrouped, BibleArtworksLocale } from "@/types/artwork";
+import { assertIsDefined } from "@/lib/utils";
+import { BibleArtwork, BibleArtworksLocale } from "@/types/bible-artwork";
 
 const BibleArtworks = {
   data: bibleArtworks,
 
+  getAll: async (): Promise<BibleArtwork[]> => {
+    const res = await fetch("/api/bible-artworks", { cache: "no-store" });
+    if (!res.ok) {
+      throw new Error("Failed to fetch bible artworks from API");
+    }
+    return res.json();
+  },
+
   toLocaleScripture: (
+    artworks: BibleArtwork[],
     currentLanguage: string,
   ): BibleArtworksLocale[] => {
-    const localedArtworks = bibleArtworks.map((artwork) => {
+    assertIsDefined(currentLanguage, "currentLanguage is not defined");
+
+    const localedArtworks = artworks.map((artwork) => {
       const scripture = currentLanguage.split("-").includes("zh")
-        ? artwork.scripture.zh
-        : artwork.scripture.en;
+        ? artwork.scriptures.zh ?? ""
+        : artwork.scriptures.en ?? "";
 
       return {
         ...artwork,
         scripture,
-        description: scripture.text,
         showDetailsByDefault: true,
       };
     });
@@ -23,20 +34,16 @@ const BibleArtworks = {
     return localedArtworks;
   },
 
-  groupedByBook: (currentLanguage: string): BibleArtworksGrouped => {
-    const localedArtworks = BibleArtworks.toLocaleScripture(currentLanguage);
-    const grouped = localedArtworks.reduce(
-      (acc, artwork) => {
-        const book = artwork.scripture.book;
-        return {
-          ...acc,
-          [book]: [...(acc[book] || []), artwork],
-        };
-      },
-      {} as { [book: string]: BibleArtworksLocale[] },
-    );
-
-    return grouped;
+  toGrouped: (
+    artworks: BibleArtworksLocale[],
+  ): Record<string, BibleArtworksLocale[]> => {
+    return artworks.reduce((acc, artwork) => {
+      const book = artwork.book;
+      return {
+        ...acc,
+        [book]: [...(acc[book] || []), artwork],
+      };
+    }, {} as Record<string, BibleArtworksLocale[]>);
   },
 };
 

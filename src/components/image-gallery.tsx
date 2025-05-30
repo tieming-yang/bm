@@ -14,9 +14,9 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import type { EmblaCarouselType } from "embla-carousel-react";
+import { UseEmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
-import type { BibleArtworksLocale, BibleArtworksGrouped } from "../types/artwork";
+import type { BibleArtworksLocale, BibleArtworksGrouped } from "../types/bible-artwork";
 import useTranslation from "../hooks/useTranslation";
 import {
   Carousel,
@@ -53,7 +53,7 @@ export function ImageGallery({
   const [showDonationSheet, setShowDonationSheet] = useState(false);
   const [lightboxCarouselInitialized, setLightboxCarouselInitialized] = useState(false);
 
-  const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
+  const [emblaApi, setEmblaApi] = useState<UseEmblaCarouselType[1] | null>(null);
 
   // Refs
   const observerRef = useRef<HTMLDivElement>(null);
@@ -268,7 +268,7 @@ export function ImageGallery({
             <a href={`#${book}`} className="anchor">
               <h2
                 id={book}
-                className="font-serif text-3xl font-semibold text-primary md:scroll-mt-20"
+                className="font-serif text-xl md:text-2xl font-semibold text-primary md:scroll-mt-20"
               >
                 {booksT(book)}
               </h2>
@@ -352,12 +352,12 @@ export function ImageGallery({
                     <h3 className="mb-2 font-serif font-medium">
                       {t("bibleGallery.properties.scripture") || "Scripture"}
                     </h3>
-                    <p className="text-sm md:text-xl text-foreground text-clip h-32 overflow-auto">
-                      {selectedArtwork.scripture.text}
+                    <p className="text-sm md:text-xl whitespace-pre-wrap leading-10 text-foreground text-clip h-32 overflow-auto">
+                      {selectedArtwork.scripture}
                     </p>
 
                     <div className="mt-2 text-xs md:text-md text-muted-foreground">
-                      <span className="font-medium">{selectedArtwork.scripture.reference()}</span>
+                      <span className="font-medium">{`${selectedArtwork.book} ${selectedArtwork.section}`}</span>
                     </div>
                   </div>
                 </section>
@@ -385,12 +385,13 @@ export function ImageGallery({
                           >
                             <Image
                               src={artwork.imageUrl}
-                              alt={artwork.title}
+                              alt={artwork.id}
                               fill
                               className="object-contain"
                               sizes="(max-width: 1024px) 90vw, 60vw"
                               priority
                               placeholder="blur"
+                              blurDataURL="placeholders/artwork-placeholder.svg"
                               onLoadingComplete={() => {
                                 if (
                                   artwork.id === selectedArtworkId &&
