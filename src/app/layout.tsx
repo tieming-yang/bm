@@ -50,7 +50,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="zh-TW"
       suppressHydrationWarning
-      className={`${eagleLake.variable} ${yujiMai.variable} antialiased`}
+      className={`${eagleLake.variable} ${yujiMai.variable} antialiased dark`}
+      data-theme="dark"
+      style={{
+        colorScheme: "dark",
+        scrollBehavior: "smooth",
+      }}
     >
       <head>
         <meta charSet="UTF-8" />
