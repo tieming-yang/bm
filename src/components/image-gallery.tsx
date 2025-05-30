@@ -408,64 +408,6 @@ export function ImageGallery({
                 </div>
 
                 {/* Details */}
-                <section className="flex flex-col w-full px-3 gap-4 md:px-5">
-                  {/* Details Section */}
-                  <div className="mt-2 font-serif">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">{t("artwork.details") || "Artwork Details"}</h3>
-                      <button
-                        type="button"
-                        onClick={() => setShowDetails(!showDetails)}
-                        className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-background/70 transition-colors"
-                      >
-                        {showDetails ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )}
-                        <span className="sr-only">
-                          {showDetails ? "Hide Details" : "Show Details"}
-                        </span>
-                      </button>
-                    </div>
-
-                    {showDetails && (
-                      <div className="pt-2 border-t space-y-2 border-border">
-                        <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground">
-                            {t("artwork.year") || "Year"}
-                          </span>
-                          <span className="text-sm">{selectedArtwork.year}</span>
-                        </div>
-
-                        <div className="flex justify-between">
-                          <span className="text-sm text-muted-foreground">
-                            {t("artwork.medium") || "Medium"}
-                          </span>
-                          <span className="text-sm">{`${
-                            selectedArtwork.medium || "Digital Artwork"
-                          }`}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          {selectedArtwork.dimensions && (
-                            <span className="text-sm text-muted-foreground">
-                              {t("artwork.dimensions") || "Dimensions"}
-                              <span className="text-sm">{selectedArtwork.dimensions}</span>
-                            </span>
-                          )}
-                        </div>
-                        {selectedArtwork.location && (
-                          <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">
-                              {t("artwork.location") || "Location"}
-                            </span>
-                            <span className="text-sm">{selectedArtwork.location}</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </section>
               </div>
             </section>
 
