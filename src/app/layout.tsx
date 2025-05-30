@@ -60,23 +60,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ReactQueryProvider>
           <ClientRoot>
-            {/* <ThemeProvider
-              attribute="class"
+            <ThemeProvider
+              // attribute="class"
               defaultTheme="dark"
               // enableSystem
               disableTransitionOnChange
-            > */}
-            <div className="flex flex-col min-h-screen">
-              <Suspense fallback={<Loading />}>
-                <Header />
-                <Breadcrumb />
-                <main className="flex-1">{children}</main>
-                <Navbar />
-                <Toaster position="top-center" />
-                <Footer />
-              </Suspense>
-            </div>
-            {/* </ThemeProvider> */}
+            >
+              <div className="flex flex-col min-h-screen">
+                <Suspense fallback={<Loading />}>
+                  <Header />
+                  <Breadcrumb />
+                  <main className="flex-1">{children}</main>
+                  <Navbar />
+                  <Toaster position="top-center" />
+                  <Footer />
+                </Suspense>
+              </div>
+            </ThemeProvider>
           </ClientRoot>
         </ReactQueryProvider>
         <Analytics />
