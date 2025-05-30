@@ -1,6 +1,10 @@
 {
   "loading": {
     "title": "Loading...",
-    "message": "Please wait while the content is being loaded."
+    "message": "Please wait while the content is being loaded.",
+    "error": {
+      "title": "Loading failed",
+      "message": "Please try again later."
+    }
   }
 }
