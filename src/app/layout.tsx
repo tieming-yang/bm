@@ -69,6 +69,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               attribute="class"
               defaultTheme="dark"
               enableSystem={false}
+              forcedTheme="dark"
+              enableColorScheme
               disableTransitionOnChange
             >
               <div className="flex flex-col min-h-screen">
