@@ -332,90 +332,86 @@ export function ImageGallery({
       {selectedArtwork && (
         <div className="fixed inset-0 z-[100] flex items-start pt-1 md:items-center justify-center">
           {/* Backdrop with close handler */}
-          <div
-            className="absolute inset-0 bg-background/30 backdrop-blur-lg"
-            onClick={handleClose}
-          />
+          <div className="absolute inset-0 h-svh bg-black/50" onClick={handleClose} />
 
           {/* Lightbox Content */}
           <div
-            className="relative mx-1 md:mx-5 z-[101] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 max-h-[99vh] flex flex-col"
+            className="relative z-[101] mx-1 lg:mx-5 h-[calc(100svh-80px)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Main Content */}
-            <section className="flex-grow w-full overflow-y-auto">
+            <div className="flex-grow w-full overflow-y-auto">
               <div className="flex flex-col gap-6">
-                <section className="flex flex-col w-full px-1 gap-4 md:px-5">
-                  {/* Scripture section (for Bible bibleArtworks) */}
-
-                  <div className="p-4 bg-muted/50 rounded-md">
-                    <h3 className="mb-2 font-serif font-medium">
-                      {t("bibleGallery.properties.scripture") || "Scripture"}
-                    </h3>
-                    <p className="text-sm md:text-xl whitespace-pre-wrap leading-10 text-foreground text-clip h-32 overflow-auto">
+                <div className="flex flex-col w-full">
+                  <div className="flex flex-col w-full gap-y-5">
+                    {/* Image Carousel */}
+                    <section className="w-full sticky top-0">
+                      <Carousel
+                        opts={{
+                          loop: true,
+                          startIndex: selectedIndexInBook,
+                        }}
+                        className="w-full"
+                        onSelect={() => {
+                          if (!lightboxCarouselInitialized) {
+                            setLightboxCarouselInitialized(true);
+                          }
+                        }}
+                        setApi={setEmblaApi}
+                      >
+                        <CarouselContent>
+                          {currentBook?.map((artwork: BibleArtworksLocale) => (
+                            <CarouselItem key={artwork.id}>
+                              <AspectRatio
+                                ratio={Config.aspectRatio}
+                                className="relative overflow-hidden"
+                              >
+                                <Image
+                                  src={artwork.imageUrl}
+                                  alt={artwork.id}
+                                  fill
+                                  className="object-contain"
+                                  sizes="(max-width: 1024px) 90vw, 60vw"
+                                  priority
+                                  placeholder="blur"
+                                  blurDataURL="placeholders/artwork-placeholder.svg"
+                                  onLoadingComplete={() => {
+                                    if (
+                                      artwork.id === selectedArtworkId &&
+                                      !lightboxCarouselInitialized
+                                    ) {
+                                      setLightboxCarouselInitialized(true);
+                                    }
+                                  }}
+                                />
+                              </AspectRatio>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                      </Carousel>
+                    </section>
+                    {/* Title and Refernece */}
+                    <section className="flex justify-between px-2 md:px-4">
+                      <h3 className="font-serif font-medium underline underline-offset-2">
+                        {t("bibleGallery.properties.scripture") || "Scripture"}
+                      </h3>
+                      <span className="text-xs md:text-md text-muted-foreground">
+                        <span className="font-medium">{`${booksT(selectedArtwork.book)} ${
+                          selectedArtwork.section
+                        }`}</span>
+                      </span>
+                    </section>
+                    <p className="text-sm md:text-md whitespace-pre-wrap leading-10 text-foreground text-clip h-full overflow-auto border rounded-md px-2">
                       {selectedArtwork.scripture}
                     </p>
-
-                    <div className="mt-2 text-xs md:text-md text-muted-foreground">
-                      <span className="font-medium">{`${booksT(selectedArtwork.book)} ${
-                        selectedArtwork.section
-                      }`}</span>
-                    </div>
                   </div>
-                </section>
-                {/* Image Carousel */}
-                <div className="w-full">
-                  <Carousel
-                    opts={{
-                      loop: true,
-                      startIndex: selectedIndexInBook,
-                    }}
-                    className="w-full"
-                    onSelect={() => {
-                      if (!lightboxCarouselInitialized) {
-                        setLightboxCarouselInitialized(true);
-                      }
-                    }}
-                    setApi={setEmblaApi}
-                  >
-                    <CarouselContent>
-                      {currentBook?.map((artwork: BibleArtworksLocale) => (
-                        <CarouselItem key={artwork.id}>
-                          <AspectRatio
-                            ratio={Config.aspectRatio}
-                            className="relative overflow-hidden"
-                          >
-                            <Image
-                              src={artwork.imageUrl}
-                              alt={artwork.id}
-                              fill
-                              className="object-contain"
-                              sizes="(max-width: 1024px) 90vw, 60vw"
-                              priority
-                              placeholder="blur"
-                              blurDataURL="placeholders/artwork-placeholder.svg"
-                              onLoadingComplete={() => {
-                                if (
-                                  artwork.id === selectedArtworkId &&
-                                  !lightboxCarouselInitialized
-                                ) {
-                                  setLightboxCarouselInitialized(true);
-                                }
-                              }}
-                            />
-                          </AspectRatio>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                  </Carousel>
                 </div>
 
                 {/* Details */}
               </div>
-            </section>
+            </div>
 
             {/* Tool Bar */}
-            <section className="flex items-center justify-end px-6 pb-2 border-b border-border">
+            <section className="flex items-center justify-end px-6 border-b border-border">
               <div className="flex items-center gap-4">
                 <Button
                   variant={"ghost"}
