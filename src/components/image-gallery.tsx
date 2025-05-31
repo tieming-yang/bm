@@ -330,7 +330,7 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+        <div className="fixed inset-0 z-[100] flex items-start pt-1 md:items-center justify-center">
           {/* Backdrop with close handler */}
           <div
             className="absolute inset-0 bg-background/30 backdrop-blur-lg"
@@ -415,7 +415,7 @@ export function ImageGallery({
             </section>
 
             {/* Tool Bar */}
-            <section className="flex items-center justify-end px-6 pt-6 pb-2 border-b border-border">
+            <section className="flex items-center justify-end px-6 pb-2 border-b border-border">
               <div className="flex items-center gap-4">
                 <Button
                   variant={"ghost"}
