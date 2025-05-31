@@ -175,7 +175,7 @@ export default function Navbar() {
               >
                 <div className="pt-6 border-t border-primary/10">
                   <p className="text-sm text-muted-foreground">
-                    &copy; {new Date().getFullYear()} 彼岸媒體
+                    &copy; {new Date().getFullYear()} 彼岸數位媒體
                   </p>
                 </div>
               </motion.div>

@@ -8,7 +8,7 @@ export default function About() {
   const { t } = useTranslation();
 
   return (
-    <div className="container px-4 py-12 mx-auto relative z-50">
+    <div className="container font-serif px-4 py-12 mx-auto relative z-50">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -30,12 +30,7 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <div className="relative h-[500px] w-full rounded-3xl overflow-hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1508186225823-0963cf9ab0de?q=80&w=1000"
-              alt="楊毅"
-              fill
-              className="object-cover"
-            />
+            <Image src="logos/logo.webp" alt="Logo" fill className="object-cover" />
           </div>
         </motion.div>
 

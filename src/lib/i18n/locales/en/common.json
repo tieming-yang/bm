@@ -19,10 +19,10 @@
   },
   "about": {
     "title": "About Us",
-    "subtitle": "Beyond Digital Media is a company focused on innovative art and media experiences, committed to exploring the intersection of art and technology.",
+    "subtitle": "Beyond Digital Media Beyond Digital Media is a non-profit organization committed to fostering and celebrating Christian art and culture in all its forms. By partnering with talented artists, musicians, writers, and creatives, we strive to make the beauty of the Gospel accessible to people from every background. Through curated exhibitions, multimedia installations, performances, and community workshops, our goal is not only to showcase art inspired by biblical themes but also to spark conversations about faith, hope, and compassion in a rapidly changing world.",
     "founder": {
       "title": "Yang Yi, Founder and Artist",
-      "description1": "Yang Yi is a visionary artist and the founder of Beyond Media, dedicated to pushing the boundaries of contemporary art and digital media.",
+      "description1": "Yang Yi is a visionary artist and the founder of Beyond Digital Media, dedicated to pushing the boundaries of contemporary art and digital media.",
       "description2": "With over 15 years of multidisciplinary art experience, Yang's work explores the intersection of traditional art forms and cutting-edge technology.",
       "description3": "Born in China and educated internationally, Yang combines Eastern philosophical concepts with Western art techniques, bringing a unique cultural perspective to each creation."
     },
@@ -44,7 +44,7 @@
     "termsOfService": "Terms of Service",
     "cookiePolicy": "Cookie Policy",
     "copyright": "© {{year}} Beyond Digital Media LLC. All rights reserved.",
-    "designDev": "Designed and developed by the Beyond Media team."
+    "designDev": "Designed and developed by the Beyond Digital Media team."
   },
   "yes": "Yes",
   "no": "No",
