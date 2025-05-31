@@ -1,9 +1,11 @@
 import bibleArtworks from "@/data/bible-artworks-data";
+import { BOOK_ORDER } from "@/data/books-order";
 import { assertIsDefined } from "@/lib/utils";
 import { BibleArtwork, BibleArtworksLocale } from "@/types/bible-artwork";
 
 const BibleArtworks = {
   data: bibleArtworks,
+  order: BOOK_ORDER,
 
   getAll: async (): Promise<BibleArtwork[]> => {
     const res = await fetch("/api/bible-artworks", { cache: "no-store" });
@@ -44,6 +46,15 @@ const BibleArtworks = {
         [book]: [...(acc[book] || []), artwork],
       };
     }, {} as Record<string, BibleArtworksLocale[]>);
+  },
+
+  toSoredGroupsCanonical: (
+    grouped: Record<string, BibleArtworksLocale[]>,
+    order: string[],
+  ): Array<[string, BibleArtworksLocale[]]> => {
+    return order.filter((bookName) => bookName in grouped).map((
+      bookName,
+    ) => [bookName, grouped[bookName] as BibleArtworksLocale[]]);
   },
 };
 

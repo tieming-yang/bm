@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -16,7 +16,11 @@ import {
 } from "lucide-react";
 import { UseEmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
-import type { BibleArtworksLocale, BibleArtworksGrouped } from "../types/bible-artwork";
+import type {
+  BibleArtworksLocale,
+  BibleArtworksGrouped,
+  BibleArtworksCanonical,
+} from "../types/bible-artwork";
 import useTranslation from "../hooks/useTranslation";
 import {
   Carousel,
@@ -32,10 +36,11 @@ import { AspectRatio } from "./ui/aspect-ratio";
 
 import Config from "@/models/config";
 import { toast } from "sonner";
+import { on } from "events";
 
 interface ImageGalleryProps {
   bibleArtworks: BibleArtworksLocale[];
-  groupedBibleArtworks: BibleArtworksGrouped;
+  groupedBibleArtworks: BibleArtworksCanonical;
   infiniteScroll?: boolean;
   initialLimit?: number;
 }
@@ -67,49 +72,44 @@ export function ImageGallery({
   const { t: booksT } = useTranslation("books");
 
   // Derived values
-  const selectedArtwork = selectedArtworkId
-    ? bibleArtworks.find((a) => a.id === selectedArtworkId) || null
-    : null;
 
-  const selectedIndex = selectedArtworkId
-    ? bibleArtworks.findIndex((a) => a.id === selectedArtworkId)
+  // Find the tuple [bookName, groupArray] containing the selected artwork
+  const currentBookTuple = selectedArtworkId
+    ? groupedBibleArtworks.find(([bookName, group]) =>
+        group.some((artwork) => artwork.id === selectedArtworkId)
+      )
+    : undefined;
+  const [currentBookName, currentBook] = currentBookTuple ? currentBookTuple : [];
+
+  const selectedIndexInBook = selectedArtworkId
+    ? currentBook?.findIndex((art) => art.id === selectedArtworkId)
     : -1;
-  const currentBookName = Object.entries(groupedBibleArtworks).find(([bookName, group]) =>
-    group.some((artwork) => artwork.id === selectedArtworkId)
-  )?.[0];
-  const currentBook = groupedBibleArtworks[currentBookName || ""] || [];
 
-  useEffect(() => {
-    if (!selectedArtworkId) {
-      const imageId = searchParams?.get("image");
-      if (imageId) {
-        const artwork = bibleArtworks.find((a) => a.id === imageId);
-        if (artwork) {
-          setSelectedArtworkId(artwork.id);
-        }
-      }
-    }
-  }, []);
+  // Derive selectedArtwork from the current book group:
+  const selectedArtwork =
+    selectedIndexInBook !== undefined && selectedIndexInBook >= 0
+      ? currentBook?.[selectedIndexInBook]
+      : null;
 
-  // Sync selectedArtworkId when carousel changes
+  //! Sync selectedArtworkId with Embla Carousel
   useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => {
       const idx = emblaApi.selectedScrollSnap();
-      const artwork = currentBook[idx];
+      const artwork = currentBook?.[idx];
       if (artwork) {
         setSelectedArtworkId(artwork.id);
       }
     };
     emblaApi.on("select", onSelect);
     // initialize selection
-    onSelect();
+    // onSelect();
     return () => {
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, currentBook]);
 
-  // Initialize selectedArtworkId from URL if present
+  //! Initialize selectedArtworkId from URL if present
   useEffect(() => {
     if (urlUpdatingRef.current) return;
 
@@ -122,7 +122,7 @@ export function ImageGallery({
     }
   }, [searchParams, bibleArtworks, selectedArtworkId]);
 
-  // Update URL when selectedArtworkId changes (avoid circular updates)
+  //! Update URL when selectedArtworkId changes (avoid circular updates)
   useEffect(() => {
     if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
 
@@ -263,7 +263,7 @@ export function ImageGallery({
     <>
       {/* Gallery Grid */}
       <ul className="flex flex-col w-full gap-y-10">
-        {Object.entries(groupedBibleArtworks).map(([book, artworks]) => (
+        {groupedBibleArtworks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
             <a href={`#${book}`} className="anchor">
               <h2
@@ -274,8 +274,8 @@ export function ImageGallery({
               </h2>
             </a>
 
-            {/* Paitings */}
-            <ul className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
+            {/* Artworks */}
+            <ul className="w-full grid grid-cols-1 font-serif md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <motion.li
                   key={artwork.id}
@@ -297,11 +297,11 @@ export function ImageGallery({
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       priority
                       placeholder="blur"
-                      blurDataURL="placeholders/artwork-placeholder.svg"
+                      blurDataURL="../app/opengraph-image.png"
                     />
                   </AspectRatio>
 
-                  <h3>{artwork.title}</h3>
+                  <h3>{artwork.section}</h3>
                 </motion.li>
               ))}
             </ul>
@@ -357,7 +357,9 @@ export function ImageGallery({
                     </p>
 
                     <div className="mt-2 text-xs md:text-md text-muted-foreground">
-                      <span className="font-medium">{`${selectedArtwork.book} ${selectedArtwork.section}`}</span>
+                      <span className="font-medium">{`${booksT(selectedArtwork.book)} ${
+                        selectedArtwork.section
+                      }`}</span>
                     </div>
                   </div>
                 </section>
@@ -366,7 +368,7 @@ export function ImageGallery({
                   <Carousel
                     opts={{
                       loop: true,
-                      startIndex: selectedIndex,
+                      startIndex: selectedIndexInBook,
                     }}
                     className="w-full"
                     onSelect={() => {
@@ -377,7 +379,7 @@ export function ImageGallery({
                     setApi={setEmblaApi}
                   >
                     <CarouselContent>
-                      {currentBook.map((artwork) => (
+                      {currentBook?.map((artwork: BibleArtworksLocale) => (
                         <CarouselItem key={artwork.id}>
                           <AspectRatio
                             ratio={Config.aspectRatio}

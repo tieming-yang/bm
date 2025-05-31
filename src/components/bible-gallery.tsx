@@ -34,6 +34,10 @@ export default function BibleGalleryContent() {
 
   const localedArtworks = BibleArtworks.toLocaleScripture(artworks!, currentLanguage);
   const groupedArtworks = BibleArtworks.toGrouped(localedArtworks);
+  const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
+    groupedArtworks,
+    BibleArtworks.order
+  );
 
   return (
     <div className="z-50 relative">
@@ -53,7 +57,7 @@ export default function BibleGalleryContent() {
 
       <ImageGallery
         bibleArtworks={localedArtworks}
-        groupedBibleArtworks={groupedArtworks}
+        groupedBibleArtworks={sortedCanonicalBooks}
         infiniteScroll={true}
       />
     </div>

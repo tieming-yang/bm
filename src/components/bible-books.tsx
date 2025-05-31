@@ -39,6 +39,10 @@ export default function BibleBooks({}: Props) {
 
   const localedArtworks = BibleArtworks.toLocaleScripture(artworks!, currentLanguage);
   const groupedArtworks = BibleArtworks.toGrouped(localedArtworks);
+  const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
+    groupedArtworks,
+    BibleArtworks.order
+  );
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -47,7 +51,7 @@ export default function BibleBooks({}: Props) {
       className="h-svh"
     >
       <ul className="z-20 px-3 grid grid-cols-1 md:grid-cols-2 w-svw md:px-5 xl:px-7 place-content-center gap-10">
-        {Object.entries(groupedArtworks).map(([book, artworks]) => (
+        {sortedCanonicalBooks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
             <Link href={`/bible-gallery/#${book}`}>
               <AspectRatio

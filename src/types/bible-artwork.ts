@@ -30,6 +30,8 @@ export type BibleArtworksGrouped = {
   [book: string]: BibleArtworksLocale[];
 };
 
+export type BibleArtworksCanonical = Array<[string, BibleArtworksLocale[]]>;
+
 // Helper function to check if an artwork is a Bible artwork
 export function isBibleArtwork(artwork: BibleArtwork): artwork is BibleArtwork {
   return "scriptureReference" in artwork && "scriptureTextEn" in artwork;
