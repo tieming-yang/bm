@@ -37,6 +37,7 @@ import { AspectRatio } from "./ui/aspect-ratio";
 import Config from "@/models/config";
 import { toast } from "sonner";
 import { on } from "events";
+import Loading from "./loading";
 
 interface ImageGalleryProps {
   bibleArtworks: BibleArtworksLocale[];
@@ -57,6 +58,7 @@ export function ImageGallery({
   const [showDetails, setShowDetails] = useState(true);
   const [showDonationSheet, setShowDonationSheet] = useState(false);
   const [lightboxCarouselInitialized, setLightboxCarouselInitialized] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const [emblaApi, setEmblaApi] = useState<UseEmblaCarouselType[1] | null>(null);
 
@@ -268,14 +270,14 @@ export function ImageGallery({
             <a href={`#${book}`} className="anchor">
               <h2
                 id={book}
-                className="font-serif text-xl md:text-2xl font-semibold text-primary md:scroll-mt-20"
+                className="font-mono text-sm md:text-md font-semibold text-primary md:scroll-mt-20"
               >
                 {booksT(book)}
               </h2>
             </a>
 
             {/* Artworks */}
-            <ul className="w-full grid grid-cols-1 font-serif md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
+            <ul className="w-full grid grid-cols-1 font-mono md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <motion.li
                   key={artwork.id}
@@ -289,6 +291,9 @@ export function ImageGallery({
                     ratio={Config.aspectRatio}
                     className="relative overflow-hidden shadow-xl"
                   >
+                    {isImageLoading && (
+                      <div className="absolute w-full h-full bg-gray-400 animate-pulse"></div>
+                    )}
                     <Image
                       src={artwork.imageUrl}
                       alt={artwork.title || "Bible Artwork"}
@@ -296,8 +301,10 @@ export function ImageGallery({
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       priority
-                      placeholder="blur"
-                      blurDataURL="../app/opengraph-image.png"
+                      onLoad={() => {
+                        console.log("Image loaded");
+                        setIsImageLoading(false);
+                      }}
                     />
                   </AspectRatio>
 
