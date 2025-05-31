@@ -308,7 +308,7 @@ export function ImageGallery({
                     />
                   </AspectRatio>
 
-                  <h3>{artwork.section}</h3>
+                  <h3 className="text-sm md:text-md">{artwork.section}</h3>
                 </motion.li>
               ))}
             </ul>
