@@ -48,7 +48,7 @@ export default function Contact() {
             </div>
             <div>
               <h3 className="text-lg font-medium">{t("contact.email.title")}</h3>
-              <p className="text-muted-foreground">{t("contact.email.value")}</p>
+              <p className="text-muted-foreground">{}</p>
             </div>
           </div>
 
@@ -58,7 +58,7 @@ export default function Contact() {
             </div>
             <div>
               <h3 className="text-lg font-medium">{t("contact.phone.title")}</h3>
-              <p className="text-muted-foreground">{t("contact.phone.value")}</p>
+              <p className="text-muted-foreground">{}</p>
             </div>
           </div>
 
@@ -68,8 +68,8 @@ export default function Contact() {
             </div>
             <div>
               <h3 className="text-lg font-medium">{t("contact.address.title")}</h3>
-              <p className="text-muted-foreground">{t("contact.address.line1")}</p>
-              <p className="text-muted-foreground">{t("contact.address.line2")}</p>
+              <p className="text-muted-foreground">{}</p>
+              <p className="text-muted-foreground">{}</p>
             </div>
           </div>
         </motion.div>
