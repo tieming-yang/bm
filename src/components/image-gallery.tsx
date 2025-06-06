@@ -4,46 +4,25 @@ import { useState, useEffect, useRef, use } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import {
-  X,
-  ChevronDown,
-  ChevronUp,
-  Download,
-  Share,
-  Loader2,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { X, Download, Share, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { UseEmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
-import type {
-  BibleArtworksLocale,
-  BibleArtworksGrouped,
-  BibleArtworksCanonical,
-} from "../types/bible-artwork";
+import type { BibleArtworksLocale, BibleArtworksCanonical } from "../types/bible-artwork";
 import useTranslation from "../hooks/useTranslation";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselDots,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { DonationSheet } from "./donation-sheet";
 
 import { AspectRatio } from "./ui/aspect-ratio";
 
 import Config from "@/models/config";
 import { toast } from "sonner";
-import { on } from "events";
-import Loading from "./loading";
 
 interface ImageGalleryProps {
   bibleArtworks: BibleArtworksLocale[];
   groupedBibleArtworks: BibleArtworksCanonical;
   infiniteScroll?: boolean;
   initialLimit?: number;
+  book?: string; // Optional book parameter for filtering
 }
 
 export function ImageGallery({
@@ -51,6 +30,7 @@ export function ImageGallery({
   groupedBibleArtworks,
   infiniteScroll = false,
   initialLimit = 8,
+  book,
 }: ImageGalleryProps) {
   // Core state
   const [displayCount, setDisplayCount] = useState(initialLimit);
@@ -74,10 +54,14 @@ export function ImageGallery({
   const { t: booksT } = useTranslation("books");
 
   // Derived values
+  const isBookFiltered = !!book;
+  const filteredBibleArtworks = isBookFiltered
+    ? groupedBibleArtworks.filter(([bookName, _]) => bookName.toLowerCase() === book?.toLowerCase())
+    : groupedBibleArtworks;
 
   // Find the tuple [bookName, groupArray] containing the selected artwork
   const currentBookTuple = selectedArtworkId
-    ? groupedBibleArtworks.find(([bookName, group]) =>
+    ? filteredBibleArtworks.find(([bookName, group]) =>
         group.some((artwork) => artwork.id === selectedArtworkId)
       )
     : undefined;
@@ -265,7 +249,7 @@ export function ImageGallery({
     <>
       {/* Gallery Grid */}
       <ul className="flex flex-col w-full gap-y-10">
-        {groupedBibleArtworks.map(([book, artworks]) => (
+        {filteredBibleArtworks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
             <a href={`#${book}`} className="anchor">
               <h2

@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { BibleArtwork, BibleArtworksLocale } from "@/types/bible-artwork";
 import useTranslation from "@/hooks/useTranslation";
 import { ImageGallery } from "./image-gallery";
 import BibleArtworks from "@/models/bible-artworks";
@@ -9,9 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "./loading";
 import { toast } from "sonner";
 
-export default function BibleGalleryContent() {
+export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
   const { t: tUI } = useTranslation("ui");
+  const book = params?.book;
 
   const {
     data: artworks,
@@ -59,6 +59,7 @@ export default function BibleGalleryContent() {
         bibleArtworks={localedArtworks}
         groupedBibleArtworks={sortedCanonicalBooks}
         infiniteScroll={true}
+        book={book}
       />
     </div>
   );

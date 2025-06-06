@@ -53,7 +53,7 @@ export default function BibleBooks({}: Props) {
       <ul className="z-20 px-3 grid grid-cols-1 md:grid-cols-2 w-svw md:px-5 xl:px-7 place-content-center gap-10">
         {sortedCanonicalBooks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
-            <Link href={`/bible-gallery/#${book}`}>
+            <Link href={`/bible-gallery/${book}`}>
               <AspectRatio
                 ratio={Config.aspectRatio}
                 className="relative overflow-hidden shadow-xl"
