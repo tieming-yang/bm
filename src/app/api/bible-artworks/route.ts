@@ -22,9 +22,9 @@ export async function GET() {
       results.map(async (page: PageObjectResponse) => {
         const id = page.id;
         const title = page.properties.Name.title[0]?.plain_text ?? "";
-        const book = page.properties.Book.select.name ?? "";
+        const book = page.properties.Book.select?.name ?? "";
         const section = page.properties.Section.rich_text[0]?.plain_text ?? "";
-        const artwork = page.properties.Artwork.files[0].file.url ?? "";
+        const artwork = page.properties.Artwork.files[0]?.file.url ?? "";
         const createdTime = page.created_time;
 
         // Get block content for every page

@@ -19,6 +19,7 @@ const BibleArtworks = {
     artworks: BibleArtwork[],
     currentLanguage: string,
   ): BibleArtworksLocale[] => {
+    assertIsDefined(artworks, "artworks is not defined");
     assertIsDefined(currentLanguage, "currentLanguage is not defined");
 
     const localedArtworks = artworks.map((artwork) => {
@@ -39,13 +40,16 @@ const BibleArtworks = {
   toGrouped: (
     artworks: BibleArtworksLocale[],
   ): Record<string, BibleArtworksLocale[]> => {
-    return artworks.reduce((acc, artwork) => {
-      const book = artwork.book;
-      return {
-        ...acc,
-        [book]: [...(acc[book] || []), artwork],
-      };
-    }, {} as Record<string, BibleArtworksLocale[]>);
+    return artworks.filter((artwork) => !!artwork.book).reduce(
+      (acc, artwork) => {
+        const book = artwork.book;
+        return {
+          ...acc,
+          [book]: [...(acc[book] || []), artwork],
+        };
+      },
+      {} as Record<string, BibleArtworksLocale[]>,
+    );
   },
 
   toSoredGroupsCanonical: (
