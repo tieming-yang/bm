@@ -1,6 +1,4 @@
-// src/models/bookOrder.ts
-
-export const BOOK_ORDER: string[] = [
+const BOOK_ORDER: string[] = [
   // Old Testament
   "Genesis",
   "Exodus",
@@ -71,3 +69,15 @@ export const BOOK_ORDER: string[] = [
   "Jude",
   "Revelation",
 ];
+
+const Books = {
+  order: BOOK_ORDER,
+  toTranslationKeys: BOOK_ORDER.reduce((acc, book) => {
+    return {
+      ...acc,
+      [book.toLowerCase()]: `books.${book}`,
+    };
+  }, {}),
+};
+
+export default Books;

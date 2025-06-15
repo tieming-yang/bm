@@ -1,11 +1,11 @@
 import bibleArtworks from "@/data/bible-artworks-data";
-import { BOOK_ORDER } from "@/data/books-order";
+import Books from "@/data/books";
 import { assertIsDefined } from "@/lib/utils";
 import { BibleArtwork, BibleArtworksLocale } from "@/types/bible-artwork";
 
 const BibleArtworks = {
   data: bibleArtworks,
-  order: BOOK_ORDER,
+  order: Books.order,
 
   getAll: async (): Promise<BibleArtwork[]> => {
     const res = await fetch("/api/bible-artworks", { cache: "no-store" });
