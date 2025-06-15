@@ -13,6 +13,7 @@ function ReactQueryProvider({ children }: React.PropsWithChildren) {
           staleTime: 1000 * 60,
           refetchOnWindowFocus: false,
           refetchIntervalInBackground: false,
+          refetchOnMount: false,
         },
       },
     })
