@@ -121,7 +121,7 @@ export function ImageGallery({
 
       // Use setTimeout to batch updates and avoid multiple URL changes
       setTimeout(() => {
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
         // Reset flag after URL update
         setTimeout(() => {
