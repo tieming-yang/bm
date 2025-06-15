@@ -58,7 +58,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
       <ImageGallery
         bibleArtworks={localedArtworks}
         groupedBibleArtworks={sortedCanonicalBooks}
-        infiniteScroll={true}
+        infiniteScroll={false}
         book={book}
       />
     </div>

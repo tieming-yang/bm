@@ -300,7 +300,7 @@ export function ImageGallery({
       </ul>
 
       {/* Load More Button */}
-      {!infiniteScroll && displayCount < bibleArtworks.length && (
+      {/* {!infiniteScroll && displayCount < bibleArtworks.length && (
         <div className="mt-12 text-center">
           <Button
             onClick={() => setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length))}
@@ -309,14 +309,14 @@ export function ImageGallery({
             {t("loadMore")}
           </Button>
         </div>
-      )}
+      )} */}
 
       {/* Infinite Scroll Observer */}
-      {infiniteScroll && displayCount < bibleArtworks.length && (
+      {/* {infiniteScroll && displayCount < bibleArtworks.length && (
         <div ref={observerRef} className="flex items-center justify-center w-full h-20 mt-8">
           <Loader2 className="w-6 h-6 text-primary animate-spin" />
         </div>
-      )}
+      )} */}
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
