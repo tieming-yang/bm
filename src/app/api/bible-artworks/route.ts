@@ -18,7 +18,7 @@ export async function GET() {
       sorts: [{ property: "Name", direction: "ascending" }],
       page_size: 100,
     });
-
+    console.log("Fetched Bible artworks from Notion:", results.length);
     const entries = await Promise.all(
       results.map(async (page: PageObjectResponse) => {
         const id = page.id;
