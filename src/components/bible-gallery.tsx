@@ -55,12 +55,12 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
         </p>
       </motion.div>
 
-      {/* <ImageGallery
+      <ImageGallery
         bibleArtworks={localedArtworks}
         groupedBibleArtworks={sortedCanonicalBooks}
         infiniteScroll={false}
         book={book}
-      /> */}
+      />
     </div>
   );
 }

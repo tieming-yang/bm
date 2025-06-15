@@ -165,7 +165,7 @@ export function ImageGallery({
 
     // Clear selected artwork state
     setSelectedArtworkId(null);
-    setLightboxCarouselInitialized(false);
+    // setLightboxCarouselInitialized(false);
 
     // Update URL
     if (searchParams?.has("image")) {
@@ -342,9 +342,9 @@ export function ImageGallery({
                         }}
                         className="w-full"
                         onSelect={() => {
-                          if (!lightboxCarouselInitialized) {
-                            setLightboxCarouselInitialized(true);
-                          }
+                          // if (!lightboxCarouselInitialized) {
+                          //   setLightboxCarouselInitialized(true);
+                          // }
                         }}
                         setApi={setEmblaApi}
                       >
@@ -369,7 +369,7 @@ export function ImageGallery({
                                       artwork.id === selectedArtworkId &&
                                       !lightboxCarouselInitialized
                                     ) {
-                                      setLightboxCarouselInitialized(true);
+                                      // setLightboxCarouselInitialized(true);
                                     }
                                   }}
                                 />
