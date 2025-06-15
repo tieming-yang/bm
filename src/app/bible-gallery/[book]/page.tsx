@@ -4,8 +4,8 @@ import BibleGalleryContent from "@/components/bible-gallery";
 import Loading from "@/components/loading";
 
 // Main page component with Suspense boundary
-export default function BibleGallery({ params }: { params: { book?: string } }) {
-  const book = params.book;
+export default async function BibleGallery({ params }: { params: { book?: string } }) {
+  const { book } = await params;
 
   return (
     <div className="container px-4 py-12 mx-auto">
