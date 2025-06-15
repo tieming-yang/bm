@@ -275,9 +275,9 @@ export function ImageGallery({
                     ratio={Config.aspectRatio}
                     className="relative overflow-hidden shadow-xl"
                   >
-                    {/* {isImageLoading && (
+                    {isImageLoading && (
                       <div className="absolute w-full h-full bg-gray-400 animate-pulse"></div>
-                    )} */}
+                    )}
                     <Image
                       src={artwork.imageUrl}
                       alt={artwork.title || "Bible Artwork"}
@@ -286,7 +286,7 @@ export function ImageGallery({
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       priority
                       onLoad={() => {
-                        // setIsImageLoading(false);
+                        setIsImageLoading(false);
                       }}
                     />
                   </AspectRatio>
