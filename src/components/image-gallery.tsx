@@ -132,21 +132,21 @@ export function ImageGallery({
   }, [selectedArtworkId, router, pathname, searchParams]);
 
   // Infinite scroll effect
-  useEffect(() => {
-    if (!infiniteScroll || !observerRef.current) return;
+  // useEffect(() => {
+  //   if (!infiniteScroll || !observerRef.current) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && displayCount < bibleArtworks.length) {
-          setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length));
-        }
-      },
-      { threshold: 0.1 }
-    );
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && displayCount < bibleArtworks.length) {
+  //         setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length));
+  //       }
+  //     },
+  //     { threshold: 0.1 }
+  //   );
 
-    observer.observe(observerRef.current);
-    return () => observer.disconnect();
-  }, [infiniteScroll, displayCount, bibleArtworks.length]);
+  //   observer.observe(observerRef.current);
+  //   return () => observer.disconnect();
+  // }, [infiniteScroll, displayCount, bibleArtworks.length]);
 
   // Body scroll lock when lightbox is open
   useEffect(() => {
