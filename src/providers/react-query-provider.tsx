@@ -10,10 +10,12 @@ function ReactQueryProvider({ children }: React.PropsWithChildren) {
     new QueryClient({
       defaultOptions: {
         queries: {
-          staleTime: 1000 * 60,
+          staleTime: 1000 * 60 * 5,
           refetchOnWindowFocus: false,
           refetchIntervalInBackground: false,
           refetchOnMount: false,
+          refetchOnReconnect: false,
+          refetchInterval: false,
         },
       },
     })
