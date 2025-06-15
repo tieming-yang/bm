@@ -96,17 +96,17 @@ export function ImageGallery({
   }, [emblaApi, currentBook]);
 
   //! Initialize selectedArtworkId from URL if present
-  useEffect(() => {
-    if (urlUpdatingRef.current) return;
+  // useEffect(() => {
+  //   if (urlUpdatingRef.current) return;
 
-    const imageId = searchParams?.get("image");
-    if (imageId && !selectedArtworkId) {
-      const artwork = bibleArtworks.find((a) => a.id === imageId);
-      if (artwork) {
-        setSelectedArtworkId(artwork.id);
-      }
-    }
-  }, [searchParams, bibleArtworks, selectedArtworkId]);
+  //   const imageId = searchParams?.get("image");
+  //   if (imageId && !selectedArtworkId) {
+  //     const artwork = bibleArtworks.find((a) => a.id === imageId);
+  //     if (artwork) {
+  //       setSelectedArtworkId(artwork.id);
+  //     }
+  //   }
+  // }, [searchParams, bibleArtworks, selectedArtworkId]);
 
   //! Update URL when selectedArtworkId changes (avoid circular updates)
   // useEffect(() => {
