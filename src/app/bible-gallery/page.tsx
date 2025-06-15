@@ -9,9 +9,9 @@ import Loading from "@/components/loading";
 export default function BibleGallery() {
   return (
     <div className="container px-4 py-12 mx-auto">
-      <Suspense fallback={<Loading />}>
+      {/* <Suspense fallback={<Loading />}> */}
         <BibleGalleryContent />
-      </Suspense>
+      {/* </Suspense> */}
     </div>
   );
 }

@@ -9,9 +9,9 @@ export default async function BibleGallery({ params }: { params: { book?: string
 
   return (
     <div className="container px-4 py-12 mx-auto">
-      <Suspense fallback={<Loading />}>
-        <BibleGalleryContent params={{ book }} />
-      </Suspense>
+      {/* <Suspense fallback={<Loading />}> */}
+      <BibleGalleryContent params={{ book }} />
+      {/* </Suspense> */}
     </div>
   );
 }
