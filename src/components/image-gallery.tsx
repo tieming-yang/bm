@@ -165,7 +165,7 @@ export function ImageGallery({
 
     // Clear selected artwork state
     setSelectedArtworkId(null);
-    // setLightboxCarouselInitialized(false);
+    setLightboxCarouselInitialized(false);
 
     // Update URL
     if (searchParams?.has("image")) {
@@ -251,7 +251,7 @@ export function ImageGallery({
       <ul className="flex flex-col w-full gap-y-10">
         {filteredBibleArtworks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
-            <a href={`#${book}`} className="anchor">
+            <a href={``} className="anchor">
               <h2
                 id={book}
                 className="font-mono text-sm md:text-md font-semibold text-primary md:scroll-mt-20"
@@ -342,9 +342,9 @@ export function ImageGallery({
                         }}
                         className="w-full"
                         onSelect={() => {
-                          // if (!lightboxCarouselInitialized) {
-                          //   setLightboxCarouselInitialized(true);
-                          // }
+                          if (!lightboxCarouselInitialized) {
+                            setLightboxCarouselInitialized(true);
+                          }
                         }}
                         setApi={setEmblaApi}
                       >
@@ -369,7 +369,7 @@ export function ImageGallery({
                                       artwork.id === selectedArtworkId &&
                                       !lightboxCarouselInitialized
                                     ) {
-                                      // setLightboxCarouselInitialized(true);
+                                      setLightboxCarouselInitialized(true);
                                     }
                                   }}
                                 />
