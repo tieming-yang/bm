@@ -16,6 +16,7 @@ export async function GET() {
     const { results } = await notion.databases.query({
       database_id: dbID,
       sorts: [{ property: "Name", direction: "ascending" }],
+      page_size: 100,
     });
 
     const entries = await Promise.all(
