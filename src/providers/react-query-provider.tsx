@@ -16,6 +16,8 @@ function ReactQueryProvider({ children }: React.PropsWithChildren) {
           refetchOnMount: false,
           refetchOnReconnect: false,
           refetchInterval: false,
+          retry: 1,
+          retryOnMount: false,
         },
       },
     })
