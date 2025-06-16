@@ -63,14 +63,26 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
         book={book}
       /> */}
       {
-        localedArtworks.map((artwork) => (
+        [
+          { id: "1", title: "Creation", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "2", title: "The Flood", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "3", title: "The Exodus", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "4", title: "The Ten Commandments", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "5", title: "David and Goliath", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "6", title: "The Nativity", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "7", title: "The Passover", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "8", title: "The Last Supper", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "9", title: "The Crucifixion", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "10", title: "The Resurrection", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+          { id: "11", title: "The Ascension", imageUrl: "/paintings/Exodus/Exodus1:1-22.webp" },
+        ].map((artwork) => (
           <Image
             key={artwork.id}
             src={artwork.imageUrl}
             alt={artwork.title}
             width={800}
             height={600}
-            className="mb-4 rounded-lg shadow-lg"
+            className="mb-4 rounded-md shadow-lg"
           />
         ))
       }
