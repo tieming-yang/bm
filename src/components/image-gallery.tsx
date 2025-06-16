@@ -279,14 +279,14 @@ export function ImageGallery({
       <ul className="flex flex-col w-full gap-y-10">
         {filteredBibleArtworks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
-            <a href={`#${book}`} className="anchor">
+            {/* <a href={`#${book}`} className="anchor"> */}
               <h2
                 id={book}
                 className="font-mono text-sm md:text-md font-semibold text-primary md:scroll-mt-20"
               >
                 {booksT(book)}
               </h2>
-            </a>
+            {/* </a> */}
 
             {/* Artworks */}
             <ul className="w-full grid grid-cols-1 font-mono md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
