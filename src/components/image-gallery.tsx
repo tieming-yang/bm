@@ -105,6 +105,10 @@ export function ImageGallery({
       ? currentBook?.[selectedIndexInBook]
       : null;
 
+  useEffect(() => {
+    console.log("URL changed to:", pathname, searchParams?.toString());
+  }, [pathname, searchParams]);
+  
   //! Sync selectedArtworkId with Embla Carousel
   useEffect(() => {
     if (!emblaApi) return;
@@ -280,12 +284,12 @@ export function ImageGallery({
         {filteredBibleArtworks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
             {/* <a href={`#${book}`} className="anchor"> */}
-              <h2
-                id={book}
-                className="font-mono text-sm md:text-md font-semibold text-primary md:scroll-mt-20"
-              >
-                {booksT(book)}
-              </h2>
+            <h2
+              id={book}
+              className="font-mono text-sm md:text-md font-semibold text-primary md:scroll-mt-20"
+            >
+              {booksT(book)}
+            </h2>
             {/* </a> */}
 
             {/* Artworks */}
