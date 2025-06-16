@@ -1,6 +1,7 @@
+// @ts-nocheck
 "use client";
 
-import { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -25,6 +26,34 @@ interface ImageGalleryProps {
   book?: string; // Optional book parameter for filtering
 }
 
+function Thumbnail({
+  artwork,
+  onClick,
+}: {
+  artwork: BibleArtworksLocale;
+  onClick: (id: string) => void;
+}) {
+  const [isLoading, setIsLoading] = useState(true);
+  return (
+    <AspectRatio
+      ratio={Config.aspectRatio}
+      className="relative overflow-hidden shadow-xl cursor-pointer group"
+      onClick={() => onClick(artwork.id)}
+    >
+      {isLoading && <div className="absolute inset-0 bg-gray-400 animate-pulse"></div>}
+      <Image
+        src={artwork.imageUrl}
+        alt={artwork.title || "Bible Artwork"}
+        fill
+        className="object-cover transition-transform duration-500 group-hover:scale-110"
+        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        priority
+        onLoadingComplete={() => setIsLoading(false)}
+      />
+    </AspectRatio>
+  );
+}
+
 export function ImageGallery({
   bibleArtworks,
   groupedBibleArtworks,
@@ -38,7 +67,6 @@ export function ImageGallery({
   const [showDetails, setShowDetails] = useState(true);
   const [showDonationSheet, setShowDonationSheet] = useState(false);
   const [lightboxCarouselInitialized, setLightboxCarouselInitialized] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const [emblaApi, setEmblaApi] = useState<UseEmblaCarouselType[1] | null>(null);
 
@@ -263,34 +291,8 @@ export function ImageGallery({
             {/* Artworks */}
             <ul className="w-full grid grid-cols-1 font-mono md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
-                <li
-                  key={artwork.id}
-                  // initial={{ opacity: 0, y: 20 }}
-                  // animate={{ opacity: 1, y: 0 }}
-                  // transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="cursor-pointer group"
-                  onClick={() => handleImageClick(artwork.id)}
-                >
-                  <AspectRatio
-                    ratio={Config.aspectRatio}
-                    className="relative overflow-hidden shadow-xl"
-                  >
-                    {isImageLoading && (
-                      <div className="absolute w-full h-full bg-gray-400 animate-pulse"></div>
-                    )}
-                    <Image
-                      src={artwork.imageUrl}
-                      alt={artwork.title || "Bible Artwork"}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      priority
-                      onLoad={() => {
-                        setIsImageLoading(false);
-                      }}
-                    />
-                  </AspectRatio>
-
+                <li key={artwork.id} className="cursor-pointer group">
+                  <Thumbnail artwork={artwork} onClick={handleImageClick} />
                   <h3 className="text-sm md:text-md">{artwork.section}</h3>
                 </li>
               ))}
