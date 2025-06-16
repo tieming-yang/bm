@@ -71,7 +71,7 @@ export function ImageGallery({
   const [lightboxCarouselInitialized, setLightboxCarouselInitialized] = useState(false);
 
   const [emblaApi, setEmblaApi] = useState<UseEmblaCarouselType[1] | null>(null);
-  console.log("rendering ImageGallery");
+
   // Refs
   const observerRef = useRef<HTMLDivElement>(null);
   const urlUpdatingRef = useRef(false);
@@ -106,10 +106,6 @@ export function ImageGallery({
     selectedIndexInBook !== undefined && selectedIndexInBook >= 0
       ? currentBook?.[selectedIndexInBook]
       : null;
-
-  useEffect(() => {
-    console.log("URL changed to:", pathname, searchParams?.toString());
-  }, [pathname, searchParams]);
 
   //! Sync selectedArtworkId with Embla Carousel
   useEffect(() => {
