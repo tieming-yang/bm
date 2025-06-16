@@ -74,14 +74,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               disableTransitionOnChange
             >
               <div className="flex flex-col min-h-screen">
-                {/* <Suspense fallback={<Loading />}> */}
+                <Suspense fallback={<Loading />}>
                   <Header />
                   <Breadcrumb />
                   <main className="flex-1">{children}</main>
                   <Navbar />
                   <Toaster position="top-center" />
                   <Footer />
-                {/* </Suspense> */}
+                </Suspense>
               </div>
             </ThemeProvider>
           </ClientRoot>
