@@ -17,6 +17,7 @@ import { AspectRatio } from "./ui/aspect-ratio";
 
 import Config from "@/models/config";
 import { toast } from "sonner";
+import Loading from "./loading";
 
 interface ImageGalleryProps {
   bibleArtworks: BibleArtworksLocale[];
@@ -40,7 +41,9 @@ function Thumbnail({
       className="relative overflow-hidden shadow-xl cursor-pointer group"
       onClick={() => onClick(artwork.id)}
     >
-      {isLoading && <div className="absolute inset-0 bg-gray-400 animate-pulse"></div>}
+      {isLoading && (
+        <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      )}
       <Image
         src={artwork.imageUrl}
         alt={artwork.title || "Bible Artwork"}
@@ -126,40 +129,40 @@ export function ImageGallery({
   }, [emblaApi, currentBook]);
 
   //! Initialize selectedArtworkId from URL if present
-  // useEffect(() => {
-  //   if (urlUpdatingRef.current) return;
+  useEffect(() => {
+    if (urlUpdatingRef.current) return;
 
-  //   const imageId = searchParams?.get("image");
-  //   if (imageId && !selectedArtworkId) {
-  //     const artwork = bibleArtworks.find((a) => a.id === imageId);
-  //     if (artwork) {
-  //       setSelectedArtworkId(artwork.id);
-  //     }
-  //   }
-  // }, [searchParams, bibleArtworks, selectedArtworkId]);
+    const imageId = searchParams?.get("image");
+    if (imageId && !selectedArtworkId) {
+      const artwork = bibleArtworks.find((a) => a.id === imageId);
+      if (artwork) {
+        setSelectedArtworkId(artwork.id);
+      }
+    }
+  }, [searchParams, bibleArtworks, selectedArtworkId]);
 
   //! Update URL when selectedArtworkId changes (avoid circular updates)
-  // useEffect(() => {
-  //   if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
+  useEffect(() => {
+    if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
 
-  //   const params = new URLSearchParams(searchParams?.toString() || "");
-  //   const currentImageId = params.get("image");
+    const params = new URLSearchParams(searchParams?.toString() || "");
+    const currentImageId = params.get("image");
 
-  //   if (currentImageId !== selectedArtworkId) {
-  //     urlUpdatingRef.current = true;
-  //     params.set("image", selectedArtworkId);
+    if (currentImageId !== selectedArtworkId) {
+      urlUpdatingRef.current = true;
+      params.set("image", selectedArtworkId);
 
-  //     // Use setTimeout to batch updates and avoid multiple URL changes
-  //     setTimeout(() => {
-  //       // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      // Use setTimeout to batch updates and avoid multiple URL changes
+      setTimeout(() => {
+        // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
-  //       // Reset flag after URL update
-  //       setTimeout(() => {
-  //         urlUpdatingRef.current = false;
-  //       }, 100);
-  //     }, 0);
-  //   }
-  // }, [selectedArtworkId, router, pathname, searchParams]);
+        // Reset flag after URL update
+        setTimeout(() => {
+          urlUpdatingRef.current = false;
+        }, 100);
+      }, 0);
+    }
+  }, [selectedArtworkId, router, pathname, searchParams]);
 
   // Infinite scroll effect
   useEffect(() => {
@@ -304,7 +307,7 @@ export function ImageGallery({
       </ul>
 
       {/* Load More Button */}
-      {!infiniteScroll && displayCount < bibleArtworks.length && (
+      {/* {!infiniteScroll && displayCount < bibleArtworks.length && (
         <div className="mt-12 text-center">
           <Button
             onClick={() => setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length))}
@@ -313,14 +316,14 @@ export function ImageGallery({
             {t("loadMore")}
           </Button>
         </div>
-      )}
+      )} */}
 
       {/* Infinite Scroll Observer */}
-      {infiniteScroll && displayCount < bibleArtworks.length && (
+      {/* {infiniteScroll && displayCount < bibleArtworks.length && (
         <div ref={observerRef} className="flex items-center justify-center w-full h-20 mt-8">
           <Loader2 className="w-6 h-6 text-primary animate-spin" />
         </div>
-      )}
+      )} */}
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
