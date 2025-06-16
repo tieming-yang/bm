@@ -12,12 +12,8 @@ function ReactQueryProvider({ children }: React.PropsWithChildren) {
         queries: {
           staleTime: 1000 * 60 * 5,
           refetchOnWindowFocus: false,
-          refetchIntervalInBackground: false,
           refetchOnMount: false,
           refetchOnReconnect: false,
-          refetchInterval: false,
-          retry: 1,
-          retryOnMount: false,
         },
       },
     })
