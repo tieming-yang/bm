@@ -47,8 +47,10 @@ function Thumbnail({
         fill
         className="object-cover transition-transform duration-500 group-hover:scale-110"
         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        priority
+        loading="lazy"
+        priority={false}
         onLoadingComplete={() => setIsLoading(false)}
+        onError={() => setIsLoading(false)}
       />
     </AspectRatio>
   );
@@ -108,7 +110,7 @@ export function ImageGallery({
   useEffect(() => {
     console.log("URL changed to:", pathname, searchParams?.toString());
   }, [pathname, searchParams]);
-  
+
   //! Sync selectedArtworkId with Embla Carousel
   useEffect(() => {
     if (!emblaApi) return;
@@ -164,21 +166,21 @@ export function ImageGallery({
   // }, [selectedArtworkId, router, pathname, searchParams]);
 
   // Infinite scroll effect
-  // useEffect(() => {
-  //   if (!infiniteScroll || !observerRef.current) return;
+  useEffect(() => {
+    if (!infiniteScroll || !observerRef.current) return;
 
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       if (entries[0].isIntersecting && displayCount < bibleArtworks.length) {
-  //         setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length));
-  //       }
-  //     },
-  //     { threshold: 0.1 }
-  //   );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && displayCount < bibleArtworks.length) {
+          setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length));
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  //   observer.observe(observerRef.current);
-  //   return () => observer.disconnect();
-  // }, [infiniteScroll, displayCount, bibleArtworks.length]);
+    observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [infiniteScroll, displayCount, bibleArtworks.length]);
 
   // Body scroll lock when lightbox is open
   useEffect(() => {
@@ -306,7 +308,7 @@ export function ImageGallery({
       </ul>
 
       {/* Load More Button */}
-      {/* {!infiniteScroll && displayCount < bibleArtworks.length && (
+      {!infiniteScroll && displayCount < bibleArtworks.length && (
         <div className="mt-12 text-center">
           <Button
             onClick={() => setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length))}
@@ -315,14 +317,14 @@ export function ImageGallery({
             {t("loadMore")}
           </Button>
         </div>
-      )} */}
+      )}
 
       {/* Infinite Scroll Observer */}
-      {/* {infiniteScroll && displayCount < bibleArtworks.length && (
+      {infiniteScroll && displayCount < bibleArtworks.length && (
         <div ref={observerRef} className="flex items-center justify-center w-full h-20 mt-8">
           <Loader2 className="w-6 h-6 text-primary animate-spin" />
         </div>
-      )} */}
+      )}
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
