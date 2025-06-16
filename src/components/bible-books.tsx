@@ -48,7 +48,7 @@ export default function BibleBooks({}: Props) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="h-svh"
+      className="h-dvh"
     >
       <ul className="z-20 px-3 grid grid-cols-1 md:grid-cols-2 w-svw md:px-5 xl:px-7 place-content-center gap-10">
         {sortedCanonicalBooks.map(([book, artworks]) => (

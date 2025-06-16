@@ -322,11 +322,11 @@ export function ImageGallery({
       {selectedArtwork && (
         <div className="fixed inset-0 z-[100] flex items-start pt-1 md:items-center justify-center">
           {/* Backdrop with close handler */}
-          <div className="absolute inset-0 h-svh bg-black/50" onClick={handleClose} />
+          <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
 
           {/* Lightbox Content */}
           <div
-            className="relative z-[101] mx-1 lg:mx-5 h-[calc(100svh-80px)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
+            className="relative z-[101] mx-1 lg:mx-5 h-[calc(100dvh-80px)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex-grow w-full overflow-y-auto">
