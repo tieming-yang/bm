@@ -7,7 +7,8 @@ import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./loading";
 import { toast } from "sonner";
-
+import bibleArtworks from "@/data/bible-artworks-data";
+import Image from "next/image";
 export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
   const { t: tUI } = useTranslation("ui");
@@ -55,12 +56,24 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
         </p>
       </motion.div>
 
-      <ImageGallery
+      {/* <ImageGallery
         bibleArtworks={localedArtworks}
         groupedBibleArtworks={sortedCanonicalBooks}
         infiniteScroll={false}
         book={book}
-      />
+      /> */}
+      {
+        localedArtworks.map((artwork) => (
+          <Image
+            key={artwork.id}
+            src={artwork.imageUrl}
+            alt={artwork.title}
+            width={800}
+            height={600}
+            className="mb-4 rounded-lg shadow-lg"
+          />
+        ))
+      }
     </div>
   );
 }
