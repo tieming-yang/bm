@@ -263,11 +263,11 @@ export function ImageGallery({
             {/* Artworks */}
             <ul className="w-full grid grid-cols-1 font-mono md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
-                <motion.li
+                <li
                   key={artwork.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  // initial={{ opacity: 0, y: 20 }}
+                  // animate={{ opacity: 1, y: 0 }}
+                  // transition={{ duration: 0.3, delay: index * 0.05 }}
                   className="cursor-pointer group"
                   onClick={() => handleImageClick(artwork.id)}
                 >
@@ -292,7 +292,7 @@ export function ImageGallery({
                   </AspectRatio>
 
                   <h3 className="text-sm md:text-md">{artwork.section}</h3>
-                </motion.li>
+                </li>
               ))}
             </ul>
           </li>
