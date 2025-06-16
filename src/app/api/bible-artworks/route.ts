@@ -53,7 +53,7 @@ export async function GET() {
         } as BibleArtwork;
       }),
     );
-
+    console.log("Processed Bible artworks:", entries.length);
     return NextResponse.json(entries);
   } catch (error) {
     console.error("Error fetching wiki entries:", error);
