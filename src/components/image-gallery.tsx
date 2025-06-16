@@ -69,7 +69,7 @@ export function ImageGallery({
   const [lightboxCarouselInitialized, setLightboxCarouselInitialized] = useState(false);
 
   const [emblaApi, setEmblaApi] = useState<UseEmblaCarouselType[1] | null>(null);
-
+  console.log("rendering ImageGallery");
   // Refs
   const observerRef = useRef<HTMLDivElement>(null);
   const urlUpdatingRef = useRef(false);
