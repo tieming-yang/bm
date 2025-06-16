@@ -56,24 +56,12 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
         </p>
       </motion.div>
 
-      {/* <ImageGallery
+      <ImageGallery
         bibleArtworks={localedArtworks}
         groupedBibleArtworks={sortedCanonicalBooks}
         infiniteScroll={false}
         book={book}
-      /> */}
-      {
-        localedArtworks.map((artwork) => (
-          <Image
-            key={artwork.id}
-            src={artwork.imageUrl}
-            alt={artwork.title}
-            width={800}
-            height={600}
-            className="mb-4 rounded-md shadow-lg"
-          />
-        ))
-      }
+      />
     </div>
   );
 }
