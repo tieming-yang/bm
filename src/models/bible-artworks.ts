@@ -8,7 +8,7 @@ const BibleArtworks = {
   order: Books.order,
 
   getAll: async (): Promise<BibleArtwork[]> => {
-    const res = await fetch("/api/bible-artworks", { cache: "no-store" });
+    const res = await fetch("/api/bible-artworks");
     if (!res.ok) {
       throw new Error("Failed to fetch bible artworks from API");
     }
