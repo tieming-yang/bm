@@ -4,10 +4,12 @@ import "../lib/i18n";
 
 function ClientRoot({ children }: React.PropsWithChildren) {
   return (
-    <AuroraHero>
+    <div>
+      {/*  <AuroraHero> */}
       {children}
       {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" /> */}
-    </AuroraHero>
+      {/* </AuroraHero> */}
+    </div>
   );
 }
 
