@@ -42,10 +42,10 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
   //! test if fetch from not next api route works...
   return (
     <div className="z-50 relative">
-      <div
-        // initial={{ opacity: 0, y: 20 }}
-        // animate={{ opacity: 1, y: 0 }}
-        // transition={{ duration: 0.8 }}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
         <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-gradient-to-r from-primary to-secondary bg-clip-text">
@@ -54,7 +54,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
           {t("bibleGallery.subtitle")}
         </p>
-      </div>
+      </motion.div>
 
       <ImageGallery
         bibleArtworks={localedArtworks}
