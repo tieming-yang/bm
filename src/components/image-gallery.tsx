@@ -34,16 +34,16 @@ function Thumbnail({
   artwork: BibleArtworksLocale;
   onClick: (id: string) => void;
 }) {
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   return (
     <AspectRatio
       ratio={Config.aspectRatio}
       className="relative overflow-hidden shadow-xl cursor-pointer group"
       onClick={() => onClick(artwork.id)}
     >
-      {/* {isLoading && (
+      {isLoading && (
         <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-      )} */}
+      )}
       <Image
         src={artwork.imageUrl}
         alt={artwork.title || "Bible Artwork"}
@@ -53,8 +53,8 @@ function Thumbnail({
         loading="lazy"
         priority={false}
         quality={50}
-        // onLoadingComplete={() => setIsLoading(false)}
-        // onError={() => setIsLoading(false)}
+        onLoadingComplete={() => setIsLoading(false)}
+        onError={() => setIsLoading(false)}
       />
     </AspectRatio>
   );
