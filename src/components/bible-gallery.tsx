@@ -39,7 +39,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
     groupedArtworks,
     BibleArtworks.order
   );
-  //! test if fetch from not next api route works...
+  
   return (
     <div className="z-50 relative">
       <motion.div
