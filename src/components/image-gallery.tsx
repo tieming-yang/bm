@@ -52,6 +52,7 @@ function Thumbnail({
         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         loading="lazy"
         priority={false}
+        quality={50}
         // onLoadingComplete={() => setIsLoading(false)}
         // onError={() => setIsLoading(false)}
       />
