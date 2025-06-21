@@ -366,9 +366,9 @@ export function ImageGallery({
                                   src={artwork.imageUrl}
                                   alt={artwork.id}
                                   fill
+                                  loading="lazy"
                                   className="object-contain"
                                   sizes="(max-width: 1024px) 90vw, 60vw"
-                                  priority
                                   placeholder="blur"
                                   blurDataURL="placeholders/artwork-placeholder.svg"
                                   onLoadingComplete={() => {
