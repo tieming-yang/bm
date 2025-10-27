@@ -16,19 +16,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    webpackBuildWorker: true,
-    parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
-  },
-  // Ensure JSON files are properly processed
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.json$/,
-      type: "json",
-    });
-    return config;
-  },
 };
 
 mergeConfig(nextConfig, userConfig);
