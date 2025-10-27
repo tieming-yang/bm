@@ -18,7 +18,7 @@ export default function Gallery() {
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
-        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-gradient-to-r from-primary to-pink-500 bg-clip-text">
+        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-pink-500 bg-clip-text">
           {t("gallery.title")}
         </h1>
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">

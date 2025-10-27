@@ -328,16 +328,16 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 z-[100] flex items-start md:mt-12 md:items-start justify-center">
+        <div className="fixed inset-0 z-100 flex items-start md:mt-12 md:items-start justify-center">
           {/* Backdrop with close handler */}
           <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
 
           {/* Lightbox Content */}
           <div
-            className="relative z-[101] mx-1 lg:mx-5 h-[calc(100dvh-80px)] md:h-fit max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
+            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-80px)] md:h-fit max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex-grow w-full overflow-y-auto">
+            <div className="grow w-full overflow-y-auto">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col w-full">
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
@@ -448,7 +448,7 @@ export function ImageGallery({
                   emblaApi?.scrollPrev();
                 }}
                 disabled={!emblaApi?.canScrollPrev()}
-                className="flex items-center justify-center w-full border-r-[1px] rounded-none py-7"
+                className="flex items-center justify-center w-full border-r rounded-none py-7"
               >
                 <ChevronLeft className="size-10" />
                 <span className="sr-only">Previous</span>
@@ -460,7 +460,7 @@ export function ImageGallery({
                   emblaApi?.scrollNext();
                 }}
                 disabled={!emblaApi?.canScrollNext()}
-                className="flex items-center justify-center w-full border-l-[1px] rounded-none py-7"
+                className="flex items-center justify-center w-full border-l rounded-none py-7"
               >
                 <ChevronRight className="size-10" />
                 <span className="sr-only">Next</span>

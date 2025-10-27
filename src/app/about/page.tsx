@@ -15,7 +15,7 @@ export default function About() {
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
-        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-gradient-to-r from-primary to-secondary bg-clip-text">
+        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
           {t("about.title")}
         </h1>
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
@@ -51,7 +51,7 @@ export default function About() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        className="p-8 mt-24 border bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl border-primary/10"
+        className="p-8 mt-24 border bg-linear-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl border-primary/10"
       >
         <h2 className="mb-6 text-3xl font-bold text-center">{t("about.mission.title")}</h2>
         <p className="max-w-4xl mx-auto text-lg text-center text-muted-foreground">
@@ -63,7 +63,7 @@ export default function About() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        className="p-8 mt-24 border bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl border-primary/10"
+        className="p-8 mt-24 border bg-linear-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl border-primary/10"
       >
         <h2 className="mb-6 text-3xl font-bold text-center">{t("about.vision.title")}</h2>
         <p className="max-w-4xl mx-auto text-lg text-center text-muted-foreground">

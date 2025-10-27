@@ -60,7 +60,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed bottom-0 z-[100] w-full px-3 font-serif h-fit 2xl:px-0">
+      <header className="fixed bottom-0 z-100 w-full px-3 font-serif h-fit 2xl:px-0">
         <div className="container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10">
           <nav className="items-center hidden md:flex gap-6">
             {routes.map((route) => (
@@ -69,11 +69,11 @@ export default function Navbar() {
                 href={route.href}
                 className={`text-sm md:text-md lg:text-lg font-medium transition-colors hover:text-primary ${
                   pathname?.includes(route.href) && route.href !== "/"
-                    ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                    ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                     : ""
                 } ${
                   pathname === route.href && route.href === "/"
-                    ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                    ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                     : ""
                 }`}
               >
@@ -112,7 +112,7 @@ export default function Navbar() {
           </section>
           <button
             onClick={toggleMenu}
-            className="relative z-60 flex flex-col items-center justify-center md:hidden size-10 focus:outline-none"
+            className="relative z-60 flex flex-col items-center justify-center md:hidden size-10 focus:outline-hidden"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
           >
@@ -123,7 +123,7 @@ export default function Navbar() {
             ></span>
             <span
               className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
-                isMenuOpen ? "-rotate-45 -translate-y-0" : "translate-y-1"
+                isMenuOpen ? "-rotate-45 translate-y-0" : "translate-y-1"
               }`}
             ></span>
           </button>
@@ -153,11 +153,11 @@ export default function Navbar() {
                       href={route.href}
                       className={`text-2xl sm:text-5xl duration-300 transition-all font-medium  hover:text-primary ${
                         pathname?.includes(route.href) && route.href !== "/"
-                          ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                          ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                           : ""
                       } ${
                         pathname === route.href && route.href === "/"
-                          ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                          ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                           : ""
                       }`}
                     >
