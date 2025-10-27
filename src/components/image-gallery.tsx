@@ -328,21 +328,21 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 z-[100] flex items-start pt-1 md:items-center justify-center">
+        <div className="fixed inset-0 z-[100] flex items-start md:mt-12 md:items-start justify-center">
           {/* Backdrop with close handler */}
           <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
 
           {/* Lightbox Content */}
           <div
-            className="relative z-[101] mx-1 lg:mx-5 h-[calc(100dvh-80px)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
+            className="relative z-[101] mx-1 lg:mx-5 h-[calc(100dvh-80px)] md:h-fit max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex-grow w-full overflow-y-auto">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col w-full">
-                  <div className="flex flex-col w-full gap-y-5">
+                  <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
                     {/* Image Carousel */}
-                    <section className="w-full sticky top-0">
+                    <section className="w-full place-self-center md:sticky md:top-0">
                       <Carousel
                         opts={{
                           loop: true,
@@ -387,20 +387,22 @@ export function ImageGallery({
                         </CarouselContent>
                       </Carousel>
                     </section>
-                    {/* Title and Refernece */}
-                    <section className="flex justify-between px-2 md:px-4">
-                      <h3 className="font-serif font-medium underline underline-offset-2">
-                        {t("bibleGallery.properties.scripture") || "Scripture"}
-                      </h3>
-                      <span className="text-xs md:text-md text-muted-foreground">
-                        <span className="font-medium">{`${booksT(selectedArtwork.book)} ${
-                          selectedArtwork.section
-                        }`}</span>
-                      </span>
-                    </section>
-                    <p className="text-sm md:text-md whitespace-pre-wrap leading-10 text-foreground text-clip h-full overflow-auto border rounded-md px-2">
-                      {selectedArtwork.scripture}
-                    </p>
+                    <div className="flex flex-col gap-4 px-2 md:px-0">
+                      {/* Title and Reference */}
+                      <section className="flex items-start md:pt-3 md:px-3 justify-between gap-4">
+                        <h3 className="font-serif font-medium underline underline-offset-2">
+                          {t("bibleGallery.properties.scripture") || "Scripture"}
+                        </h3>
+                        <span className="text-xs md:text-lg text-muted-foreground">
+                          <span className="font-medium">{`${booksT(selectedArtwork.book)} ${
+                            selectedArtwork.section
+                          }`}</span>
+                        </span>
+                      </section>
+                      <p className="text-sm md:text-lg whitespace-pre-wrap leading-8 text-foreground overflow-auto border rounded-md px-3 py-4 bg-background/80 md:max-h-[70vh]">
+                        {selectedArtwork.scripture}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
