@@ -399,7 +399,7 @@ export function ImageGallery({
                           }`}</span>
                         </span>
                       </section>
-                      <p className="text-sm md:text-lg whitespace-pre-wrap leading-8 text-foreground overflow-auto border rounded-md px-3 py-4 bg-background/80 md:max-h-[70vh]">
+                      <p className="text-sm md:text-lg whitespace-pre-wrap leading-8 text-foreground overflow-auto border rounded-md px-3 py-4 bg-accent-foreground/10 md:max-h-[70vh]">
                         {selectedArtwork.scripture}
                       </p>
                     </div>
