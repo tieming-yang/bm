@@ -22,7 +22,11 @@ export function Breadcrumb() {
   const { t: tBooks } = useTranslation("books");
 
   if (!pathname || pathname === "/") return null;
-  const segments = pathname.split("/").filter(Boolean);
+
+  const segments = pathname
+    .split("/")
+    .filter(Boolean)
+    .filter((path) => path.length < 10);
 
   const handleNavigation = (index: number) => {
     const path = "/" + segments.slice(0, index + 1).join("/");
