@@ -17,7 +17,7 @@ export default function SignInPage({}: Props) {
   const { authUser, isAuthUserLoading } = useAuthUser();
   const { t, currentLanguage } = useTranslation();
   const params = useSearchParams();
-  const redirectTo = params.get("redirectTo") ?? "/settings";
+  const redirectTo = params.get("redirectTo") ?? `/profile/${authUser?.uid}`;
 
   useEffect(() => {
     if (!isAuthUserLoading && authUser) {

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
 import Image from "next/image";
 import useTranslation from "@/hooks/use-translation";
-import SignOutButton from "../signout/signout-button";
+import SignOutButton from "../../signout/signout-button";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ import { motion } from "framer-motion";
 
 type Props = {};
 
-export default function ProfilePage({}: Props) {
+export default function ClientProfilePage({}: Props) {
   const { authUser, isAuthUserLoading } = useAuthUser();
   const router = useRouter();
   const { t } = useTranslation("settings");
