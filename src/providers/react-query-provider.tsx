@@ -1,8 +1,8 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-//TODO: install react-query-devtools for debugging
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 
 function ReactQueryProvider({ children }: React.PropsWithChildren) {
@@ -22,7 +22,7 @@ function ReactQueryProvider({ children }: React.PropsWithChildren) {
   return (
     <QueryClientProvider client={client}>
       {children}
-      {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" /> */}
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
     </QueryClientProvider>
   );
 }
