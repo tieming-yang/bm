@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "彼岸數位媒體 | Beyond Digital Media",
+  "short_name": "彼岸數位媒體",
+  "description": "彼岸數位媒體 | Beyond Digital Media 是一個致力於推廣基督教藝術和文化的多媒體工作室，旨在透過藝術作品傳遞福音信息。",
+  "lang": "zh-TW",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#202020",
+  "background_color": "#1b1b1b",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

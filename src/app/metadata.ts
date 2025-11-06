@@ -47,7 +47,7 @@ const _metadata = {
   openGraph: {
     title: "彼岸數位媒體 | Beyond Digital Media",
     description:
-      "推廣基督教藝術與文化的非營利平台，透過創新媒體與視覺藝術傳遞福音信息。",
+      "推廣基督教藝術與文化的多媒體工作室，透過創新媒體與視覺藝術傳遞福音信息。",
     url: "https://beyond-media.art",
     siteName: "彼岸數位媒體 | Beyond Digital Media",
     images: [
@@ -65,7 +65,7 @@ const _metadata = {
     card: "summary_large_image",
     title: "彼岸數位媒體 | Beyond Digital Media",
     description:
-      "推廣基督教藝術與文化的非營利平台，透過創新媒體與視覺藝術傳遞福音信息。",
+      "推廣基督教藝術與文化的多媒體工作室，透過創新媒體與視覺藝術傳遞福音信息。",
     site: "@beyonddigitalmedia",
     images: ["https://beyond-media.art/opengraph-image.png"],
   },
