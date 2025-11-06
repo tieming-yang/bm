@@ -37,7 +37,7 @@ export default function LanguageSwitcher() {
           <span className="sr-only">Switch language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="center" className="mb-3">
         <DropdownMenuItem
           onClick={() => changeLanguage("zh-TW")}
           className={currentLanguage === "zh-TW" ? "bg-primary/10" : ""}
