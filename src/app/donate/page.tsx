@@ -14,8 +14,8 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Heart } from "lucide-react";
-import useTranslation from "../../hooks/useTranslation";
-import useFirebaseUser from "@/hooks/use-firebae-user";
+import useTranslation from "../../hooks/use-translation";
+import useAuthUser from "@/hooks/use-firebae-user";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/loading";
@@ -23,7 +23,7 @@ import Loading from "@/components/loading";
 export default function Donate() {
   const { t } = useTranslation("donate");
   const { t: tCommon } = useTranslation("common");
-  const { user, initializing } = useFirebaseUser();
+  const { user, initializing } = useAuthUser();
   const router = useRouter();
   const path = usePathname();
 

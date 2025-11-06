@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import useTranslation from "../hooks/useTranslation";
+import useTranslation from "../hooks/use-translation";
 import Books from "@/data/books";
 
 const routeMap: Record<string, string> = {

@@ -9,7 +9,7 @@ import { X, Download, Share, Loader2, ChevronLeft, ChevronRight } from "lucide-r
 import { UseEmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
 import type { BibleArtworksLocale, BibleArtworksCanonical } from "../types/bible-artwork";
-import useTranslation from "../hooks/useTranslation";
+import useTranslation from "../hooks/use-translation";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { DonationSheet } from "./donation-sheet";
 

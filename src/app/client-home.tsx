@@ -1,6 +1,6 @@
 "use client";
 
-import useTranslation from "@/hooks/useTranslation";
+import useTranslation from "@/hooks/use-translation";
 import { motion } from "framer-motion";
 import React from "react";
 import BibleBooks from "../components/bible-books";

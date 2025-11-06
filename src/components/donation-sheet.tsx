@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./ui/sheet";
-import useTranslation from "../hooks/useTranslation";
+import useTranslation from "../hooks/use-translation";
 
 interface DonationSheetProps {
   open: boolean;

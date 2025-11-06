@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import useTranslation from "../../hooks/useTranslation";
+import useTranslation from "../../hooks/use-translation";
 
 export default function About() {
   const { t } = useTranslation();

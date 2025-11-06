@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { AspectRatio } from "./ui/aspect-ratio";
 import Image from "next/image";
-import useTranslation from "@/hooks/useTranslation";
+import useTranslation from "@/hooks/use-translation";
 import { motion } from "framer-motion";
 import Config from "@/models/config";
 import BibleArtworks from "@/models/bible-artworks";

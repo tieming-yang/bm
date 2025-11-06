@@ -1,12 +1,12 @@
 "use client";
 
-import useFirebaseUser from "@/hooks/use-firebae-user";
+import useAuthUser from "@/hooks/use-firebae-user";
 import Donator from "@/models/donator";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
 import Image from "next/image";
-import useTranslation from "@/hooks/useTranslation";
+import useTranslation from "@/hooks/use-translation";
 import SignOutButton from "../signout/signout-button";
 import * as React from "react";
 
@@ -27,7 +27,7 @@ import { motion } from "framer-motion";
 type Props = {};
 
 export default function SettingsPage({}: Props) {
-  const { user, initializing } = useFirebaseUser();
+  const { user, initializing } = useAuthUser();
   const router = useRouter();
   const { t } = useTranslation("settings");
   const { t: commonT } = useTranslation("common");

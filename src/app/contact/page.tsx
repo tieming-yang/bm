@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { Mail, Phone, MapPin } from "lucide-react";
-import useTranslation from "../../hooks/useTranslation";
+import useTranslation from "../../hooks/use-translation";
 
 export default function Contact() {
   const { t } = useTranslation("contact");

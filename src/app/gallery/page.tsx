@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ImageGallery } from "../../components/image-gallery";
 import { artworks } from "../../models/artworks";
 import { Suspense } from "react";
-import useTranslation from "../../hooks/useTranslation";
+import useTranslation from "../../hooks/use-translation";
 import Loading from "@/components/loading";
 
 export default function Gallery() {

@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import useTranslation from "../hooks/useTranslation";
+import useTranslation from "../hooks/use-translation";
 
 export default function LanguageSwitcher() {
   const { currentLanguage, changeLanguage } = useTranslation();

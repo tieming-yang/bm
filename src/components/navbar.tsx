@@ -9,8 +9,8 @@ import { Moon, Sun, User } from "lucide-react";
 
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
-import useTranslation from "../hooks/useTranslation";
-import useFirebaseUser from "@/hooks/use-firebae-user";
+import useTranslation from "../hooks/use-translation";
+import useAuthUser from "@/hooks/use-firebae-user";
 import { Button } from "@/components/ui/button";
 import Logo from "./logo";
 
@@ -56,7 +56,7 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const { user } = useFirebaseUser();
+  const { user } = useAuthUser();
 
   return (
     <>

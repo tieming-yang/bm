@@ -5,15 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import Loading from "@/components/loading";
 import Auth from "@/lib/firebase/auth";
-import useFirebaseUser from "@/hooks/use-firebae-user";
-import useTranslation from "@/hooks/useTranslation";
+import useAuthUser from "@/hooks/use-firebae-user";
+import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
 
 type Props = {};
 export default function SignInPage({}: Props) {
   const router = useRouter();
-  const { user, initializing } = useFirebaseUser();
+  const { user, initializing } = useAuthUser();
   const { t, currentLanguage } = useTranslation();
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo") ?? "/";

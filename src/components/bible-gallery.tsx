@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import useTranslation from "@/hooks/useTranslation";
+import useTranslation from "@/hooks/use-translation";
 import { ImageGallery } from "./image-gallery";
 import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
@@ -39,7 +39,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
     groupedArtworks,
     BibleArtworks.order
   );
-  
+
   return (
     <div className="z-50 relative">
       <motion.div

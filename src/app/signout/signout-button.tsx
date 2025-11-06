@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Auth from "@/lib/firebase/auth";
-import useTranslation from "@/hooks/useTranslation";
+import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
 
 type Props = {};

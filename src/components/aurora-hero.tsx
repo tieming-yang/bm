@@ -6,7 +6,7 @@ import React, { Suspense, useEffect } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { useMotionTemplate, useMotionValue, motion, animate } from "framer-motion";
 import Loading from "./loading";
-import useTranslation from "@/hooks/useTranslation";
+import useTranslation from "@/hooks/use-translation";
 import BibleBooks from "./bible-books";
 import Home from "../app/client-home";
 

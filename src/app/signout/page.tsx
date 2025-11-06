@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 
 import Loading from "@/components/loading";
 import Auth from "@/lib/firebase/auth";
-import useFirebaseUser from "@/hooks/use-firebae-user";
-import useTranslation from "@/hooks/useTranslation";
+import useAuthUser from "@/hooks/use-firebae-user";
+import useTranslation from "@/hooks/use-translation";
 import { Sign } from "crypto";
 import SignOutButton from "./signout-button";
 
 type Props = {};
 export default function SignOutPage({}: Props) {
   const router = useRouter();
-  const { user, initializing } = useFirebaseUser();
+  const { user, initializing } = useAuthUser();
   const { t } = useTranslation("common");
 
   if (initializing) {

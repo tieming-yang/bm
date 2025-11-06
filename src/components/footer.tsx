@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import useTranslation from "../hooks/useTranslation";
+import useTranslation from "../hooks/use-translation";
 import Logo from "./logo";
 
 export default function Footer() {
