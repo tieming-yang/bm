@@ -4,7 +4,7 @@ const _metadata = {
     template: "%s | 彼岸數位媒體",
   },
   description:
-    "彼岸數位媒體 | Beyond Digital Media 是一個致力於推廣基督教藝術和文化的非營利組織，旨在透過藝術作品傳遞福音信息。",
+    "彼岸數位媒體 | Beyond Digital Media 是一個致力於推廣基督教藝術和文化的多媒體工作室，旨在透過藝術作品傳遞福音信息。",
   keywords: [
     "彼岸數位媒體",
     "Beyond Digital Media",
