@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import Loading from "@/components/loading";
 import Auth from "@/lib/firebase/auth";
-import useAuthUser from "@/hooks/use-firebae-user";
+import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import { Sign } from "crypto";
 import SignOutButton from "./signout-button";

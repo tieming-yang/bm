@@ -10,7 +10,7 @@ import { Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/use-translation";
-import useAuthUser from "@/hooks/use-firebae-user";
+import useAuthUser from "@/hooks/use-auth-user";
 import { Button } from "@/components/ui/button";
 import Logo from "./logo";
 
@@ -56,7 +56,7 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const { user } = useAuthUser();
+  const { authUser } = useAuthUser();
 
   return (
     <>
@@ -96,8 +96,8 @@ export default function Navbar() {
                   {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
                   <span className="sr-only">Toggle theme</span>
                 </Button> */}
-                {user ? (
-                  <Link href="/settings" className="text-sm font-medium text-primary-foreground">
+                {authUser ? (
+                  <Link href="/profile" className="text-sm font-medium text-primary-foreground">
                     <Button size="icon">
                       <User className="size-5" />
                     </Button>

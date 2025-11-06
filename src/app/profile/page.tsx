@@ -1,6 +1,6 @@
 "use client";
 
-import useAuthUser from "@/hooks/use-firebae-user";
+import useAuthUser from "@/hooks/use-auth-user";
 import Donator from "@/models/donator";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -26,16 +26,16 @@ import { motion } from "framer-motion";
 
 type Props = {};
 
-export default function SettingsPage({}: Props) {
-  const { user, initializing } = useAuthUser();
+export default function ProfilePage({}: Props) {
+  const { authUser, isAuthUserLoading } = useAuthUser();
   const router = useRouter();
   const { t } = useTranslation("settings");
   const { t: commonT } = useTranslation("common");
 
   const { data: donator, isLoading } = useQuery({
-    queryKey: ["donator", user?.uid],
-    queryFn: () => Donator.get(user!.uid),
-    enabled: !!user,
+    queryKey: ["donator", authUser?.uid],
+    queryFn: () => Donator.get(authUser!.uid),
+    enabled: !!authUser,
   });
 
   if (isLoading) {

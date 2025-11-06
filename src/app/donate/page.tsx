@@ -15,7 +15,7 @@ import {
 } from "../../components/ui/card";
 import { Heart } from "lucide-react";
 import useTranslation from "../../hooks/use-translation";
-import useAuthUser from "@/hooks/use-firebae-user";
+import useAuthUser from "@/hooks/use-auth-user";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/loading";
@@ -23,14 +23,14 @@ import Loading from "@/components/loading";
 export default function Donate() {
   const { t } = useTranslation("donate");
   const { t: tCommon } = useTranslation("common");
-  const { user, initializing } = useAuthUser();
+  const { authUser, isAuthUserLoading } = useAuthUser();
   const router = useRouter();
   const path = usePathname();
 
-  if (initializing) {
+  if (isAuthUserLoading) {
     return <Loading />;
   }
-  if (!user) {
+  if (!authUser) {
     toast.error(tCommon("toast.mustSignIn"));
 
     router.push(`/signin?redirectTo=${encodeURIComponent(path)}`);

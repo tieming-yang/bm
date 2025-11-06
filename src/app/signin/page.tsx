@@ -1,11 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Loading from "@/components/loading";
 import Auth from "@/lib/firebase/auth";
-import useAuthUser from "@/hooks/use-firebae-user";
+import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
@@ -13,18 +14,19 @@ import { FcGoogle } from "react-icons/fc";
 type Props = {};
 export default function SignInPage({}: Props) {
   const router = useRouter();
-  const { user, initializing } = useAuthUser();
+  const { authUser, isAuthUserLoading } = useAuthUser();
   const { t, currentLanguage } = useTranslation();
   const params = useSearchParams();
-  const redirectTo = params.get("redirectTo") ?? "/";
+  const redirectTo = params.get("redirectTo") ?? "/settings";
 
-  if (initializing) {
-    return <Loading />;
-  }
-  if (user) {
-    router.push(redirectTo);
-    return null;
-  }
+  useEffect(() => {
+    if (!isAuthUserLoading && authUser) {
+      router.push(redirectTo);
+    }
+  }, [authUser, isAuthUserLoading, redirectTo, router]);
+
+  if (isAuthUserLoading) return <Loading />;
+  if (authUser) return null;
 
   return (
     <div className="flex font-mono flex-col items-center justify-center gap-y-5 min-h-dvh relative z-50">
