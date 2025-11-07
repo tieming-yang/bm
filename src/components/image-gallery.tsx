@@ -42,7 +42,7 @@ function Thumbnail({
       onClick={() => onClick(artwork.id)}
     >
       {isLoading && (
-        <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        <Loader2 className="absolute animate-spin top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
       )}
       <Image
         src={artwork.imageUrl}
