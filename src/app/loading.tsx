@@ -1,9 +1,23 @@
 "use client";
 
 import useTranslation from "@/hooks/use-translation";
+import { Loader2 } from "lucide-react";
 
-export default function Loading() {
+type LoadingProps = {
+  isInlined?: boolean;
+  show?: boolean;
+};
+
+export default function Loading({ isInlined = false, show = true }: LoadingProps) {
+  if (!show) return null;
+
   const { t } = useTranslation("ui");
+
+  if (isInlined) {
+    return (
+      <Loader2 className="absolute top-1/2 left-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 animate-spin text-primary" />
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">

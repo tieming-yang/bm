@@ -11,12 +11,14 @@ import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../app/loading";
 import { toast } from "sonner";
+import { useState } from "react";
 
 type Props = {};
 
 export default function BibleBooks({}: Props) {
   const { t, currentLanguage } = useTranslation("books");
   const { t: tUI } = useTranslation("ui");
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const {
     data: artworks,
@@ -58,6 +60,7 @@ export default function BibleBooks({}: Props) {
                 ratio={Config.aspectRatio}
                 className="relative overflow-hidden shadow-xl"
               >
+                <Loading isInlined show={isImageLoading} />
                 <Image
                   src={artworks[0].imageUrl}
                   alt={artworks[0].id}
@@ -67,6 +70,8 @@ export default function BibleBooks({}: Props) {
                   loading="lazy"
                   placeholder="blur"
                   blurDataURL={"placeholders/artwork-placeholder.svg"}
+                  onLoadingComplete={() => setIsImageLoading(false)}
+                  quality={50}
                 />
               </AspectRatio>
             </Link>
