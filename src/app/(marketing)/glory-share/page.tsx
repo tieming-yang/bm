@@ -70,7 +70,7 @@ export default function GlorySharePage() {
     [];
   const membershipFootnotes =
     (t("gloryShare.membership.footnotes", { returnObjects: true }) as string[]) ?? [];
-
+  
   const steps = (t("gloryShare.stepsCard.steps", { returnObjects: true }) as string[]) ?? [];
 
   const tracks = (
@@ -184,7 +184,7 @@ export default function GlorySharePage() {
               {membershipBullets.map((bullet, index) => {
                 const footnoteNumber = membershipBulletFootnotes[index];
                 return (
-                  <li key={bullet} className="inline-flex flex-wrap items-baseline gap-1">
+                  <li key={bullet} className="flex-wrap items-baseline gap-1">
                     <span>{bullet}</span>
                     {typeof footnoteNumber === "number" && footnoteNumber > 0 && (
                       <sup className="text-[0.65rem] align-super text-primary">{footnoteNumber}</sup>
