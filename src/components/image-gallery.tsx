@@ -41,9 +41,7 @@ function Thumbnail({
       className="relative overflow-hidden shadow-xl cursor-pointer group"
       onClick={() => onClick(artwork.id)}
     >
-      {isLoading && (
-        <Loader2 className="absolute animate-spin top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-      )}
+      <Loading isInlined show={isLoading} />
       <Image
         src={artwork.imageUrl}
         alt={artwork.title || "Bible Artwork"}

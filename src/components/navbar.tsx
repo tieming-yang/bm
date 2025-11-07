@@ -12,7 +12,6 @@ import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/use-translation";
 import useAuthUser from "@/hooks/use-auth-user";
 import { Button } from "@/components/ui/button";
-import Logo from "./logo";
 
 export default function Navbar() {
   const pathname = usePathname();
