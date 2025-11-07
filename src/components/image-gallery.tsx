@@ -100,7 +100,7 @@ export function ImageGallery({
       )
     : undefined;
   const [currentBookName, currentBook] = currentBookTuple ? currentBookTuple : [];
-
+  console.log("currentBookTuple", currentBookTuple);
   const selectedIndexInBook = selectedArtworkId
     ? currentBook?.findIndex((art) => art.id === selectedArtworkId)
     : -1;
