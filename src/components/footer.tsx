@@ -46,14 +46,14 @@ export default function Footer() {
                   {t("nav.gallery")}
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/donate"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   {t("nav.donate")}
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/contact"
