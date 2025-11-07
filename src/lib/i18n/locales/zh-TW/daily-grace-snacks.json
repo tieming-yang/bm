@@ -1,0 +1,125 @@
+{
+  "dailyGraceSnacks": {
+    "badge": "每日恩典",
+    "hero": {
+      "title": "一口大小的福音故事，點亮孩子的每一天。",
+      "description": "《每日恩典》是為孩子與家庭打造的動畫聖經系列。第一季走過救贖的故事，從創造到信心英雄，配上音樂、禱告提示與生活應用。您可以直接播放完整清單，或依照主題挑選每一集。",
+      "watchNow": "觀看播放清單",
+      "supportLink": "透過榮耀份額同行"
+    },
+    "playlistId": "PLuGaH2J5MmWVkBhdhYuCBOOR7h2prWXAW",
+    "playlistLink": "https://www.youtube.com/playlist?list=PLuGaH2J5MmWVkBhdhYuCBOOR7h2prWXAW",
+    "season1": {
+      "title": "第一季 · 信仰基礎",
+      "description": "15 集短篇動畫，帶孩子認識神的性情、應許與拯救之愛。",
+      "episodes": [
+        {
+          "number": "01",
+          "title": "神只有一位",
+          "theme": "三位一體",
+          "summary": "介紹又真又活的三位一體真神，學習為何只敬拜祂。"
+        },
+        {
+          "number": "02",
+          "title": "神創造天地",
+          "theme": "創世記 1",
+          "summary": "從光到萬物，神說有就有，一切都被祂稱為美好。"
+        },
+        {
+          "number": "03",
+          "title": "神造人",
+          "theme": "亞當與夏娃",
+          "summary": "人按神的形象被造，受造是為了與祂同行。"
+        },
+        {
+          "number": "04",
+          "title": "人犯了罪",
+          "theme": "罪的由來",
+          "summary": "罪進入世界，但神也應許要來拯救。"
+        },
+        {
+          "number": "05",
+          "title": "挪亞方舟",
+          "theme": "順服得救",
+          "summary": "挪亞因信順服而得保守，指向將來的救贖盼望。"
+        },
+        {
+          "number": "06",
+          "title": "亞伯拉罕的信心",
+          "theme": "跟隨神的應許",
+          "summary": "亞伯拉罕憑信踏上未知旅程，萬國因此得福。"
+        },
+        {
+          "number": "07",
+          "title": "約瑟的夢與寬恕",
+          "theme": "神翻轉苦難",
+          "summary": "約瑟見證神把傷害化為祝福，也教導饒恕。"
+        },
+        {
+          "number": "08",
+          "title": "摩西與燃燒的荊棘",
+          "theme": "神的呼召",
+          "summary": "神在火焰中說話，差遣摩西帶領百姓出埃及。"
+        },
+        {
+          "number": "09",
+          "title": "出埃及與紅海分開",
+          "theme": "神親自拯救",
+          "summary": "耶和華分開紅海，引領百姓得自由。"
+        },
+        {
+          "number": "10",
+          "title": "十誡",
+          "theme": "神慈愛的律法",
+          "summary": "孩子學習律法如何保護我們，也彰顯神聖潔的心。"
+        },
+        {
+          "number": "11",
+          "title": "大衛戰歌利亞",
+          "theme": "信心勝巨人",
+          "summary": "帶著機弦與勇氣，大衛活出信心勝過懼怕。"
+        },
+        {
+          "number": "12",
+          "title": "但以理在獅子坑",
+          "theme": "禱告的勇氣",
+          "summary": "但以理即使冒險也不停止禱告，神親自關上獅口。"
+        },
+        {
+          "number": "13",
+          "title": "火窯三個朋友",
+          "theme": "忠心不拜偶像",
+          "summary": "沙得拉、米煞、亞伯尼歌在火中遇見耶穌。"
+        },
+        {
+          "number": "14",
+          "title": "約拿與大魚",
+          "theme": "悔改與憐憫",
+          "summary": "約拿學會神的憐憫追尋每一個人與城市。"
+        },
+        {
+          "number": "15",
+          "title": "以利亞與烏鴉",
+          "theme": "神必供應",
+          "summary": "饑荒裡神仍供應以利亞，提醒祂總是與人同在。"
+        }
+      ]
+    },
+    "season2": {
+      "title": "第二季 · 敬請期待",
+      "description": "即將推出新約旅程、耶穌比喻與聖靈帶領的教會。榮耀成員可搶先試看腳本、歌曲與初剪。",
+      "highlights": [
+        "耶穌神蹟與比喻的動畫演繹",
+        "《使徒行傳》旅程與宣教故事",
+        "陪伴家庭一起禱告與宣教的提醒"
+      ],
+      "comingSoon": "敬請期待 · 即將上線"
+    },
+    "ctaSection": {
+      "title": "把《每日恩典》分享給你的社群",
+      "description": "可以在兒童主日播放、分享給家長群組，或一起辦觀影時光。每一次播放都在種下福音種子。",
+      "visitYouTube": "前往 YouTube 清單",
+      "joinGloryShare": "加入支持行列"
+    }
+  }
+}

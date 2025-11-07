@@ -1,0 +1,125 @@
+{
+  "dailyGraceSnacks": {
+    "badge": "Daily Grace Snacks",
+    "hero": {
+      "title": "Bite-sized gospel stories that light up every child’s day.",
+      "description": "Daily Grace Snacks is our animated Bible series for kids and families. Season One travels through the story of redemption—from creation to covenant heroes—using warm storytelling, music, and prayer prompts. Watch the full playlist or jump into any episode below.",
+      "watchNow": "Watch Playlist",
+      "supportLink": "Partner through Glory Share"
+    },
+    "playlistId": "PLuGaH2J5MmWVkBhdhYuCBOOR7h2prWXAW",
+    "playlistLink": "https://www.youtube.com/playlist?list=PLuGaH2J5MmWVkBhdhYuCBOOR7h2prWXAW",
+    "season1": {
+      "title": "Season 1 · Foundations of Faith",
+      "description": "Fifteen short episodes inviting children to know God’s character, promises, and rescuing love.",
+      "episodes": [
+        {
+          "number": "01",
+          "title": "There Is Only One God",
+          "theme": "The Trinity",
+          "summary": "Kids meet the one true God—Father, Son, and Spirit—and learn why we worship Him alone."
+        },
+        {
+          "number": "02",
+          "title": "God Created Heaven and Earth",
+          "theme": "Genesis 1",
+          "summary": "From light to living creatures, God speaks creation into being and calls it good."
+        },
+        {
+          "number": "03",
+          "title": "God Made People",
+          "theme": "Adam & Eve",
+          "summary": "Children discover they are made in God’s image and designed for friendship with Him."
+        },
+        {
+          "number": "04",
+          "title": "People Sinned",
+          "theme": "The Fall",
+          "summary": "Sin enters the world, but so does God’s promise to rescue His children."
+        },
+        {
+          "number": "05",
+          "title": "Noah’s Ark",
+          "theme": "Obedience Saves",
+          "summary": "God protects Noah’s family and points to the hope of redemption through obedience."
+        },
+        {
+          "number": "06",
+          "title": "Abraham’s Faith",
+          "theme": "Trusting God’s Promise",
+          "summary": "Abraham follows God into the unknown and discovers blessing for every nation."
+        },
+        {
+          "number": "07",
+          "title": "Joseph’s Dreams and Forgiveness",
+          "theme": "God Redeems Pain",
+          "summary": "Joseph’s journey shows how God turns harm into healing when we forgive."
+        },
+        {
+          "number": "08",
+          "title": "Moses and the Burning Bush",
+          "theme": "God’s Calling",
+          "summary": "God speaks through a burning bush and sends Moses to liberate His people."
+        },
+        {
+          "number": "09",
+          "title": "Exodus and the Red Sea",
+          "theme": "God Rescues",
+          "summary": "The Lord parts the Red Sea and leads Israel into freedom."
+        },
+        {
+          "number": "10",
+          "title": "The Ten Commandments",
+          "theme": "God’s Loving Law",
+          "summary": "Kids learn why God’s commands protect us and show His holy heart."
+        },
+        {
+          "number": "11",
+          "title": "David and Goliath",
+          "theme": "Faith Beats Giants",
+          "summary": "With a sling and God’s courage, David proves that faith is stronger than fear."
+        },
+        {
+          "number": "12",
+          "title": "Daniel in the Lions’ Den",
+          "theme": "Prayerful Courage",
+          "summary": "Daniel keeps praying even when it’s risky, and God shuts the lions’ mouths."
+        },
+        {
+          "number": "13",
+          "title": "Three Friends in the Furnace",
+          "theme": "Faithfulness",
+          "summary": "Shadrach, Meshach, and Abednego refuse idols and find Jesus in the fire."
+        },
+        {
+          "number": "14",
+          "title": "Jonah and the Big Fish",
+          "theme": "Repentance & Mercy",
+          "summary": "Jonah learns that God’s mercy pursues both runaways and nations."
+        },
+        {
+          "number": "15",
+          "title": "Elijah and the Ravens",
+          "theme": "God Provides",
+          "summary": "In famine, God feeds Elijah and proves He is always near."
+        }
+      ]
+    },
+    "season2": {
+      "title": "Season 2 · Coming Soon",
+      "description": "New Testament journeys, parables, and the Spirit-filled Church are arriving in the next drop. Glory Share partners will preview scripts, songs, and early cuts.",
+      "highlights": [
+        "Stories of Jesus’ miracles and parables",
+        "Animated journeys through Acts",
+        "Prayer prompts for families on mission"
+      ],
+      "comingSoon": "Coming soon · stay tuned!"
+    },
+    "ctaSection": {
+      "title": "Share Daily Grace With Your Community",
+      "description": "Play an episode during children’s worship, send it in your family chat, or host a watch party. Every view plants a gospel seed.",
+      "visitYouTube": "Open YouTube Playlist",
+      "joinGloryShare": "Support the mission"
+    }
+  }
+}
