@@ -11,6 +11,7 @@ import enContact from "./locales/en/contact.json";
 import enUi from "./locales/en/ui.json";
 import enSettings from "./locales/en/settings.json";
 import enBooks from "./locales/en/books.json";
+import enGloryShare from "./locales/en/glory-share.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
@@ -20,6 +21,7 @@ import zhContact from "./locales/zh-TW/contact.json";
 import zhUi from "./locales/zh-TW/ui.json";
 import zhSettings from "./locales/zh-TW/settings.json";
 import zhBooks from "./locales/zh-TW/books.json";
+import zhGloryShare from "./locales/zh-TW/glory-share.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -33,6 +35,7 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhUi, "zh-TW/ui.json");
   verifyTranslationEncoding(zhSettings, "zh-TW/settings.json");
   verifyTranslationEncoding(zhBooks, "zh-TW/books.json");
+  verifyTranslationEncoding(zhGloryShare, "zh-TW/glory-share.json");
 }
 
 // Initialize i18n instance
@@ -49,6 +52,7 @@ i18n
         ui: enUi,
         settings: enSettings,
         books: enBooks,
+        "glory-share": enGloryShare,
       },
       "zh-TW": {
         common: zhCommon,
@@ -58,6 +62,7 @@ i18n
         ui: zhUi,
         settings: zhSettings,
         books: zhBooks,
+        "glory-share": zhGloryShare,
       },
     },
     fallbackLng: "zh-TW",

@@ -1,0 +1,127 @@
+{
+  "gloryShare": {
+    "badge": "Glory Share Honor Portion",
+    "hero": {
+      "title": "Honor God with a lifetime Glory Share and walk with every gospel creation.",
+      "description": "Glory Share is a lifetime honor commitment. One offering lets you journey with the entire ministry family forever—fueling cultural creativity, immersive experiences, fine art collections, and lifestyle goods so Scripture can reach the world with fresh power.",
+      "primaryCta": "Join as an Honor Member",
+      "secondaryCta": "Learn About the Giving Plan",
+      "lifetimeLabel": "Lifetime Share",
+      "lifetimeDescription": "The initial giving threshold is 77 USD (pre-tax) and may increase as the ministry grows. Glory rewards are expressions of gratitude, not securities or shareholder rights, yet they carry eternal value."
+    },
+    "benefits": [
+      {
+        "title": "Lifetime Glory Portion",
+        "description": "A single offering, a lifelong journey. Enter as an honor member starting at 77 USD and receive permanent support privileges and an exclusive insignia."
+      },
+      {
+        "title": "Walking the Holy Mission",
+        "description": "Every contribution honors God by empowering gospel-centered media and art that follow Jesus’ example."
+      },
+      {
+        "title": "First Access to Every Creation",
+        "description": "Priority entrance to new works, member-only premieres, and annual gratitude gifts—witness each idea being born."
+      }
+    ],
+    "missionHighlights": [
+      {
+        "title": "Gospel-Centered",
+        "description": "All products and services are rooted in Scripture, carrying faith into everyday spaces."
+      },
+      {
+        "title": "Global Creative Platform",
+        "description": "Combines cultural creativity and digital technology to craft gospel content that resonates worldwide."
+      },
+      {
+        "title": "Lived-Out Faith",
+        "description": "Three business tracks—cultural, artistic, lifestyle—make walking with Christ a daily rhythm."
+      }
+    ],
+    "membership": {
+      "badge": "Honor Member Privileges",
+      "title": "Experience rights, honor rewards, and legacy rights—all at once.",
+      "bullets": [
+        "· Lifetime access to Beyond Digital Media’s creations and resources.",
+        "· Invitations to the annual gathering, internal community, behind-the-scenes footage, and premieres.",
+        "· Annual honor gifts funded from operating revenue—never dividends or profit sharing.",
+        "· Listed in the yearly honor roll with legacy and exclusive benefit rights.",
+        "· Classified as gratitude expenses only, not equity, securities, or liquidation claims."
+      ]
+    },
+    "stepsCard": {
+      "title": "How to Join & Commit",
+      "description": "Let your giving accelerate projects that honor God.",
+      "steps": [
+        "1. Prepare the minimum 77 USD (pre-tax) honor gift, with room to deepen as the ministry grows.",
+        "2. Register through the official giving channel to activate your honor membership.",
+        "3. Receive your member identity, annual honor listing, and access to the private community.",
+        "4. Keep receiving project updates, honor gifts, and legacy notices as we build together."
+      ]
+    },
+    "tracksSection": {
+      "badge": "Three Business Pillars",
+      "title": "Cultural creativity × art showcases × lifestyle goods—everything honor members empower.",
+      "description": "Your offering simultaneously advances immersive media, art gifts, and faith-filled lifestyle lines, forming a diverse and sustainable gospel ecosystem.",
+      "tracks": [
+        {
+          "title": "Digital Media Performances",
+          "description": "Immersive 3D BOX, Bible Phantom Theater, light shows, VR Sunday School, and the mobile mission truck blend Scripture with technology.",
+          "highlights": [
+            "Intergenerational immersive experiences",
+            "Scalable for global tours",
+            "Blueprint for a gospel theme park"
+          ]
+        },
+        {
+          "title": "Bible Commemorative Art Gifts",
+          "description": "Laser metal pieces, woodcarvings, engravings, and limited art books merge collectible value with spiritual heritage.",
+          "highlights": [
+            "Premium collectibles",
+            "Custom and limited editions",
+            "Seamless flow from exhibition to collection"
+          ]
+        },
+        {
+          "title": "Carry-the-Cross Lifestyle Goods",
+          "description": "Bags, fragrances, home, office, and in-car accessories infuse cross-inspired fashion into every routine.",
+          "highlights": [
+            "Faith × fashion design",
+            "Whole-life touchpoints",
+            "Digital-to-physical interaction"
+          ]
+        }
+      ]
+    },
+    "activeProject": {
+      "badge": "Activate Creation",
+      "title": "Activate Creation · Honor Creation Incubator",
+      "description": "Current immersive showcases, VR Sunday School, and Bible collectible series are lit by honor members’ generosity. Join to preview every launch, secure limited seats, and receive digital exclusives.",
+      "perksTitle": "Honor Member Exclusive Benefits",
+      "perks": [
+        "Free priority entry to first-wave productions",
+        "Invitations to behind-the-scenes screenings",
+        "Monthly project briefings showing exactly how gifts are used"
+      ],
+      "future": "Whenever a new project begins, honor members reserve seats first, co-create through feedback, and witness each milestone as spiritual patrons.",
+      "upcoming": {
+        "title": "Upcoming Creations",
+        "description": "Join now to experience them first and enjoy complimentary access.",
+        "projects": [
+          {
+            "title": "1. 3D BOX “Light of Redemption”",
+            "description": "A 360° immersive journey from Genesis to Revelation with member-only test screenings."
+          },
+          {
+            "title": "2. VR Sunday School · Eden for Kids",
+            "description": "Interactive discipleship for children and youth—members beta test for free and shape the lessons."
+          },
+          {
+            "title": "3. Bible Commemorative Art Set",
+            "description": "Limited laser engravings and colorful woodcarvings, reserved first for honor collectors."
+          }
+        ],
+        "footer": "Your one-time offering births every project and becomes a testimony of honoring God for all who participate."
+      }
+    }
+  }
+}
