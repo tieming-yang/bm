@@ -49,19 +49,24 @@ export function Breadcrumb() {
             {t("nav.home")}
           </button>
         </li>
-        {segments.map((segment, index) => (
-          <li key={index} className="">
-            <span className="text-gray-600 dark:text-gray-400">/ </span>
-            <button
-              onClick={() => handleNavigation(index)}
-              className="hover:underline text-primary-foreground"
-            >
-              {Books.order.includes(segment)
-                ? tBooks(segment)
-                : t(getTranslationKey(decodeURIComponent(segment.toLowerCase())))}
-            </button>
-          </li>
-        ))}
+        {segments.map((segment, index) => {
+          const isBookSegment = Books.order.includes(segment);
+
+          return (
+            <li key={index} className="">
+              <span className="text-gray-600 dark:text-gray-400">/ </span>
+              <button
+                onClick={() => handleNavigation(index)}
+                className="hover:underline text-primary-foreground"
+                disabled={isBookSegment}
+              >
+                {isBookSegment
+                  ? tBooks(segment)
+                  : t(getTranslationKey(decodeURIComponent(segment.toLowerCase())))}
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
