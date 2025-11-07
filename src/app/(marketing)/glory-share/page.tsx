@@ -100,14 +100,14 @@ export default function GlorySharePage() {
             {t("gloryShare.hero.title")}
           </h1>
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
-          <div className="flex flex-wrap gap-4">
+          {/* <div className="flex flex-wrap gap-4">
             <Button size="lg" className="rounded-full px-8">
               {t("gloryShare.hero.primaryCta")}
             </Button>
             <Button variant="outline" size="lg" className="rounded-full border-primary/40 px-8">
               {t("gloryShare.hero.secondaryCta")}
             </Button>
-          </div>
+          </div> */}
           <div className="rounded-3xl border border-primary/10 bg-linear-to-r from-background/70 to-background/30 p-6 shadow-lg shadow-primary/5 backdrop-blur">
             <p className="text-sm uppercase tracking-[0.4em] text-primary/70">
               {t("gloryShare.hero.lifetimeLabel")}
