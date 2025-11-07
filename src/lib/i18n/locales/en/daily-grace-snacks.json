@@ -15,93 +15,108 @@
       "episodes": [
         {
           "number": "01",
-          "title": "There Is Only One God",
+          "title": "God is One",
           "theme": "The Trinity",
-          "summary": "Kids meet the one true God—Father, Son, and Spirit—and learn why we worship Him alone."
+          "summary": "Kids meet the one true God—Father, Son, and Spirit—and learn why we worship Him alone.",
+          "matchKey": "God is One"
         },
         {
           "number": "02",
-          "title": "God Created Heaven and Earth",
+          "title": "God Created the Heavens and the Earth",
           "theme": "Genesis 1",
-          "summary": "From light to living creatures, God speaks creation into being and calls it good."
+          "summary": "From light to living creatures, God speaks creation into being and calls it good.",
+          "matchKey": "God Created the Heavens and the Earth"
         },
         {
           "number": "03",
-          "title": "God Made People",
+          "title": "God Created Man",
           "theme": "Adam & Eve",
-          "summary": "Children discover they are made in God’s image and designed for friendship with Him."
+          "summary": "Children discover they are made in God’s image and designed for friendship with Him.",
+          "matchKey": "God Created Man"
         },
         {
           "number": "04",
-          "title": "People Sinned",
+          "title": "Man Sinned",
           "theme": "The Fall",
-          "summary": "Sin enters the world, but so does God’s promise to rescue His children."
+          "summary": "Sin enters the world, but so does God’s promise to rescue His children.",
+          "matchKey": "Man Sinned"
         },
         {
           "number": "05",
           "title": "Noah’s Ark",
           "theme": "Obedience Saves",
-          "summary": "God protects Noah’s family and points to the hope of redemption through obedience."
+          "summary": "God protects Noah’s family and points to the hope of redemption through obedience.",
+          "matchKey": "Noah's Ark"
         },
         {
           "number": "06",
-          "title": "Abraham’s Faith",
+          "title": "The faith of Abraham",
           "theme": "Trusting God’s Promise",
-          "summary": "Abraham follows God into the unknown and discovers blessing for every nation."
+          "summary": "Abraham follows God into the unknown and discovers blessing for every nation.",
+          "matchKey": "The Faith of Abraham"
         },
         {
           "number": "07",
           "title": "Joseph’s Dreams and Forgiveness",
           "theme": "God Redeems Pain",
-          "summary": "Joseph’s journey shows how God turns harm into healing when we forgive."
+          "summary": "Joseph’s journey shows how God turns harm into healing when we forgive.",
+          "matchKey": "Joseph's Dreams and Forgiveness"
         },
         {
           "number": "08",
           "title": "Moses and the Burning Bush",
           "theme": "God’s Calling",
-          "summary": "God speaks through a burning bush and sends Moses to liberate His people."
+          "summary": "God speaks through a burning bush and sends Moses to liberate His people.",
+          "matchKey": "Moses and the Burning Bush"
         },
         {
           "number": "09",
-          "title": "Exodus and the Red Sea",
+          "title": "The Exodus and the Parting of the Red Sea",
           "theme": "God Rescues",
-          "summary": "The Lord parts the Red Sea and leads Israel into freedom."
+          "summary": "The Lord parts the Red Sea and leads Israel into freedom.",
+          "matchKey": "The Exodus and the Parting of the Red Sea"
         },
         {
           "number": "10",
           "title": "The Ten Commandments",
           "theme": "God’s Loving Law",
-          "summary": "Kids learn why God’s commands protect us and show His holy heart."
+          "summary": "Kids learn why God’s commands protect us and show His holy heart.",
+          "matchKey": "The Ten Commandments"
         },
         {
           "number": "11",
           "title": "David and Goliath",
           "theme": "Faith Beats Giants",
-          "summary": "With a sling and God’s courage, David proves that faith is stronger than fear."
+          "summary": "With a sling and God’s courage, David proves that faith is stronger than fear.",
+          "matchKey": "David and Goliath"
         },
         {
           "number": "12",
           "title": "Daniel in the Lions’ Den",
           "theme": "Prayerful Courage",
-          "summary": "Daniel keeps praying even when it’s risky, and God shuts the lions’ mouths."
+          "summary": "Daniel keeps praying even when it’s risky, and God shuts the lions’ mouths.",
+          "matchKey": "Daniel in the Lions' Den"
         },
         {
           "number": "13",
-          "title": "Three Friends in the Furnace",
+          "title": "The Tree Youths in the Fiery Furnace",
           "theme": "Faithfulness",
-          "summary": "Shadrach, Meshach, and Abednego refuse idols and find Jesus in the fire."
+          "summary": "Shadrach, Meshach, and Abednego refuse idols and find Jesus in the fire.",
+          "matchKey": "The Three Youths in the Fiery Furnace"
         },
         {
           "number": "14",
-          "title": "Jonah and the Big Fish",
+          "title": "Jonah and the Great Fish",
           "theme": "Repentance & Mercy",
-          "summary": "Jonah learns that God’s mercy pursues both runaways and nations."
+          "summary": "Jonah learns that God’s mercy pursues both runaways and nations.",
+          "matchKey": "Jonah and the Great Fish"
         },
         {
           "number": "15",
           "title": "Elijah and the Ravens",
           "theme": "God Provides",
-          "summary": "In famine, God feeds Elijah and proves He is always near."
+          "summary": "In famine, God feeds Elijah and proves He is always near.",
+          "matchKey": "Elijah and the Ravens"
         }
       ]
     },

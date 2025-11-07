@@ -3,13 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useTranslation from "@/hooks/use-translation";
 
 type Episode = {
@@ -17,6 +11,7 @@ type Episode = {
   title: string;
   theme: string;
   summary: string;
+  matchKey?: string;
 };
 
 type PlaylistVideo = {
@@ -40,6 +35,19 @@ type YouTubePlaylistResponse = {
       videoId?: string;
     };
   }>;
+};
+
+const normalizeTitle = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const extractMatchableTitle = (rawTitle: string | undefined) => {
+  if (!rawTitle) return "";
+  const [segment] = rawTitle.split("|");
+  return normalizeTitle(segment || rawTitle);
 };
 
 export default function DailyGraceSnacksPage() {
@@ -100,20 +108,47 @@ export default function DailyGraceSnacksPage() {
           .sort((a, b) => a.index - b.index) ?? [];
       return items;
     },
-    staleTime: 1000 * 60 * 30,
-    gcTime: 1000 * 60 * 60,
   });
   const fetchError = isPlaylistError ? statusError : null;
 
-  useEffect(() => {
-    if (playlistVideos.length === 0) return;
-    if (selectedEpisode >= playlistVideos.length) {
-      setSelectedEpisode(0);
-    }
-  }, [playlistVideos, selectedEpisode]);
+  const episodeVideoMap = useMemo(() => {
+    if (!playlistVideos.length) return {} as Record<number, PlaylistVideo>;
+    const matchTargets = episodes.map((episode) =>
+      extractMatchableTitle(episode.matchKey ?? episode.title)
+    );
+    const matches: Record<number, PlaylistVideo> = {};
+    playlistVideos.forEach((video) => {
+      const normalizedVideoTitle = extractMatchableTitle(video.title);
 
-  const activeVideoId =
-    playlistVideos[selectedEpisode]?.videoId ?? playlistVideos[0]?.videoId ?? null;
+      if (
+        !normalizedVideoTitle ||
+        normalizedVideoTitle === "private video" ||
+        normalizedVideoTitle === "deleted video"
+      )
+        return;
+
+      const matchIndex = matchTargets.findIndex((target) => {
+        if (!target) return false;
+        return normalizedVideoTitle.includes(target) || target.includes(normalizedVideoTitle);
+      });
+      if (matchIndex !== -1 && !matches[matchIndex]) {
+        matches[matchIndex] = video;
+      }
+    });
+    return matches;
+  }, [episodes, playlistVideos]);
+
+  useEffect(() => {
+    if (!Object.keys(episodeVideoMap).length) return;
+    if (episodeVideoMap[selectedEpisode]) return;
+    const firstPlayableIndex = episodes.findIndex((_, index) => episodeVideoMap[index]);
+    if (firstPlayableIndex !== -1) {
+      setSelectedEpisode(firstPlayableIndex);
+    }
+  }, [episodeVideoMap, episodes, selectedEpisode]);
+
+  const fallbackVideoId = playlistVideos.find((video) => video.videoId)?.videoId ?? null;
+  const activeVideoId = episodeVideoMap[selectedEpisode]?.videoId ?? fallbackVideoId ?? null;
 
   const embedSrc = useMemo(() => {
     if (activeVideoId) {
@@ -132,16 +167,19 @@ export default function DailyGraceSnacksPage() {
           <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight md:text-5xl">
             {t("dailyGraceSnacks.hero.title")}
           </h1>
-          <p className="text-lg text-muted-foreground">
-            {t("dailyGraceSnacks.hero.description")}
-          </p>
+          <p className="text-lg text-muted-foreground">{t("dailyGraceSnacks.hero.description")}</p>
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="rounded-full px-8" asChild>
               <a href={playlistLink} target="_blank" rel="noopener noreferrer">
                 {t("dailyGraceSnacks.hero.watchNow")}
               </a>
             </Button>
-            <Button variant="outline" size="lg" className="rounded-full border-primary/40 px-8" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="rounded-full border-primary/40 px-8"
+              asChild
+            >
               <a href="/glory-share">{t("dailyGraceSnacks.hero.supportLink")}</a>
             </Button>
           </div>
@@ -170,9 +208,9 @@ export default function DailyGraceSnacksPage() {
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {episodes.map((episode, index) => {
-            const videoData = playlistVideos[index];
+            const videoData = episodeVideoMap[index];
             const isActive = selectedEpisode === index;
-            const isPlayable = Boolean(videoData?.videoId);
+            const isPlayable = Boolean(videoData?.title);
             const handleSelect = () => {
               if (isPlayable) {
                 setSelectedEpisode(index);
@@ -243,7 +281,9 @@ export default function DailyGraceSnacksPage() {
           </div>
           <Card className="border-primary/20 bg-background/90 text-center shadow-lg shadow-primary/20">
             <CardHeader>
-              <CardTitle className="text-3xl text-primary">{t("dailyGraceSnacks.season2.comingSoon")}</CardTitle>
+              <CardTitle className="text-3xl text-primary">
+                {t("dailyGraceSnacks.season2.comingSoon")}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-muted-foreground">
               <p>{t("dailyGraceSnacks.ctaSection.description")}</p>

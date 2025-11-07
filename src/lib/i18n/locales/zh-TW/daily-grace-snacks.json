@@ -17,91 +17,106 @@
           "number": "01",
           "title": "神只有一位",
           "theme": "三位一體",
-          "summary": "介紹又真又活的三位一體真神，學習為何只敬拜祂。"
+          "summary": "介紹又真又活的三位一體真神，學習為何只敬拜祂。",
+          "matchKey": "God is One"
         },
         {
           "number": "02",
           "title": "神創造天地",
           "theme": "創世記 1",
-          "summary": "從光到萬物，神說有就有，一切都被祂稱為美好。"
+          "summary": "從光到萬物，神說有就有，一切都被祂稱為美好。",
+          "matchKey": "God Created the Heavens and the Earth"
         },
         {
           "number": "03",
           "title": "神造人",
           "theme": "亞當與夏娃",
-          "summary": "人按神的形象被造，受造是為了與祂同行。"
+          "summary": "人按神的形象被造，受造是為了與祂同行。",
+          "matchKey": "God Created Man"
         },
         {
           "number": "04",
           "title": "人犯了罪",
           "theme": "罪的由來",
-          "summary": "罪進入世界，但神也應許要來拯救。"
+          "summary": "罪進入世界，但神也應許要來拯救。",
+          "matchKey": "Man Sinned"
         },
         {
           "number": "05",
           "title": "挪亞方舟",
           "theme": "順服得救",
-          "summary": "挪亞因信順服而得保守，指向將來的救贖盼望。"
+          "summary": "挪亞因信順服而得保守，指向將來的救贖盼望。",
+          "matchKey": "Noah's Ark"
         },
         {
           "number": "06",
           "title": "亞伯拉罕的信心",
           "theme": "跟隨神的應許",
-          "summary": "亞伯拉罕憑信踏上未知旅程，萬國因此得福。"
+          "summary": "亞伯拉罕憑信踏上未知旅程，萬國因此得福。",
+          "matchKey": "The Faith of Abraham"
         },
         {
           "number": "07",
           "title": "約瑟的夢與寬恕",
           "theme": "神翻轉苦難",
-          "summary": "約瑟見證神把傷害化為祝福，也教導饒恕。"
+          "summary": "約瑟見證神把傷害化為祝福，也教導饒恕。",
+          "matchKey": "Joseph's Dreams and Forgiveness"
         },
         {
           "number": "08",
           "title": "摩西與燃燒的荊棘",
           "theme": "神的呼召",
-          "summary": "神在火焰中說話，差遣摩西帶領百姓出埃及。"
+          "summary": "神在火焰中說話，差遣摩西帶領百姓出埃及。",
+          "matchKey": "Moses and the Burning Bush"
         },
         {
           "number": "09",
           "title": "出埃及與紅海分開",
           "theme": "神親自拯救",
-          "summary": "耶和華分開紅海，引領百姓得自由。"
+          "summary": "耶和華分開紅海，引領百姓得自由。",
+          "matchKey": "The Exodus and the Parting of the Red Sea"
         },
         {
           "number": "10",
           "title": "十誡",
           "theme": "神慈愛的律法",
-          "summary": "孩子學習律法如何保護我們，也彰顯神聖潔的心。"
+          "summary": "孩子學習律法如何保護我們，也彰顯神聖潔的心。",
+          "matchKey": "The Ten Commandments"
         },
         {
           "number": "11",
           "title": "大衛戰歌利亞",
           "theme": "信心勝巨人",
-          "summary": "帶著機弦與勇氣，大衛活出信心勝過懼怕。"
+          "summary": "帶著機弦與勇氣，大衛活出信心勝過懼怕。",
+          "matchKey": "David and Goliath"
         },
         {
           "number": "12",
           "title": "但以理在獅子坑",
           "theme": "禱告的勇氣",
-          "summary": "但以理即使冒險也不停止禱告，神親自關上獅口。"
+          "summary": "但以理即使冒險也不停止禱告，神親自關上獅口。",
+          "matchKey": "Daniel in the Lions' Den"
         },
         {
           "number": "13",
           "title": "火窯三個朋友",
           "theme": "忠心不拜偶像",
-          "summary": "沙得拉、米煞、亞伯尼歌在火中遇見耶穌。"
+          "summary": "沙得拉、米煞、亞伯尼歌在火中遇見耶穌。",
+          "matchKey": "The Three Youths in the Fiery Furnace"
         },
         {
           "number": "14",
           "title": "約拿與大魚",
           "theme": "悔改與憐憫",
-          "summary": "約拿學會神的憐憫追尋每一個人與城市。"
+          "summary": "約拿學會神的憐憫追尋每一個人與城市。",
+          "matchKey": "Jonah and the Great Fish"
         },
         {
           "number": "15",
           "title": "以利亞與烏鴉",
           "theme": "神必供應",
-          "summary": "饑荒裡神仍供應以利亞，提醒祂總是與人同在。"
+          "summary": "饑荒裡神仍供應以利亞，提醒祂總是與人同在。",
+          "matchKey": "Elijah and the Ravens"
         }
       ]
     },
