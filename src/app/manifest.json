@@ -8,8 +8,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "theme_color": "#202020",
-  "background_color": "#1b1b1b",
+  "theme_color": "##020617",
+  "background_color": "##020617",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -22,6 +22,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/favicons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
