@@ -1,0 +1,15 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /donators/{uid} {
+      allow read: if request.auth.uid == uid;
+      allow update: if request.auth.uid == uid;      // for newsletterOptIn, etc.
+
+      match /donations/{donationId} {
+        allow create: if request.auth.uid == uid;
+        allow read: if request.auth.uid == uid;
+      }
+    }
+  }
+}
