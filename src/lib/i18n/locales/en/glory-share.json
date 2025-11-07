@@ -109,16 +109,28 @@
         "description": "Join now to experience them first and enjoy complimentary access.",
         "projects": [
           {
-            "title": "1. 3D BOX “Light of Redemption”",
-            "description": "A 360° immersive journey from Genesis to Revelation with member-only test screenings."
+            "title": "1. 3D BOX: Genesis",
+            "description": "A 360° immersive exhibition that journeys through the first three chapters of Genesis. Glory Members receive exclusive early access to the preview."
           },
           {
-            "title": "2. VR Sunday School · Eden for Kids",
-            "description": "Interactive discipleship for children and youth—members beta test for free and shape the lessons."
+            "title": "2. Illustrated Bible Project",
+            "description": "A visual retelling of Scripture through the artist’s brush, transforming Bible stories into continuous illustrated narratives. Each painting carries the light of God’s Word, allowing readers to feel the warmth and reality of faith through art. The series will be compiled into picture books and digital art collections, serving as devotional materials for families and Sunday schools."
           },
           {
-            "title": "3. Bible Commemorative Art Set",
-            "description": "Limited laser engravings and colorful woodcarvings, reserved first for honor collectors."
+            "title": "3. Bible Songs Collection",
+            "description": "A new music project blending children’s songs, contemporary worship, and traditional hymns, presenting the message of the Bible in both Chinese and English — so that the voice of faith may resonate across generations."
+          },
+          {
+            "title": "4. Children’s Bible Story Channel: Daily Grace Snacks",
+            "description": "A gospel animation channel for children that combines storytelling, music, and inspiration — helping kids understand God’s truth in a joyful and accessible way. Short daily episodes, from Creation to Redemption, nurture faith, curiosity, and wonder in young hearts."
+          },
+          {
+            "title": "5. VR Sunday School: Children’s Eden",
+            "description": "An interactive Bible learning experience designed for children and youth. Members can access early trials and share feedback as the virtual classroom evolves."
+          },
+          {
+            "title": "6. Bible Commemorative Art Box",
+            "description": "A limited-edition collection featuring laser-engraved and color wood-carved artworks inspired by Scripture. The first edition is reserved exclusively for Glory Members."
           }
         ],
         "footer": "Your one-time offering births every project and becomes a testimony of honoring God for all who participate."
