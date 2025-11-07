@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 
 import Donator from "@/models/donator";
-import firebase from "./firebase";
+import firebase from "../lib/firebase/firebase";
 
 const Auth = {
   get user() {

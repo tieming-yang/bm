@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import Auth from "@/lib/firebase/auth";
+import Auth from "@/models/auth";
 import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
 
