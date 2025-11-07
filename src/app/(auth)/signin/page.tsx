@@ -34,6 +34,7 @@ export default function SignInPage({}: Props) {
         variant="outline"
         className="flex items-center shadow-lg gap-3"
         onMouseDown={async () => {
+          //TODO: change it to useMutation
           try {
             const isDonatorSignup = await Auth.signUpWithGoogle({
               preferredLanguage: currentLanguage,
