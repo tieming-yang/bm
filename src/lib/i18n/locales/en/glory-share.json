@@ -43,9 +43,12 @@
       "bullets": [
         "· Lifetime access to Beyond Digital Media’s creations and resources.",
         "· Invitations to the annual gathering, internal community, behind-the-scenes footage, and premieres.",
-        "· Annual honor gifts funded from operating revenue—never dividends or profit sharing.",
-        "· Listed in the yearly honor roll with legacy and exclusive benefit rights.",
-        "· Classified as gratitude expenses only, not equity, securities, or liquidation claims."
+        "· Listed in the yearly honor roll with legacy and exclusive benefit rights."
+      ],
+      "bulletFootnotes": [null, null, 1],
+      "footnotes": [
+        "※ Annual honor gifts come from operating revenue and never count as dividends or profit distribution.",
+        "※ Every gratitude gift is recorded purely as an expense acknowledgment—not equity, securities, or liquidation rights."
       ]
     },
     "stepsCard": {

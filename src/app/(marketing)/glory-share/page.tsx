@@ -65,6 +65,11 @@ export default function GlorySharePage() {
 
   const membershipBullets =
     (t("gloryShare.membership.bullets", { returnObjects: true }) as string[]) ?? [];
+  const membershipBulletFootnotes =
+    (t("gloryShare.membership.bulletFootnotes", { returnObjects: true }) as Array<number | null>) ??
+    [];
+  const membershipFootnotes =
+    (t("gloryShare.membership.footnotes", { returnObjects: true }) as string[]) ?? [];
 
   const steps = (t("gloryShare.stepsCard.steps", { returnObjects: true }) as string[]) ?? [];
 
@@ -176,9 +181,17 @@ export default function GlorySharePage() {
               {t("gloryShare.membership.title")}
             </h2>
             <ul className="space-y-4 text-muted-foreground">
-              {membershipBullets.map((bullet) => (
-                <li key={bullet}>{bullet}</li>
-              ))}
+              {membershipBullets.map((bullet, index) => {
+                const footnoteNumber = membershipBulletFootnotes[index];
+                return (
+                  <li key={bullet} className="inline-flex flex-wrap items-baseline gap-1">
+                    <span>{bullet}</span>
+                    {typeof footnoteNumber === "number" && footnoteNumber > 0 && (
+                      <sup className="text-[0.65rem] align-super text-primary">{footnoteNumber}</sup>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <Card className="border-primary/20 bg-background/95 shadow-lg shadow-primary/20">
@@ -278,6 +291,21 @@ export default function GlorySharePage() {
           </Card>
         </div>
       </section>
+      {membershipFootnotes.length > 0 && <Footnotes footnotes={membershipFootnotes} />}
     </div>
+  );
+}
+
+function Footnotes({ footnotes }: { footnotes: string[] }) {
+  if (!footnotes.length) return null;
+  return (
+    <section className="space-y-2 border-t border-primary/15 pt-6 text-sm text-muted-foreground">
+      {footnotes.map((note, index) => (
+        <p key={note} className="flex gap-2">
+          <span className="text-primary">{index + 1}.</span>
+          <span>{note}</span>
+        </p>
+      ))}
+    </section>
   );
 }
