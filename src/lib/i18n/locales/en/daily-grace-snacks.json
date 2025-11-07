@@ -120,6 +120,10 @@
       "description": "Play an episode during children’s worship, send it in your family chat, or host a watch party. Every view plants a gospel seed.",
       "visitYouTube": "Open YouTube Playlist",
       "joinGloryShare": "Support the mission"
+    },
+    "status": {
+      "loading": "Loading playlist…",
+      "error": "Unable to load playlist. Showing default order."
     }
   }
 }

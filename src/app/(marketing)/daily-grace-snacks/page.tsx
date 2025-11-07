@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +19,29 @@ type Episode = {
   summary: string;
 };
 
+type PlaylistVideo = {
+  index: number;
+  videoId: string;
+  title: string;
+  duration: string | null;
+  thumbnail: string | null;
+};
+
+type YouTubePlaylistResponse = {
+  items?: Array<{
+    snippet?: {
+      title?: string;
+      description?: string;
+      position?: number;
+      resourceId?: { videoId?: string };
+      thumbnails?: Record<string, { url?: string }>;
+    };
+    contentDetails?: {
+      videoId?: string;
+    };
+  }>;
+};
+
 export default function DailyGraceSnacksPage() {
   const { t } = useTranslation("daily-grace-snacks");
   const playlistId = t("dailyGraceSnacks.playlistId");
@@ -26,13 +50,77 @@ export default function DailyGraceSnacksPage() {
     (t("dailyGraceSnacks.season1.episodes", { returnObjects: true }) as Episode[]) ?? [];
   const season2Highlights =
     (t("dailyGraceSnacks.season2.highlights", { returnObjects: true }) as string[]) ?? [];
+  const statusLoading = t("dailyGraceSnacks.status.loading");
+  const statusError = t("dailyGraceSnacks.status.error");
+  const fallbackApiKey = "AIzaSyAqGOf6G7Br3H0ZUDMcnTXpQIO48LKIIKI";
+  const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY ?? fallbackApiKey;
   const [selectedEpisode, setSelectedEpisode] = useState(0);
+  const {
+    data: playlistVideos = [],
+    isLoading: isLoadingVideos,
+    isError: isPlaylistError,
+  } = useQuery<PlaylistVideo[]>({
+    queryKey: ["daily-grace-snacks-playlist", playlistId, apiKey],
+    queryFn: async () => {
+      if (!apiKey) {
+        throw new Error("Missing YouTube API key");
+      }
+      const params = new URLSearchParams({
+        part: "snippet,contentDetails",
+        maxResults: "50",
+        playlistId,
+        key: apiKey,
+      });
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?${params.toString()}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to load playlist");
+      }
+      const data = (await response.json()) as YouTubePlaylistResponse;
+      const items =
+        data.items
+          ?.map((item, index) => {
+            const snippet = item.snippet ?? {};
+            const resource = snippet.resourceId ?? {};
+            const videoId = resource.videoId ?? item.contentDetails?.videoId;
+            if (!videoId) return null;
+            return {
+              index:
+                typeof snippet.position === "number" && snippet.position >= 0
+                  ? snippet.position
+                  : index,
+              videoId,
+              title: snippet.title ?? `Episode ${index + 1}`,
+              duration: null,
+              thumbnail: snippet.thumbnails?.default?.url ?? null,
+            };
+          })
+          .filter((video): video is PlaylistVideo => Boolean(video))
+          .sort((a, b) => a.index - b.index) ?? [];
+      return items;
+    },
+    staleTime: 1000 * 60 * 30,
+    gcTime: 1000 * 60 * 60,
+  });
+  const fetchError = isPlaylistError ? statusError : null;
+
+  useEffect(() => {
+    if (playlistVideos.length === 0) return;
+    if (selectedEpisode >= playlistVideos.length) {
+      setSelectedEpisode(0);
+    }
+  }, [playlistVideos, selectedEpisode]);
+
+  const activeVideoId =
+    playlistVideos[selectedEpisode]?.videoId ?? playlistVideos[0]?.videoId ?? null;
 
   const embedSrc = useMemo(() => {
-    const hasSelection = Number.isFinite(selectedEpisode) && selectedEpisode > 0;
-    const selectionQuery = hasSelection ? `&index=${selectedEpisode}` : "";
-    return `https://www.youtube.com/embed/videoseries?list=${playlistId}${selectionQuery}`;
-  }, [playlistId, selectedEpisode]);
+    if (activeVideoId) {
+      return `https://www.youtube.com/embed/${activeVideoId}?list=${playlistId}`;
+    }
+    return `https://www.youtube.com/embed/videoseries?list=${playlistId}`;
+  }, [activeVideoId, playlistId]);
 
   return (
     <div className="container relative z-50 mx-auto space-y-16 px-4 py-16">
@@ -81,39 +169,60 @@ export default function DailyGraceSnacksPage() {
           </h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {episodes.map((episode, index) => (
-            <Card
-              key={episode.number}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedEpisode(index)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  setSelectedEpisode(index);
-                }
-              }}
-              className={`cursor-pointer border bg-background/90 transition-all ${
-                selectedEpisode === index
-                  ? "border-primary/60 shadow-lg shadow-primary/20"
-                  : "border-primary/15 hover:border-primary/40"
-              }`}
-            >
-              <CardHeader className="space-y-2">
-                <div className="flex items-center gap-3 text-primary">
-                  <span className="text-sm font-semibold">{episode.number}</span>
-                  <span className="text-sm uppercase tracking-[0.4em] text-primary/70">
-                    {episode.theme}
-                  </span>
-                </div>
-                <CardTitle className="text-xl">{episode.title}</CardTitle>
-                <CardDescription className="text-base text-muted-foreground">
-                  {episode.summary}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
+          {episodes.map((episode, index) => {
+            const videoData = playlistVideos[index];
+            const isActive = selectedEpisode === index;
+            const isPlayable = Boolean(videoData?.videoId);
+            const handleSelect = () => {
+              if (isPlayable) {
+                setSelectedEpisode(index);
+              }
+            };
+            return (
+              <Card
+                key={episode.number}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isActive}
+                aria-disabled={!isPlayable}
+                onClick={handleSelect}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleSelect();
+                  }
+                }}
+                className={`border bg-background/90 transition-all focus-visible:ring-2 focus-visible:ring-primary ${
+                  isActive
+                    ? "cursor-default border-primary/60 shadow-lg shadow-primary/20"
+                    : "cursor-pointer border-primary/15 hover:border-primary/40"
+                } ${isPlayable ? "" : "opacity-60"}`}
+              >
+                <CardHeader className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-3 text-primary">
+                    <span className="text-sm font-semibold">{episode.number}</span>
+                    <span className="text-sm uppercase tracking-[0.4em] text-primary/70">
+                      {episode.theme}
+                    </span>
+                    {videoData?.duration && (
+                      <span className="text-xs text-primary/60">{videoData.duration}</span>
+                    )}
+                  </div>
+                  <CardTitle className="text-xl">{episode.title}</CardTitle>
+                  <CardDescription className="text-base text-muted-foreground">
+                    {episode.summary}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            );
+          })}
         </div>
+        {isLoadingVideos && (
+          <p className="text-center text-sm text-muted-foreground">{statusLoading}</p>
+        )}
+        {fetchError && !isLoadingVideos && (
+          <p className="text-center text-sm text-muted-foreground">{fetchError}</p>
+        )}
       </section>
 
       <section className="rounded-3xl border border-primary/15 bg-linear-to-r from-background/90 via-primary/5 to-background/70 p-8 shadow-xl shadow-primary/10">

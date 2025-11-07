@@ -120,6 +120,10 @@
       "description": "可以在兒童主日播放、分享給家長群組，或一起辦觀影時光。每一次播放都在種下福音種子。",
       "visitYouTube": "前往 YouTube 清單",
       "joinGloryShare": "加入支持行列"
+    },
+    "status": {
+      "loading": "播放清單載入中…",
+      "error": "無法載入播放清單，已顯示預設順序。"
     }
   }
 }
