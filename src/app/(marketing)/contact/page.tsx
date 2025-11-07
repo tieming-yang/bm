@@ -1,18 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Mail, Phone, MapPin } from "lucide-react";
 import useTranslation from "@/hooks/use-translation";
 
@@ -35,7 +23,7 @@ export default function Contact() {
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 w-full gap-12 place-items-center">
+      <div className="grid grid-cols-1 w-full gap-12 place-items-center font-mono">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -48,11 +36,16 @@ export default function Contact() {
             </div>
             <div>
               <h3 className="text-lg font-medium">{t("contact.email.title")}</h3>
-              <p className="text-muted-foreground">{}</p>
+              <a
+                className="text-foreground underline underline-offset-4"
+                href="mailto:beyonddigitalmedia.art@gmail.com"
+              >
+                beyonddigitalmedia.art@gmail.com
+              </a>
             </div>
           </div>
 
-          <div className="flex items-start gap-4">
+          {/* <div className="flex items-start gap-4">
             <div className="p-3 rounded-full bg-primary/10">
               <Phone className="w-6 h-6 text-primary" />
             </div>
@@ -71,7 +64,7 @@ export default function Contact() {
               <p className="text-muted-foreground">{}</p>
               <p className="text-muted-foreground">{}</p>
             </div>
-          </div>
+          </div> */}
         </motion.div>
 
         {/* Remove form temporarily */}
