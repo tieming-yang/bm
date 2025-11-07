@@ -26,7 +26,7 @@ const Auth = {
     try {
       const { user } = await signInWithPopup(firebase.auth, provider);
       const { uid, displayName, email, photoURL } = user;
-      
+      //TODO: change it to profile 
       let isDonatorSignedUp = false;
       isDonatorSignedUp = await Donator.isExits(uid);
       if (isDonatorSignedUp) {

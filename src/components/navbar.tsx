@@ -97,7 +97,10 @@ export default function Navbar() {
                   <span className="sr-only">Toggle theme</span>
                 </Button> */}
                 {authUser ? (
-                  <Link href="/profile" className="text-sm font-medium text-primary-foreground">
+                  <Link
+                    href={`/profile/${authUser.uid}`}
+                    className="text-sm font-medium text-primary-foreground"
+                  >
                     <Button size="icon">
                       <User className="size-5" />
                     </Button>
