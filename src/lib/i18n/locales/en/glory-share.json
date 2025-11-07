@@ -1,13 +1,13 @@
 {
   "gloryShare": {
-    "badge": "Glory Share Honor Portion",
+    "badge": "Glory Share",
     "hero": {
       "title": "Honor God with a lifetime Glory Share and walk with every gospel creation.",
       "description": "Glory Share is a lifetime honor commitment. One offering lets you journey with the entire ministry family forever—fueling cultural creativity, immersive experiences, fine art collections, and lifestyle goods so Scripture can reach the world with fresh power.",
       "primaryCta": "Join as an Honor Member",
       "secondaryCta": "Learn About the Giving Plan",
       "lifetimeLabel": "Lifetime Share",
-      "lifetimeDescription": "The initial giving threshold is 77 USD (pre-tax) and may increase as the ministry grows. Glory rewards are expressions of gratitude, not securities or shareholder rights, yet they carry eternal value."
+      "lifetimeDescription": "For just $77 (before tax), you can make a lifelong contribution to this eternal artistic ministry."
     },
     "benefits": [
       {
@@ -54,10 +54,9 @@
       "title": "How to Join & Commit",
       "description": "Let your giving accelerate projects that honor God.",
       "steps": [
-        "1. Prepare the minimum 77 USD (pre-tax) honor gift, with room to deepen as the ministry grows.",
-        "2. Register through the official giving channel to activate your honor membership.",
-        "3. Receive your member identity, annual honor listing, and access to the private community.",
-        "4. Keep receiving project updates, honor gifts, and legacy notices as we build together."
+        "1. Register through the official giving channel to activate your honor membership.",
+        "2. Receive your member identity, annual honor listing, and access to the private community.",
+        "3. Keep receiving project updates, honor gifts, and legacy notices as we build together."
       ]
     },
     "tracksSection": {
