@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import Config from "@/models/config";
 import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "./loading";
+import Loading from "../app/loading";
 import { toast } from "sonner";
 
 type Props = {};

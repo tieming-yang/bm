@@ -18,7 +18,7 @@ import useTranslation from "../../hooks/use-translation";
 import useAuthUser from "@/hooks/use-auth-user";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Loading from "@/components/loading";
+import Loading from "@/app/loading";
 
 export default function Donate() {
   const { t } = useTranslation("donate");

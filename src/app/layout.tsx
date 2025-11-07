@@ -7,7 +7,7 @@ import "../styles/globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
-import Loading from "@/components/loading";
+import Loading from "@/app/loading";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import ClientRoot from "./client-layout";
 import { Metadata } from "next";

@@ -5,7 +5,7 @@ import useTranslation from "@/hooks/use-translation";
 import { ImageGallery } from "./image-gallery";
 import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "./loading";
+import Loading from "../app/loading";
 import { toast } from "sonner";
 import bibleArtworks from "@/data/bible-artworks-data";
 import Image from "next/image";

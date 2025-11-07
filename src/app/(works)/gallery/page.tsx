@@ -5,7 +5,7 @@ import { ImageGallery } from "../../components/image-gallery";
 import { artworks } from "../../models/artworks";
 import { Suspense } from "react";
 import useTranslation from "../../hooks/use-translation";
-import Loading from "@/components/loading";
+import Loading from "@/app/loading";
 
 export default function Gallery() {
   const { t } = useTranslation("gallery");

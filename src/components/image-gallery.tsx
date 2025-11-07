@@ -17,7 +17,7 @@ import { AspectRatio } from "./ui/aspect-ratio";
 
 import Config from "@/models/config";
 import { toast } from "sonner";
-import Loading from "./loading";
+import Loading from "../app/loading";
 
 interface ImageGalleryProps {
   bibleArtworks: BibleArtworksLocale[];

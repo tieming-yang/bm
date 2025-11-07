@@ -46,7 +46,8 @@ const Auth = {
 
       return isDonatorSignedUp;
     } catch (error) {
-      console.error("Error signingup in with Google", error);
+      console.error(error);
+      throw error;
     }
   },
 

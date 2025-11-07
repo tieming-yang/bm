@@ -4,7 +4,7 @@ import useAuthUser from "@/hooks/use-auth-user";
 import Donator from "@/models/donator";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import Loading from "@/components/loading";
+import Loading from "@/app/loading";
 import Image from "next/image";
 import useTranslation from "@/hooks/use-translation";
 import SignOutButton from "../../signout/signout-button";

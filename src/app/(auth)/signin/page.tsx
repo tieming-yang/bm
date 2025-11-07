@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import Loading from "@/components/loading";
+import Loading from "@/app/loading";
 import Auth from "@/models/auth";
 import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
