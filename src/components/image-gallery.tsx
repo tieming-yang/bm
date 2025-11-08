@@ -34,14 +34,12 @@ function Thumbnail({
   artwork: BibleArtworksLocale;
   onClick: (id: string) => void;
 }) {
-  const [isLoading, setIsLoading] = useState(true);
   return (
     <AspectRatio
       ratio={Config.aspectRatio}
       className="relative overflow-hidden shadow-xl cursor-pointer group"
       onClick={() => onClick(artwork.id)}
     >
-      <Loading isInlined show={isLoading} />
       <Image
         src={artwork.imageUrl}
         alt={artwork.title || "Bible Artwork"}
