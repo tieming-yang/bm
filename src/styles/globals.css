@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @source '../../*.{js,ts,jsx,tsx,mdx}';
 
@@ -16,7 +16,8 @@
 }
 
 @theme {
-  --font-sans: var(--font-eagle-lake), var(--font-yuji-mai), system-ui, sans-serif;
+  --font-sans:
+    var(--font-eagle-lake), var(--font-yuji-mai), system-ui, sans-serif;
   --font-chinese: var(--font-yuji-mai), system-ui, sans-serif;
 
   --color-border: hsl(var(--border));
@@ -99,9 +100,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     /* --primary: 346 77% 49%; */
-    --primary: #f7d558; /* Using hex for primary color */
+    --primary: #9eb8a4; /* Using hex for primary color */
     --primary-foreground: 240 50% 3%;
-    --secondary: #0f71d1;
+    --secondary: #edc043;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -118,13 +119,13 @@
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: #333;
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: #dc9e20;
+    --primary: #98a68a;
     --primary-foreground: 355 100% 97%;
-    --secondary: ##0f71d1;
+    --secondary: #f1d7a4;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
