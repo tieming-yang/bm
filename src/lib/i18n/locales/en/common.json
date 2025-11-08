@@ -1,4 +1,8 @@
 {
+  "auth": {
+    "noAccount": "New here?",
+    "goToSignup": "Create an account"
+  },
   "nav": {
     "home": "Home",
     "about": "About Us",
@@ -52,7 +56,7 @@
   "no": "No",
   "toast": {
     "signInSuccess": "Sign in successful!",
-    "signInError": "Sign in failed. Please check your credentials.",
+    "signInError": "Sign in failed. Please try again later.",
     "signUpSuccess": "Sign up successful! Welcome aboard!",
     "signUpError": "Sign up failed. Please try again later.",
     "signOutSuccess": "Sign out successful! Have a blessed day!",
