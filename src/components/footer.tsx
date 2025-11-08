@@ -40,10 +40,18 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/gallery"
+                  href="/bible-gallery"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  {t("nav.gallery")}
+                  {t("nav.bibleGallery")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/daily-grace-snacks"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t("nav.dailyGraceSnacks")}
                 </Link>
               </li>
               {/* <li>
