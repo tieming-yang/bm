@@ -98,7 +98,6 @@ export function ImageGallery({
       )
     : undefined;
   const [currentBookName, currentBook] = currentBookTuple ? currentBookTuple : [];
-  console.log("currentBookTuple", currentBookTuple);
   const selectedIndexInBook = selectedArtworkId
     ? currentBook?.findIndex((art) => art.id === selectedArtworkId)
     : -1;
@@ -141,44 +140,44 @@ export function ImageGallery({
   }, [searchParams, bibleArtworks, selectedArtworkId]);
 
   //! Update URL when selectedArtworkId changes (avoid circular updates)
-  useEffect(() => {
-    if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
+  // useEffect(() => {
+  //   if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
 
-    const params = new URLSearchParams(searchParams?.toString() || "");
-    const currentImageId = params.get("image");
+  //   const params = new URLSearchParams(searchParams?.toString() || "");
+  //   const currentImageId = params.get("image");
 
-    if (currentImageId !== selectedArtworkId) {
-      urlUpdatingRef.current = true;
-      params.set("image", selectedArtworkId);
+  //   if (currentImageId !== selectedArtworkId) {
+  //     urlUpdatingRef.current = true;
+  //     params.set("image", selectedArtworkId);
 
-      // Use setTimeout to batch updates and avoid multiple URL changes
-      setTimeout(() => {
-        // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  //     // Use setTimeout to batch updates and avoid multiple URL changes
+  //     setTimeout(() => {
+  //       // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
-        // Reset flag after URL update
-        setTimeout(() => {
-          urlUpdatingRef.current = false;
-        }, 100);
-      }, 0);
-    }
-  }, [selectedArtworkId, router, pathname, searchParams]);
+  //       // Reset flag after URL update
+  //       setTimeout(() => {
+  //         urlUpdatingRef.current = false;
+  //       }, 100);
+  //     }, 0);
+  //   }
+  // }, [selectedArtworkId, router, pathname, searchParams]);
 
   // Infinite scroll effect
-  useEffect(() => {
-    if (!infiniteScroll || !observerRef.current) return;
+  // useEffect(() => {
+  //   if (!infiniteScroll || !observerRef.current) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && displayCount < bibleArtworks.length) {
-          setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length));
-        }
-      },
-      { threshold: 0.1 }
-    );
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && displayCount < bibleArtworks.length) {
+  //         setDisplayCount((prev) => Math.min(prev + 8, bibleArtworks.length));
+  //       }
+  //     },
+  //     { threshold: 0.1 }
+  //   );
 
-    observer.observe(observerRef.current);
-    return () => observer.disconnect();
-  }, [infiniteScroll, displayCount, bibleArtworks.length]);
+  //   observer.observe(observerRef.current);
+  //   return () => observer.disconnect();
+  // }, [infiniteScroll, displayCount, bibleArtworks.length]);
 
   // Body scroll lock when lightbox is open
   useEffect(() => {
