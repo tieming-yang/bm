@@ -11,5 +11,10 @@ service cloud.firestore {
         allow read: if request.auth.uid == uid;
       }
     }
+
+    match /profiles/{uid} {
+      allow read: if request.auth.uid == uid;
+      allow update: if request.auth.uid == uid; 
+    }
   }
 }
