@@ -14,11 +14,12 @@ export default function SignOutButton({}: Props) {
   return (
     <Button
       className="w-full max-w-md"
-      onMouseDown={async () => {
+      onClick={async () => {
         try {
+          //TODO: Change to useMutation
           await Auth.signOut();
           toast.success(t("toast.signOutSuccess"));
-          router.push("/");
+          router.replace("/");
         } catch (error) {
           console.error(error);
           toast.error(t("toast.signOutError"), {});

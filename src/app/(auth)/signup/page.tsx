@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Loading from "@/app/loading";
-import Auth, { AuthMethod, EmailSignInInput } from "@/models/auth";
+import Auth, { AuthMethod, EmailSignUpInput } from "@/models/auth";
 import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
@@ -14,15 +14,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
 import Profile from "@/models/profiles";
 import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Props = {};
-export default function SignInPage({}: Props) {
+export default function SignUpPage({}: Props) {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
   const { t, currentLanguage } = useTranslation();
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo") ?? `/`;
   const query = useQueryClient();
+
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   useEffect(() => {
     if (!isAuthUserLoading && authUser) {
@@ -32,14 +37,13 @@ export default function SignInPage({}: Props) {
 
   if (isAuthUserLoading) return <Loading />;
 
-  //TODO: since there is no sign up with goolge, we choose simplify the process by sign up and sign in at same time, separate the logic when add different sign in mathod
-  const signInMutation = useMutation({
+  const signUpMutation = useMutation({
     mutationKey: QueryKey.signUp,
-    mutationFn: ({ method, payload }: { method: AuthMethod; payload?: EmailSignInInput }) => {
+    mutationFn: ({ method, payload }: { method: AuthMethod; payload?: EmailSignUpInput }) => {
       if (method === "google") return Auth.signInWithGoogle();
       if (method === "email") {
         if (!payload) throw new Error("Email sign-up requires credentials");
-        return Auth.signInWithEmail(payload);
+        return Auth.signUpWithEmail(payload);
       }
       throw new Error(`Unsupported method: ${method}`);
     },
@@ -48,7 +52,7 @@ export default function SignInPage({}: Props) {
       if (!user) {
         throw new Error("User sign up failed");
       }
-      query.setQueryData(["auth", "user"], user);
+      query.setQueryData(QueryKey.authUser, user);
 
       console.info("Sign up success", user);
       const { uid } = user;
@@ -59,12 +63,11 @@ export default function SignInPage({}: Props) {
         retry: 2,
       });
 
-      toast.success(t("toast.signInSuccess"));
       router.replace(`/profile/${uid}`);
     },
     onError: (err: unknown) => {
-      const msg = err instanceof Error ? err.message : "Sign up failed";
-      console.error(msg);
+      console.error(err);
+      toast.error(t("toast.signUpError"));
     },
   });
 
@@ -73,23 +76,24 @@ export default function SignInPage({}: Props) {
       <Button
         variant="outline"
         className="flex items-center shadow-lg gap-3"
+        disabled={!acceptTerms}
         onClick={() => {
-          signInMutation.mutate({ method: AuthMethod.Google });
+          signUpMutation.mutate({ method: AuthMethod.Google });
         }}
       >
         <FcGoogle className="w-7 h-7" />
-        {t("nav.signinWithGoogle")}
+        {t("nav.signupWithGoogle")}
       </Button>
 
-      {/* <p className="text-sm text-muted-foreground">
-        {t("auth.noAccount")}{" "}
-        <Link href="/signup" className="text-primary text-xl underline underline-offset-5">
-          {t("auth.goToSignup")}{" "}
-        </Link>
-      </p> */}
-      <p className="font-bold font-sans text-xl">{t("auth.signupSuffix")}</p>
+      <div className="flex items-center gap-1 flex-row">
+        <Checkbox
+          id="terms"
+          className="size-5"
+          checked={acceptTerms}
+          onCheckedChange={() => setAcceptTerms((prev) => !prev)}
+        />
+        <Label htmlFor="terms" />
 
-      <div className="flex items-center gap-1 flex-row text-xs">
         <span>
           {t("auth.consentPrefix")}{" "}
           <Link href="/terms" className="underline text-primary">

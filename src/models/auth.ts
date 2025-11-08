@@ -2,12 +2,24 @@
 
 import {
   GoogleAuthProvider,
+  User,
   onAuthStateChanged as _onAuthStateChanged,
   signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import Donator from "@/models/donator";
 import firebase from "../lib/firebase/firebase";
+import Profile from "./profiles";
+
+export const AuthMethod = {
+  Google: "google",
+  Email: "email",
+} as const;
+export type AuthMethod = (typeof AuthMethod)[keyof typeof AuthMethod];
+
+export type EmailSignUpInput = { email: string; password: string; displayName: string };
+export type EmailSignInInput = Omit<EmailSignUpInput, "displayName">;
 
 const Auth = {
   get user() {
@@ -18,45 +30,30 @@ const Auth = {
     return _onAuthStateChanged(firebase.auth, cb);
   },
 
-  async signUpWithGoogle(fields: {
-    preferredLanguage: string;
-  }) {
+  async signInWithGoogle(): Promise<User> {
     const provider = new GoogleAuthProvider();
-
+    let user;
     try {
-      const { user } = await signInWithPopup(firebase.auth, provider);
+      const { user: authUser } = await signInWithPopup(firebase.auth, provider);
+      user = authUser;
       const { uid, displayName, email, photoURL } = user;
-      //TODO: change it to profile 
-      let isDonatorSignedUp = false;
-      isDonatorSignedUp = await Donator.isExits(uid);
-      if (isDonatorSignedUp) {
-        console.warn("Donator already sign up");
-        return isDonatorSignedUp;
+
+      //? Cloud function v2 don't have auth.onCreate yet, so we have to keep the sign up flow client
+      //? https://github.com/firebase/firebase-functions/issues/1383
+
+      if (!(await Profile.isExits(uid))) {
+        await Profile.create({
+          uid,
+          displayName,
+          email,
+          photoURL: photoURL || null,
+        });
       }
 
-      const { preferredLanguage } = fields;
-
-      await Donator.create({
-        uid,
-        name: displayName,
-        email,
-        preferredLanguage,
-        photoURL: photoURL || null,
-      });
-
-      return isDonatorSignedUp;
+      return user;
     } catch (error) {
       console.error(error);
       throw error;
-    }
-  },
-
-  async signInWithGoogle() {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(firebase.auth, provider);
-    } catch (error) {
-      console.error("Error signing in with Google", error);
     }
   },
 
@@ -67,6 +64,36 @@ const Auth = {
     } catch (error) {
       console.error("Error signing out with Google", error);
     }
+  },
+
+  async signUpWithEmail(input: EmailSignUpInput): Promise<User> {
+    const { email, password, displayName } = input;
+    if (!email || !password || !displayName) throw new Error("sign up with email input error");
+
+    const { user } = await createUserWithEmailAndPassword(firebase.auth, email, password);
+
+    const { uid } = user;
+    const isProfileExist = await Profile.isExits(uid);
+    if (isProfileExist) {
+      throw new Error("Profile Exist");
+    }
+
+    await Profile.create({
+      uid,
+      displayName,
+      email,
+      photoURL: null,
+    });
+
+    return user;
+  },
+
+  async signInWithEmail(input: EmailSignInInput): Promise<User> {
+    const { email, password } = input;
+    if (!email || !password) throw new Error("sign in with email input error");
+
+    const { user } = await signInWithEmailAndPassword(firebase.auth, email, password);
+    return user;
   },
 };
 

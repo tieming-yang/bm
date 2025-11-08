@@ -12,14 +12,14 @@ export default function useAuthUser() {
       query.setQueryData<User | null>(QueryKey.authUser, auth ?? null);
     });
     return unsubscribe;
-  // query client instance is stable for the lifetime of the provider
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // query client instance is stable for the lifetime of the provider
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {
     data: authUser,
     isLoading: isAuthUserLoading,
-    error: isAuthUserError,
+    error: authUserError,
   } = useQuery<User | null>({
     queryKey: QueryKey.authUser,
     queryFn: async () => firebase.auth.currentUser,
@@ -28,5 +28,5 @@ export default function useAuthUser() {
     refetchOnMount: "always",
   });
 
-  return { authUser, isAuthUserLoading, isAuthUserError };
+  return { authUser, isAuthUserLoading, authUserError };
 }

@@ -13,17 +13,19 @@ import {
   where,
 } from "firebase/firestore";
 
-type DonatorInput = {
+type ProfileInput = {
   uid: string;
-  name: string | null;
+  displayName: string | null;
   email: string | null;
   photoURL?: string | null;
-  preferredLanguage: string; // "en" | "zh-TW" | …
+  preferredLanguage?: string; // "en" | "zh-TW" | …
   favoriteArtworks?: string[];
 };
 
-type TDonator = DonatorInput & {
-  totalDonated: number; // stored in cents
+type Profile = ProfileInput & {
+  hasGloryShare: boolean;
+  gloryShareId?: string;
+  totalContributed: number;
   newsletterOptIn: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -44,43 +46,46 @@ export type Donation = {
 };
 
 const Profiles = {
-  getCol(uid: string) {
-    return collection(Profile.getRef(uid), "donations");
+  getCollection(uid: string) {
+    return collection(Profile.getRef(uid), "profiles");
   },
 };
 
 const Profile = {
   getRef(uid: string): DocumentReference {
-    return doc(firebase.db, "donators", uid);
+    return doc(firebase.db, "profiles", uid);
   },
 
   async getSnap(uid: string): Promise<DocumentSnapshot> {
-    const donatorRef = Profile.getRef(uid);
-    return await getDoc(donatorRef);
+    const profileRef = Profile.getRef(uid);
+    return await getDoc(profileRef);
   },
 
-  async create(values: DonatorInput) {
-    if (await Profile.isExits(values.uid)) throw new Error("Profile existed")
+  async create(values: ProfileInput) {
+    if (await Profile.isExits(values.uid)) throw new Error("Profile existed");
 
-    const donatorRef = Profile.getRef(values.uid);
-
-    await setDoc(
-      donatorRef,
+    const profileRef = Profile.getRef(values.uid);
+    console.log({ profileRef });
+    const data = await setDoc(
+      profileRef,
       {
         ...values,
-        totalDonated: 0,
+        hasGloryShare: false,
+        totalContributed: 0,
         newsletterOptIn: true,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       },
-      { merge: true },
+      { merge: true }
     );
+
+    return data;
   },
 
   async get(uid: string) {
     const snap = await Profile.getSnap(uid);
     if (!snap.exists()) throw new Error("M9KX - Donator not found");
-    return snap.data() as TDonator;
+    return snap.data() as Profile;
   },
 
   async isExits(uid: string) {
@@ -89,7 +94,7 @@ const Profile = {
   },
 
   async addDonation(uid: string, donation: Omit<Donation, "id" | "createdAt">) {
-    const col = Profiles.getCol(uid);
+    const col = Profiles.getCollection(uid);
     const docRef = doc(col);
     await setDoc(docRef, {
       ...donation,
@@ -98,7 +103,7 @@ const Profile = {
   },
 
   async listDonations(uid: string): Promise<Donation[]> {
-    const col = Profiles.getCol(uid);
+    const col = Profiles.getCollection(uid);
     const snaps = await getDocs(query(col, where("status", "==", "succeeded")));
     return snaps.docs.map((d) => ({
       id: d.id,
