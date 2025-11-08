@@ -50,7 +50,7 @@ function Thumbnail({
         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         loading="lazy"
         priority={false}
-        quality={50}
+        quality={30}
         onLoadingComplete={() => setIsLoading(false)}
         onError={() => setIsLoading(false)}
       />
@@ -286,7 +286,7 @@ export function ImageGallery({
             {/* <a href={`#${book}`} className="anchor"> */}
             <h2
               id={book}
-              className="font-mono text-sm md:text-md font-semibold text-primary md:scroll-mt-20"
+              className="font-mono text-sm md:text-2xl font-semibold text-primary md:scroll-mt-20"
             >
               {booksT(book)}
             </h2>

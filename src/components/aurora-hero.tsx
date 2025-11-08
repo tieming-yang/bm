@@ -2,14 +2,9 @@
 
 import { Stars } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import React, { Suspense, useEffect } from "react";
-import { FiArrowRight } from "react-icons/fi";
+import React, { useEffect } from "react";
 import { useMotionTemplate, useMotionValue, motion, animate } from "framer-motion";
-import Loading from "../app/loading";
 import useTranslation from "@/hooks/use-translation";
-import BibleBooks from "./bible-books";
-import Home from "../app/client-home";
-
 const COLORS_TOP = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"];
 
 export const AuroraHero = ({ children }: { children?: React.ReactNode }) => {

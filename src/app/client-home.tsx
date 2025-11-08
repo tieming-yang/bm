@@ -34,6 +34,8 @@ export default function ClientHome({}: Props) {
             ))}
         </h1>
       </motion.section>
+
+      <h2 className="text-2xl text-center mb-5">{t("nav.bibleGallery")}</h2>
       <BibleBooks />
     </div>
   );

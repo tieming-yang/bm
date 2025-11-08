@@ -21,6 +21,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
   } = useQuery({
     queryKey: ["bibleArtworks", currentLanguage],
     queryFn: () => BibleArtworks.getAll(),
+    staleTime: Infinity
   });
 
   if (isLoading) {

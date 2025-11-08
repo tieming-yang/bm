@@ -27,6 +27,7 @@ export default function BibleBooks({}: Props) {
   } = useQuery({
     queryKey: ["bibleArtworks", currentLanguage],
     queryFn: () => BibleArtworks.getAll(),
+    staleTime: Infinity,
   });
 
   if (isLoading) {
@@ -71,7 +72,7 @@ export default function BibleBooks({}: Props) {
                   placeholder="blur"
                   blurDataURL={"placeholders/artwork-placeholder.svg"}
                   onLoadingComplete={() => setIsImageLoading(false)}
-                  quality={50}
+                  quality={30}
                 />
               </AspectRatio>
             </Link>
