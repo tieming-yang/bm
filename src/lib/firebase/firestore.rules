@@ -14,8 +14,8 @@ service cloud.firestore {
 
     match /profiles/{uid} {
       allow create: if request.auth != null && request.auth.uid == uid;
-      allow read: if request.auth.uid == uid;
       allow update: if request.auth.uid == uid; 
+      allow read;
     }
   }
 }
