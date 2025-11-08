@@ -418,14 +418,14 @@ export function ImageGallery({
                   <Share className="size-5" />
                   <span className="sr-only">Share</span>
                 </Button>
-                <Button
+                {/* <Button
                   variant={"ghost"}
                   onClick={handleDownload}
                   className="flex items-center justify-center"
                 >
                   <Download className="size-5" />
                   <span className="sr-only">Download</span>
-                </Button>
+                </Button> */}
                 <Button
                   variant={"ghost"}
                   onClick={handleClose}
