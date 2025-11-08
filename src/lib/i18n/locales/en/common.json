@@ -2,6 +2,7 @@
   "auth": {
     "noAccount": "New here?",
     "goToSignup": "Create an account",
+    "signupSuffix": "Become part of the art ministry",
     "consentPrefix": "By creating an account you agree to our",
     "consentLink": "Terms & Privacy Policy",
     "consentSuffix": "."
@@ -19,7 +20,7 @@
     "signupWithGoogle": "Sign Up with Google",
     "signup": "Sign Up",
     "signout": "Sign Out",
-    "settings": "Settings",
+    "profile": "Profile",
     "glory-share": "Glory Share"
   },
   "home": {

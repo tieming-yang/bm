@@ -2,6 +2,7 @@
   "auth": {
     "noAccount": "還沒有帳號？",
     "goToSignup": "馬上註冊",
+    "signupSuffix": "成為藝術事奉的一員",
     "consentPrefix": "註冊即表示您同意",
     "consentLink": "服務條款與隱私政策",
     "consentSuffix": "。"
@@ -19,7 +20,7 @@
     "signupWithGoogle": "使用 Google 帳戶註冊",
     "signup": "註冊",
     "signout": "登出",
-    "settings": "設定",
+    "profile": "帳戶",
     "glory-share": "榮耀份額"
   },
   "home": {
