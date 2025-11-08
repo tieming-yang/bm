@@ -1,7 +1,10 @@
 {
   "auth": {
     "noAccount": "還沒有帳號？",
-    "goToSignup": "馬上註冊"
+    "goToSignup": "馬上註冊",
+    "consentPrefix": "註冊即表示您同意",
+    "consentLink": "服務條款與隱私政策",
+    "consentSuffix": "。"
   },
   "nav": {
     "home": "首頁",

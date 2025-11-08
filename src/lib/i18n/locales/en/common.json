@@ -1,7 +1,10 @@
 {
   "auth": {
     "noAccount": "New here?",
-    "goToSignup": "Create an account"
+    "goToSignup": "Create an account",
+    "consentPrefix": "By creating an account you agree to our",
+    "consentLink": "Terms & Privacy Policy",
+    "consentSuffix": "."
   },
   "nav": {
     "home": "Home",
