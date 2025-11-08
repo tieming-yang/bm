@@ -14,7 +14,7 @@ const routeMap: Record<string, string> = {
   settings: "nav.settings",
   ...Books.toTranslationKeys,
 };
-const UUID_LENGTH = 36;
+const UUID_LENGTH = 28;
 
 export function Breadcrumb() {
   const router = useRouter();
@@ -52,14 +52,14 @@ export function Breadcrumb() {
         </li>
         {segments.map((segment, index) => {
           const isBookSegment = Books.order.includes(segment);
-
+          const hasExcludes = ["profile"].includes(segment);
           return (
-            <li key={index} className="">
+            <li key={index}>
               <span className="text-gray-600 dark:text-gray-400">/ </span>
               <button
                 onClick={() => handleNavigation(index)}
                 className="hover:underline text-primary-foreground"
-                disabled={isBookSegment}
+                disabled={isBookSegment || hasExcludes}
               >
                 {isBookSegment ? tBooks(segment) : t(`nav.${segment.toLocaleLowerCase()}`)}
               </button>
