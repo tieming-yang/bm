@@ -179,6 +179,8 @@ export function ImageGallery({
 
   // Body scroll lock when lightbox is open
   useEffect(() => {
+    if (!selectedArtworkId) return;
+    
     document.body.style.overflow = selectedArtworkId ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
