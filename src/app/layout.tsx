@@ -12,9 +12,7 @@ import ReactQueryProvider from "@/providers/react-query-provider";
 import ClientRoot from "./client-layout";
 import { Metadata } from "next";
 import _metadata from "./metadata";
-import localFont from "next/font/local";
 import Header from "@/components/header";
-import { AuroraHero } from "@/components/aurora-hero";
 
 const kings = Kings({
   weight: ["400"],
@@ -45,10 +43,9 @@ const yujiMai = Yuji_Mai({
 
 export const metadata: Metadata = _metadata;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="zh-TW"
       suppressHydrationWarning
       className={`${eagleLake.variable} ${yujiMai.variable} antialiased dark`}
       data-theme="dark"
