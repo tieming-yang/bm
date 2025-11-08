@@ -14,6 +14,7 @@ const routeMap: Record<string, string> = {
   settings: "nav.settings",
   ...Books.toTranslationKeys,
 };
+const UUID_LENGTH = 36;
 
 export function Breadcrumb() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export function Breadcrumb() {
   const segments = pathname
     .split("/")
     .filter(Boolean)
-    .filter((path) => path.length < 10);
+    .filter((path) => path.length < UUID_LENGTH);
 
   const handleNavigation = (index: number) => {
     const path = "/" + segments.slice(0, index + 1).join("/");
@@ -60,9 +61,7 @@ export function Breadcrumb() {
                 className="hover:underline text-primary-foreground"
                 disabled={isBookSegment}
               >
-                {isBookSegment
-                  ? tBooks(segment)
-                  : t(getTranslationKey(decodeURIComponent(segment.toLowerCase())))}
+                {isBookSegment ? tBooks(segment) : t(`nav.${segment.toLocaleLowerCase()}`)}
               </button>
             </li>
           );
