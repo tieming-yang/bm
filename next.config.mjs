@@ -12,6 +12,12 @@ const nextConfig = {
   },
   images: {
     qualities: [30, 75],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "prod-files-secure.s3.us-west-2.amazonaws.com",
+      },
+    ],
   },
 };
 
