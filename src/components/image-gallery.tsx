@@ -48,9 +48,9 @@ function Thumbnail({
         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         loading="lazy"
         priority={false}
+        placeholder="blur"
+        blurDataURL="/placeholders/blur-noise-placeholder.webp"
         quality={30}
-        onLoad={() => setIsLoading(false)}
-        onError={() => setIsLoading(false)}
       />
     </AspectRatio>
   );
@@ -180,7 +180,7 @@ export function ImageGallery({
   // Body scroll lock when lightbox is open
   useEffect(() => {
     if (!selectedArtworkId) return;
-    
+
     document.body.style.overflow = selectedArtworkId ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
