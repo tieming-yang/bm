@@ -11,9 +11,12 @@ const routeMap: Record<string, string> = {
   services: "nav.services",
   donate: "nav.donate",
   signin: "nav.signin",
+  signup: "nav.signup",
   settings: "nav.settings",
-  ...Books.toTranslationKeys,
+  "terms-of-service": "footer.termsOfService",
+  "privacy-policy": "footer.privacyPolicy",
 };
+
 const UUID_LENGTH = 28;
 
 export function Breadcrumb() {
@@ -34,9 +37,15 @@ export function Breadcrumb() {
     router.push(path);
   };
 
-  // Map route segments to translation keys
-  const getTranslationKey = (segment: string): string => {
-    return routeMap[segment] || segment;
+  const translateSegment = (segment: string): string => {
+    if (Books.order.includes(segment)) {
+      return tBooks(segment);
+    }
+    const key = routeMap[segment];
+    if (key) {
+      return t(key);
+    }
+    return segment.replace(/-/g, " ");
   };
 
   return (
@@ -61,7 +70,7 @@ export function Breadcrumb() {
                 className="hover:underline text-primary-foreground"
                 disabled={isBookSegment || hasExcludes}
               >
-                {isBookSegment ? tBooks(segment) : t(`nav.${segment.toLocaleLowerCase()}`)}
+                {translateSegment(segment)}
               </button>
             </li>
           );

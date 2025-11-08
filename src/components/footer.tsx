@@ -64,13 +64,12 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          {/* 
           <div>
             <h3 className="mb-4 text-lg font-medium">{t("footer.legal")}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/privacy-policy"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   {t("footer.privacyPolicy")}
@@ -78,23 +77,23 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/terms-of-service"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   {t("footer.termsOfService")}
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="#"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   {t("footer.cookiePolicy")}
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
-
+          {/* 
           <div>
             <h3 className="mb-4 text-lg font-medium">{t("footer.followUs")}</h3>
             <div className="flex space-x-4">
@@ -115,7 +114,7 @@ export default function Footer() {
                 <span className="sr-only">YouTube</span>
               </Link>
             </div>
-          </div> */}
+          </div>  */}
         </div>
 
         <div className="pt-8 mt-12 text-center border-t border-primary/10">
