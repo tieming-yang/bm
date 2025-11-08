@@ -71,7 +71,7 @@ export default function BibleBooks({}: Props) {
                   loading="lazy"
                   placeholder="blur"
                   blurDataURL={"placeholders/artwork-placeholder.svg"}
-                  onLoadingComplete={() => setIsImageLoading(false)}
+                  onLoad={() => setIsImageLoading(false)}
                   quality={30}
                 />
               </AspectRatio>

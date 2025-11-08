@@ -51,7 +51,7 @@ function Thumbnail({
         loading="lazy"
         priority={false}
         quality={30}
-        onLoadingComplete={() => setIsLoading(false)}
+        onLoad={() => setIsLoading(false)}
         onError={() => setIsLoading(false)}
       />
     </AspectRatio>
@@ -369,7 +369,7 @@ export function ImageGallery({
                                   sizes="(max-width: 1024px) 90vw, 60vw"
                                   placeholder="blur"
                                   blurDataURL="placeholders/artwork-placeholder.svg"
-                                  onLoadingComplete={() => {
+                                  onLoad={() => {
                                     if (
                                       artwork.id === selectedArtworkId &&
                                       !lightboxCarouselInitialized
