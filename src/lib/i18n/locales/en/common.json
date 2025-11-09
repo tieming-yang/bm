@@ -7,6 +7,18 @@
     "consentLink": "Terms & Privacy Policy",
     "consentSuffix": "."
   },
+  "gloryShareSuccess": {
+    "breadcrumb": "Success",
+    "title": "Thank you for joining Glory Share",
+    "subtitle": "A confirmation email will be sent shortly with your lifetime access details.",
+    "subtitleWithEmail": "A confirmation email will be sent to {{email}} with your lifetime access details.",
+    "instructions": "Keep the email for your records. It includes your receipt, access notes, and ways to stay updated on new creative milestones.",
+    "cta": {
+      "backHome": "Return home",
+      "viewGallery": "Explore Bible Gallery"
+    },
+    "support": "Need help? Contact {{email}}"
+  },
   "nav": {
     "home": "Home",
     "about": "About Us",

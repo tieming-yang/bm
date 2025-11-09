@@ -7,6 +7,18 @@
     "consentLink": "服務條款與隱私政策",
     "consentSuffix": "。"
   },
+  "gloryShareSuccess": {
+    "breadcrumb": "完成",
+    "title": "感謝您加入榮耀份額",
+    "subtitle": "我們將很快寄出確認信，內含您的終身權益說明。",
+    "subtitleWithEmail": "確認信已寄至 {{email}}，其中包含您的終身權益說明。",
+    "instructions": "請妥善保存此封郵件，內含收據、訪問資訊以及未來創作里程相關通知。",
+    "cta": {
+      "backHome": "回到首頁",
+      "viewGallery": "探索聖經畫廊"
+    },
+    "support": "需要協助嗎？請聯絡 {{email}}"
+  },
   "nav": {
     "home": "首頁",
     "about": "關於我們",

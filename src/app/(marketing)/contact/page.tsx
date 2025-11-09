@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin } from "lucide-react";
 import useTranslation from "@/hooks/use-translation";
 
+export const BEYOND_EMAIL = "beyonddigitalmedia.art@gmail.com";
+
 export default function Contact() {
   const { t } = useTranslation("contact");
 
@@ -38,9 +40,9 @@ export default function Contact() {
               <h3 className="text-lg font-medium">{t("contact.email.title")}</h3>
               <a
                 className="text-foreground underline underline-offset-4"
-                href="mailto:beyonddigitalmedia.art@gmail.com"
+                href={`mailto:${BEYOND_EMAIL}`}
               >
-                beyonddigitalmedia.art@gmail.com
+                {BEYOND_EMAIL}
               </a>
             </div>
           </div>

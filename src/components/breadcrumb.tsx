@@ -16,6 +16,7 @@ const routeMap: Record<string, string> = {
   "terms-of-service": "footer.termsOfService",
   "privacy-policy": "footer.privacyPolicy",
   "glory-share": "nav.gloryShare",
+  success: "gloryShareSuccess.breadcrumb",
 };
 
 const UUID_LENGTH = 28;

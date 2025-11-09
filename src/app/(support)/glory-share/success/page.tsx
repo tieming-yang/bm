@@ -1,32 +1,28 @@
 import { redirect } from "next/navigation";
 
 import { stripe } from "@/lib/stripe";
+import { GloryShareSuccessContent } from "@/app/(support)/glory-share/success/glory-share-success-content";
 
-export default async function JoinSuccessPage({ searchParams }: PageProps<"/glory-share/sucess">) {
+export default async function JoinSuccessPage({ searchParams }: PageProps<"/glory-share/success">) {
   const { session_id } = await searchParams;
 
-  if (!session_id) throw new Error("Please provide a valid session_id (`cs_test_...`)");
+  const sessionId = Array.isArray(session_id) ? session_id[0] : session_id;
+  if (!sessionId) {
+    throw new Error("Please provide a valid session_id (`cs_test_...`)");
+  }
 
-  const {
-    status,
-    customer_details: { email: customerEmail },
-  } = await stripe.checkout.sessions.retrieve(session_id, {
+  const { status, customer_details } = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ["line_items", "payment_intent"],
   });
+  const customerEmail = customer_details?.email;
 
   if (status === "open") {
     return redirect("/");
   }
 
   if (status === "complete") {
-    return (
-      <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to {customerEmail}. If you
-          have any questions, please email{" "}
-        </p>
-        <a href="mailto:orders@example.com">orders@example.com</a>.
-      </section>
-    );
+    return <GloryShareSuccessContent email={customerEmail} />;
   }
+
+  return redirect("/");
 }
