@@ -93,6 +93,14 @@ const Profile = {
     return snap.exists();
   },
 
+  async joinedGloryShare(uid: string): Promise<boolean> {
+    const snap = await Profile.getSnap(uid);
+    if (!snap.exists()) return false;
+    const data = snap.data();
+
+    return Boolean(data.joinedGloryShare);
+  },
+
   async addDonation(uid: string, donation: Omit<Donation, "id" | "createdAt">) {
     const col = Profiles.getCollection(uid);
     const docRef = doc(col);
