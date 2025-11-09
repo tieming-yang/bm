@@ -70,7 +70,7 @@ const Profile = {
       profileRef,
       {
         ...values,
-        hasGloryShare: false,
+        joinedGloryShare: false,
         totalContributed: 0,
         newsletterOptIn: true,
         createdAt: serverTimestamp(),
