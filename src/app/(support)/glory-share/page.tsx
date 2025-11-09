@@ -68,21 +68,32 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
   const joinMutation = useMutation({
     mutationKey: ["glory-share", "checkout"],
     mutationFn: async () => {
-      const response = await fetch("/api/checkout_sessions", { method: "POST" });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(payload?.error ?? "Checkout session failed");
+      const payload = { uid: authUser!.uid, email: authUser!.email };
+
+      const rawResponse = await fetch("/api/checkout_sessions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const response = await rawResponse.json().catch(() => ({}));
+      if (!rawResponse.ok) {
+        console.log(response);
+        throw new Error(response?.error ?? "Checkout session failed");
       }
-      if (!payload?.url) throw new Error("Missing checkout URL");
-      return payload.url as string;
+
+      if (!response?.url) throw new Error("Missing checkout URL");
+      return response.url as string;
     },
     onSuccess: (url) => {
       toast.success(t("gloryShare.toast.checkoutRedirect"));
       window.location.href = url;
     },
     onError: (error) => {
-      const message = error instanceof Error ? error.message : t("gloryShare.toast.checkoutError");
-      toast.error(message);
+      console.error(error);
+      t("gloryShare.toast.checkoutError");
     },
   });
 

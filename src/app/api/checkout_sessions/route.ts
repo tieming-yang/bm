@@ -1,11 +1,13 @@
 //? https://docs.stripe.com/checkout/quickstart?client=next
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { stripe } from "@/lib/stripe";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const { uid, email } = await request.json();
+  console.log({ uid, email });
   try {
     const headersList = await headers();
     const origin = headersList.get("origin") ?? headersList.get("referer") ?? "";
@@ -22,6 +24,10 @@ export async function POST() {
       success_url: `${origin}/glory-share/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/glory-share?canceled=true`,
       automatic_tax: { enabled: true },
+      metadata: {
+        uid,
+        email,
+      },
     });
     if (!session.url) throw new Error("Failed to create checkout session");
 
