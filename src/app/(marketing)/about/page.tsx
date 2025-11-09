@@ -30,7 +30,7 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <div className="relative h-[500px] w-full rounded-3xl overflow-hidden">
-            <Image src="logos/logo.webp" alt="Logo" fill className="object-cover" />
+            <Image src="/logos/logo-3d.webp" alt="Logo" fill className="object-cover" />
           </div>
         </motion.div>
 
