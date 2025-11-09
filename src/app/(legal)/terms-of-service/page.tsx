@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 const sections = [
@@ -21,18 +23,30 @@ const sections = [
   },
   {
     id: "membership",
-    title: "3. Membership 會員資格",
+    title: "3. Glory Share Membership 榮耀份額會員條款",
     paragraphs: [
-      "The Glory Share membership is a one-time lifetime plan priced at USD 77 (excluding tax). Upon payment, members gain lifetime digital access to benefits described on the official website. Membership is non-transferable and non-refundable and does not grant ownership or equity in Beyond Digital Media or its projects.",
-      "榮耀份額為一次性終身會員方案，價格為 77 美元（未稅）。完成付款後，會員將終身享有官網所述數位權益。會員資格不得轉讓或退費，亦不構成任何公司持股或收益權。",
+      "The Glory Share membership is a one-time lifetime plan currently priced at USD 77 (excluding tax). The price may change in future offerings, but existing members will retain their original benefits.",
+      "Membership is for individual, personal use only. Each Glory Share is tied to one person and may not be transferred, sold, rented, or shared beyond the member’s immediate household (defined as spouse and direct descendants such as children or grandchildren).",
+      "If a member wishes to transfer their membership to a direct descendant, they must submit a formal transfer request to Beyond Digital Media for verification and approval. The transfer is effective only upon written confirmation from Beyond Digital Media.",
+      "Use of Glory Share content for public viewing, classroom instruction, live streaming, screenings, or community presentations is strictly prohibited without prior written authorization.",
+      "Members may not download, copy, distribute, broadcast, or upload any content obtained through their membership. All materials remain the intellectual property of Beyond Digital Media.",
+      "If you represent an organization, institution, school, church, or collective entity and wish to use or display Beyond Digital Media content, you must first contact us at beyonddigitalmedia.art@gmail.com to obtain a separate license or written permission.",
+      "Beyond Digital Media reserves the right to introduce new membership tiers or benefits. Glory Share memberships will continue to provide lifetime access under the terms active at the time of purchase.",
+      "榮耀份額為一次性終身會員方案，目前價格為 77 美元（未稅）。未來價格可能調整，但不影響已購會員的既有權益。",
+      "會員資格僅限於個人、非商業用途。每一份榮耀份額僅屬單一個人，不得轉讓、出售、出租或與他人共用，除非為直系家庭成員（配偶、子女、孫子女）之間的合理家庭使用。",
+      "若會員希望將會員資格轉移給直系後代，須向 Beyond Digital Media 提出正式申請，經審核與書面同意後方可生效。未經批准之轉讓皆屬無效。",
+      "未經書面授權，嚴禁於公開場合、課堂、直播、放映或社群活動中播放或展示榮耀份額內容。",
+      "會員不得下載、複製、再散佈、轉播或上傳任何會員內容，所有素材及權利均屬 Beyond Digital Media 所有。",
+      "若您為任何機構、團體、學校或教會等組織，並希望使用或展示 Beyond Digital Media 的內容，請先以電子郵件至 beyonddigitalmedia.art@gmail.com 聯絡以申請授權。",
+      "Beyond Digital Media 保留推出新會員等級或權益的權利，已購榮耀份額會員將繼續依購買時之條款享有終身權益。",
     ],
   },
   {
     id: "use-of-service",
     title: "4. Use of Service 服務使用",
     paragraphs: [
-      "You agree to use the Service only for lawful, personal, and non-commercial purposes. You may not copy, redistribute, or exploit content provided through membership.",
-      "您同意僅以合法、個人、非商業目的使用本服務。會員不得擅自複製、散布或營利用於會員區的任何內容。",
+      "You agree to use the Service only for lawful, personal, and non-commercial purposes. You may not copy, redistribute, or publicly display membership content. Use of membership materials for commercial, public, or institutional purposes is prohibited.",
+      "您同意僅以合法、個人、非商業目的使用本服務。不得複製、再散布或公開播放會員內容，亦不得將會員素材用於商業、公共或機構用途。",
     ],
   },
   {
@@ -105,6 +119,14 @@ const sections = [
     paragraphs: [
       "Beyond Digital Media may update these Terms at any time. Updates take effect upon publication, and continued use constitutes acceptance.",
       "Beyond Digital Media 得隨時修訂本條款，修改後即時生效。會員持續使用本服務視為同意更新內容。",
+    ],
+  },
+  {
+    id: "contact",
+    title: "14. Contact 聯絡方式",
+    paragraphs: [
+      "For any inquiries regarding these Terms, please contact us at beyonddigitalmedia.art@gmail.com.",
+      "如有關於本條款之任何問題，請聯絡：beyonddigitalmedia.art@gmail.com。",
     ],
   },
 ];
