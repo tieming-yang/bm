@@ -56,7 +56,6 @@ export default function SignInPage({}: Props) {
       toast.success(t("toast.signInSuccess"));
 
       const goTo = redirectTo ?? `/profile/${uid}`;
-      console.log({ goTo });
       router.replace(goTo);
     },
     onError: (err: unknown) => {
