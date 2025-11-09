@@ -50,8 +50,6 @@ export const verifyTranslationEncoding = (
     console.warn(`[i18n] Encoding issues detected in ${name}:`);
     issues.forEach((issue) => console.warn(`  - ${issue}`));
     console.warn(`[i18n] Please ensure all translation files are saved with UTF-8 encoding`);
-  } else {
-    console.log(`[i18n] No encoding issues detected in ${name}`);
   }
 };
 
