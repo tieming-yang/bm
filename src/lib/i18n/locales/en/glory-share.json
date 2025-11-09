@@ -8,7 +8,8 @@
       "processingCta": "Connecting to Checkout…",
       "secondaryCta": "Learn About the Giving Plan",
       "lifetimeLabel": "Lifetime Share",
-      "lifetimeDescription": "For just $77 (before tax), you can make a lifelong contribution to this eternal artistic ministry."
+      "lifetimeDescription": "For just $77 (before tax), you can make a lifelong contribution to this eternal artistic ministry.",
+      "primaryCtaAfterJoin": "You are now a Glory Share member — thank you for walking this journey with us!"
     },
     "benefits": [
       {

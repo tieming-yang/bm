@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { stripe } from "@/lib/stripe";
 import { GloryShareSuccessContent } from "@/app/(support)/glory-share/success/glory-share-success-content";
 
+//TODO: Block Other user or guest access it
 export default async function JoinSuccessPage({ searchParams }: PageProps<"/glory-share/success">) {
   const { session_id } = await searchParams;
 
@@ -11,9 +12,12 @@ export default async function JoinSuccessPage({ searchParams }: PageProps<"/glor
     throw new Error("Please provide a valid session_id (`cs_test_...`)");
   }
 
-  const { status, customer_details } = await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ["line_items", "payment_intent"],
-  });
+  const { status, customer_details, metadata } = await stripe.checkout.sessions.retrieve(
+    sessionId,
+    {
+      expand: ["line_items", "payment_intent"],
+    }
+  );
   const customerEmail = customer_details?.email;
 
   if (status === "open") {

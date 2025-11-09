@@ -8,7 +8,8 @@
       "processingCta": "串接結帳中…",
       "secondaryCta": "了解奉獻計畫",
       "lifetimeLabel": "終身同行",
-      "lifetimeDescription": "只需77 美元（未稅），便可終身參與這項永恆的藝術事工奉獻。"
+      "lifetimeDescription": "只需77 美元（未稅），便可終身參與這項永恆的藝術事工奉獻。",
+      "primaryCtaAfterJoin": "您已是榮耀成員，感謝您的同行！"
     },
     "benefits": [
       {

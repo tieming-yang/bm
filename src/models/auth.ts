@@ -26,7 +26,7 @@ const Auth = {
     return firebase.auth.currentUser;
   },
 
-  onAuthStateChanged(cb: () => void) {
+  onAuthStateChanged(cb: (user: User | null) => void) {
     return _onAuthStateChanged(firebase.auth, cb);
   },
 

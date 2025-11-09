@@ -23,7 +23,7 @@ type ProfileInput = {
 };
 
 type Profile = ProfileInput & {
-  hasGloryShare: boolean;
+  joinedGloryShare: boolean;
   gloryShareId?: string;
   totalContributed: number;
   newsletterOptIn: boolean;

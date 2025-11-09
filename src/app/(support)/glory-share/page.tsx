@@ -23,6 +23,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import useAuthUser from "@/hooks/use-auth-user";
 import Loading from "@/app/loading";
+import useProfile from "@/hooks/use-profile";
 
 type BenefitContent = { title: string; description: string };
 type MissionHighlightContent = BenefitContent;
@@ -52,12 +53,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
   const currentPathname = usePathname();
   const searchParams = useSearchParams();
   const canceled = searchParams.get("canceled");
-  const { authUser, isAuthUserLoading } = useAuthUser();
-  if (isAuthUserLoading) return <Loading />;
-
-  if (canceled) {
-    console.log("Order canceled -- continue to shop around and checkout when you’re ready.");
-  }
+  const { profile, isProfileLoading } = useProfile();
 
   useEffect(() => {
     if (canceled) {
@@ -65,10 +61,12 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
     }
   }, [canceled, t]);
 
+  const joinedGloryShare = profile?.joinedGloryShare;
+
   const joinMutation = useMutation({
     mutationKey: ["glory-share", "checkout"],
     mutationFn: async () => {
-      const payload = { uid: authUser!.uid, email: authUser!.email };
+      const payload = { uid: profile!.uid, email: profile!.email };
 
       const rawResponse = await fetch("/api/checkout_sessions", {
         method: "POST",
@@ -132,6 +130,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
     returnObjects: true,
   }) as ActiveProjectContent;
 
+  if (isProfileLoading) return <Loading />;
   return (
     <div className="container relative z-50 mx-auto space-y-16 px-4 py-16">
       <section className="grid gap-10 lg:grid-cols-2">
@@ -149,27 +148,28 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
           </h1>
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
           <div className="flex flex-wrap justify-center-safe gap-4">
-            <Button
-              size="lg"
-              className="rounded-full px-8"
-              disabled={joinMutation.isPending}
-              onClick={() => {
-                if (!authUser) {
-                  toast.warning(t("gloryShare.toast.requestSignIn"));
-                  router.push(`/signin?redirectTo=${currentPathname}`);
-                  return;
-                }
+            {joinedGloryShare ? (
+              <p className="text-xl">{t("gloryShare.hero.primaryCtaAfterJoin")}</p>
+            ) : (
+              <Button
+                size="lg"
+                className="rounded-full px-8"
+                disabled={joinMutation.isPending}
+                onClick={() => {
+                  if (!profile) {
+                    toast.warning(t("gloryShare.toast.requestSignIn"));
+                    router.push(`/signin?redirectTo=${currentPathname}`);
+                    return;
+                  }
 
-                joinMutation.mutate();
-              }}
-            >
-              {joinMutation.isPending
-                ? t("gloryShare.hero.processingCta")
-                : t("gloryShare.hero.primaryCta")}
-            </Button>
-            {/* <Button variant="outline" size="lg" className="rounded-full border-primary/40 px-8">
-              {t("gloryShare.hero.secondaryCta")}
-            </Button> */}
+                  joinMutation.mutate();
+                }}
+              >
+                {joinMutation.isPending
+                  ? t("gloryShare.hero.processingCta")
+                  : t("gloryShare.hero.primaryCta")}
+              </Button>
+            )}
           </div>
           <div className="rounded-3xl border border-primary/10 bg-linear-to-r from-background/70 to-background/30 p-6 shadow-lg shadow-primary/5 backdrop-blur">
             <p className="text-sm uppercase tracking-[0.4em] text-primary/70">
