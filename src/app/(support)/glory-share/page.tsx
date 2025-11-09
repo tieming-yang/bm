@@ -18,7 +18,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { useEffect } from "react";
 import useTranslation from "@/hooks/use-translation";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import useAuthUser from "@/hooks/use-auth-user";
@@ -48,6 +48,8 @@ const trackIcons: LucideIcon[] = [Layers, Palette, Gift];
 
 export default function GlorySharePage(props: PageProps<"/glory-share">) {
   const { t } = useTranslation("glory-share");
+  const router = useRouter();
+  const currentPathname = usePathname();
   const searchParams = useSearchParams();
   const canceled = searchParams.get("canceled");
   const { authUser, isAuthUserLoading } = useAuthUser();
@@ -135,7 +137,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
             {t("gloryShare.hero.title")}
           </h1>
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap justify-center-safe gap-4">
             <Button
               size="lg"
               className="rounded-full px-8"
@@ -143,6 +145,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
               onClick={() => {
                 if (!authUser) {
                   toast.warning(t("gloryShare.toast.requestSignIn"));
+                  router.push(`/signin?redirectTo=${currentPathname}`);
                   return;
                 }
 

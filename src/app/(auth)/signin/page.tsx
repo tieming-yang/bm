@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import Loading from "@/app/loading";
 import Auth, { AuthMethod, EmailSignInInput } from "@/models/auth";
@@ -21,15 +21,9 @@ export default function SignInPage({}: Props) {
   const { authUser, isAuthUserLoading } = useAuthUser();
   const { t, currentLanguage } = useTranslation();
   const params = useSearchParams();
-  const redirectTo = params.get("redirectTo") ?? `/`;
+  const redirectTo = params.get("redirectTo");
   const query = useQueryClient();
-
-  useEffect(() => {
-    if (!isAuthUserLoading && authUser) {
-      router.push(redirectTo);
-    }
-  }, [authUser, isAuthUserLoading, redirectTo, router]);
-
+  console.log({ redirectTo });
   if (isAuthUserLoading) return <Loading />;
 
   //TODO: since there is no sign up with goolge, we choose simplify the process by sign up and sign in at same time, separate the logic when add different sign in mathod
@@ -60,7 +54,10 @@ export default function SignInPage({}: Props) {
       });
 
       toast.success(t("toast.signInSuccess"));
-      router.replace(`/profile/${uid}`);
+
+      const goTo = redirectTo ?? `/profile/${uid}`;
+      console.log({ goTo });
+      router.replace(goTo);
     },
     onError: (err: unknown) => {
       const msg = err instanceof Error ? err.message : "Sign up failed";
