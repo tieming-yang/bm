@@ -7,7 +7,7 @@ import { stripe } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   const { uid, email } = await request.json();
-  console.log({ uid, email });
+
   try {
     const headersList = await headers();
     const origin = headersList.get("origin") ?? headersList.get("referer") ?? "";

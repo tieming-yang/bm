@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { stripe, STRIPE_WEBHOOK_SECRET } from "@/lib/stripe";
 import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
-import Profile from "@/models/profiles";
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("stripe-signature");
   const body = await req.text();
-  if (!process.env.STRIPE_WEBHOOK_SECRET)
+  if (!STRIPE_WEBHOOK_SECRET)
     return NextResponse.json({ error: "Invalid Secret" }, { status: 400 });
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature!, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(body, signature!, STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     const error = err instanceof Error ? err.message : "Error on Stripe Webhook";
     return NextResponse.json({ error: `Invalid signature: ${error}` }, { status: 400 });
