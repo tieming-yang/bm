@@ -2,13 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Crown,
   Gift,
@@ -22,8 +16,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useEffect } from "react";
 import useTranslation from "@/hooks/use-translation";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 type BenefitContent = { title: string; description: string };
 type MissionHighlightContent = BenefitContent;
@@ -47,9 +44,42 @@ const benefitIcons: LucideIcon[] = [Infinity, Crown, Sparkles];
 const missionIcons: LucideIcon[] = [ShieldCheck, Globe, Heart];
 const trackIcons: LucideIcon[] = [Layers, Palette, Gift];
 
-export default function GlorySharePage() {
+export default function GlorySharePage(props: PageProps<"/glory-share">) {
+  const searchParams = useSearchParams();
+  const canceled = searchParams.get("canceled");
+
+  if (canceled) {
+    console.log("Order canceled -- continue to shop around and checkout when you’re ready.");
+  }
+
   const { t } = useTranslation("glory-share");
-  const router = useRouter()
+
+  useEffect(() => {
+    if (canceled) {
+      toast.info(t("gloryShare.toast.checkoutCanceled"));
+    }
+  }, [canceled, t]);
+
+  const joinMutation = useMutation({
+    mutationKey: ["glory-share", "checkout"],
+    mutationFn: async () => {
+      const response = await fetch("/api/checkout_sessions", { method: "POST" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload?.error ?? "Checkout session failed");
+      }
+      if (!payload?.url) throw new Error("Missing checkout URL");
+      return payload.url as string;
+    },
+    onSuccess: (url) => {
+      toast.success(t("gloryShare.toast.checkoutRedirect"));
+      window.location.href = url;
+    },
+    onError: (error) => {
+      const message = error instanceof Error ? error.message : t("gloryShare.toast.checkoutError");
+      toast.error(message);
+    },
+  });
 
   const benefits = (
     (t("gloryShare.benefits", { returnObjects: true }) as BenefitContent[]) ?? []
@@ -72,7 +102,7 @@ export default function GlorySharePage() {
     [];
   const membershipFootnotes =
     (t("gloryShare.membership.footnotes", { returnObjects: true }) as string[]) ?? [];
-  
+
   const steps = (t("gloryShare.stepsCard.steps", { returnObjects: true }) as string[]) ?? [];
 
   const tracks = (
@@ -103,14 +133,19 @@ export default function GlorySharePage() {
           </h1>
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
           <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="rounded-full px-8" onClick={() => {
-              router.push("/glory-share/join")
-            }}>
-              {t("gloryShare.hero.primaryCta")}
+            <Button
+              size="lg"
+              className="rounded-full px-8"
+              disabled={joinMutation.isPending}
+              onClick={() => joinMutation.mutate()}
+            >
+              {joinMutation.isPending
+                ? t("gloryShare.hero.processingCta")
+                : t("gloryShare.hero.primaryCta")}
             </Button>
-            <Button variant="outline" size="lg" className="rounded-full border-primary/40 px-8">
+            {/* <Button variant="outline" size="lg" className="rounded-full border-primary/40 px-8">
               {t("gloryShare.hero.secondaryCta")}
-            </Button>
+            </Button> */}
           </div>
           <div className="rounded-3xl border border-primary/10 bg-linear-to-r from-background/70 to-background/30 p-6 shadow-lg shadow-primary/5 backdrop-blur">
             <p className="text-sm uppercase tracking-[0.4em] text-primary/70">
@@ -191,7 +226,9 @@ export default function GlorySharePage() {
                   <li key={bullet} className="flex-wrap items-baseline gap-1">
                     <span>{bullet}</span>
                     {typeof footnoteNumber === "number" && footnoteNumber > 0 && (
-                      <sup className="text-[0.65rem] align-super text-primary">{footnoteNumber}</sup>
+                      <sup className="text-[0.65rem] align-super text-primary">
+                        {footnoteNumber}
+                      </sup>
                     )}
                   </li>
                 );

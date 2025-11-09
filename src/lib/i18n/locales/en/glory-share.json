@@ -5,6 +5,7 @@
       "title": "Honor God with a lifetime Glory Share and walk with every gospel creation.",
       "description": "Glory Share is a lifetime honor commitment. One offering lets you journey with the entire ministry family forever—fueling cultural creativity, immersive experiences, fine art collections, and lifestyle goods so Scripture can reach the world with fresh power.",
       "primaryCta": "Join as an Honor Member",
+      "processingCta": "Connecting to Checkout…",
       "secondaryCta": "Learn About the Giving Plan",
       "lifetimeLabel": "Lifetime Share",
       "lifetimeDescription": "For just $77 (before tax), you can make a lifelong contribution to this eternal artistic ministry."
@@ -135,6 +136,11 @@
         ],
         "footer": "Your one-time offering births every project and becomes a testimony of honoring God for all who participate."
       }
+    },
+    "toast": {
+      "checkoutRedirect": "Redirecting you to our secure checkout…",
+      "checkoutError": "Unable to start checkout right now. Please try again.",
+      "checkoutCanceled": "Checkout was canceled. You can restart anytime."
     }
   }
 }
