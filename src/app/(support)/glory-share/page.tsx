@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import useTranslation from "@/hooks/use-translation";
+import { useRouter } from "next/navigation";
 
 type BenefitContent = { title: string; description: string };
 type MissionHighlightContent = BenefitContent;
@@ -48,6 +49,7 @@ const trackIcons: LucideIcon[] = [Layers, Palette, Gift];
 
 export default function GlorySharePage() {
   const { t } = useTranslation("glory-share");
+  const router = useRouter()
 
   const benefits = (
     (t("gloryShare.benefits", { returnObjects: true }) as BenefitContent[]) ?? []
@@ -100,14 +102,16 @@ export default function GlorySharePage() {
             {t("gloryShare.hero.title")}
           </h1>
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
-          {/* <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="rounded-full px-8">
+          <div className="flex flex-wrap gap-4">
+            <Button size="lg" className="rounded-full px-8" onClick={() => {
+              router.push("/glory-share/join")
+            }}>
               {t("gloryShare.hero.primaryCta")}
             </Button>
             <Button variant="outline" size="lg" className="rounded-full border-primary/40 px-8">
               {t("gloryShare.hero.secondaryCta")}
             </Button>
-          </div> */}
+          </div>
           <div className="rounded-3xl border border-primary/10 bg-linear-to-r from-background/70 to-background/30 p-6 shadow-lg shadow-primary/5 backdrop-blur">
             <p className="text-sm uppercase tracking-[0.4em] text-primary/70">
               {t("gloryShare.hero.lifetimeLabel")}
