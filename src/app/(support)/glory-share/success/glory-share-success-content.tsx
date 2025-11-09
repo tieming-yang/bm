@@ -5,6 +5,8 @@ import { CheckCircle2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useTranslation from "@/hooks/use-translation";
 import { BEYOND_EMAIL } from "@/app/(marketing)/contact/page";
+import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 type Props = {
   email?: string | null;
@@ -14,10 +16,10 @@ export function GloryShareSuccessContent({ email }: Props) {
   const { t } = useTranslation();
 
   return (
-    <section className="container relative z-50 mx-auto max-w-3xl px-6 py-16">
-      <div className="space-y-6 rounded-3xl border border-primary/15 bg-background/80 p-10 text-center shadow-xl shadow-primary/10 backdrop-blur">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <CheckCircle2 className="h-10 w-10" />
+    <section className="container h-svh relative z-50 mx-auto max-w-3xl px-6 py-16">
+      <div className="space-y-6 rounded-3xl border border-primary/15 bg-background/80 pt-3 pb-10 px-10 text-center shadow-xl shadow-primary/10 backdrop-blur">
+        <div className="mx-auto relative flex h-55 w-55 md:h-77 md:w-77 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <Image src={"/glory-share/join-success-badge.jpg"} fill alt="Glory Share Badge" className="rounded-full" />
         </div>
         <div className="space-y-3">
           <h1 className="text-3xl font-semibold">{t("gloryShareSuccess.title")}</h1>
