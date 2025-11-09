@@ -21,6 +21,8 @@ import useTranslation from "@/hooks/use-translation";
 import { useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import useAuthUser from "@/hooks/use-auth-user";
+import Loading from "@/app/loading";
 
 type BenefitContent = { title: string; description: string };
 type MissionHighlightContent = BenefitContent;
@@ -45,14 +47,15 @@ const missionIcons: LucideIcon[] = [ShieldCheck, Globe, Heart];
 const trackIcons: LucideIcon[] = [Layers, Palette, Gift];
 
 export default function GlorySharePage(props: PageProps<"/glory-share">) {
+  const { t } = useTranslation("glory-share");
   const searchParams = useSearchParams();
   const canceled = searchParams.get("canceled");
+  const { authUser, isAuthUserLoading } = useAuthUser();
+  if (isAuthUserLoading) return <Loading />;
 
   if (canceled) {
     console.log("Order canceled -- continue to shop around and checkout when you’re ready.");
   }
-
-  const { t } = useTranslation("glory-share");
 
   useEffect(() => {
     if (canceled) {
@@ -137,7 +140,14 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
               size="lg"
               className="rounded-full px-8"
               disabled={joinMutation.isPending}
-              onClick={() => joinMutation.mutate()}
+              onClick={() => {
+                if (!authUser) {
+                  toast.warning(t("gloryShare.toast.requestSignIn"));
+                  return;
+                }
+
+                joinMutation.mutate();
+              }}
             >
               {joinMutation.isPending
                 ? t("gloryShare.hero.processingCta")

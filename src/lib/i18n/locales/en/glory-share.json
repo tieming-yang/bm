@@ -140,7 +140,8 @@
     "toast": {
       "checkoutRedirect": "Redirecting you to our secure checkout…",
       "checkoutError": "Unable to start checkout right now. Please try again.",
-      "checkoutCanceled": "Checkout was canceled. You can restart anytime."
+      "checkoutCanceled": "Checkout was canceled. You can restart anytime.",
+      "requestSignIn": "Please sign in first, Thank You🙏"
     }
   }
 }
