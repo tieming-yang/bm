@@ -285,14 +285,14 @@ export function ImageGallery({
             {/* <a href={`#${book}`} className="anchor"> */}
             <h2
               id={book}
-              className="font-mono text-sm md:text-2xl font-semibold text-primary md:scroll-mt-20"
+              className="font-mono text-sm font-semibold md:text-2xl text-primary md:scroll-mt-20"
             >
               {booksT(book)}
             </h2>
             {/* </a> */}
 
             {/* Artworks */}
-            <ul className="w-full grid grid-cols-1 font-mono md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
+            <ul className="w-full font-mono grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
                   <Thumbnail artwork={artwork} onClick={handleImageClick} />
@@ -325,7 +325,7 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 z-100 flex items-start md:mt-12 md:items-start justify-center">
+        <div className="fixed inset-0 flex items-start justify-center z-100 md:mt-12 md:items-start">
           {/* Backdrop with close handler */}
           <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
 
@@ -334,7 +334,7 @@ export function ImageGallery({
             className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-80px)] md:h-fit max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="grow w-full overflow-y-auto">
+            <div className="w-full overflow-y-auto grow">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col w-full">
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
@@ -384,9 +384,9 @@ export function ImageGallery({
                         </CarouselContent>
                       </Carousel>
                     </section>
-                    <div className="flex flex-col gap-4 px-2 md:px-0">
+                    <div className="flex flex-col px-2 gap-4 md:px-0">
                       {/* Title and Reference */}
-                      <section className="flex items-start md:pt-3 md:px-3 justify-between gap-4">
+                      <section className="flex items-start justify-between md:pt-3 md:px-3 gap-4">
                         <h3 className="font-serif font-medium underline underline-offset-2">
                           {t("bibleGallery.properties.scripture") || "Scripture"}
                         </h3>

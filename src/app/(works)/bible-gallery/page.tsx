@@ -1,5 +1,3 @@
-"use client";
-
 import BibleGalleryContent from "@/components/bible-gallery";
 
 // Main page component with Suspense boundary

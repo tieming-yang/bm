@@ -93,13 +93,13 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <div className="container mx-auto max-w-3xl space-y-8 px-4 py-12">
-      <header className="space-y-2 text-center">
+    <div className="container max-w-3xl px-4 py-12 mx-auto space-y-8">
+      <header className="text-center space-y-2">
         <h1 className="text-3xl font-semibold">Privacy Policy (隱私政策)</h1>
         <p className="text-sm text-muted-foreground">Last updated: 11-08-2025</p>
       </header>
 
-      <nav className="flex flex-wrap gap-3 text-sm text-primary">
+      <nav className="flex flex-wrap text-sm gap-3 text-primary">
         {sections.map((section) => (
           <Link
             key={section.id}
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
         <section
           key={section.id}
           id={section.id}
-          className="space-y-3 scroll-mt-24 border-t border-border pt-6"
+          className="pt-6 border-t space-y-3 scroll-mt-24 border-border"
         >
           <h2 className="text-xl font-semibold">{section.title}</h2>
           {section.paragraphs.map((text, idx) => (

@@ -37,7 +37,7 @@ export default function Donate() {
   }
 
   return (
-    <div className="container px-4 py-12 mx-auto relative z-50">
+    <div className="container relative z-50 px-4 py-12 mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

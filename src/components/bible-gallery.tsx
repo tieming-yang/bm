@@ -14,6 +14,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
   const { t: tUI } = useTranslation("ui");
   const book = params?.book;
 
+  //TODO: fetch depends on if user is memenber
   const {
     data: artworks,
     isLoading,
@@ -21,7 +22,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
   } = useQuery({
     queryKey: ["bibleArtworks", currentLanguage],
     queryFn: () => BibleArtworks.getAll(),
-    staleTime: Infinity
+    staleTime: Infinity,
   });
 
   if (isLoading) {

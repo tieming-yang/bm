@@ -72,7 +72,7 @@ export default function SignUpPage({}: Props) {
   });
 
   return (
-    <div className="flex font-mono flex-col items-center justify-center gap-y-5 min-h-dvh relative z-50">
+    <div className="relative z-50 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
       <Button
         variant="outline"
         className="flex items-center shadow-lg gap-3"
@@ -85,7 +85,7 @@ export default function SignUpPage({}: Props) {
         {t("nav.signupWithGoogle")}
       </Button>
 
-      <div className="flex items-center gap-1 flex-row">
+      <div className="flex flex-row items-center gap-1">
         <Checkbox
           id="terms"
           className="size-5"

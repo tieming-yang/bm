@@ -60,7 +60,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed bottom-0 z-100 w-full px-3 font-serif h-fit 2xl:px-0">
+      <header className="fixed bottom-0 w-full px-3 font-serif z-100 h-fit 2xl:px-0">
         <div className="container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10">
           <nav className="items-center hidden md:flex gap-6">
             {routes.map((route) => (
@@ -115,7 +115,7 @@ export default function Navbar() {
           </section>
           <button
             onClick={toggleMenu}
-            className="relative z-60 flex flex-col items-center justify-center md:hidden size-10 focus:outline-hidden"
+            className="relative flex flex-col items-center justify-center z-60 md:hidden size-10 focus:outline-hidden"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
           >

@@ -18,7 +18,7 @@ export async function GET() {
       sorts: [{ property: "Name", direction: "ascending" }],
       page_size: 100,
     });
-    
+
     const entries = await Promise.all(
       results.map(async (page: PageObjectResponse) => {
         const id = page.id;
@@ -34,10 +34,12 @@ export async function GET() {
         });
 
         const paragraphs = blocks.filter((block) => block.type === "paragraph");
-        const scripture = paragraphs?.map((block) => {
-          return block.paragraph.rich_text
-            .map((text) => text.plain_text)?.join("");
-        })?.join("\n")?.split("\n\n");
+        const scripture = paragraphs
+          ?.map((block) => {
+            return block.paragraph.rich_text.map((text) => text.plain_text)?.join("");
+          })
+          ?.join("\n")
+          ?.split("\n\n");
 
         return {
           id,
@@ -51,9 +53,9 @@ export async function GET() {
           imageUrl: artwork,
           createdTime,
         } as BibleArtwork;
-      }),
+      })
     );
-    
+
     return NextResponse.json(entries);
   } catch (error) {
     console.error("Error fetching wiki entries:", error);

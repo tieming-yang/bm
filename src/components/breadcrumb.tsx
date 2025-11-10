@@ -51,7 +51,7 @@ export function Breadcrumb() {
   };
 
   return (
-    <nav className="mx-auto mt-4 font-serif text-sm z-50 text-muted-foreground">
+    <nav className="z-50 mx-auto mt-4 font-serif text-sm text-muted-foreground">
       <ul className="flex items-center space-x-2">
         <li>
           <button

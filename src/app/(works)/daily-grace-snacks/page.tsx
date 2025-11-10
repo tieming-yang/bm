@@ -158,18 +158,18 @@ export default function DailyGraceSnacksPage() {
   }, [activeVideoId, playlistId]);
 
   return (
-    <div className="container relative z-50 mx-auto space-y-16 px-4 py-16">
+    <div className="container relative z-50 px-4 py-16 mx-auto space-y-16">
       <section className="grid gap-10 lg:grid-cols-2">
         <div className="space-y-6">
           <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm uppercase tracking-[0.2em] text-primary">
             {t("dailyGraceSnacks.badge")}
           </span>
-          <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+          <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
             {t("dailyGraceSnacks.hero.title")}
           </h1>
           <p className="text-lg text-muted-foreground">{t("dailyGraceSnacks.hero.description")}</p>
           <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="rounded-full px-8" asChild>
+            <Button size="lg" className="px-8 rounded-full" asChild>
               <a href={playlistLink} target="_blank" rel="noopener noreferrer">
                 {t("dailyGraceSnacks.hero.watchNow")}
               </a>
@@ -177,17 +177,17 @@ export default function DailyGraceSnacksPage() {
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full border-primary/40 px-8"
+              className="px-8 rounded-full border-primary/40"
               asChild
             >
               <a href="/glory-share">{t("dailyGraceSnacks.hero.supportLink")}</a>
             </Button>
           </div>
         </div>
-        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-background/80 shadow-xl shadow-primary/20">
-          <div className="aspect-video w-full">
+        <div className="relative overflow-hidden border shadow-xl rounded-3xl border-primary/20 bg-background/80 shadow-primary/20">
+          <div className="w-full aspect-video">
             <iframe
-              className="h-full w-full"
+              className="w-full h-full"
               src={embedSrc}
               title="Daily Grace Snacks Playlist"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -256,14 +256,14 @@ export default function DailyGraceSnacksPage() {
           })}
         </div>
         {isLoadingVideos && (
-          <p className="text-center text-sm text-muted-foreground">{statusLoading}</p>
+          <p className="text-sm text-center text-muted-foreground">{statusLoading}</p>
         )}
         {fetchError && !isLoadingVideos && (
-          <p className="text-center text-sm text-muted-foreground">{fetchError}</p>
+          <p className="text-sm text-center text-muted-foreground">{fetchError}</p>
         )}
       </section>
 
-      <section className="rounded-3xl border border-primary/15 bg-linear-to-r from-background/90 via-primary/5 to-background/70 p-8 shadow-xl shadow-primary/10">
+      <section className="p-8 border shadow-xl rounded-3xl border-primary/15 bg-linear-to-r from-background/90 via-primary/5 to-background/70 shadow-primary/10">
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.5em] text-primary/70">
@@ -273,13 +273,13 @@ export default function DailyGraceSnacksPage() {
             <ul className="space-y-3 text-muted-foreground">
               {season2Highlights.map((item) => (
                 <li key={item} className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                  <span className="w-2 h-2 mt-1 rounded-full bg-primary" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <Card className="border-primary/20 bg-background/90 text-center shadow-lg shadow-primary/20">
+          <Card className="text-center shadow-lg border-primary/20 bg-background/90 shadow-primary/20">
             <CardHeader>
               <CardTitle className="text-3xl text-primary">
                 {t("dailyGraceSnacks.season2.comingSoon")}
@@ -302,12 +302,12 @@ export default function DailyGraceSnacksPage() {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-primary/10 bg-background/80 p-8 text-center shadow-lg shadow-primary/5">
+      <section className="p-8 text-center border shadow-lg rounded-3xl border-primary/10 bg-background/80 shadow-primary/5">
         <h3 className="text-2xl font-semibold">{t("dailyGraceSnacks.ctaSection.title")}</h3>
-        <p className="mt-3 max-w-3xl mx-auto text-muted-foreground">
+        <p className="max-w-3xl mx-auto mt-3 text-muted-foreground">
           {t("dailyGraceSnacks.ctaSection.description")}
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center mt-6 gap-4">
           <Button size="lg" asChild>
             <a href={playlistLink} target="_blank" rel="noopener noreferrer">
               {t("dailyGraceSnacks.ctaSection.visitYouTube")}

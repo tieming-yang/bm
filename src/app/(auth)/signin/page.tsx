@@ -65,7 +65,7 @@ export default function SignInPage({}: Props) {
   });
 
   return (
-    <div className="flex font-mono flex-col items-center justify-center gap-y-5 min-h-dvh relative z-50">
+    <div className="relative z-50 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
       <Button
         variant="outline"
         className="flex items-center shadow-lg gap-3"
@@ -79,13 +79,13 @@ export default function SignInPage({}: Props) {
 
       {/* <p className="text-sm text-muted-foreground">
         {t("auth.noAccount")}{" "}
-        <Link href="/signup" className="text-primary text-xl underline underline-offset-5">
+        <Link href="/signup" className="text-xl underline text-primary underline-offset-5">
           {t("auth.goToSignup")}{" "}
         </Link>
       </p> */}
-      <p className="font-bold font-sans text-xl">{t("auth.signupSuffix")}</p>
+      <p className="font-sans text-xl font-bold">{t("auth.signupSuffix")}</p>
 
-      <div className="flex items-center gap-1 flex-row text-xs">
+      <div className="flex flex-row items-center text-xs gap-1">
         <span>
           {t("auth.consentPrefix")}{" "}
           <Link href="/terms" className="underline text-primary">

@@ -8,7 +8,7 @@ export default function About() {
   const { t } = useTranslation();
 
   return (
-    <div className="container font-serif px-4 py-12 mx-auto relative z-50">
+    <div className="container relative z-50 px-4 py-12 mx-auto font-serif">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

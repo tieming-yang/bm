@@ -15,7 +15,7 @@ export default function Loading({ isInlined = false, show = true }: LoadingProps
 
   if (isInlined) {
     return (
-      <Loader2 className="absolute top-1/2 left-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 animate-spin text-primary" />
+      <Loader2 className="absolute w-6 h-6 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin text-primary" />
     );
   }
 

@@ -10,7 +10,7 @@ export default function Contact() {
   const { t } = useTranslation("contact");
 
   return (
-    <div className="container px-4 py-12 mx-auto relative z-50">
+    <div className="container relative z-50 px-4 py-12 mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -25,7 +25,7 @@ export default function Contact() {
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 w-full gap-12 place-items-center font-mono">
+      <div className="w-full font-mono grid grid-cols-1 gap-12 place-items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -39,7 +39,7 @@ export default function Contact() {
             <div>
               <h3 className="text-lg font-medium">{t("contact.email.title")}</h3>
               <a
-                className="text-foreground underline underline-offset-4"
+                className="underline text-foreground underline-offset-4"
                 href={`mailto:${BEYOND_EMAIL}`}
               >
                 {BEYOND_EMAIL}

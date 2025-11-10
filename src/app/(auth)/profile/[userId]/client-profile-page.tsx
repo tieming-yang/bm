@@ -53,19 +53,19 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
   return (
     <motion.div
-      className="flex flex-col h-svh items-center justify-center gap-8 px-4 py-12"
+      className="flex flex-col items-center justify-center px-4 py-12 h-svh gap-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
       {isGloryShareMember && (
-        <Card className="w-full max-w-3xl border-0 bg-transparent shadow-none">
+        <Card className="w-full max-w-3xl bg-transparent border-0 shadow-none">
           <div className="rounded-3xl border-2 border-transparent bg-linear-to-bl from-amber-400/30 via-purple-400/30 to-pink-400/20 p-px shadow-[0_0_35px_rgba(251,191,36,0.35)]">
             <div className="rounded-[1.4rem] bg-linear-to-bl from-gray-950/90 via-gray-900/80 to-gray-900/70">
               <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center">
                 <div className="flex items-center gap-4">
                   <div className="relative h-20 w-20 md:h-50 md:w-50 rounded-full bg-linear-to-bl from-amber-300/80 to-purple-500/70 p-2px shadow-[0_0_25px_rgba(251,191,36,0.55)]">
-                    <div className="relative h-full w-full rounded-full bg-gray-950">
+                    <div className="relative w-full h-full rounded-full bg-gray-950">
                       <Image
                         src="/glory-share/join-success-badge.jpg"
                         alt="Glory Share badge"
@@ -74,7 +74,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                       />
                     </div>
                   </div>
-                  <div className="space-y-1 text-left">
+                  <div className="text-left space-y-1">
                     <p className="text-xs uppercase tracking-[0.5em] text-amber-200 drop-shadow">
                       {t("gloryShareBadge.label")}
                     </p>
@@ -90,7 +90,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 </div>
               </CardHeader>
 
-              <CardContent className="space-y-5 text-sm text-purple-100">
+              <CardContent className="text-sm text-purple-100 space-y-5">
                 <p className="text-base text-white">{t("gloryShareBadge.description")}</p>
 
                 <div className="grid gap-4 md:grid-cols-2">
@@ -127,7 +127,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
                 <Button
                   asChild
-                  className="w-full rounded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 text-black hover:opacity-90"
+                  className="w-full text-black rounded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90"
                 >
                   <Link href="/glory-share">{t("gloryShareBadge.cta")}</Link>
                 </Button>
@@ -143,7 +143,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <section className="place-self-center">
-            <Avatar className="h-24 w-24 md:h-48 md:w-48">
+            <Avatar className="w-24 h-24 md:h-48 md:w-48">
               <AvatarImage src={profile.photoURL ?? undefined} alt={profile.displayName || ""} />
               <AvatarFallback>{profile.displayName}</AvatarFallback>
             </Avatar>

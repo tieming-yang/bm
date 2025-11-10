@@ -76,7 +76,7 @@ export default function BibleBooks({}: Props) {
                 />
               </AspectRatio>
             </Link>
-            <h2 className="font-mono text-sm md:text-md font-semibold text-primary">{t(book)}</h2>
+            <h2 className="font-mono text-sm font-semibold md:text-md text-primary">{t(book)}</h2>
           </li>
         ))}
       </ul>

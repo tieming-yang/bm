@@ -35,7 +35,7 @@ export default function ClientHome({}: Props) {
         </h1>
       </motion.section>
 
-      <h2 className="text-2xl text-center mb-5">{t("nav.bibleGallery")}</h2>
+      <h2 className="mb-5 text-2xl text-center">{t("nav.bibleGallery")}</h2>
       <BibleBooks />
     </div>
   );
