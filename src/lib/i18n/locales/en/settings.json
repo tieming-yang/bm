@@ -12,5 +12,18 @@
   },
   "donation": {
     "donate": "Donate"
-  } 
+  },
+  "gloryShareBadge": {
+    "label": "Glory Share Member",
+    "title": "Thank you for honoring God with your lifetime share",
+    "description": "Your membership fuels Activate Creation projects and unlocks exclusive resources prepared for our honor partners.",
+    "joinedAt": "Joined on {{date}}",
+    "amountLabel": "Lifetime contribution",
+    "perks": [
+      "Priority previews of Activate Creation projects",
+      "Exclusive updates and annual gratitude gifts",
+      "Dedicated support from the Glory Share team"
+    ],
+    "cta": "View member resources"
+  }
 }
