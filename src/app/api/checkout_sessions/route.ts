@@ -3,8 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
-import { GLORY_SHARE_PRICE, GLORY_SHARE_PRICE_TEST, stripe } from "@/lib/stripe";
-import { fetchRemoteFlag } from "@/lib/firebase/remote-config";
+import { GLORY_SHARE_PRICE, stripe } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   const { uid, email } = await request.json();
@@ -13,12 +12,11 @@ export async function POST(request: NextRequest) {
     const headersList = await headers();
     const origin = headersList.get("origin") ?? headersList.get("referer") ?? "";
     if (!origin) throw new Error("Missing request origin");
-    const isGloryShareTestPrice = await fetchRemoteFlag("isGloryShareTestPrice");
 
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          price: isGloryShareTestPrice ? GLORY_SHARE_PRICE_TEST : GLORY_SHARE_PRICE,
+          price: GLORY_SHARE_PRICE,
           quantity: 1,
         },
       ],
