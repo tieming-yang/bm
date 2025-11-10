@@ -144,8 +144,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <section className="place-self-center">
             <Avatar className="w-24 h-24 md:h-48 md:w-48">
-              <AvatarImage src={profile.photoURL ?? undefined} alt={profile.displayName || ""} />
-              <AvatarFallback>{profile.displayName}</AvatarFallback>
+              <Image fill src={profile.photoURL!} alt={profile.displayName || ""} />
             </Avatar>
           </section>
 
