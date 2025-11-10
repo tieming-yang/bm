@@ -9,7 +9,8 @@
       "secondaryCta": "了解奉獻計畫",
       "lifetimeLabel": "終身同行",
       "lifetimeDescription": "只需77 美元（未稅），便可終身參與這項永恆的藝術事工奉獻。",
-      "primaryCtaAfterJoin": "您已是榮耀成員，感謝您的同行！"
+      "primaryCtaAfterJoin": "您已是榮耀成員，感謝您的同行！",
+      "closeGloryShare": "目前榮耀成員數已滿，請靜候下次開放，感謝您的支持！"
     },
     "benefits": [
       {
@@ -43,7 +44,7 @@
       "badge": "榮耀成員福利",
       "title": "作品享受權、榮耀回饋權、傳承權一次擁有。",
       "bullets": [
-        "· 永久使用 Beyond Digital Media 的創作內容與資源。",
+        "· 永久享受 Beyond Digital Media 的創作內容與資源。",
         "· 年會、內部社群、創作花絮與首映的專屬邀請。",
         "· 載入年度名錄，擁有傳承權與專屬優惠權。"
       ],

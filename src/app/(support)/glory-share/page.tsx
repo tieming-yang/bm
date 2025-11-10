@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import useAuthUser from "@/hooks/use-auth-user";
 import Loading from "@/app/loading";
 import useProfile from "@/hooks/use-profile";
+import { useRemoteFlags } from "@/lib/firebase/hooks/use-remote-flags";
 
 type BenefitContent = { title: string; description: string };
 type MissionHighlightContent = BenefitContent;
@@ -54,6 +55,8 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
   const searchParams = useSearchParams();
   const canceled = searchParams.get("canceled");
   const { profile, isProfileLoading } = useProfile();
+  const { data, isLoading: isRemoteFlagsLoading } = useRemoteFlags();
+  const isGloryShareJoinable = data?.isGloryShareJoinable ?? false;
 
   useEffect(() => {
     if (canceled) {
@@ -148,27 +151,31 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
           </h1>
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
           <div className="flex flex-wrap justify-center-safe gap-4">
-            {joinedGloryShare ? (
-              <p className="text-xl">{t("gloryShare.hero.primaryCtaAfterJoin")}</p>
-            ) : (
-              <Button
-                size="lg"
-                className="rounded-full px-8"
-                disabled={joinMutation.isPending}
-                onClick={() => {
-                  if (!profile) {
-                    toast.warning(t("gloryShare.toast.requestSignIn"));
-                    router.push(`/signin?redirectTo=${currentPathname}`);
-                    return;
-                  }
+            {isGloryShareJoinable ? (
+              joinedGloryShare ? (
+                <p className="text-xl">{t("gloryShare.hero.primaryCtaAfterJoin")}</p>
+              ) : (
+                <Button
+                  size="lg"
+                  className="rounded-full px-8"
+                  disabled={joinMutation.isPending}
+                  onClick={() => {
+                    if (!profile) {
+                      toast.warning(t("gloryShare.toast.requestSignIn"));
+                      router.push(`/signin?redirectTo=${currentPathname}`);
+                      return;
+                    }
 
-                  joinMutation.mutate();
-                }}
-              >
-                {joinMutation.isPending
-                  ? t("gloryShare.hero.processingCta")
-                  : t("gloryShare.hero.primaryCta")}
-              </Button>
+                    joinMutation.mutate();
+                  }}
+                >
+                  {joinMutation.isPending
+                    ? t("gloryShare.hero.processingCta")
+                    : t("gloryShare.hero.primaryCta")}
+                </Button>
+              )
+            ) : (
+              <p className="text-xl">{t("gloryShare.hero.closeGloryShare")}</p>
             )}
           </div>
           <div className="rounded-3xl border border-primary/10 bg-linear-to-r from-background/70 to-background/30 p-6 shadow-lg shadow-primary/5 backdrop-blur">
