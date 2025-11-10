@@ -84,67 +84,82 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
       </Card>
 
       {isGloryShareMember && (
-        <Card className="w-full max-w-3xl border-primary/30 bg-linear-to-br from-primary/10 via-background to-background shadow-primary/20">
-          <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center">
-            <div className="flex items-center gap-4">
-              <div className="relative h-50 w-50">
-                <Image
-                  src="/glory-share/join-success-badge.jpg"
-                  alt="Glory Share badge"
-                  fill
-                  className="object-contain drop-shadow-lg rounded-full"
-                />
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs uppercase tracking-[0.5em] text-primary">
-                  {t("gloryShareBadge.label")}
-                </p>
-                <CardTitle className="text-2xl">{t("gloryShareBadge.title")}</CardTitle>
-                {joinedDate && (
-                  <p className="text-sm text-muted-foreground">
-                    {t("gloryShareBadge.joinedAt", { date: joinedDate })}
-                  </p>
-                )}
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm text-muted-foreground">
-            <p className="text-base text-foreground">{t("gloryShareBadge.description")}</p>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              {formattedAmount && (
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                  <p className="text-xs uppercase tracking-[0.3em] text-primary">
-                    {t("gloryShareBadge.amountLabel")}
-                  </p>
-                  <p className="text-lg font-semibold text-foreground">{formattedAmount}</p>
+        <Card className="w-full max-w-3xl border-0 bg-transparent shadow-none">
+          <div className="rounded-3xl border-2 border-transparent bg-linear-to-bl from-amber-400/30 via-purple-400/30 to-pink-400/20 p-px shadow-[0_0_35px_rgba(251,191,36,0.35)]">
+            <div className="rounded-[1.4rem] bg-linear-to-bl from-gray-950/90 via-gray-900/80 to-gray-900/70">
+              <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center">
+                <div className="flex items-center gap-4">
+                  <div className="relative h-20 w-20 md:h-50 md:w-50 rounded-full bg-linear-to-bl from-amber-300/80 to-purple-500/70 p-2px shadow-[0_0_25px_rgba(251,191,36,0.55)]">
+                    <div className="relative h-full w-full rounded-full bg-gray-950">
+                      <Image
+                        src="/glory-share/join-success-badge.jpg"
+                        alt="Glory Share badge"
+                        fill
+                        sizes="80px"
+                        className="rounded-full object-contain drop-shadow-[0_6px_20px_rgba(0,0,0,0.45)]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-left">
+                    <p className="text-xs uppercase tracking-[0.5em] text-amber-200 drop-shadow">
+                      {t("gloryShareBadge.label")}
+                    </p>
+                    <CardTitle className="text-2xl text-white drop-shadow-[0_4px_15px_rgba(0,0,0,0.45)]">
+                      {t("gloryShareBadge.title")}
+                    </CardTitle>
+                    {joinedDate && (
+                      <p className="text-sm text-purple-100">
+                        {t("gloryShareBadge.joinedAt", { date: joinedDate })}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              )}
-              {gloryShare?.email && (
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                  <p className="text-xs uppercase tracking-[0.3em] text-primary">Email</p>
-                  <p className="text-lg font-semibold text-foreground">{gloryShare.email}</p>
+              </CardHeader>
+
+              <CardContent className="space-y-5 text-sm text-purple-100">
+                <p className="text-base text-white">{t("gloryShareBadge.description")}</p>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  {formattedAmount && (
+                    <div className="rounded-2xl border border-amber-300/40 bg-linear-to-br from-amber-200/15 to-transparent p-4 shadow-[0_0_20px_rgba(251,191,36,0.2)]">
+                      <p className="text-xs uppercase tracking-[0.35em] text-amber-200">
+                        {t("gloryShareBadge.amountLabel")}
+                      </p>
+                      <p className="text-lg font-semibold text-white">{formattedAmount}</p>
+                    </div>
+                  )}
+                  {gloryShare?.email && (
+                    <div className="rounded-2xl border border-purple-300/40 bg-linear-to-br from-purple-200/15 to-transparent p-4 shadow-[0_0_18px_rgba(192,132,252,0.25)]">
+                      <p className="text-xs uppercase tracking-[0.35em] text-purple-200">Email</p>
+                      <p className="text-lg font-semibold text-white">{gloryShare.email}</p>
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* Hide perks first */}
+                {/* 
+                {gloryPerks.length > 0 && (
+                  <ul className="grid gap-3 md:grid-cols-3">
+                    {gloryPerks.map((perk) => (
+                      <li
+                        key={perk}
+                        className="rounded-xl border border-primary/25 bg-gray-950/70 px-4 py-3 text-center text-sm text-white shadow-[0_0_18px_rgba(147,51,234,0.25)]"
+                      >
+                        {perk}
+                      </li>
+                    ))}
+                  </ul>
+                )} */}
+
+                <Button
+                  asChild
+                  className="w-full rounded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 text-black hover:opacity-90"
+                >
+                  <Link href="/glory-share">{t("gloryShareBadge.cta")}</Link>
+                </Button>
+              </CardContent>
             </div>
-
-            {/* {gloryPerks.length > 0 && (
-              <ul className="grid gap-3 md:grid-cols-3">
-                {gloryPerks.map((perk) => (
-                  <li
-                    key={perk}
-                    className="rounded-xl border border-primary/15 bg-background/80 px-4 py-3 text-center text-sm text-foreground"
-                  >
-                    {perk}
-                  </li>
-                ))}
-              </ul>
-            )} */}
-
-            <Button asChild className="w-full rounded-full">
-              <Link href="/glory-share">{t("gloryShareBadge.cta")}</Link>
-            </Button>
-          </CardContent>
+          </div>
         </Card>
       )}
     </motion.div>
