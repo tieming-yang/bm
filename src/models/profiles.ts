@@ -1,3 +1,4 @@
+import { Currency } from "@/constants";
 import firebase from "@/lib/firebase/firebase";
 import {
   collection,
@@ -29,6 +30,14 @@ type Profile = ProfileInput & {
   newsletterOptIn: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  gloryShare: {
+    joinedAt: Timestamp;
+    sessionId: string;
+    paymentIntentId: string;
+    amount: number;
+    currency: Currency;
+    email: string;
+  };
 };
 
 export type Donation = {
