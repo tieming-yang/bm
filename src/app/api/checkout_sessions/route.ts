@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
-import { GLORY_SHARE_PRICE, stripe } from "@/lib/stripe";
+import { GLORY_SHARE_PRICE, GLORY_SHARE_PRICE_TEST, stripe } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   const { uid, email } = await request.json();
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          price: GLORY_SHARE_PRICE,
+          price: GLORY_SHARE_PRICE_TEST,
           quantity: 1,
         },
       ],
