@@ -19,4 +19,8 @@ if (!STRIPE_API_KEY || !STRIPE_PUBLISHABLE_KEY || !STRIPE_WEBHOOK_SECRET) {
   throw new Error("Stripe Env is Missing");
 }
 
+const GLORY_SHARE_PRICE_LIVE = "price_1RTZ2JCEoRN5rFZ6SIQW1OQJ";
+const GLORY_SHARE_PRICE_SANDBOX = "price_1SRZGzCSXuz1o7AS6iBEbC0m";
+export const GLORY_SHARE_PRICE = Config.isProd ? GLORY_SHARE_PRICE_LIVE : GLORY_SHARE_PRICE_SANDBOX;
+
 export const stripe = new Stripe(STRIPE_API_KEY);
