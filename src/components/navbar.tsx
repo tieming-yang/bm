@@ -44,8 +44,7 @@ export default function Navbar() {
   const routes = [
     { href: "/", label: t("nav.home") },
     { href: "/about", label: t("nav.about") },
-    // { href: "/glory-share", label: t("nav.gloryShare") },
-    // { href: "/gallery", label: t("nav.gallery") },
+    { href: "/glory-share", label: t("nav.gloryShare") },
     { href: "/bible-gallery", label: t("nav.bibleGallery") },
     { href: "/daily-grace-snacks", label: t("nav.dailyGraceSnacks") },
     // { href: "/donate", label: t("nav.donate") },
