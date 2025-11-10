@@ -58,31 +58,6 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
-      <Card className="w-full max-w-3xl">
-        <CardHeader>
-          <CardTitle>{t("settings.title")}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <section className="place-self-center">
-            <Avatar className="h-24 w-24 md:h-48 md:w-48">
-              <AvatarImage src={profile.photoURL ?? undefined} alt={profile.displayName || ""} />
-              <AvatarFallback>{profile.displayName}</AvatarFallback>
-            </Avatar>
-          </section>
-
-          <section className="space-y-4">
-            <h2 className="mb-2 text-xl font-semibold">{t("donator.title")}</h2>
-            <p>
-              <strong>{t("donator.email")}:</strong> {profile.email}
-            </p>
-            <p>
-              <strong>{t("donator.name")}:</strong> {profile.displayName || ""}
-            </p>
-          </section>
-        </CardContent>
-        <CardFooter className="flex justify-center">{isOwnProfile && <SignOutButton />}</CardFooter>
-      </Card>
-
       {isGloryShareMember && (
         <Card className="w-full max-w-3xl border-0 bg-transparent shadow-none">
           <div className="rounded-3xl border-2 border-transparent bg-linear-to-bl from-amber-400/30 via-purple-400/30 to-pink-400/20 p-px shadow-[0_0_35px_rgba(251,191,36,0.35)]">
@@ -95,7 +70,6 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                         src="/glory-share/join-success-badge.jpg"
                         alt="Glory Share badge"
                         fill
-                        sizes="80px"
                         className="rounded-full object-contain drop-shadow-[0_6px_20px_rgba(0,0,0,0.45)]"
                       />
                     </div>
@@ -162,6 +136,31 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
           </div>
         </Card>
       )}
+
+      <Card className="w-full max-w-3xl">
+        <CardHeader>
+          <CardTitle>{t("settings.title")}</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <section className="place-self-center">
+            <Avatar className="h-24 w-24 md:h-48 md:w-48">
+              <AvatarImage src={profile.photoURL ?? undefined} alt={profile.displayName || ""} />
+              <AvatarFallback>{profile.displayName}</AvatarFallback>
+            </Avatar>
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="mb-2 text-xl font-semibold">{t("donator.title")}</h2>
+            <p>
+              <strong>{t("donator.email")}:</strong> {profile.email}
+            </p>
+            <p>
+              <strong>{t("donator.name")}:</strong> {profile.displayName || ""}
+            </p>
+          </section>
+        </CardContent>
+        <CardFooter className="flex justify-center">{isOwnProfile && <SignOutButton />}</CardFooter>
+      </Card>
     </motion.div>
   );
 }
