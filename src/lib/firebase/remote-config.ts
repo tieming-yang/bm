@@ -15,6 +15,13 @@ export async function fetchRemoteFlags() {
 
   return {
     isGloryShareJoinable: getValue(remoteConfig, "isGloryShareJoinable").asBoolean(),
+    isGloryShareTestPrice: getValue(remoteConfig, "isGloryShareTestPrice").asBoolean(),
     // add other flags here
   };
+}
+
+export async function fetchRemoteFlag(flag: string) {
+  await fetchAndActivate(remoteConfig);
+
+  return getValue(remoteConfig, flag).asBoolean();
 }
