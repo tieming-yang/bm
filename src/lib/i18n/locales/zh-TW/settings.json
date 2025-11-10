@@ -16,11 +16,11 @@
   "gloryShareBadge": {
     "label": "榮耀份額會員",
     "title": "感謝您以終身份額同行事工",
-    "description": "您的奉獻點亮 Activate Creation 藝術事工，也為您開啟一系列專屬資源與榮耀回饋。",
+    "description": "您的奉獻點亮了我們的藝術事工，也為您開啟一系列專屬資源與榮耀回饋。",
     "joinedAt": "加入於 {{date}}",
     "amountLabel": "終身奉獻",
     "perks": [
-      "優先試映 Activate Creation 新作品",
+      "優先試映新作品",
       "獨家更新與年度榮耀回饋禮",
       "榮耀成員專屬支援與關懷"
     ],
