@@ -64,7 +64,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
             <div className="rounded-[1.4rem] bg-linear-to-bl from-gray-950/90 via-gray-900/80 to-gray-900/70">
               <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center">
                 <div className="flex items-center flex-col md:flex-row gap-4">
-                  <div className="relative h-30 w-30 md:h-50 md:w-50 rounded-full bg-linear-to-bl from-amber-300/80 to-purple-500/70 p-2px shadow-[0_0_25px_rgba(251,191,36,0.55)]">
+                  <div className="relative shrink-0 h-30 w-30 md:h-50 md:w-50 rounded-full bg-linear-to-bl from-amber-300/80 to-purple-500/70 p-2px shadow-[0_0_25px_rgba(251,191,36,0.55)]">
                     <div className="relative w-full h-full rounded-full bg-gray-950">
                       <Image
                         src="/glory-share/join-success-badge.jpg"
@@ -74,7 +74,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                       />
                     </div>
                   </div>
-                  <div className="text-left flex-3 space-y-1">
+                  <div className="text-left space-y-1">
                     <p className="text-xs uppercase tracking-[0.5em] text-amber-200 drop-shadow">
                       {t("gloryShareBadge.label")}
                     </p>
