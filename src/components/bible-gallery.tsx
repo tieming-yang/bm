@@ -88,6 +88,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
         groupedBibleArtworks={sortedCanonicalBooks}
         infiniteScroll={false}
         book={book}
+        isGloryShareMember={profile?.joinedGloryShare ?? false}
       />
     </div>
   );

@@ -133,7 +133,8 @@
       "checkoutRedirect": "正在轉跳至安全結帳頁面…",
       "checkoutError": "目前無法建立結帳連結，請稍後再試。",
       "checkoutCanceled": "您已取消結帳，可隨時重新加入。",
-      "requestSignIn": "請先登入再加入榮耀份額，謝謝🙏"
+      "requestSignIn": "請先登入再加入榮耀份額，謝謝🙏",
+      "joinNow": "立即加入"
     }
   },
   "gallary": {

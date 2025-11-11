@@ -26,22 +26,38 @@ interface ImageGalleryProps {
   infiniteScroll?: boolean;
   initialLimit?: number;
   book?: string; // Optional book parameter for filtering
+  isGloryShareMember: boolean;
 }
 
 function Thumbnail({
   artwork,
   onClick,
   isBlur,
+  router,
+  tGloryShare,
 }: {
   artwork: BibleArtworksLocale;
   onClick: (id: string) => void;
   isBlur: boolean;
+  router: AppRouterInstance;
+  tGloryShare: TFunction<string, undefined>;
 }) {
   return (
     <AspectRatio
       ratio={Config.aspectRatio}
       className="relative overflow-hidden shadow-xl cursor-pointer group"
-      onClick={() => onClick(artwork.id)}
+      onClick={() => {
+        if (isBlur) {
+          toast.info(tGloryShare("gallary.joinToEnjoyArtwork"), {
+            action: {
+              label: tGloryShare("gloryShare.toast.joinNow"),
+              onClick: () => router.push("/glory-share"),
+            },
+          });
+          return;
+        }
+        onClick(artwork.id);
+      }}
     >
       {isBlur && (
         <div className="pointer-events-none absolute inset-0 bg-black/20 backdrop-blur-md z-50" />
@@ -65,12 +81,15 @@ function Thumbnail({
   );
 }
 
+const MAXIMUM_FREE_ARTS = 2;
+
 export function ImageGallery({
   bibleArtworks,
   groupedBibleArtworks,
   infiniteScroll = false,
   initialLimit = 8,
   book,
+  isGloryShareMember,
 }: ImageGalleryProps) {
   // Core state
   const [displayCount, setDisplayCount] = useState(initialLimit);
@@ -91,6 +110,7 @@ export function ImageGallery({
   const searchParams = useSearchParams();
   const { t, currentLanguage } = useTranslation("gallery");
   const { t: booksT } = useTranslation("books");
+  const { t: tGloryShare } = useTranslation("glory-share");
   const { profile, isProfileLoading } = useProfile();
 
   // Derived values
@@ -147,28 +167,27 @@ export function ImageGallery({
     }
   }, [searchParams, bibleArtworks, selectedArtworkId]);
 
-  //! Update URL when selectedArtworkId changes (avoid circular updates)
-  // useEffect(() => {
-  //   if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
+  useEffect(() => {
+    if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
 
-  //   const params = new URLSearchParams(searchParams?.toString() || "");
-  //   const currentImageId = params.get("image");
+    const params = new URLSearchParams(searchParams?.toString() || "");
+    const currentImageId = params.get("image");
 
-  //   if (currentImageId !== selectedArtworkId) {
-  //     urlUpdatingRef.current = true;
-  //     params.set("image", selectedArtworkId);
+    if (currentImageId !== selectedArtworkId) {
+      urlUpdatingRef.current = true;
+      params.set("image", selectedArtworkId);
 
-  //     // Use setTimeout to batch updates and avoid multiple URL changes
-  //     setTimeout(() => {
-  //       // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      // Use setTimeout to batch updates and avoid multiple URL changes
+      setTimeout(() => {
+        // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
-  //       // Reset flag after URL update
-  //       setTimeout(() => {
-  //         urlUpdatingRef.current = false;
-  //       }, 100);
-  //     }, 0);
-  //   }
-  // }, [selectedArtworkId, router, pathname, searchParams]);
+        // Reset flag after URL update
+        setTimeout(() => {
+          urlUpdatingRef.current = false;
+        }, 100);
+      }, 0);
+    }
+  }, [selectedArtworkId, router, pathname, searchParams]);
 
   // Infinite scroll effect
   // useEffect(() => {
@@ -310,9 +329,11 @@ export function ImageGallery({
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
                   <Thumbnail
-                    isBlur={(!profile?.joinedGloryShare && index > 2) ?? true}
+                    isBlur={(!profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS) ?? true}
                     artwork={artwork}
                     onClick={handleImageClick}
+                    router={router}
+                    tGloryShare={tGloryShare}
                   />
                   <h3 className="text-sm md:text-md">{artwork.section}</h3>
                 </li>
@@ -372,12 +393,15 @@ export function ImageGallery({
                         setApi={setEmblaApi}
                       >
                         <CarouselContent>
-                          {currentBook?.map((artwork: BibleArtworksLocale) => (
+                          {currentBook?.map((artwork: ibleArtworksLocale, index) => (
                             <CarouselItem key={artwork.id}>
                               <AspectRatio
                                 ratio={Config.aspectRatio}
                                 className="relative overflow-hidden"
                               >
+                                {!profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS && (
+                                  <div className="pointer-events-none absolute inset-0 bg-black/20 backdrop-blur-md z-50" />
+                                )}
                                 <Image
                                   src={artwork.imageUrl}
                                   alt={artwork.id}
@@ -386,7 +410,7 @@ export function ImageGallery({
                                   className="object-contain"
                                   sizes="(max-width: 1024px) 90vw, 60vw"
                                   placeholder="blur"
-                                  blurDataURL="placeholders/artwork-placeholder.svg"
+                                  blurDataURL="/placeholders/blur-noise-placeholder.webp"
                                   onLoad={() => {
                                     if (
                                       artwork.id === selectedArtworkId &&
