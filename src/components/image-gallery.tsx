@@ -18,6 +18,7 @@ import { AspectRatio } from "./ui/aspect-ratio";
 import Config from "@/models/config";
 import { toast } from "sonner";
 import Loading from "../app/loading";
+import useProfile from "@/hooks/use-profile";
 
 interface ImageGalleryProps {
   bibleArtworks: BibleArtworksLocale[];
@@ -30,9 +31,11 @@ interface ImageGalleryProps {
 function Thumbnail({
   artwork,
   onClick,
+  isBlur,
 }: {
   artwork: BibleArtworksLocale;
   onClick: (id: string) => void;
+  isBlur: boolean;
 }) {
   return (
     <AspectRatio
@@ -40,12 +43,18 @@ function Thumbnail({
       className="relative overflow-hidden shadow-xl cursor-pointer group"
       onClick={() => onClick(artwork.id)}
     >
+      {isBlur && (
+        <div className="pointer-events-none absolute inset-0 bg-black/20 backdrop-blur-md z-50" />
+      )}
+
       <Image
         src={artwork.imageUrl}
         alt={artwork.title || "Bible Artwork"}
         fill
-        className="object-cover transition-transform duration-500 group-hover:scale-110"
-        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        className={`object-cover transition-transform duration-500 ${
+          !isBlur && "group-hover:scale-110"
+        } `}
+        // sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         loading="lazy"
         priority={false}
         placeholder="blur"
@@ -82,6 +91,7 @@ export function ImageGallery({
   const searchParams = useSearchParams();
   const { t, currentLanguage } = useTranslation("gallery");
   const { t: booksT } = useTranslation("books");
+  const { profile, isProfileLoading } = useProfile();
 
   // Derived values
   const isBookFiltered = !!book;
@@ -276,6 +286,10 @@ export function ImageGallery({
     });
   };
 
+  if (isProfileLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       {/* Gallery Grid */}
@@ -295,7 +309,11 @@ export function ImageGallery({
             <ul className="w-full font-mono grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
-                  <Thumbnail artwork={artwork} onClick={handleImageClick} />
+                  <Thumbnail
+                    isBlur={(!profile?.joinedGloryShare && index > 2) ?? true}
+                    artwork={artwork}
+                    onClick={handleImageClick}
+                  />
                   <h3 className="text-sm md:text-md">{artwork.section}</h3>
                 </li>
               ))}

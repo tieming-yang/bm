@@ -4,7 +4,7 @@
     "hero": {
       "title": "Honor God with a lifetime Glory Share and walk with every gospel creation.",
       "description": "Glory Share is a lifetime honor commitment. One offering lets you journey with the entire ministry family forever—fueling cultural creativity, immersive experiences, fine art collections, and lifestyle goods so Scripture can reach the world with fresh power.",
-      "primaryCta": "Join as an Honor Member",
+      "primaryCta": "Join as an Glory Share Member",
       "processingCta": "Connecting to Checkout…",
       "secondaryCta": "Learn About the Giving Plan",
       "lifetimeLabel": "Lifetime Share",
@@ -15,7 +15,7 @@
     "benefits": [
       {
         "title": "Lifetime Glory Portion",
-        "description": "A single offering, a lifelong journey. Enter as an honor member starting at 77 USD and receive permanent support privileges and an exclusive insignia."
+        "description": "A single offering, a lifelong journey. Enter as an Glory Share member starting at 77 USD and receive permanent support privileges and an exclusive insignia."
       },
       {
         "title": "Walking the Holy Mission",
@@ -41,12 +41,12 @@
       }
     ],
     "membership": {
-      "badge": "Honor Member Privileges",
+      "badge": "Glory Share Member Privileges",
       "title": "Experience rights, honor rewards, and legacy rights—all at once.",
       "bullets": [
         "· Lifetime access to Beyond Digital Media’s creations and resources.",
         "· Invitations to the annual gathering, internal community, behind-the-scenes footage, and premieres.",
-        "· Listed in the yearly honor roll with legacy and exclusive benefit rights."
+        "· Listed in the yearly Glory Share roll with legacy and exclusive benefit rights."
       ],
       "bulletFootnotes": [null, null, 1],
       "footnotes": [
@@ -58,14 +58,14 @@
       "title": "How to Join & Commit",
       "description": "Let your giving accelerate projects that honor God.",
       "steps": [
-        "1. Register through the official giving channel to activate your honor membership.",
-        "2. Receive your member identity, annual honor listing, and access to the private community.",
-        "3. Keep receiving project updates, honor gifts, and legacy notices as we build together."
+        "1. Register through the official giving channel to activate your Glory Share membership.",
+        "2. Receive your member identity, annual Glory Share listing, and access to the private community.",
+        "3. Keep receiving project updates, Glory Share gifts, and legacy notices as we build together."
       ]
     },
     "tracksSection": {
       "badge": "Three Business Pillars",
-      "title": "Cultural creativity × art showcases × lifestyle goods—everything honor members empower.",
+      "title": "Cultural creativity × art showcases × lifestyle goods—everything Glory Share members empower.",
       "description": "Your offering simultaneously advances immersive media, art gifts, and faith-filled lifestyle lines, forming a diverse and sustainable gospel ecosystem.",
       "tracks": [
         {
@@ -100,14 +100,14 @@
     "activeProject": {
       "badge": "Activate Creation",
       "title": "Activate Creation",
-      "description": "Current immersive showcases, VR Sunday School, and Bible collectible series are lit by honor members’ generosity. Join to preview every launch, secure limited seats, and receive digital exclusives.",
-      "perksTitle": "Honor Member Exclusive Benefits",
+      "description": "Current immersive showcases, VR Sunday School, and Bible collectible series are lit by Glory Share members’ generosity. Join to preview every launch, secure limited seats, and receive digital exclusives.",
+      "perksTitle": "Glory Share Member Exclusive Benefits",
       "perks": [
         "Free priority entry to first-wave productions",
         "Invitations to behind-the-scenes screenings",
         "Monthly project briefings showing exactly how gifts are used"
       ],
-      "future": "Whenever a new project begins, honor members reserve seats first, co-create through feedback, and witness each milestone as spiritual patrons.",
+      "future": "Whenever a new project begins, Glory Share members reserve seats first, co-create through feedback, and witness each milestone as spiritual patrons.",
       "upcoming": {
         "title": "Upcoming Creations",
         "description": "Join now to experience them first and enjoy complimentary access.",
@@ -146,5 +146,8 @@
       "checkoutCanceled": "Checkout was canceled. You can restart anytime.",
       "requestSignIn": "Please sign in first, Thank You🙏"
     }
+  },
+  "gallary": {
+    "joinToEnjoyArtwork": "Join Glory Share to enjoy all the Bible artworks we’ve created."
   }
 }

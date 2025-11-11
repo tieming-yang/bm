@@ -7,13 +7,18 @@ import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../app/loading";
 import { toast } from "sonner";
-import bibleArtworks from "@/data/bible-artworks-data";
-import Image from "next/image";
+import useProfile from "@/hooks/use-profile";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
   const { t: tUI } = useTranslation("ui");
+  const { t: tGloryShare } = useTranslation("glory-share");
   const book = params?.book;
 
+  const { profile, isProfileLoading } = useProfile();
   //TODO: fetch depends on if user is memenber
   const {
     data: artworks,
@@ -25,7 +30,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
     staleTime: Infinity,
   });
 
-  if (isLoading) {
+  if (isLoading || isProfileLoading) {
     return <Loading />;
   }
 
@@ -37,6 +42,16 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
 
   const localedArtworks = BibleArtworks.toLocaleScripture(artworks!, currentLanguage);
   const groupedArtworks = BibleArtworks.toGrouped(localedArtworks);
+
+  //TODO: Filter free content here or don't fetch at all
+  // const groupedArtworksByUserType = profile?.joinedGloryShare
+  //   ? groupedArtworks
+  //   : BibleArtworks.toFreeArtworks(groupedArtworks);
+
+  // const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
+  //   groupedArtworksByUserType,
+  //   BibleArtworks.order
+  // );
   const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
     groupedArtworks,
     BibleArtworks.order
@@ -48,14 +63,22 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="mb-16 text-center"
+        className="mb-16 text-center space-y-10"
       >
-        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
-          {t("bibleGallery.title")}
-        </h1>
-        <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
-          {t("bibleGallery.subtitle")}
-        </p>
+        <div>
+          <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
+            {t("bibleGallery.title")}
+          </h1>
+          <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
+            {t("bibleGallery.subtitle")}
+          </p>
+        </div>
+
+        <Link href={"/glory-share"}>
+          <Button variant={"outline"} className="py-10 rounded-full text-secondary font-serif">
+            <h2 className="text-xl">{tGloryShare("gallary.joinToEnjoyArtwork")}</h2>
+          </Button>
+        </Link>
       </motion.div>
 
       <ImageGallery

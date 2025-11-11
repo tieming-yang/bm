@@ -1,4 +1,5 @@
 import { StaticImageData } from "next/image";
+import type { Book } from "@/data/books";
 
 export type BibleArtwork = {
   id: string;
@@ -10,7 +11,7 @@ export type BibleArtwork = {
   location?: string;
   imageUrl: StaticImageData;
   customFields?: Record<string, string | undefined>;
-  book: string;
+  book: Book;
   section: string;
   scriptures: Scriptures;
 };
@@ -26,11 +27,9 @@ export type BibleArtworksLocale = Omit<BibleArtwork, "scriptures"> & {
   scripture: Scripture;
 };
 
-export type BibleArtworksGrouped = {
-  [book: string]: BibleArtworksLocale[];
-};
+export type GroupedArtworks = Record<Book, BibleArtworksLocale[]>;
 
-export type BibleArtworksCanonical = Array<[string, BibleArtworksLocale[]]>;
+export type BibleArtworksCanonical = Array<[Book, BibleArtworksLocale[]]>;
 
 // Helper function to check if an artwork is a Bible artwork
 export function isBibleArtwork(artwork: BibleArtwork): artwork is BibleArtwork {

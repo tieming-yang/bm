@@ -1,7 +1,19 @@
 import bibleArtworks from "@/data/bible-artworks-data";
-import Books from "@/data/books";
+import Books, { type Book } from "@/data/books";
 import { assertIsDefined } from "@/lib/utils";
-import { BibleArtwork, BibleArtworksLocale } from "@/types/bible-artwork";
+import {
+  BibleArtwork,
+  BibleArtworksCanonical,
+  BibleArtworksLocale,
+  GroupedArtworks,
+} from "@/types/bible-artwork";
+
+const createEmptyGroupedArtworks = (): GroupedArtworks => {
+  return Books.order.reduce((acc, book) => {
+    acc[book] = [];
+    return acc;
+  }, {} as GroupedArtworks);
+};
 
 const BibleArtworks = {
   data: bibleArtworks,
@@ -15,10 +27,7 @@ const BibleArtworks = {
     return res.json();
   },
 
-  toLocaleScripture: (
-    artworks: BibleArtwork[],
-    currentLanguage: string,
-  ): BibleArtworksLocale[] => {
+  toLocaleScripture: (artworks: BibleArtwork[], currentLanguage: string): BibleArtworksLocale[] => {
     assertIsDefined(artworks, "artworks is not defined");
     assertIsDefined(currentLanguage, "currentLanguage is not defined");
 
@@ -37,28 +46,27 @@ const BibleArtworks = {
     return localedArtworks;
   },
 
-  toGrouped: (
-    artworks: BibleArtworksLocale[],
-  ): Record<string, BibleArtworksLocale[]> => {
-    return artworks.filter((artwork) => !!artwork.book).reduce(
-      (acc, artwork) => {
-        const book = artwork.book;
-        return {
-          ...acc,
-          [book]: [...(acc[book] || []), artwork],
-        };
-      },
-      {} as Record<string, BibleArtworksLocale[]>,
-    );
+  toGrouped: (artworks: BibleArtworksLocale[]): GroupedArtworks => {
+    return artworks.reduce((acc, artwork) => {
+      acc[artwork.book] = [...acc[artwork.book], artwork];
+      return acc;
+    }, createEmptyGroupedArtworks());
   },
 
   toSoredGroupsCanonical: (
-    grouped: Record<string, BibleArtworksLocale[]>,
-    order: string[],
-  ): Array<[string, BibleArtworksLocale[]]> => {
-    return order.filter((bookName) => bookName in grouped).map((
-      bookName,
-    ) => [bookName, grouped[bookName] as BibleArtworksLocale[]]);
+    grouped: GroupedArtworks,
+    order: readonly Book[]
+  ): BibleArtworksCanonical => {
+    return order
+      .filter((bookName) => grouped[bookName].length > 0)
+      .map((bookName) => [bookName, grouped[bookName]]);
+  },
+
+  toFreeArtworks: (groupedArtworks: GroupedArtworks): GroupedArtworks => {
+    return Books.order.reduce((acc, book) => {
+      acc[book] = groupedArtworks[book].slice(0, 3);
+      return acc;
+    }, createEmptyGroupedArtworks());
   },
 };
 

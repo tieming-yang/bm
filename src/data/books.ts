@@ -1,4 +1,4 @@
-const BOOK_ORDER: string[] = [
+export const BOOK_ORDER = [
   // Old Testament
   "Genesis",
   "Exodus",
@@ -68,10 +68,12 @@ const BOOK_ORDER: string[] = [
   "3 John",
   "Jude",
   "Revelation",
-];
+] as const;
+
+export type Book = (typeof BOOK_ORDER)[number];
 
 const Books = {
-  order: BOOK_ORDER,
+  order: BOOK_ORDER as ReadonlyArray<Book>,
   toTranslationKeys: BOOK_ORDER.reduce((acc, book) => {
     return {
       ...acc,

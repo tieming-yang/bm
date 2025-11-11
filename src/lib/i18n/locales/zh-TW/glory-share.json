@@ -135,5 +135,8 @@
       "checkoutCanceled": "您已取消結帳，可隨時重新加入。",
       "requestSignIn": "請先登入再加入榮耀份額，謝謝🙏"
     }
+  },
+  "gallary": {
+    "joinToEnjoyArtwork": "加入榮耀成員，欣賞已創作的所有聖經畫作。"
   }
 }
