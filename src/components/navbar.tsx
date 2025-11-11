@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/use-translation";
 import useAuthUser from "@/hooks/use-auth-user";
-import { Button } from "@/components/ui/button";
+import { Button, topGlowBorder } from "@/components/ui/button";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -61,7 +61,9 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed bottom-0 w-full px-3 font-serif z-100 h-fit 2xl:px-0">
-        <div className="container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10">
+        <div
+          className={`${topGlowBorder} container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10`}
+        >
           <nav className="items-center hidden md:flex gap-6">
             {routes.map((route) => (
               <Link
