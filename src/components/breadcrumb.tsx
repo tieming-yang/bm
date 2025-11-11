@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import useTranslation from "../hooks/use-translation";
-import Books from "@/data/books";
+import Books, { Book } from "@/data/books";
 
 const routeMap: Record<string, string> = {
   about: "nav.about",
@@ -17,6 +17,7 @@ const routeMap: Record<string, string> = {
   "privacy-policy": "footer.privacyPolicy",
   "glory-share": "nav.gloryShare",
   success: "gloryShareSuccess.breadcrumb",
+  profile: "nav.profile",
 };
 
 const UUID_LENGTH = 28;
@@ -39,8 +40,8 @@ export function Breadcrumb() {
     router.push(path);
   };
 
-  const translateSegment = (segment: string): string => {
-    if (Books.order.includes(segment)) {
+  const translateSegment = (segment: string | Book): string => {
+    if (Books.order.includes(segment as Book)) {
       return tBooks(segment);
     }
     const key = routeMap[segment];
@@ -62,7 +63,7 @@ export function Breadcrumb() {
           </button>
         </li>
         {segments.map((segment, index) => {
-          const isBookSegment = Books.order.includes(segment);
+          const isBookSegment = Books.order.includes(segment as Book);
           const hasExcludes = ["profile"].includes(segment);
           return (
             <li key={index}>

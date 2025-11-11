@@ -53,7 +53,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
   return (
     <motion.div
-      className="flex flex-col items-center justify-center px-4 py-12 h-svh gap-8"
+      className="flex flex-col items-center justify-center px-4 py-12 h-fit gap-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
@@ -63,18 +63,18 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
           <div className="rounded-3xl border-2 border-transparent bg-linear-to-bl from-amber-400/30 via-purple-400/30 to-pink-400/20 p-px shadow-[0_0_35px_rgba(251,191,36,0.35)]">
             <div className="rounded-[1.4rem] bg-linear-to-bl from-gray-950/90 via-gray-900/80 to-gray-900/70">
               <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center">
-                <div className="flex items-center gap-4">
-                  <div className="relative h-20 w-20 md:h-50 md:w-50 rounded-full bg-linear-to-bl from-amber-300/80 to-purple-500/70 p-2px shadow-[0_0_25px_rgba(251,191,36,0.55)]">
+                <div className="flex items-center flex-col md:flex-row gap-4">
+                  <div className="relative h-30 w-30 md:h-50 md:w-50 rounded-full bg-linear-to-bl from-amber-300/80 to-purple-500/70 p-2px shadow-[0_0_25px_rgba(251,191,36,0.55)]">
                     <div className="relative w-full h-full rounded-full bg-gray-950">
                       <Image
                         src="/glory-share/join-success-badge.jpg"
                         alt="Glory Share badge"
                         fill
-                        className="rounded-full object-contain drop-shadow-[0_6px_20px_rgba(0,0,0,0.45)]"
+                        className="rounded-full object-cover drop-shadow-[0_6px_20px_rgba(0,0,0,0.45)]"
                       />
                     </div>
                   </div>
-                  <div className="text-left space-y-1">
+                  <div className="text-left flex-3 space-y-1">
                     <p className="text-xs uppercase tracking-[0.5em] text-amber-200 drop-shadow">
                       {t("gloryShareBadge.label")}
                     </p>

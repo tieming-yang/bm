@@ -85,7 +85,7 @@ export default function SignInPage({}: Props) {
       </p> */}
       <p className="font-sans text-xl font-bold">{t("auth.signupSuffix")}</p>
 
-      <div className="flex flex-row items-center text-xs gap-1">
+      <div className="flex flex-row items-center px-10 md:px-0 text-wrap text-xs gap-1">
         <span>
           {t("auth.consentPrefix")}{" "}
           <Link href="/terms" className="underline text-primary">
