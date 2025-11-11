@@ -167,27 +167,28 @@ export function ImageGallery({
     }
   }, [searchParams, bibleArtworks, selectedArtworkId]);
 
-  useEffect(() => {
-    if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
+  //! Update URL when selectedArtworkId changes (avoid circular updates)
+  // useEffect(() => {
+  //   if (!selectedArtworkId || !router || !pathname || urlUpdatingRef.current) return;
 
-    const params = new URLSearchParams(searchParams?.toString() || "");
-    const currentImageId = params.get("image");
+  //   const params = new URLSearchParams(searchParams?.toString() || "");
+  //   const currentImageId = params.get("image");
 
-    if (currentImageId !== selectedArtworkId) {
-      urlUpdatingRef.current = true;
-      params.set("image", selectedArtworkId);
+  //   if (currentImageId !== selectedArtworkId) {
+  //     urlUpdatingRef.current = true;
+  //     params.set("image", selectedArtworkId);
 
-      // Use setTimeout to batch updates and avoid multiple URL changes
-      setTimeout(() => {
-        // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  //     // Use setTimeout to batch updates and avoid multiple URL changes
+  //     setTimeout(() => {
+  //       // router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
-        // Reset flag after URL update
-        setTimeout(() => {
-          urlUpdatingRef.current = false;
-        }, 100);
-      }, 0);
-    }
-  }, [selectedArtworkId, router, pathname, searchParams]);
+  //       // Reset flag after URL update
+  //       setTimeout(() => {
+  //         urlUpdatingRef.current = false;
+  //       }, 100);
+  //     }, 0);
+  //   }
+  // }, [selectedArtworkId, router, pathname, searchParams]);
 
   // Infinite scroll effect
   // useEffect(() => {
@@ -452,14 +453,14 @@ export function ImageGallery({
             {/* Tool Bar */}
             <section className="flex items-center justify-end px-6 border-b border-border">
               <div className="flex items-center gap-4">
-                <Button
+                {/* <Button
                   variant={"ghost"}
                   onClick={handleShare}
                   className="flex items-center justify-center"
                 >
                   <Share className="size-5" />
                   <span className="sr-only">Share</span>
-                </Button>
+                </Button> */}
                 {/* <Button
                   variant={"ghost"}
                   onClick={handleDownload}
