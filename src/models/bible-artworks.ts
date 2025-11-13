@@ -7,6 +7,7 @@ import {
   BibleArtworksLocale,
   GroupedArtworks,
 } from "@/types/bible-artwork";
+import Config from "./config";
 
 const createEmptyGroupedArtworks = (): GroupedArtworks => {
   return Books.order.reduce((acc, book) => {
@@ -20,7 +21,7 @@ const BibleArtworks = {
   order: Books.order,
 
   getAll: async (): Promise<BibleArtwork[]> => {
-    const res = await fetch("/api/bible-artworks");
+    const res = await fetch(`${Config.baseUrl}/api/bible-artworks`, { cache: "force-cache" });
     if (!res.ok) {
       throw new Error("Failed to fetch bible artworks from API");
     }

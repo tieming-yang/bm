@@ -11,8 +11,15 @@ import useProfile from "@/hooks/use-profile";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { BibleArtwork } from "@/types/bible-artwork";
 
-export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
+export default function BibleGalleryContent({
+  params,
+  artworks,
+}: {
+  params?: { book?: string };
+  artworks: BibleArtwork[];
+}) {
   const { t, currentLanguage } = useTranslation("gallery");
   const { t: tUI } = useTranslation("ui");
   const { t: tGloryShare } = useTranslation("glory-share");
@@ -20,25 +27,25 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
 
   const { profile, isProfileLoading } = useProfile();
   //TODO: fetch depends on if user is memenber
-  const {
-    data: artworks,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["bibleArtworks", currentLanguage],
-    queryFn: () => BibleArtworks.getAll(),
-    staleTime: Infinity,
-  });
+  // const {
+  //   data: artworks,
+  //   isLoading,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["bibleArtworks", currentLanguage],
+  //   queryFn: () => BibleArtworks.getAll(),
+  //   staleTime: Infinity,
+  // });
 
-  if (isLoading || isProfileLoading) {
-    return <Loading />;
-  }
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
-  if (error || !artworks) {
-    toast.error(tUI("loading.error.title"), {
-      description: tUI("loading.error.message"),
-    });
-  }
+  // if (error || !artworks) {
+  //   toast.error(tUI("loading.error.title"), {
+  //     description: tUI("loading.error.message"),
+  //   });
+  // }
 
   const localedArtworks = BibleArtworks.toLocaleScripture(artworks!, currentLanguage);
   const groupedArtworks = BibleArtworks.toGrouped(localedArtworks);
