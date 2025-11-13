@@ -11,7 +11,7 @@ type BibleGalleryProps = {
 export default async function BibleGallery({ params }: BibleGalleryProps) {
   const { book } = await params;
   const artworks = await BibleArtworks.getAll();
-  console.log(artworks);
+
   return (
     <div className="container px-4 py-12 mx-auto">
       <BibleGalleryContent params={{ book }} artworks={artworks} />
