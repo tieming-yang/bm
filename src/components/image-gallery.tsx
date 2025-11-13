@@ -306,10 +306,6 @@ export function ImageGallery({
     });
   };
 
-  if (isProfileLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       {/* Gallery Grid */}
@@ -379,7 +375,7 @@ export function ImageGallery({
                 <div className="flex flex-col w-full">
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
                     {/* Image Carousel */}
-                    <section className="w-full place-self-center md:sticky md:top-0">
+                    <section className="w-full place-self-center sticky top-0">
                       <Carousel
                         opts={{
                           loop: true,
