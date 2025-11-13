@@ -1,7 +1,5 @@
 import BibleGalleryContent from "@/components/bible-gallery";
 import BibleArtworks from "@/models/bible-artworks";
-import { artworks } from "../../../../models/artworks";
-import { Suspense } from "react";
 
 type BibleGalleryProps = {
   params: Promise<{ book: string }>;
