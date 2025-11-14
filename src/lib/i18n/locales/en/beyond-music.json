@@ -1,0 +1,27 @@
+{
+  "beyondMusic": {
+    "badge": "Creation in progress",
+    "hero": {
+      "title": "Beyond Music is being composed with prayerful detail.",
+      "subtitle": "We are weaving worship, visual storytelling, and multilingual lyrics so the gospel can sing across cultures.",
+      "stayTuned": "Stay tuned for the premiere",
+      "joinGloryShare": "Join Glory Share",
+      "ctaNote": "Glory Share partners will be the first to hear every release and enjoy early behind-the-scenes drops."
+    },
+    "breadcrumb": {
+      "works": "Works",
+      "current": "Beyond Music"
+    },
+    "navigation": {
+      "overview": "Overview",
+      "milestones": "Milestones",
+      "invitation": "First listen"
+    },
+    "invitation": {
+      "title": "Be part of the first listen",
+      "message": "Stay tuned right here as we share progress glimpses. When Beyond Music drops, Glory Share will receive it first—ready for your home, church, or studio.",
+      "stayTuned": "Keep me updated",
+      "joinButton": "Join Glory Share"
+    }
+  }
+}

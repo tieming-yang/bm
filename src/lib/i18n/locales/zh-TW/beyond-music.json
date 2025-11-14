@@ -1,0 +1,27 @@
+{
+  "beyondMusic": {
+    "badge": "製作進行中",
+    "hero": {
+      "title": "超越音樂正在創作中。",
+      "subtitle": "我們以禱告、創意與多語歌詞編織敬拜與視覺故事，讓福音唱向列國。",
+      "stayTuned": "敬請期待首波釋出",
+      "joinGloryShare": "加入榮耀份額",
+      "ctaNote": "榮耀份額成員可優先聆聽每一波釋出，並搶先收到幕後花絮。"
+    },
+    "breadcrumb": {
+      "works": "作品",
+      "current": "超越音樂"
+    },
+    "navigation": {
+      "overview": "專案概覽",
+      "milestones": "製作里程碑",
+      "invitation": "搶先聆聽"
+    },
+    "invitation": {
+      "title": "成為第一批聽見的人",
+      "message": "請鎖定此頁，我們會陸續釋出創作進度。超越音樂上線時，榮耀份額成員將搶先收到。",
+      "stayTuned": "我會持續關注",
+      "joinButton": "加入榮耀份額"
+    }
+  }
+}

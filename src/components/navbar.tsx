@@ -47,6 +47,7 @@ export default function Navbar() {
     { href: "/glory-share", label: t("nav.gloryShare") },
     { href: "/bible-gallery", label: t("nav.bibleGallery") },
     { href: "/daily-grace-snacks", label: t("nav.dailyGraceSnacks") },
+    { href: "/beyond-music", label: t("nav.beyondMusic") },
     // { href: "/donate", label: t("nav.donate") },
     { href: "/contact", label: t("nav.contact") },
     // { href: "/signin", label: t("nav.signin") },
