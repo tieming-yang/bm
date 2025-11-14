@@ -61,11 +61,11 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed bottom-0 w-full px-3 font-serif z-100 h-fit 2xl:px-0">
+      <nav className="fixed bottom-0 w-full px-3 font-serif z-100 h-fit 2xl:px-0">
         <div
           className={`${topGlowBorder} container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10`}
         >
-          <nav className="items-center hidden md:flex gap-6">
+          <div className="items-center hidden md:flex gap-6">
             {routes.map((route) => (
               <Link
                 key={route.href}
@@ -83,7 +83,7 @@ export default function Navbar() {
                 {route.label}
               </Link>
             ))}
-          </nav>
+          </div>
 
           <section className="z-50 flex gap-2">
             {isMounted && (
@@ -134,7 +134,7 @@ export default function Navbar() {
             ></span>
           </button>
         </div>
-      </header>
+      </nav>
 
       {/* Full screen mobile menu */}
       <AnimatePresence>

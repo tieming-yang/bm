@@ -13,6 +13,7 @@ import ClientRoot from "./client-layout";
 import { Metadata } from "next";
 import _metadata from "./metadata";
 import Header from "@/components/header";
+import { motion } from "framer-motion";
 
 const kings = Kings({
   weight: ["400"],
@@ -62,27 +63,27 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <ReactQueryProvider>
-          <ClientRoot>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem={false}
-              forcedTheme="dark"
-              enableColorScheme
-              disableTransitionOnChange
-            >
-              <div className="flex flex-col min-h-screen">
-                <Suspense fallback={<Loading />}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+            forcedTheme="dark"
+            enableColorScheme
+            disableTransitionOnChange
+          >
+            <Suspense fallback={<Loading />}>
+              <ClientRoot>
+                <main className="flex-1 flex flex-col min-h-svh relative">
                   <Header />
                   <Breadcrumb />
-                  <main className="flex-1">{children}</main>
+                  {children}
                   <Navbar />
-                  <Toaster position="top-center" />
                   <Footer />
-                </Suspense>
-              </div>
-            </ThemeProvider>
-          </ClientRoot>
+                </main>
+              </ClientRoot>
+              <Toaster position="top-center" />
+            </Suspense>
+          </ThemeProvider>
         </ReactQueryProvider>
         <Analytics />
       </body>
