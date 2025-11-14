@@ -71,8 +71,8 @@ function Thumbnail({
           !isBlur && "group-hover:scale-110"
         } `}
         // sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        loading="lazy"
-        priority={false}
+        preload
+        loading="eager"
         placeholder="blur"
         blurDataURL="/placeholders/blur-noise-placeholder.webp"
         quality={30}
