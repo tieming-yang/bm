@@ -13,7 +13,7 @@ export default function BeyondMusicPage() {
   ];
 
   return (
-    <div className="container px-4 py-16 mx-auto space-y-16">
+    <div className="container px-4 py-16 mx-auto space-y-16 h-svh">
       <section
         id="overview"
         className="relative overflow-hidden rounded-3xl border border-primary/20 bg-linear-to-br from-primary/10 via-background to-secondary/10 px-8 py-14 shadow-lg shadow-primary/10"
@@ -52,14 +52,6 @@ export default function BeyondMusicPage() {
             </h1>
             <p className="text-lg text-muted-foreground">{t("beyondMusic.hero.subtitle")}</p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Button variant="outline" size="lg" className="rounded-full" asChild>
-              <a href="#milestones">{t("beyondMusic.hero.stayTuned")}</a>
-            </Button>
-            <Button size="lg" className="rounded-full" asChild>
-              <a href="/glory-share">{t("beyondMusic.hero.joinGloryShare")}</a>
-            </Button>
-          </div>
           <p className="text-sm text-muted-foreground">{t("beyondMusic.hero.ctaNote")}</p>
         </div>
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-30">
@@ -79,9 +71,6 @@ export default function BeyondMusicPage() {
           <h3 className="text-3xl font-semibold">{t("beyondMusic.invitation.title")}</h3>
           <p className="text-lg text-muted-foreground">{t("beyondMusic.invitation.message")}</p>
           <div className="flex flex-wrap gap-3">
-            <Button variant="outline" size="lg" className="rounded-full border-primary/40" asChild>
-              <a href="#milestones">{t("beyondMusic.invitation.stayTuned")}</a>
-            </Button>
             <Button size="lg" className="rounded-full" asChild>
               <a href="/glory-share">{t("beyondMusic.invitation.joinButton")}</a>
             </Button>
