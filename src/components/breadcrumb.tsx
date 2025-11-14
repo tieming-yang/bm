@@ -54,7 +54,7 @@ export function Breadcrumb() {
   };
 
   return (
-    <nav className="mx-auto bg-slate-900/50 backdrop-blur-xl rounded-full py-1 px-5 font-serif text-sm text-muted-foreground">
+    <nav className="px-5 py-1 mx-auto font-serif text-sm rounded-full bg-slate-900/50 backdrop-blur-xl text-muted-foreground">
       <ul className="flex space-x-2">
         <li>
           <button

@@ -10,7 +10,7 @@ export default function Contact() {
   const { t } = useTranslation("contact");
 
   return (
-    <div className="container h-svh relative z-50 px-4 py-12 mx-auto">
+    <div className="container relative z-50 px-4 py-12 mx-auto h-svh">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

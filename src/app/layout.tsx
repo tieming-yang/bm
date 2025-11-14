@@ -2,7 +2,6 @@ import { Kings, Eagle_Lake, Yuji_Mai } from "next/font/google";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { ThemeProvider } from "../components/theme-provider";
-import { Breadcrumb } from "../components/breadcrumb";
 import "../styles/globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/sonner";
@@ -13,7 +12,6 @@ import ClientRoot from "./client-layout";
 import { Metadata } from "next";
 import _metadata from "./metadata";
 import Header from "@/components/header";
-import { motion } from "framer-motion";
 
 const kings = Kings({
   weight: ["400"],
@@ -73,7 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           >
             <Suspense fallback={<Loading />}>
               <ClientRoot>
-                <main className="flex-1 flex flex-col min-h-svh relative">
+                <main className="relative flex flex-col flex-1 min-h-svh">
                   <Header />
                   {/* <Breadcrumb /> */}
                   {children}

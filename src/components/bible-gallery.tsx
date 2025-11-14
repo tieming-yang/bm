@@ -38,7 +38,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
   }
 
   return (
-    <div className="z-50 relative">
+    <div className="relative z-50">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -56,7 +56,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
 
         {!profile?.joinedGloryShare && (
           <Link href={"/glory-share"}>
-            <Button variant={"outline"} className="py-10 rounded-full text-secondary font-serif">
+            <Button variant={"outline"} className="py-10 font-serif rounded-full text-secondary">
               <h2 className="text-xl text-wrap">{tGloryShare("gallary.joinToEnjoyArtwork")}</h2>
             </Button>
           </Link>

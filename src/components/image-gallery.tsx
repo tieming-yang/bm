@@ -60,7 +60,7 @@ function Thumbnail({
       }}
     >
       {isBlur && (
-        <div className="pointer-events-none absolute inset-0 bg-black/20 backdrop-blur-md z-50" />
+        <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
       )}
 
       <Image
@@ -381,7 +381,7 @@ export function ImageGallery({
                 <div className="flex flex-col w-full">
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
                     {/* Image Carousel */}
-                    <section className="w-full place-self-center sticky top-0">
+                    <section className="sticky top-0 w-full place-self-center">
                       <Carousel
                         opts={{
                           loop: true,
@@ -403,7 +403,7 @@ export function ImageGallery({
                                 className="relative overflow-hidden"
                               >
                                 {!profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS && (
-                                  <div className="pointer-events-none absolute inset-0 bg-black/20 backdrop-blur-md z-50" />
+                                  <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
                                 )}
                                 <Image
                                   src={artwork.imageUrl}
