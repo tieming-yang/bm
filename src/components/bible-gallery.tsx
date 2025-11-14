@@ -8,18 +8,12 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../app/loading";
 import { toast } from "sonner";
 import useProfile from "@/hooks/use-profile";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BibleArtwork } from "@/types/bible-artwork";
 
-export default function BibleGalleryContent({
-  params,
-  artworks,
-}: {
-  params?: { book?: string };
-  artworks: BibleArtwork[];
-}) {
+export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
   const { t: tUI } = useTranslation("ui");
   const { t: tGloryShare } = useTranslation("glory-share");
@@ -27,42 +21,21 @@ export default function BibleGalleryContent({
 
   const { profile, isProfileLoading } = useProfile();
   //TODO: fetch depends on if user is memenber
-  // const {
-  //   data: artworks,
-  //   isLoading,
-  //   error,
-  // } = useQuery({
-  //   queryKey: ["bibleArtworks", currentLanguage],
-  //   queryFn: () => BibleArtworks.getAll(),
-  //   staleTime: Infinity,
-  // });
+  const {
+    data: artworks,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["bibleArtworks", currentLanguage],
+    queryFn: () => BibleArtworks.getAll(),
+    staleTime: Infinity,
+  });
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
-
-  // if (error || !artworks) {
-  //   toast.error(tUI("loading.error.title"), {
-  //     description: tUI("loading.error.message"),
-  //   });
-  // }
-
-  const localedArtworks = BibleArtworks.toLocaleScripture(artworks!, currentLanguage);
-  const groupedArtworks = BibleArtworks.toGrouped(localedArtworks);
-
-  //TODO: Filter free content here or don't fetch at all
-  // const groupedArtworksByUserType = profile?.joinedGloryShare
-  //   ? groupedArtworks
-  //   : BibleArtworks.toFreeArtworks(groupedArtworks);
-
-  // const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
-  //   groupedArtworksByUserType,
-  //   BibleArtworks.order
-  // );
-  const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
-    groupedArtworks,
-    BibleArtworks.order
-  );
+  if (error) {
+    toast.error(tUI("loading.error.title"), {
+      description: tUI("loading.error.message"),
+    });
+  }
 
   return (
     <div className="z-50 relative">
@@ -90,13 +63,18 @@ export default function BibleGalleryContent({
         )}
       </motion.div>
 
-      <ImageGallery
-        bibleArtworks={localedArtworks}
-        groupedBibleArtworks={sortedCanonicalBooks}
-        infiniteScroll={false}
-        book={book}
-        isGloryShareMember={profile?.joinedGloryShare ?? false}
-      />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        artworks && (
+          <ImageGallery
+            artworks={artworks}
+            infiniteScroll={false}
+            book={book}
+            isGloryShareMember={profile?.joinedGloryShare ?? false}
+          />
+        )
+      )}
     </div>
   );
 }

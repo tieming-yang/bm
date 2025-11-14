@@ -19,10 +19,10 @@ import Config from "@/models/config";
 import { toast } from "sonner";
 import Loading from "../app/loading";
 import useProfile from "@/hooks/use-profile";
+import BibleArtworks from "@/models/bible-artworks";
 
 interface ImageGalleryProps {
-  bibleArtworks: BibleArtworksLocale[];
-  groupedBibleArtworks: BibleArtworksCanonical;
+  artworks: BibleArtwork[];
   infiniteScroll?: boolean;
   initialLimit?: number;
   book?: string; // Optional book parameter for filtering
@@ -84,8 +84,7 @@ function Thumbnail({
 const MAXIMUM_FREE_ARTS = 2;
 
 export function ImageGallery({
-  bibleArtworks,
-  groupedBibleArtworks,
+  artworks,
   infiniteScroll = false,
   initialLimit = 8,
   book,
@@ -113,11 +112,18 @@ export function ImageGallery({
   const { t: tGloryShare } = useTranslation("glory-share");
   const { profile, isProfileLoading } = useProfile();
 
+  const localeArtworks = BibleArtworks.toLocaleScripture(artworks, currentLanguage);
+  const groupedBibleArtworks = BibleArtworks.toGrouped(localeArtworks);
+  const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
+    groupedBibleArtworks,
+    BibleArtworks.order
+  );
+
   // Derived values
   const isBookFiltered = !!book;
   const filteredBibleArtworks = isBookFiltered
-    ? groupedBibleArtworks.filter(([bookName, _]) => bookName.toLowerCase() === book?.toLowerCase())
-    : groupedBibleArtworks;
+    ? sortedCanonicalBooks.filter(([bookName, _]) => bookName.toLowerCase() === book?.toLowerCase())
+    : sortedCanonicalBooks;
 
   // Find the tuple [bookName, groupArray] containing the selected artwork
   const currentBookTuple = selectedArtworkId
@@ -160,12 +166,12 @@ export function ImageGallery({
 
     const imageId = searchParams?.get("image");
     if (imageId && !selectedArtworkId) {
-      const artwork = bibleArtworks.find((a) => a.id === imageId);
+      const artwork = localeArtworks.find((a) => a.id === imageId);
       if (artwork) {
         setSelectedArtworkId(artwork.id);
       }
     }
-  }, [searchParams, bibleArtworks, selectedArtworkId]);
+  }, [searchParams, localeArtworks, selectedArtworkId]);
 
   //! Update URL when selectedArtworkId changes (avoid circular updates)
   // useEffect(() => {
