@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,10 +22,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // Only initialize analytics on the client side, not during SSR
 let analytics = null;
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   analytics = getAnalytics(app);
 }
-const db = getFirestore(app);
+
+const db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
 const auth = getAuth(app);
 
 const firebase = {
