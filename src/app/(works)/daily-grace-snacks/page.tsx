@@ -108,6 +108,7 @@ export default function DailyGraceSnacksPage() {
           .sort((a, b) => a.index - b.index) ?? [];
       return items;
     },
+    staleTime: Infinity,
   });
   const fetchError = isPlaylistError ? statusError : null;
 
