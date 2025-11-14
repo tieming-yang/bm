@@ -54,8 +54,8 @@ export function Breadcrumb() {
   };
 
   return (
-    <nav className="z-50 mx-auto mt-4 font-serif text-sm text-muted-foreground">
-      <ul className="flex items-center space-x-2">
+    <nav className="mx-auto bg-slate-900/50 backdrop-blur-xl rounded-full py-1 px-5 font-serif text-sm text-muted-foreground">
+      <ul className="flex space-x-2">
         <li>
           <button
             onClick={() => router.push("/")}

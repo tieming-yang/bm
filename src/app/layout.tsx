@@ -75,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <ClientRoot>
                 <main className="flex-1 flex flex-col min-h-svh relative">
                   <Header />
-                  <Breadcrumb />
+                  {/* <Breadcrumb /> */}
                   {children}
                   <Navbar />
                   <Footer />

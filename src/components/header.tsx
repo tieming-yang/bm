@@ -2,13 +2,17 @@
 
 import React from "react";
 import Logo from "./logo";
+import { Breadcrumb } from "./breadcrumb";
 
 type Props = {};
 
 export default function Header({}: Props) {
   return (
-    <section className="fixed z-50 flex items-center w-full pt-3 pl-3 h-fit">
-      <Logo />
-    </section>
+    <header className="fixed z-100 flex justify-center items-start pt-1 w-full h-fit">
+      <div className="fixed left-3">
+        <Logo />
+      </div>
+      <Breadcrumb />
+    </header>
   );
 }
