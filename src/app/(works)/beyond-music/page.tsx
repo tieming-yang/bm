@@ -9,7 +9,6 @@ export default function BeyondMusicPage() {
   const [activeHash, setActiveHash] = useState<string>("#overview");
   const navLinks = [
     { href: "#overview", label: t("beyondMusic.navigation.overview") },
-    { href: "#milestones", label: t("beyondMusic.navigation.milestones") },
     { href: "#first-listen", label: t("beyondMusic.navigation.invitation") },
   ];
 
