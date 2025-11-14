@@ -26,7 +26,7 @@ if (typeof window !== "undefined") {
   analytics = getAnalytics(app);
 }
 
-const db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
+const db = initializeFirestore(app, { experimentalForceLongPolling: true });
 const auth = getAuth(app);
 
 const firebase = {
