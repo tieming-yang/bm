@@ -59,6 +59,7 @@ export function ImageGallery({
   const { t: booksT } = useTranslation("books");
   const { t: tGloryShare } = useTranslation("glory-share");
   const { profile, isProfileLoading } = useProfile();
+  const [isSelectedArtworkLoading, setIsSelectedArtworkLoading] = useState(true);
 
   const localeArtworks = BibleArtworks.toLocaleScripture(artworks, currentLanguage);
   const groupedBibleArtworks = BibleArtworks.toGrouped(localeArtworks);
@@ -260,6 +261,8 @@ export function ImageGallery({
     });
   };
 
+  const showContentBlock = (index) => !profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS;
+
   return (
     <>
       {/* Gallery Grid */}
@@ -350,8 +353,11 @@ export function ImageGallery({
                                 ratio={Config.aspectRatio}
                                 className="relative overflow-hidden"
                               >
-                                {!profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS && (
+                                {showContentBlock(index) && (
                                   <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
+                                )}
+                                {!showContentBlock(index) && isSelectedArtworkLoading && (
+                                  <Loading isInlined show />
                                 )}
                                 <Image
                                   src={artwork.imageUrl}
@@ -368,6 +374,8 @@ export function ImageGallery({
                                     ) {
                                       setLightboxCarouselInitialized(true);
                                     }
+
+                                    setIsSelectedArtworkLoading(false);
                                   }}
                                 />
                               </AspectRatio>
