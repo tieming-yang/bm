@@ -513,7 +513,7 @@ function Thumbnail({
         loading="eager"
         placeholder="blur"
         blurDataURL="/placeholders/blur-noise-placeholder.webp"
-        quality={10}
+        quality={20}
       />
     </AspectRatio>
   );
