@@ -276,7 +276,7 @@ export function ImageGallery({
             {/* </a> */}
 
             {/* Artworks */}
-            <ul className="w-full font-mono grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
+            <ul className="w-full font-mono grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
                   <Thumbnail
@@ -325,9 +325,9 @@ export function ImageGallery({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full overflow-y-auto grow">
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col h-full justify-center-safe gap-6">
                 <div className="flex flex-col w-full">
-                  <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
+                  <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-center">
                     {/* Image Carousel */}
                     <section className="sticky overflow-x-hidden top-0 w-full place-self-center">
                       <Carousel
@@ -353,13 +353,12 @@ export function ImageGallery({
                                 {!profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS && (
                                   <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
                                 )}
-                                <Image
+                                <Imag
                                   src={artwork.imageUrl}
                                   alt={artwork.id}
                                   fill
                                   loading="lazy"
                                   className="object-contain"
-                                  sizes="(max-width: 1024px) 90vw, 60vw"
                                   placeholder="blur"
                                   quality={50}
                                   blurDataURL="/placeholders/blur-noise-placeholder.webp"
@@ -508,12 +507,10 @@ function Thumbnail({
         className={`object-cover transition-transform duration-500 ${
           !isBlur && "group-hover:scale-110"
         } `}
-        // sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        preload
-        loading="eager"
+        loading="lazy"
         placeholder="blur"
         blurDataURL="/placeholders/blur-noise-placeholder.webp"
-        quality={20}
+        quality={30}
       />
     </AspectRatio>
   );
