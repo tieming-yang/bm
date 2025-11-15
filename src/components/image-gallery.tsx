@@ -353,14 +353,13 @@ export function ImageGallery({
                                 {!profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS && (
                                   <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
                                 )}
-                                <Imag
+                                <Image
                                   src={artwork.imageUrl}
                                   alt={artwork.id}
                                   fill
                                   loading="lazy"
                                   className="object-contain"
                                   placeholder="blur"
-                                  quality={50}
                                   blurDataURL="/placeholders/blur-noise-placeholder.webp"
                                   onLoad={() => {
                                     if (
@@ -507,10 +506,9 @@ function Thumbnail({
         className={`object-cover transition-transform duration-500 ${
           !isBlur && "group-hover:scale-110"
         } `}
-        loading="lazy"
+        unoptimized
         placeholder="blur"
         blurDataURL="/placeholders/blur-noise-placeholder.webp"
-        quality={30}
       />
     </AspectRatio>
   );
