@@ -321,7 +321,7 @@ export function ImageGallery({
 
           {/* Lightbox Content */}
           <div
-            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-5rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
+            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-5rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-b-3xl overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full overflow-y-auto grow">
@@ -329,7 +329,7 @@ export function ImageGallery({
                 <div className="flex flex-col w-full">
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
                     {/* Image Carousel */}
-                    <section className="sticky top-0 w-full place-self-center">
+                    <section className="sticky overflow-x-hidden top-0 w-full place-self-center">
                       <Carousel
                         opts={{
                           loop: true,
@@ -421,11 +421,11 @@ export function ImageGallery({
                   <span className="sr-only">Download</span>
                 </Button> */}
                 <Button
-                  variant={"ghost"}
+                  variant={"outline"}
                   onClick={handleClose}
                   className="flex items-center justify-center"
                 >
-                  <X className="size-5" />
+                  <X className="size-7" />
                   <span className="sr-only">Close</span>
                 </Button>
               </div>
