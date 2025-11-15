@@ -29,58 +29,6 @@ interface ImageGalleryProps {
   isGloryShareMember: boolean;
 }
 
-function Thumbnail({
-  artwork,
-  onClick,
-  isBlur,
-  router,
-  tGloryShare,
-}: {
-  artwork: BibleArtworksLocale;
-  onClick: (id: string) => void;
-  isBlur: boolean;
-  router: AppRouterInstance;
-  tGloryShare: TFunction<string, undefined>;
-}) {
-  return (
-    <AspectRatio
-      ratio={Config.aspectRatio}
-      className="relative overflow-hidden shadow-xl cursor-pointer group"
-      onClick={() => {
-        if (isBlur) {
-          toast.info(tGloryShare("gallary.joinToEnjoyArtwork"), {
-            action: {
-              label: tGloryShare("gloryShare.toast.joinNow"),
-              onClick: () => router.push("/glory-share"),
-            },
-          });
-          return;
-        }
-        onClick(artwork.id);
-      }}
-    >
-      {isBlur && (
-        <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
-      )}
-
-      <Image
-        src={artwork.imageUrl}
-        alt={artwork.title || "Bible Artwork"}
-        fill
-        className={`object-cover transition-transform duration-500 ${
-          !isBlur && "group-hover:scale-110"
-        } `}
-        // sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        preload
-        loading="eager"
-        placeholder="blur"
-        blurDataURL="/placeholders/blur-noise-placeholder.webp"
-        quality={30}
-      />
-    </AspectRatio>
-  );
-}
-
 const MAXIMUM_FREE_ARTS = 2;
 
 export function ImageGallery({
@@ -373,7 +321,7 @@ export function ImageGallery({
 
           {/* Lightbox Content */}
           <div
-            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-80px)] md:h-fit max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
+            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-5rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-sm overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full overflow-y-auto grow">
@@ -387,7 +335,7 @@ export function ImageGallery({
                           loop: true,
                           startIndex: selectedIndexInBook,
                         }}
-                        className="w-full"
+                        className="w-full min-h-10/12"
                         onSelect={() => {
                           if (!lightboxCarouselInitialized) {
                             setLightboxCarouselInitialized(true);
@@ -413,6 +361,7 @@ export function ImageGallery({
                                   className="object-contain"
                                   sizes="(max-width: 1024px) 90vw, 60vw"
                                   placeholder="blur"
+                                  quality={50}
                                   blurDataURL="/placeholders/blur-noise-placeholder.webp"
                                   onLoad={() => {
                                     if (
@@ -515,5 +464,57 @@ export function ImageGallery({
       {/* Donation Sheet */}
       <DonationSheet open={showDonationSheet} onOpenChange={setShowDonationSheet} />
     </>
+  );
+}
+
+function Thumbnail({
+  artwork,
+  onClick,
+  isBlur,
+  router,
+  tGloryShare,
+}: {
+  artwork: BibleArtworksLocale;
+  onClick: (id: string) => void;
+  isBlur: boolean;
+  router: AppRouterInstance;
+  tGloryShare: TFunction<string, undefined>;
+}) {
+  return (
+    <AspectRatio
+      ratio={Config.aspectRatio}
+      className="relative overflow-hidden shadow-xl cursor-pointer group"
+      onClick={() => {
+        if (isBlur) {
+          toast.info(tGloryShare("gallary.joinToEnjoyArtwork"), {
+            action: {
+              label: tGloryShare("gloryShare.toast.joinNow"),
+              onClick: () => router.push("/glory-share"),
+            },
+          });
+          return;
+        }
+        onClick(artwork.id);
+      }}
+    >
+      {isBlur && (
+        <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
+      )}
+
+      <Image
+        src={artwork.imageUrl}
+        alt={artwork.title || "Bible Artwork"}
+        fill
+        className={`object-cover transition-transform duration-500 ${
+          !isBlur && "group-hover:scale-110"
+        } `}
+        // sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        preload
+        loading="eager"
+        placeholder="blur"
+        blurDataURL="/placeholders/blur-noise-placeholder.webp"
+        quality={10}
+      />
+    </AspectRatio>
   );
 }
