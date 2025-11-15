@@ -361,7 +361,7 @@ export function ImageGallery({
                                 )}
                                 <Image
                                   src={artwork.imageUrl}
-                                  alt={artwork.id}
+                                  alt={"Slow Internet Connecting, Please Try It Again"}
                                   fill
                                   loading="lazy"
                                   className="object-contain"
