@@ -58,6 +58,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="apple-mobile-web-app-title" content="Beyond" />
+        <link
+          rel="apple-touch-startup-image"
+          href="/web-app-manifest-192x192.png"
+          media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/web-app-manifest-192x192.png.png"
+          media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+        />
       </head>
       <body>
         <ReactQueryProvider>
