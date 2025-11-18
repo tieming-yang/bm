@@ -23,9 +23,9 @@ export default function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-medium">{t("footer.quickLinks")}</h3>
             <ul className="space-y-2">
-              {navRoutes.map((route) => {
+              {navRoutes.map((route, index) => {
                 return (
-                  <li>
+                  <li key={`${route.href}-${index}`}>
                     <Link
                       href={route.href}
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
