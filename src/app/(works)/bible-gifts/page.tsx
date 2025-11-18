@@ -31,13 +31,6 @@ export default function BibleGiftsPage() {
           <div className="absolute w-48 h-48 rounded-full inset-y-10 right-10 bg-primary/30 blur-3xl opacity-60" />
         </div>
         <div className="max-w-3xl space-y-6">
-          <nav className="flex items-center text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-            <a href="/#works" className="transition hover:text-primary">
-              {t("bibleGifts.breadcrumb.works")}
-            </a>
-            <span className="px-2 text-muted-foreground/60">/</span>
-            <span className="text-primary">{t("bibleGifts.breadcrumb.current")}</span>
-          </nav>
           <div className="flex flex-wrap text-sm gap-3 text-muted-foreground">
             {navLinks.map((link) => (
               <a
