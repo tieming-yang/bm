@@ -13,7 +13,7 @@ export default function BeyondMusicPage() {
   ];
 
   return (
-    <div className="container px-4 py-16 mx-auto space-y-16 h-svh">
+    <div className="container px-4 py-16 mx-auto space-y-16">
       <section
         id="overview"
         className="relative px-8 overflow-hidden border shadow-lg rounded-3xl border-primary/20 bg-linear-to-br from-primary/10 via-background to-secondary/10 py-14 shadow-primary/10"

@@ -20,7 +20,7 @@ export default function BibleGiftsPage() {
   ];
 
   return (
-    <div className="container px-4 py-16 mx-auto space-y-16 h-svh">
+    <div className="container px-4 py-16 mx-auto space-y-16">
       <section
         id="overview"
         className="relative px-8 overflow-hidden border shadow-lg rounded-3xl border-primary/20 bg-linear-to-br from-primary/10 via-background to-secondary/10 py-14 shadow-primary/10"
@@ -78,7 +78,9 @@ export default function BibleGiftsPage() {
         <div className="max-w-5xl space-y-8">
           <div className="space-y-3">
             <h3 className="text-3xl font-semibold">{t("bibleGifts.collections.title")}</h3>
-            <p className="text-lg text-muted-foreground">{t("bibleGifts.collections.description")}</p>
+            <p className="text-lg text-muted-foreground">
+              {t("bibleGifts.collections.description")}
+            </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {collectionItems.map((item) => (
