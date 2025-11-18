@@ -147,6 +147,10 @@
     /* font-family: var(--font-inter), var(--font-noto-sans-tc), system-ui, sans-serif; */
   }
 
+  h1 {
+    @apply text-primary-foreground-gradient;
+  }
+
   /* Add specific class for Chinese text if needed */
   .chinese-text {
     /* font-family: var(--font-noto-sans-tc), system-ui, sans-serif; */
