@@ -9,7 +9,7 @@ type Props = {};
 export default function ClientHome({}: Props) {
   const { t } = useTranslation();
   return (
-    <div className="relative z-20">
+    <div className="relative z-20 pb-50 md:pb-0">
       <motion.section
         initial={{ opacity: 0, y: 20, scale: 0.7 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}

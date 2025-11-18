@@ -81,13 +81,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           >
             <Suspense fallback={<Loading />}>
               <ClientRoot>
-                <main className="relative flex flex-col flex-1 min-h-svh">
-                  <Header />
+                <Header />
+                <main className="relative flex flex-col">
                   {/* <Breadcrumb /> */}
                   {children}
-                  <Navbar />
-                  <Footer />
                 </main>
+                <Navbar />
+                <Footer />
               </ClientRoot>
               <Toaster position="top-center" />
             </Suspense>
