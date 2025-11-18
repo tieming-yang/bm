@@ -12,6 +12,23 @@ import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/use-translation";
 import useAuthUser from "@/hooks/use-auth-user";
 import { Button, topGlowBorder } from "@/components/ui/button";
+import { TFunction } from "i18next";
+
+export const navRoutes = [
+  { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
+  { href: "/about", label: (t: TFunction<string, undefined>) => t("nav.about") },
+  { href: "/glory-share", label: (t: TFunction<string, undefined>) => t("nav.gloryShare") },
+  { href: "/bible-gallery", label: (t: TFunction<string, undefined>) => t("nav.bibleGallery") },
+  {
+    href: "/daily-grace-snacks",
+    label: (t: TFunction<string, undefined>) => t("nav.dailyGraceSnacks"),
+  },
+  { href: "/bible-gifts", label: (t: TFunction<string, undefined>) => t("nav.bibleGifts") },
+  { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
+  // { href: "/donate", label:(t: TFunction<string, undefined>) => t("nav.donate") },
+  { href: "/contact", label: (t: TFunction<string, undefined>) => t("nav.contact") },
+  // { href: "/signin", label:(t: TFunction<string, undefined>) => t("nav.signin") },
+];
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -41,19 +58,6 @@ export default function Navbar() {
     };
   }, [isMenuOpen]);
 
-  const routes = [
-    { href: "/", label: t("nav.home") },
-    { href: "/about", label: t("nav.about") },
-    { href: "/glory-share", label: t("nav.gloryShare") },
-    { href: "/bible-gallery", label: t("nav.bibleGallery") },
-    { href: "/daily-grace-snacks", label: t("nav.dailyGraceSnacks") },
-    { href: "/bible-gifts", label: t("nav.bibleGifts") },
-    { href: "/beyond-music", label: t("nav.beyondMusic") },
-    // { href: "/donate", label: t("nav.donate") },
-    { href: "/contact", label: t("nav.contact") },
-    // { href: "/signin", label: t("nav.signin") },
-  ];
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -67,7 +71,7 @@ export default function Navbar() {
           className={`${topGlowBorder} container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-background/30 dark:border-white/10 border-black/10`}
         >
           <div className="items-center hidden md:flex gap-6">
-            {routes.map((route) => (
+            {navRoutes.map((route) => (
               <Link
                 key={route.href}
                 href={route.href}
@@ -81,7 +85,7 @@ export default function Navbar() {
                     : ""
                 }`}
               >
-                {route.label}
+                {route.label(t)}
               </Link>
             ))}
           </div>
@@ -148,8 +152,8 @@ export default function Navbar() {
             className="fixed inset-0 z-50 font-serif md:hidden bg-background dark:bg-background/30 backdrop-blur-lg"
           >
             <div className="flex flex-col h-full px-6 pt-20 pb-10">
-              <div className="flex flex-col items-center justify-center gap-6 sm:gap-12">
-                {routes.map((route, index) => (
+              <div className="flex flex-col items-center justify-center gap-6 sm:gap-9">
+                {navRoutes.map((route, index) => (
                   <motion.div
                     key={route.href}
                     initial={{ opacity: 0, y: 20 }}
@@ -158,7 +162,7 @@ export default function Navbar() {
                   >
                     <Link
                       href={route.href}
-                      className={`text-2xl sm:text-5xl duration-300 transition-all font-medium  hover:text-primary ${
+                      className={`text-2xl sm:text-2xl duration-300 transition-all font-medium  hover:text-primary ${
                         pathname?.includes(route.href) && route.href !== "/"
                           ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                           : ""
@@ -168,7 +172,7 @@ export default function Navbar() {
                           : ""
                       }`}
                     >
-                      {route.label}
+                      {route.label(t)}
                     </Link>
                   </motion.div>
                 ))}
