@@ -3,6 +3,7 @@
 import Link from "next/link";
 import useTranslation from "../hooks/use-translation";
 import Logo from "./logo";
+import { navRoutes } from "./navbar";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -22,54 +23,18 @@ export default function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-medium">{t("footer.quickLinks")}</h3>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {t("nav.home")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {t("nav.about")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/bible-gallery"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {t("nav.bibleGallery")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/daily-grace-snacks"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {t("nav.dailyGraceSnacks")}
-                </Link>
-              </li>
-              {/* <li>
-                <Link
-                  href="/donate"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {t("nav.donate")}
-                </Link>
-              </li> */}
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {t("nav.contact")}
-                </Link>
-              </li>
+              {navRoutes.map((route) => {
+                return (
+                  <li>
+                    <Link
+                      href={route.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {route.label(t)}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div>
