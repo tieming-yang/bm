@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../../*.{js,ts,jsx,tsx,mdx}';
 
@@ -16,8 +16,7 @@
 }
 
 @theme {
-  --font-sans:
-    var(--font-eagle-lake), var(--font-yuji-mai), system-ui, sans-serif;
+  --font-sans: var(--font-eagle-lake), var(--font-yuji-mai), system-ui, sans-serif;
   --font-chinese: var(--font-yuji-mai), system-ui, sans-serif;
 
   --color-border: hsl(var(--border));
@@ -152,4 +151,8 @@
   .chinese-text {
     /* font-family: var(--font-noto-sans-tc), system-ui, sans-serif; */
   }
+}
+
+@utility text-primary-foreground-gradient {
+  @apply bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent;
 }
