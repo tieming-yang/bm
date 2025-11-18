@@ -1,0 +1,44 @@
+{
+  "bibleGifts": {
+    "badge": "Limited atelier collection",
+    "hero": {
+      "title": "Bible Gifts turns Scripture into heirloom art gifts you can hold.",
+      "subtitle": "Each piece is crafted with architectural metals, carved timber, and luminous inks so ministries, collectors, and families can carry the story of redemption into daily life.",
+      "ctaNote": "Our atelier releases every edition in timed capsules—request a catalog to preview them before they go public."
+    },
+    "breadcrumb": {
+      "works": "Works",
+      "current": "Bible Gifts"
+    },
+    "navigation": {
+      "overview": "Overview",
+      "collections": "Collections",
+      "customization": "Custom gifting"
+    },
+    "collections": {
+      "title": "Curated collections ready for exhibitions and gifting",
+      "description": "Select from museum-grade formats that travel easily between church lobbies, festivals, and collector homes.",
+      "lines": {
+        "metal": {
+          "title": "Illuminated Metal Scriptures",
+          "description": "Laser-etched copper and brass layered with translucent enamels for dramatic light play; perfect for gallery walls and large-format liturgies."
+        },
+        "wood": {
+          "title": "Carved Wood Icons",
+          "description": "Hand-carved hardwood panels with relief textures inspired by Genesis through Revelation, paired with accompanying devotionals."
+        },
+        "print": {
+          "title": "Textured Collector Albums",
+          "description": "Archival prints bound in artisan linen portfolios, each page treated with raised inks and QR-linked AR moments for immersive storytelling."
+        }
+      }
+    },
+    "customization": {
+      "title": "Co-create a gift expression for your ministry",
+      "message": "We partner with pastors, curators, and marketplace leaders to design limited runs, event gifts, and donor collections that echo your mission.",
+      "ctaPrimary": "Request a catalog",
+      "ctaSecondary": "Book a consultation",
+      "note": "Send us your event date or collector goals and we will curate samples, pricing, and delivery timelines."
+    }
+  }
+}
