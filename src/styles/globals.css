@@ -166,5 +166,5 @@
 }
 
 @utility bg-primary-gradient-50 {
-  @apply border-primary/50 bg-linear-to-br from-primary/50 via-background to-secondary/50 shadow-primary/10 backdrop-blur-xl;
+  @apply border-primary/50 bg-linear-to-br from-primary/50 via-background to-secondary/50 shadow-primary/10 backdrop-blur-lg;
 }
