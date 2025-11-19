@@ -160,3 +160,11 @@
 @utility text-primary-foreground-gradient {
   @apply bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent;
 }
+
+@utility bg-primary-gradient-10 {
+  @apply border-primary/20 bg-linear-to-br from-primary/10 via-background to-secondary/10 shadow-primary/10 backdrop-blur-2xl;
+}
+
+@utility bg-primary-gradient-50 {
+  @apply border-primary/50 bg-linear-to-br from-primary/50 via-background to-secondary/50 shadow-primary/10 backdrop-blur-xl;
+}
