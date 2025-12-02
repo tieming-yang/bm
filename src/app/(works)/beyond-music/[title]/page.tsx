@@ -1,9 +1,12 @@
 "use client";
 
+import { topGlowBorder } from "@/components/ui/button";
 import Song, { type Song as SongType } from "@/models/song";
 import { QueryKey } from "@/utils/query-keys";
 import { useQuery } from "@tanstack/react-query";
 import { use, useEffect, useState } from "react";
+import AudioPlayer from "../components/audio-player";
+import { sendEmailVerification } from "firebase/auth";
 
 export default function PlayerPage({ params }: { params: Promise<{ title: string }> }) {
   const { title } = use(params);
@@ -27,11 +30,12 @@ export default function PlayerPage({ params }: { params: Promise<{ title: string
   }, [songs]);
 
   return (
-    <div className="container px-4 py-32 mx-auto space-y-16 min-h-svh">
+    <div className="container px-4 py-16 mx-auto space-y-16 min-h-svh">
       {selectedSong && (
-        <div>
-          <h1>{selectedSong.title}</h1>
-          <audio controls src={selectedSong.fileUrl}></audio>
+        <div className="relative w-full">
+          <h1 className="text-3xl text-center">{selectedSong.title}</h1>
+
+          <AudioPlayer song={selectedSong} />
         </div>
       )}
     </div>
