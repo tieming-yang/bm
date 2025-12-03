@@ -165,6 +165,10 @@
   @apply border-primary/20 bg-linear-to-br from-primary/10 via-background to-secondary/10 shadow-primary/10 backdrop-blur-2xl;
 }
 
+@utility bg-primary-gradient-30 {
+  @apply border-primary/30 bg-linear-to-br from-primary/30 via-background to-secondary/30 shadow-primary/10 backdrop-blur-lg;
+}
+
 @utility bg-primary-gradient-50 {
   @apply border-primary/50 bg-linear-to-br from-primary/50 via-background to-secondary/50 shadow-primary/10 backdrop-blur-lg;
 }
