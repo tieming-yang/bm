@@ -18,12 +18,12 @@ export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
   { href: "/about", label: (t: TFunction<string, undefined>) => t("nav.about") },
   { href: "/glory-share", label: (t: TFunction<string, undefined>) => t("nav.gloryShare") },
+  { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
   { href: "/bible-gallery", label: (t: TFunction<string, undefined>) => t("nav.bibleGallery") },
   {
     href: "/daily-grace-snacks",
     label: (t: TFunction<string, undefined>) => t("nav.dailyGraceSnacks"),
   },
-  { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
   { href: "/bible-gifts", label: (t: TFunction<string, undefined>) => t("nav.bibleGifts") },
   { href: "/contact", label: (t: TFunction<string, undefined>) => t("nav.contact") },
   // { href: "/donate", label:(t: TFunction<string, undefined>) => t("nav.donate") },
