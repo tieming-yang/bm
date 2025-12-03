@@ -48,7 +48,7 @@ export default function ClientBeyondMusicPage() {
                 className=""
               >
                 <Link href={`/beyond-music/${encodeURIComponent(title)}`}>
-                  <p className="text-2xl font-mono text-center">{title}</p>
+                  <p className="text-2xl font-serif text-center">{title}</p>
                 </Link>
               </li>
             );
