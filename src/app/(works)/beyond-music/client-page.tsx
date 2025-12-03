@@ -12,6 +12,7 @@ import Loading from "@/app/loading";
 
 export default function ClientBeyondMusicPage() {
   const { t } = useTranslation("beyond-music");
+  const { t: tUI } = useTranslation("ui");
 
   const {
     data: songs,
@@ -28,8 +29,8 @@ export default function ClientBeyondMusicPage() {
   }
 
   if (error) {
-    toast.error(t("loading.error.title"), {
-      description: t("loading.error.message"),
+    toast.error(tUI("loading.error.title"), {
+      description: tUI("loading.error.message"),
     });
   }
 
