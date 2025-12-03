@@ -21,7 +21,7 @@ const Song = {
     const minutes = Math.floor(timestamp / 60)
     const seconds = Math.floor(timestamp % 60)
 
-    return `${minutes}:${seconds > 10 ? "" : 0}${seconds}`
+    return `${minutes}:${seconds >= 10 ? "" : 0}${seconds}`
   },
   formatLyrics: (rawLyrics: string): LyricLine[] => {
     const lyrics = rawLyrics.split("\n\n").reduce<LyricLine[]>((acc, fields) => {
