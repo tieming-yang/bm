@@ -39,7 +39,7 @@ export default function ClientBeyondMusicPage() {
         <ul>
           {songs.map((song) => {
             const { id, title, fileUrl } = song;
-            console.log(encodeURI(title), encodeURIComponent(title));
+
             return (
               <li
                 key={id}
