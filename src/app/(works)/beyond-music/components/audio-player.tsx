@@ -113,7 +113,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
   }, [song, activeLineIndex]);
 
   return (
-    <div className="relative w-full pb-50 pt-20">
+    <div className="relative w-full pb-50 pt-20 bg-linear-to-br from-primary/20 via-background to-secondary/20">
       <audio
         autoPlay
         ref={audioRef}
