@@ -216,6 +216,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           </div>
         </div>
 
+        {/* Left Contral */}
         <div className={`flex w-fit mx-auto gap-x-7 items-center justify-center h-16`}>
           <div className="flex gap-x-3">
             <Button
@@ -225,6 +226,10 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             >
               <ArrowLeft />
             </Button>
+          </div>
+
+          {/* Central Control */}
+          <div className="flex gap-x-5 items-center justify-center ">
             <Button
               variant={"default"}
               className="size-10 border-none rounded-full"
@@ -235,35 +240,31 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             >
               <ChevronFirstIcon />
             </Button>
-          </div>
+            <Button
+              variant={"default"}
+              className="size-15 border-none rounded-full"
+              onClick={() => {
+                if (!audioRef.current || playerStatus === "loading") {
+                  toast.warning("Loading");
+                  return;
+                }
 
-          <Button
-            variant={"default"}
-            className="size-15 border-none rounded-full"
-            onClick={() => {
-              if (!audioRef.current || playerStatus === "loading") {
-                toast.warning("Loading");
-                return;
-              }
-
-              if (playerStatus === "pause") {
-                audioRef.current.play();
-                setPlayerStatus("play");
-              } else if (playerStatus === "play") {
-                audioRef.current.pause();
-                setPlayerStatus("pause");
-              }
-            }}
-          >
-            {isLoading && <Loading isInlined />}
-            {playerStatus === "pause" ? (
-              <PlayIcon size={ICON_SIZE} />
-            ) : (
-              <PauseIcon size={ICON_SIZE} />
-            )}
-          </Button>
-
-          <div className="flex gap-x-3">
+                if (playerStatus === "pause") {
+                  audioRef.current.play();
+                  setPlayerStatus("play");
+                } else if (playerStatus === "play") {
+                  audioRef.current.pause();
+                  setPlayerStatus("pause");
+                }
+              }}
+            >
+              {isLoading && <Loading isInlined />}
+              {playerStatus === "pause" ? (
+                <PlayIcon size={ICON_SIZE} />
+              ) : (
+                <PauseIcon size={ICON_SIZE} />
+              )}
+            </Button>
             <Button
               variant={"default"}
               className="size-10 border-none rounded-full"
@@ -274,7 +275,10 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             >
               <ChevronLastIcon />
             </Button>
+          </div>
 
+          {/* Right Contral */}
+          <div className="flex gap-x-3">
             <Button
               variant={"default"}
               className={`${
