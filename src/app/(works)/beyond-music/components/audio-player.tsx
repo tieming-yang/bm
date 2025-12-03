@@ -182,8 +182,8 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         })}
       </ul>
 
-      <div id="controls" className="fixed bottom-20 inset-x-0 px-13 z-100">
-        <div className="flex flex-col gap-y-3">
+      <div id="controls" className="fixed bottom-20 inset-x-0 z-100">
+        <div className="flex flex-col gap-y-3 px-13 max-w-3xl mx-auto">
           <Input
             className={[
               "appearance-none bg-gray-300 rounded-full h-1 p-0",
@@ -215,7 +215,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           </div>
         </div>
 
-        <div className={`flex w-fit mx-auto gap-x-7 items-center justify-center h-16 px-12`}>
+        <div className={`flex w-fit mx-auto gap-x-7 items-center justify-center h-16`}>
           <div className="flex gap-x-3">
             <Button
               variant={"default"}
