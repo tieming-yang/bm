@@ -8,7 +8,7 @@ type Props = {
 function Logo({ children }: Props) {
   return (
     <Link href="/" className="flex items-center">
-      <Image src="/logos/logo.webp" alt="彼岸數位媒體" width={50} height={50} />
+      <Image src="/logos/logo.webp" alt="彼岸數位媒體" width={40} height={40} />
       {children}
     </Link>
   );
