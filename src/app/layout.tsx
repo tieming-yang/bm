@@ -13,6 +13,8 @@ import { Metadata } from "next";
 import _metadata from "./metadata";
 import Header from "@/components/header";
 
+import { GoogleAnalytics } from "@next/third-parties/google";
+
 const kings = Kings({
   weight: ["400"],
   subsets: ["latin"],
@@ -69,6 +71,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
         />
       </head>
+
+      <GoogleAnalytics gaId="G-R13X1H6G19" />
+
       <body>
         <ReactQueryProvider>
           <ThemeProvider
