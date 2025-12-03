@@ -11,6 +11,7 @@ import {
 } from "react";
 import { Button, topGlowBorder } from "@/components/ui/button";
 import {
+  ArrowLeft,
   ChevronFirstIcon,
   ChevronLastIcon,
   ChevronLeft,
@@ -219,10 +220,10 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           <div className="flex gap-x-3">
             <Button
               variant={"default"}
-              className="invisible pointer-events-none size-10 border-none rounded-full"
-              aria-hidden
+              className="size-10 border-none rounded-full"
+              onClick={() => router.push("/beyond-music")}
             >
-              <RepeatIcon />
+              <ArrowLeft />
             </Button>
             <Button
               variant={"default"}

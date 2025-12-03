@@ -28,10 +28,10 @@ export default function PlayerPage({ params }: { params: Promise<{ title: string
   }, [songs]);
 
   return (
-    <div className="container px-4 py-10 mx-auto space-y-16 min-h-svh">
+    <div className="container px-4 pb-10 mx-auto space-y-16 min-h-svh">
       {selectedSong && (
         <div className="relative w-full">
-          <header className="fixed mx-auto bg-primary-gradient-10 px-5 rounded-full border inset-x-0 backdrop-blur-3xl py-2 w-fit z-100">
+          <header className="fixed mx-auto px-5 inset-x-0 backdrop-blur-3xl py-3 w-full z-40">
             <h1 className="text-2xl text-center">{selectedSong.title}</h1>
           </header>
 

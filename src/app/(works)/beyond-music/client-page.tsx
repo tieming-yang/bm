@@ -35,7 +35,7 @@ export default function ClientBeyondMusicPage() {
   }
 
   return (
-    <div className="container px-4 pt-16 mx-auto space-y-16 min-h-svh">
+    <div className="container px-4 mx-auto space-y-16 min-h-svh">
       <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
         {t("beyondMusic.hero.title")}
       </h1>
