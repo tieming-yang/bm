@@ -276,7 +276,9 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
             <Button
               variant={"default"}
-              className="size-10 border-none rounded-full"
+              className={`${
+                loopMode === "none" && "bg-primary/50"
+              } size-10 border-none rounded-full`}
               onClick={() => {
                 if (loopMode === "none") {
                   setLoopMode("single");
