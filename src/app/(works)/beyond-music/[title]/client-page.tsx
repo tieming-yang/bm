@@ -30,7 +30,7 @@ export default function ClientPlayerPage({ title }: ClientPlayerPageProps) {
     <div className="container px-4 pb-10 mx-auto space-y-16 min-h-svh">
       {selectedSong && (
         <div className="relative w-full">
-          <header className="fixed mx-auto px-5 inset-x-0 backdrop-blur-3xl py-3 w-full z-40">
+          <header className="fixed mx-auto px-5 inset-x-0 bg-black/10 backdrop-blur-sm py-3 w-full z-40">
             <h1 className="text-2xl text-center">{selectedSong.title}</h1>
           </header>
 
