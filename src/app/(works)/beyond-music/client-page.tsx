@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import useTranslation from "@/hooks/use-translation";
 import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
@@ -35,8 +33,8 @@ export default function ClientBeyondMusicPage() {
   }
 
   return (
-    <div className="container px-4 mx-auto space-y-16 min-h-svh">
-      <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
+    <div className="container pt-3 px-4 mx-auto space-y-16 min-h-svh">
+      <h1 className="text-4xl text-center font-bold leading-tight tracking-tight text-balance md:text-5xl">
         {t("beyondMusic.hero.title")}
       </h1>
       {songs && (
@@ -47,10 +45,10 @@ export default function ClientBeyondMusicPage() {
             return (
               <li
                 key={id}
-                className="bg-primary-gradient-50 relative overflow-hidden border shadow-lg rounded-full py-3 shadow-primary/10"
+                className=""
               >
                 <Link href={`/beyond-music/${encodeURIComponent(title)}`}>
-                  <p className="text-xl text-center">{title}</p>
+                  <p className="text-2xl font-mono text-center">{title}</p>
                 </Link>
               </li>
             );
