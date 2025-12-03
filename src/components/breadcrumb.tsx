@@ -55,33 +55,37 @@ export function Breadcrumb() {
   };
 
   return (
-    <nav className="px-5 py-1 mx-auto font-serif text-sm rounded-full bg-slate-900/50 backdrop-blur-xl text-muted-foreground">
-      <ul className="flex space-x-2">
-        <li>
-          <button
-            onClick={() => router.push("/")}
-            className="hover:underline text-muted-foreground"
-          >
-            {t("nav.home")}
-          </button>
-        </li>
-        {segments.map((segment, index) => {
-          const isBookSegment = Books.order.includes(segment as Book);
-          const hasExcludes = ["profile"].includes(segment);
-          return (
-            <li key={index}>
-              <span className="text-gray-600 dark:text-gray-400">/ </span>
+    <>
+      {segments.includes("beyond-music") ? null : (
+        <nav className="px-5 py-1 mx-auto font-serif text-sm rounded-full bg-slate-900/50 backdrop-blur-xl text-muted-foreground">
+          <ul className="flex space-x-2">
+            <li>
               <button
-                onClick={() => handleNavigation(index)}
-                className="hover:underline text-primary-foreground"
-                disabled={isBookSegment || hasExcludes}
+                onClick={() => router.push("/")}
+                className="hover:underline text-muted-foreground"
               >
-                {translateSegment(segment)}
+                {t("nav.home")}
               </button>
             </li>
-          );
-        })}
-      </ul>
-    </nav>
+            {segments.map((segment, index) => {
+              const isBookSegment = Books.order.includes(segment as Book);
+              const hasExcludes = ["profile"].includes(segment);
+              return (
+                <li key={index}>
+                  <span className="text-gray-600 dark:text-gray-400">/ </span>
+                  <button
+                    onClick={() => handleNavigation(index)}
+                    className="hover:underline text-primary-foreground"
+                    disabled={isBookSegment || hasExcludes}
+                  >
+                    {translateSegment(segment)}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )}
+    </>
   );
 }
