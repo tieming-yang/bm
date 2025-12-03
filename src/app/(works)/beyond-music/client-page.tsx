@@ -7,6 +7,7 @@ import Song from "@/models/song";
 import Link from "next/link";
 import { toast } from "sonner";
 import Loading from "@/app/loading";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export default function ClientBeyondMusicPage() {
   const { t } = useTranslation("beyond-music");
@@ -43,11 +44,11 @@ export default function ClientBeyondMusicPage() {
             const { id, title, fileUrl } = song;
 
             return (
-              <li
-                key={id}
-                className=""
-              >
-                <Link href={`/beyond-music/${encodeURIComponent(title)}`}>
+              <li key={id} className="">
+                <Link
+                  href={`/beyond-music/${encodeURIComponent(title)}`}
+                  onClick={() => sendGAEvent("event", "selected song", { value: title })}
+                >
                   <p className="text-2xl font-serif text-center">{title}</p>
                 </Link>
               </li>
