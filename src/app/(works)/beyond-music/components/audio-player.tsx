@@ -164,7 +164,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             />
           ) : (
             <li
-              key={lineNumber}
+              key={timestamp}
               id={idFor(timestamp)}
               className={`transition-all duration-500 ${
                 isHighlight ? "text-primary-foreground-gradient font-bold" : "text-white/50"
