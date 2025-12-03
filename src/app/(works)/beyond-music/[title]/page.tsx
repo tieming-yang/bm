@@ -1,43 +1,7 @@
-"use client";
+import ClientPlayerPage from "./client-page";
 
-import Song, { type Song as SongType } from "@/models/song";
-import { QueryKey } from "@/utils/query-keys";
-import { useQuery } from "@tanstack/react-query";
-import { use, useEffect, useState } from "react";
-import AudioPlayer from "../components/audio-player";
+export default async function PlayerPage({ params }: { params: Promise<{ title: string }> }) {
+  const { title } = await params;
 
-export default function PlayerPage({ params }: { params: Promise<{ title: string }> }) {
-  const { title } = use(params);
-  const decodedTitle = decodeURIComponent(title);
-  const [selectedSong, setSelectedSong] = useState<SongType | null>(null);
-  const {
-    data: songs,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: [QueryKey.songs],
-    queryFn: () => Song.getAll(),
-    staleTime: Infinity,
-  });
-
-  useEffect(() => {
-    if (!songs) return;
-
-    const song = songs.find((item) => item.title === decodedTitle) ?? null;
-    setSelectedSong(song);
-  }, [songs]);
-
-  return (
-    <div className="container px-4 pb-10 mx-auto space-y-16 min-h-svh">
-      {selectedSong && (
-        <div className="relative w-full">
-          <header className="fixed mx-auto px-5 inset-x-0 backdrop-blur-3xl py-3 w-full z-40">
-            <h1 className="text-2xl text-center">{selectedSong.title}</h1>
-          </header>
-
-          <AudioPlayer song={selectedSong} />
-        </div>
-      )}
-    </div>
-  );
+  return <ClientPlayerPage title={title} />;
 }
