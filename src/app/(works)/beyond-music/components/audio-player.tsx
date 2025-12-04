@@ -35,7 +35,7 @@ function idFor(sec: number) {
 }
 
 function validateLoopMode(maybeLoopMode: string | null): maybeLoopMode is LoopMode {
-  return maybeLoopMode === "none" || maybeLoopMode === "one" || maybeLoopMode === "all";
+  return maybeLoopMode === "none" || maybeLoopMode === "single" || maybeLoopMode === "all";
 }
 
 export default function AudioPlayer(props: AudioPlayerProps) {
