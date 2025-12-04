@@ -113,7 +113,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
   }, [song, activeLineIndex]);
 
   return (
-    <div className="relative w-full pb-50 pt-20 bg-linear-to-br from-primary/20 via-background to-secondary/20">
+    <div className="relative w-full pb-50 pt-20 bg-linear-to-br from-primary/20 via-background to-secondary/20 flex flex-col items-center-safe">
       <audio
         autoPlay
         ref={audioRef}
@@ -141,7 +141,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
       <ul
         ref={lyricsContainerRef}
-        className="text-center font-serif text-xl flex flex-col gap-y-3 text-gray-400"
+        className="font-serif text-xl flex flex-col gap-y-3 text-gray-400"
       >
         {lyrics.map((lyric, index) => {
           const { lineNumber, timestamp, text } = lyric;
@@ -158,7 +158,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
                 audioRef.current.play();
                 setPlayerStatus("play");
               }}
-              className={`transition-all mx-auto duration-300 size-7 ${
+              className={`transition-all duration-300 size-7 ${
                 isHighlight ? "text-white animate-pulse" : "text-white/50"
               }`}
             />
