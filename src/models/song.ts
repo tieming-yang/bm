@@ -68,6 +68,18 @@ const Song = {
 
     return Math.round(Number(minutes) * 60 + Number(seconds));
   },
+
+  toShuffled: (songs: Song[]): Song[] => {
+    let shuffled = [...songs]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)) as number
+      
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+
+    return shuffled
+  },
+
   getAll: async (): Promise<Song[]> => {
     const res = await fetch(`${Config.baseUrl}/api/songs`, { cache: "force-cache" });
     if (!res.ok) {

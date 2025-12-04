@@ -1,12 +1,7 @@
 "use client";
 
 import Song, { type Song as SongType } from "@/models/song";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
@@ -17,6 +12,7 @@ import {
   PlayIcon,
   Repeat1Icon,
   RepeatIcon,
+  ShuffleIcon,
 } from "lucide-react";
 import Loading from "@/app/loading";
 import { toast } from "sonner";
@@ -24,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
 import { useRouter, useSearchParams } from "next/navigation";
+import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 
 type AudioPlayerProps = {
   song: SongType;
@@ -46,6 +43,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const maybeSelectedLoopMode = searchParams.get("lm");
+  const maybeIsShuffled = searchParams.get("s");
 
   const {
     data: songs,
@@ -67,6 +65,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
   const [loopMode, setLoopMode] = useState<LoopMode>(() =>
     validateLoopMode(maybeSelectedLoopMode) ? maybeSelectedLoopMode : "none"
   );
+  const [isShuffled, setIsShuffled] = useState(() => maybeIsShuffled === "true");
 
   const isLoading = playerStatus === "loading" || isSongsLoading;
 
@@ -77,11 +76,14 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
   const lyrics = Song.formatLyrics(song.lyrics);
   const currentSongIndex = songs && songs.findIndex((_song) => _song.title === song.title);
+  const shuffledSongs = songs && isShuffled ? Song.toShuffled(songs) : songs;
   const nextSong =
-    songs?.length && currentSongIndex != null ? songs[(currentSongIndex + 1) % songs.length] : null;
+    shuffledSongs?.length && currentSongIndex != null
+      ? shuffledSongs[(currentSongIndex + 1) % shuffledSongs.length]
+      : null;
   const prevSong =
-    songs?.length && currentSongIndex != null
-      ? songs[(currentSongIndex - 1 + songs.length) % songs.length]
+    shuffledSongs?.length && currentSongIndex != null
+      ? shuffledSongs[(currentSongIndex - 1 + shuffledSongs.length) % shuffledSongs.length]
       : null;
 
   const activeLineIndex = useMemo(() => {
@@ -108,6 +110,8 @@ export default function AudioPlayer(props: AudioPlayerProps) {
     }
   }, [song, activeLineIndex]);
 
+  const playerSettings = `?lm=${loopMode}&s=${isShuffled}`;
+
   return (
     <div className="relative flex flex-col w-full pt-20 pb-50 bg-linear-to-br from-primary/20 via-background to-secondary/20 items-center-safe">
       <audio
@@ -127,11 +131,9 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         onEnded={() => {
           if (!audioRef.current) return;
           if (loopMode === "single") return;
+          if (!nextSong) return;
 
-          if (loopMode === "all") {
-            if (!nextSong) return;
-            router.push(`/beyond-music/${encodeURIComponent(nextSong.title)}?lm=${loopMode}`);
-          }
+          router.push(`/beyond-music/${encodeURIComponent(nextSong.title)}${playerSettings}`);
         }}
       ></audio>
 
@@ -215,6 +217,15 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         {/* Left Contral */}
         <div className={`flex w-fit mx-auto gap-x-7 items-center justify-center h-16`}>
           <div className="flex gap-x-3">
+            {/* Placedholder for symmetry position */}
+            <Button
+              variant={"default"}
+              className="border-none rounded-full size-10 invisible cursor-none"
+              aria-hidden
+              onClick={() => router.push("/beyond-music")}
+            >
+              <ArrowLeft />
+            </Button>
             <Button
               variant={"default"}
               className="border-none rounded-full size-10"
@@ -231,14 +242,14 @@ export default function AudioPlayer(props: AudioPlayerProps) {
               className="border-none rounded-full size-10"
               onClick={() => {
                 if (!prevSong) return;
-                router.push(`/beyond-music/${encodeURIComponent(prevSong.title)}`);
+                router.push(`/beyond-music/${encodeURIComponent(prevSong.title)}${playerSettings}`);
               }}
             >
               <ChevronFirstIcon />
             </Button>
             <Button
               variant={"default"}
-              className="border-none rounded-full size-15"
+              className="border-none rounded-full size-15 relative"
               onClick={() => {
                 if (!audioRef.current || playerStatus === "loading") {
                   toast.warning("Loading");
@@ -266,7 +277,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
               className="border-none rounded-full size-10"
               onClick={() => {
                 if (!nextSong) return;
-                router.push(`/beyond-music/${encodeURIComponent(nextSong.title)}`);
+                router.push(`/beyond-music/${encodeURIComponent(nextSong.title)}${playerSettings}`);
               }}
             >
               <ChevronLastIcon />
@@ -297,6 +308,15 @@ export default function AudioPlayer(props: AudioPlayerProps) {
               ) : (
                 <RepeatIcon />
               )}
+            </Button>
+            <Button
+              variant={"default"}
+              className={`${!isShuffled && "bg-primary/50"} size-10 border-none rounded-full`}
+              onClick={() => {
+                setIsShuffled((prev) => !prev);
+              }}
+            >
+              {isShuffled ? <ShuffleIcon /> : <ShuffleIcon className="text-white/40" />}
             </Button>
           </div>
         </div>
