@@ -2,20 +2,16 @@
 
 import Song, { type Song as SongType } from "@/models/song";
 import {
-  AudioHTMLAttributes,
-  DetailedHTMLProps,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { Button, topGlowBorder } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
   ChevronFirstIcon,
   ChevronLastIcon,
-  ChevronLeft,
-  ChevronRight,
   Music,
   PauseIcon,
   PlayIcon,
@@ -113,7 +109,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
   }, [song, activeLineIndex]);
 
   return (
-    <div className="relative w-full pb-50 pt-20 bg-linear-to-br from-primary/20 via-background to-secondary/20 flex flex-col items-center-safe">
+    <div className="relative flex flex-col w-full pt-20 pb-50 bg-linear-to-br from-primary/20 via-background to-secondary/20 items-center-safe">
       <audio
         autoPlay
         ref={audioRef}
@@ -141,10 +137,10 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
       <ul
         ref={lyricsContainerRef}
-        className="font-serif text-xl flex flex-col gap-y-3 text-gray-400"
+        className="flex flex-col font-serif text-xl text-gray-400 gap-y-3"
       >
         {lyrics.map((lyric, index) => {
-          const { lineNumber, timestamp, text } = lyric;
+          const { timestamp, text } = lyric;
           const isHighlight = index === activeLineIndex;
 
           return text === "intro" ? (
@@ -183,8 +179,8 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         })}
       </ul>
 
-      <div id="controls" className="fixed bottom-20 inset-x-0 z-100">
-        <div className="flex flex-col gap-y-3 px-13 max-w-3xl mx-auto">
+      <div id="controls" className="fixed inset-x-0 bottom-20 z-100">
+        <div className="flex flex-col max-w-3xl mx-auto gap-y-3 px-13">
           <Input
             className={[
               "appearance-none bg-gray-300 rounded-full h-1 p-0",
@@ -210,7 +206,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             }}
           ></Input>
 
-          <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-300">
+          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
             <span>{formattedTimestamp}</span>
             <span>{formattedDuration}</span>
           </div>
@@ -221,7 +217,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           <div className="flex gap-x-3">
             <Button
               variant={"default"}
-              className="size-10 border-none rounded-full"
+              className="border-none rounded-full size-10"
               onClick={() => router.push("/beyond-music")}
             >
               <ArrowLeft />
@@ -229,10 +225,10 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           </div>
 
           {/* Central Control */}
-          <div className="flex gap-x-5 items-center justify-center ">
+          <div className="flex items-center justify-center gap-x-5 ">
             <Button
               variant={"default"}
-              className="size-10 border-none rounded-full"
+              className="border-none rounded-full size-10"
               onClick={() => {
                 if (!prevSong) return;
                 router.push(`/beyond-music/${encodeURIComponent(prevSong.title)}`);
@@ -242,7 +238,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             </Button>
             <Button
               variant={"default"}
-              className="size-15 border-none rounded-full"
+              className="border-none rounded-full size-15"
               onClick={() => {
                 if (!audioRef.current || playerStatus === "loading") {
                   toast.warning("Loading");
@@ -267,7 +263,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             </Button>
             <Button
               variant={"default"}
-              className="size-10 border-none rounded-full"
+              className="border-none rounded-full size-10"
               onClick={() => {
                 if (!nextSong) return;
                 router.push(`/beyond-music/${encodeURIComponent(nextSong.title)}`);
