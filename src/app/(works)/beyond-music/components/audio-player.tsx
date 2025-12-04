@@ -181,8 +181,8 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         })}
       </ul>
 
-      <div id="controls" className="fixed inset-x-0 bottom-20 z-100">
-        <div className="flex flex-col max-w-3xl mx-auto gap-y-3 px-13">
+      <div id="controls" className="fixed inset-x-0 bottom-20 z-50">
+        <div className="flex flex-col max-w-3xl mx-auto gap-y-3 px-3 sm:px-13">
           <Input
             className={[
               "appearance-none bg-gray-300 rounded-full h-1 p-0",
@@ -214,29 +214,31 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           </div>
         </div>
 
-        {/* Left Contral */}
-        <div className={`flex w-fit mx-auto gap-x-7 items-center justify-center h-16`}>
-          <div className="flex gap-x-3">
-            {/* Placedholder for symmetry position */}
-            <Button
+        <div className={`flex w-fit mx-auto gap-x-1 sm:gap-x-10 items-center justify-center h-16`}>
+          {/* Left Control */}
+          <div className="flex gap-x-3 sm:gap-x-5">
+            {/* <Button
               variant={"default"}
               className="border-none rounded-full size-10 invisible cursor-none"
               aria-hidden
               onClick={() => router.push("/beyond-music")}
             >
               <ArrowLeft />
-            </Button>
+            </Button> */}
+
             <Button
               variant={"default"}
-              className="border-none rounded-full size-10"
-              onClick={() => router.push("/beyond-music")}
+              className={`${!isShuffled && "bg-primary/50"} size-10 border-none rounded-full`}
+              onClick={() => {
+                setIsShuffled((prev) => !prev);
+              }}
             >
-              <ArrowLeft />
+              {isShuffled ? <ShuffleIcon /> : <ShuffleIcon className="text-white/40" />}
             </Button>
           </div>
 
           {/* Central Control */}
-          <div className="flex items-center justify-center gap-x-5 ">
+          <div className="flex items-center justify-center gap-x-3 sm:gap-x-7">
             <Button
               variant={"default"}
               className="border-none rounded-full size-10"
@@ -284,7 +286,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             </Button>
           </div>
 
-          {/* Right Contral */}
+          {/* Right Control */}
           <div className="flex gap-x-3">
             <Button
               variant={"default"}
@@ -308,15 +310,6 @@ export default function AudioPlayer(props: AudioPlayerProps) {
               ) : (
                 <RepeatIcon />
               )}
-            </Button>
-            <Button
-              variant={"default"}
-              className={`${!isShuffled && "bg-primary/50"} size-10 border-none rounded-full`}
-              onClick={() => {
-                setIsShuffled((prev) => !prev);
-              }}
-            >
-              {isShuffled ? <ShuffleIcon /> : <ShuffleIcon className="text-white/40" />}
             </Button>
           </div>
         </div>
