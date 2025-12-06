@@ -132,7 +132,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         onEnded={() => {
           if (!audioRef.current) return;
           if (loopMode === "single") {
-            sendGAEvent("event", "listen-to", { value: song.title });
+            sendGAEvent("event", "listening", { value: song.title });
             return;
           }
           if (!nextSong) return;
