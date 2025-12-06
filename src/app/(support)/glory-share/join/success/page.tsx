@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 
 import { stripe } from "@/lib/stripe";
-import { GloryShareSuccessContent } from "@/app/(support)/glory-share/success/glory-share-success-content";
+import { GloryShareSuccessContent } from "@/app/(support)/glory-share/join/success/glory-share-success-content";
 
 //TODO: Block Other user or guest access it
-export default async function JoinSuccessPage({ searchParams }: PageProps<"/glory-share/success">) {
+export default async function JoinSuccessPage({
+  searchParams,
+}: PageProps<"/glory-share/join/success">) {
   const { session_id } = await searchParams;
 
   const sessionId = Array.isArray(session_id) ? session_id[0] : session_id;
