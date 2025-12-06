@@ -47,7 +47,7 @@ export default function ClientBeyondMusicPage() {
               <li key={id} className="">
                 <Link
                   href={`/beyond-music/${encodeURIComponent(title)}`}
-                  onClick={() => sendGAEvent("event", "selected song", { value: title })}
+                  onClick={() => sendGAEvent("event", "listen-to", { value: title })}
                 >
                   <p className="font-serif text-2xl text-center">{title}</p>
                 </Link>
