@@ -1,57 +1,82 @@
+"use client";
+
+import Loading from "@/app/loading";
+import { Button } from "@/components/ui/button";
+import useProfile from "@/hooks/use-profile";
 import { cn } from "@/lib/utils";
+import Price from "@/models/prices";
+import { useMutation } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 const tiers = [
   {
-    name: "Monthly",
-    id: "tier-hobby",
+    name: "join.plans.lifeTime.title",
+    id: "tier-individuel",
     href: "#",
-    priceMonthly: "$7.7",
-    description: "The perfect plan if you're just getting started with our product.",
-    features: [
-      "25 products",
-      "Up to 10,000 subscribers",
-      "Advanced analytics",
-      "24-hour support response time",
-    ],
-    featured: false,
-  },
-  {
-    name: "Life Time",
-    id: "tier-enterprise",
-    href: "#",
-    priceMonthly: "$777",
-    description: "Dedicated support and infrastructure for your company.",
-    features: [
-      "Unlimited products",
-      "Unlimited subscribers",
-      "Advanced analytics",
-      "Dedicated support representative",
-      "Marketing automations",
-      "Custom integrations",
-    ],
+    price: Price.LIFE_TIME_PRICE,
+    description: "gloryShare.hero.description",
+    features: "gloryShare.membership.bullets",
     featured: true,
+    priceId: Price.getLiftTimePriceId(),
   },
-  {
-    name: "Yearly",
-    id: "tier-enterprise",
-    href: "#",
-    priceMonthly: "$77",
-    description: "Dedicated support and infrastructure for your company.",
-    features: [
-      "Unlimited products",
-      "Unlimited subscribers",
-      "Advanced analytics",
-    ],
-    featured: false,
-  },
+  // TODO: add subscribtion tiers
 ];
 
-// function cn(...classes: ) {
-//   return classes.filter(Boolean).join(' ')
-// }
-
 export default function PriceSection() {
+  const { t } = useTranslation("glory-share");
+  const { profile, isProfileLoading } = useProfile();
+  const router = useRouter();
+  const currentPathname = usePathname();
+  const searchParams = useSearchParams();
+  const canceled = searchParams.get("canceled");
+
+  useEffect(() => {
+    if (canceled) {
+      toast.info(t("gloryShare.toast.checkoutCanceled"));
+    }
+  }, [canceled, t]);
+
+  const joinMutation = useMutation<string, Error, { priceId: string }>({
+    mutationKey: ["glory-share", "checkout"],
+    mutationFn: async ({ priceId }) => {
+      const payload = { uid: profile!.uid, email: profile!.email, priceId };
+
+      const rawResponse = await fetch("/api/checkout_sessions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const response = await rawResponse.json().catch(() => ({}));
+      if (!rawResponse.ok) {
+        console.log(response);
+        throw new Error(response?.error ?? "Checkout session failed");
+      }
+
+      if (!response?.url) throw new Error("Missing checkout URL");
+      return response.url as string;
+    },
+    onSuccess: (url) => {
+      toast.success(t("gloryShare.toast.checkoutRedirect"));
+      window.location.href = url;
+    },
+    onError: (error) => {
+      console.error(error);
+      t("gloryShare.toast.checkoutError");
+    },
+  });
+
+  if (isProfileLoading) {
+    return <Loading />;
+  }
+
+  const joinedGloryShare = profile?.joinedGloryShare;
   return (
     <div className="relative isolate bg-gray-900 px-6 py-24 sm:py-32 lg:px-8">
       <div
@@ -67,90 +92,117 @@ export default function PriceSection() {
         />
       </div>
       <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-base/7 font-semibold text-primary-foreground-gradient">Pricing</h2>
+        <h2 className="text-base/7 font-semibold text-primary-foreground-gradient">
+          {t("join.hero.plan")}
+        </h2>
         <p className="mt-2 text-5xl font-semibold tracking-tight text-balance text-white sm:text-6xl">
-          Choose the right plan for you
+          {t("join.hero.title")}
         </p>
       </div>
       <p className="mx-auto mt-6 max-w-2xl text-center text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
-        Choose an affordable plan that’s packed with the best features for engaging your audience,
-        creating customer loyalty, and driving sales.
+        {t("join.hero.limitTimeOffer")}
       </p>
       <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl">
-        {tiers.map((tier, tierIdx) => (
-          <div
-            key={tier.id}
-            className={cn(
-              tier.featured ? "relative bg-gray-800" : "bg-white/2.5 sm:mx-8 lg:mx-0",
-              tier.featured
-                ? ""
-                : tierIdx === 0
-                ? "rounded-t-3xl sm:rounded-b-none lg:rounded-tr-none lg:rounded-bl-3xl"
-                : "sm:rounded-t-none lg:rounded-tr-3xl lg:rounded-bl-none",
-              "rounded-3xl p-8 ring-1 ring-white/10 sm:p-10"
-            )}
-          >
-            <h3
-              id={tier.id}
+        {tiers.map((tier, tierIdx) => {
+          const features = t(tier.features, { returnObjects: true }) as string[];
+          const isLifeTime = tier.name.includes("lifeTime");
+
+          return (
+            <div
+              key={tier.id}
               className={cn(
-                tier.featured ? "text-primary-foreground-gradient" : "text-white",
-                "text-base/7 font-semibold"
+                tier.featured ? "relative bg-gray-800" : "bg-white/2.5 sm:mx-8 lg:mx-0",
+                tier.featured
+                  ? ""
+                  : tierIdx === 0
+                  ? "rounded-t-3xl sm:rounded-b-none lg:rounded-tr-none lg:rounded-bl-3xl"
+                  : "sm:rounded-t-none lg:rounded-tr-3xl lg:rounded-bl-none",
+                "rounded-3xl p-8 ring-1 ring-white/10 sm:p-10"
               )}
             >
-              {tier.name}
-            </h3>
-            <p className="mt-4 flex items-baseline gap-x-2">
-              <span
+              <h3
+                id={tier.id}
                 className={cn(
-                  tier.featured ? "text-white" : "text-white",
-                  "text-5xl font-semibold tracking-tight"
+                  tier.featured ? "text-primary-foreground-gradient" : "text-white",
+                  "text-base/7 font-semibold"
                 )}
               >
-                {tier.priceMonthly}
-              </span>
-              <span className={cn(tier.featured ? "text-gray-400" : "text-gray-400", "text-base")}>
-                /month
-              </span>
-            </p>
-            <p
-              className={cn(tier.featured ? "text-gray-300" : "text-gray-300", "mt-6 text-base/7")}
-            >
-              {tier.description}
-            </p>
-            <ul
-              role="list"
-              className={cn(
-                tier.featured ? "text-gray-300" : "text-gray-300",
-                "mt-8 space-y-3 text-sm/6 sm:mt-10"
+                {t(tier.name)}
+              </h3>
+              <p className="mt-4 flex items-baseline gap-x-2">
+                <span
+                  className={cn(
+                    tier.featured ? "text-white" : "text-white",
+                    "text-5xl font-semibold tracking-tight"
+                  )}
+                >
+                  ${tier.price}
+                </span>
+                <span
+                  className={cn(
+                    tier.featured ? "text-gray-400" : "text-gray-400",
+                    `text-base ${isLifeTime && "hidden"}`
+                  )}
+                >
+                  /month
+                </span>
+              </p>
+              <p
+                className={cn(
+                  tier.featured ? "text-gray-300" : "text-gray-300",
+                  "mt-6 text-base/7"
+                )}
+              >
+                {t(tier.description)}
+              </p>
+              <ul
+                role="list"
+                className={cn(
+                  tier.featured ? "text-gray-300" : "text-gray-300",
+                  "mt-8 space-y-3 text-sm/6 sm:mt-10"
+                )}
+              >
+                {features.map((feature) => (
+                  <li key={feature} className="flex gap-x-3">
+                    <CheckIcon
+                      aria-hidden="true"
+                      className={cn(
+                        tier.featured
+                          ? "text-primary-foreground-gradient"
+                          : "text-primary-foreground-gradient",
+                        "h-6 w-5 flex-none"
+                      )}
+                    />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              {joinedGloryShare ? (
+                <p className="text-2xl text-center mt-5">
+                  {t("gloryShare.hero.primaryCtaAfterJoin")}
+                </p>
+              ) : (
+                <Button
+                  size="lg"
+                  className="px-8 rounded-full mx-auto w-full mt-5"
+                  onClick={() => {
+                    if (!profile) {
+                      toast.warning(t("gloryShare.toast.requestSignIn"));
+                      router.push(`/signin?redirectTo=${currentPathname}`);
+                      return;
+                    }
+
+                    joinMutation.mutate({ priceId: tier.priceId });
+                  }}
+                >
+                  {joinMutation.isPending
+                    ? t("gloryShare.hero.processingCta")
+                    : t("gloryShare.hero.primaryCta")}
+                </Button>
               )}
-            >
-              {tier.features.map((feature) => (
-                <li key={feature} className="flex gap-x-3">
-                  <CheckIcon
-                    aria-hidden="true"
-                    className={cn(
-                      tier.featured ? "text-primary-foreground-gradient" : "text-primary-foreground-gradient",
-                      "h-6 w-5 flex-none"
-                    )}
-                  />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            <a
-              href={tier.href}
-              aria-describedby={tier.id}
-              className={cn(
-                tier.featured
-                  ? "bg-indigo-500 text-white hover:bg-indigo-400 focus-visible:outline-indigo-500"
-                  : "bg-white/10 text-white inset-ring inset-ring-white/5 hover:bg-white/20 focus-visible:outline-white/75",
-                "mt-8 block rounded-md px-3.5 py-2.5 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 sm:mt-10"
-              )}
-            >
-              Get started today
-            </a>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

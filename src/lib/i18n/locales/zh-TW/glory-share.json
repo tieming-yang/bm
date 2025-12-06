@@ -8,14 +8,14 @@
       "processingCta": "串接結帳中…",
       "secondaryCta": "了解奉獻計畫",
       "lifetimeLabel": "終身同行",
-      "lifetimeDescription": "只需77 美元（未稅），便可終身參與這項永恆的藝術事工奉獻。",
+      "lifetimeDescription": "只需777 美元（未稅），便可終身參與這項永恆的藝術事工奉獻。",
       "primaryCtaAfterJoin": "您已是榮耀成員，感謝您的同行！",
       "closeGloryShare": "目前榮耀成員數已滿，請靜候下次開放，感謝您的支持！"
     },
     "benefits": [
       {
         "title": "終身榮耀份額",
-        "description": "一次奉獻，終身同行。77 美元（未稅）起成為榮耀成員，擁有永久支持權與專屬徽章。"
+        "description": "一次奉獻，終身同行。777 美元（未稅）起成為榮耀成員，擁有永久支持權與專屬徽章。"
       },
       {
         "title": "屬靈使命同行",
@@ -139,5 +139,18 @@
   },
   "gallary": {
     "joinToEnjoyArtwork": "加入榮耀成員，欣賞已創作的所有聖經畫作。"
+  },
+  "join": {
+    "hero": {
+      "plan": "加入方式",
+      "title": "選擇適合您的奉獻方式",
+      "limitTimeOffer": "目前限時開放終身榮耀份額。一次奉獻，終身享受。"
+    },
+    "plans": {
+      "lifeTime": {
+        "title": "終身享受"
+      }
+    }
   }
+
 }

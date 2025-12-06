@@ -66,38 +66,6 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
 
   const joinedGloryShare = profile?.joinedGloryShare;
 
-  const joinMutation = useMutation({
-    mutationKey: ["glory-share", "checkout"],
-    mutationFn: async () => {
-      const payload = { uid: profile!.uid, email: profile!.email };
-
-      const rawResponse = await fetch("/api/checkout_sessions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const response = await rawResponse.json().catch(() => ({}));
-      if (!rawResponse.ok) {
-        console.log(response);
-        throw new Error(response?.error ?? "Checkout session failed");
-      }
-
-      if (!response?.url) throw new Error("Missing checkout URL");
-      return response.url as string;
-    },
-    onSuccess: (url) => {
-      toast.success(t("gloryShare.toast.checkoutRedirect"));
-      window.location.href = url;
-    },
-    onError: (error) => {
-      console.error(error);
-      t("gloryShare.toast.checkoutError");
-    },
-  });
-
   const benefits = (
     (t("gloryShare.benefits", { returnObjects: true }) as BenefitContent[]) ?? []
   ).map((benefit, index) => ({
@@ -158,7 +126,6 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
                 <Button
                   size="lg"
                   className="px-8 rounded-full"
-                  disabled={joinMutation.isPending}
                   onClick={() => {
                     if (!profile) {
                       toast.warning(t("gloryShare.toast.requestSignIn"));
@@ -166,12 +133,10 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
                       return;
                     }
 
-                    joinMutation.mutate();
+                    router.push("/glory-share/join");
                   }}
                 >
-                  {joinMutation.isPending
-                    ? t("gloryShare.hero.processingCta")
-                    : t("gloryShare.hero.primaryCta")}
+                  {t("gloryShare.hero.primaryCta")}
                 </Button>
               )
             ) : (

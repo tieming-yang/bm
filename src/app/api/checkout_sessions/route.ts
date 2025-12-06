@@ -3,10 +3,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
-import { GLORY_SHARE_PRICE, GLORY_SHARE_PRICE_TEST, stripe } from "@/lib/stripe";
+import { stripe } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
-  const { uid, email } = await request.json();
+  const { uid, email, priceId } = await request.json();
+  if (!priceId || !uid) {
+    return NextResponse.json({ error: "Missing required fields: uid and priceId" }),
+      { status: 400 }
+  }
 
   try {
     const headersList = await headers();
@@ -16,17 +20,18 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          price: GLORY_SHARE_PRICE,
+          price: priceId,
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${origin}/glory-share/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/glory-share?canceled=true`,
+      success_url: `${origin}/glory-share/join/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/glory-share/join?canceled=true`,
       automatic_tax: { enabled: true },
       metadata: {
         uid,
         email,
+        priceId
       },
     });
     if (!session.url) throw new Error("Failed to create checkout session");

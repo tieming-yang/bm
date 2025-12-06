@@ -8,14 +8,14 @@
       "processingCta": "Connecting to Checkout…",
       "secondaryCta": "Learn About the Giving Plan",
       "lifetimeLabel": "Lifetime Share",
-      "lifetimeDescription": "For just $77 (before tax), you can make a lifelong contribution to this eternal artistic ministry.",
+      "lifetimeDescription": "For just $777 (before tax), you can make a lifelong contribution to this eternal artistic ministry.",
       "primaryCtaAfterJoin": "You are now a Glory Share member — thank you for walking this journey with us!",
       "closeGloryShare": "Membership for Glory Share is currently full. Please stay tuned for the next enrollment period — thank you for your support!"
     },
     "benefits": [
       {
         "title": "Lifetime Glory Portion",
-        "description": "A single offering, a lifelong journey. Enter as an Glory Share member starting at 77 USD and receive permanent support privileges and an exclusive insignia."
+        "description": "A single offering, a lifelong journey. Enter as an Glory Share member starting at 777 USD and receive permanent support privileges and an exclusive insignia."
       },
       {
         "title": "Walking the Holy Mission",
@@ -150,5 +150,17 @@
   },
   "gallary": {
     "joinToEnjoyArtwork": "Join Glory Share to enjoy all the Bible artworks we’ve created."
+  },
+  "join": {
+    "hero": {
+      "plan": "Join Options",
+      "title": "Choose the giving plan that fits you",
+      "limitTimeOffer": "Lifetime Glory Share is open for a limited time. One offering, lifetime benefits."
+    },
+    "plans": {
+      "lifeTime": {
+        "title": "Lifetime access"
+      }
+    }
   }
 }
