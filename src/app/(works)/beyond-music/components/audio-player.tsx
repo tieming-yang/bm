@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
 import { useRouter, useSearchParams } from "next/navigation";
 import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
+import { sendGAEvent } from "@next/third-parties/google";
 
 type AudioPlayerProps = {
   song: SongType;
@@ -130,7 +131,10 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         }}
         onEnded={() => {
           if (!audioRef.current) return;
-          if (loopMode === "single") return;
+          if (loopMode === "single") {
+            sendGAEvent("event", "listen-to", { value: song.title });
+            return;
+          }
           if (!nextSong) return;
 
           router.push(`/beyond-music/${encodeURIComponent(nextSong.title)}${playerSettings}`);
