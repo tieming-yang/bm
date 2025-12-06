@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "stripe:local:webhook": "stripe listen --forward-to localhost:3000/api/webhook/stripe",
+    "stripe:trigger:webhook": "stripe trigger checkout.session.completed --add checkout_session:metadata.uid=1OQnurJ4zEfDN2HGG1VU4DsEgkk1"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
