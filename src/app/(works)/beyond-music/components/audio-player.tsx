@@ -181,8 +181,8 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         })}
       </ul>
 
-      <div id="controls" className="fixed inset-x-0 bottom-20 z-50">
-        <div className="flex flex-col max-w-3xl mx-auto gap-y-3 px-3 sm:px-13">
+      <div id="controls" className="fixed inset-x-0 z-50 bottom-20">
+        <div className="flex flex-col max-w-3xl px-3 mx-auto gap-y-3 sm:px-13">
           <Input
             className={[
               "appearance-none bg-gray-300 rounded-full h-1 p-0",
@@ -219,7 +219,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           <div className="flex gap-x-3 sm:gap-x-5">
             {/* <Button
               variant={"default"}
-              className="border-none rounded-full size-10 invisible cursor-none"
+              className="invisible border-none rounded-full size-10 cursor-none"
               aria-hidden
               onClick={() => router.push("/beyond-music")}
             >
@@ -251,7 +251,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             </Button>
             <Button
               variant={"default"}
-              className="border-none rounded-full size-15 relative"
+              className="relative border-none rounded-full size-15"
               onClick={() => {
                 if (!audioRef.current || playerStatus === "loading") {
                   toast.warning("Loading");

@@ -332,7 +332,7 @@ export function ImageGallery({
                 <div className="flex flex-col w-full">
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-center">
                     {/* Image Carousel */}
-                    <section className="sticky overflow-x-hidden top-0 w-full place-self-center">
+                    <section className="sticky top-0 w-full overflow-x-hidden place-self-center">
                       <Carousel
                         opts={{
                           loop: true,

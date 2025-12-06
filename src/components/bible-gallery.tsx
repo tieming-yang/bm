@@ -58,7 +58,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
           <Link href={"/glory-share"}>
             <Button
               variant={"outline"}
-              className="py-10 md:px-5 font-serif rounded-full text-secondary"
+              className="py-10 font-serif rounded-full md:px-5 text-secondary"
             >
               <h2 className="text-md md:text-xl text-wrap">
                 {tGloryShare("gallary.joinToEnjoyArtwork")}

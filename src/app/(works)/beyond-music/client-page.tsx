@@ -34,8 +34,8 @@ export default function ClientBeyondMusicPage() {
   }
 
   return (
-    <div className="container min-w-svw bg-primary-gradient-30 pt-3 pb-50 px-4 mx-auto space-y-16 min-h-svh">
-      <h1 className="text-4xl text-center leading-tight tracking-tight text-balance md:text-5xl">
+    <div className="container px-4 pt-3 mx-auto min-w-svw bg-primary-gradient-30 pb-50 space-y-16 min-h-svh">
+      <h1 className="text-4xl leading-tight tracking-tight text-center text-balance md:text-5xl">
         {t("beyondMusic.hero.title")}
       </h1>
       {songs && (
@@ -49,7 +49,7 @@ export default function ClientBeyondMusicPage() {
                   href={`/beyond-music/${encodeURIComponent(title)}`}
                   onClick={() => sendGAEvent("event", "selected song", { value: title })}
                 >
-                  <p className="text-2xl font-serif text-center">{title}</p>
+                  <p className="font-serif text-2xl text-center">{title}</p>
                 </Link>
               </li>
             );

@@ -78,10 +78,10 @@ export default function PriceSection() {
 
   const joinedGloryShare = profile?.joinedGloryShare;
   return (
-    <div className="relative isolate bg-gray-900 px-6 py-24 sm:py-32 lg:px-8">
+    <div className="relative px-6 py-24 bg-gray-900 isolate sm:py-32 lg:px-8">
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl"
+        className="absolute inset-x-0 overflow-hidden -top-3 -z-10 transform-gpu px-36 blur-3xl"
       >
         <div
           style={{
@@ -91,18 +91,18 @@ export default function PriceSection() {
           className="mx-auto aspect-1155/678 w-288.75 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-20"
         />
       </div>
-      <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-base/7 font-semibold text-primary-foreground-gradient">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="font-semibold text-base/7 text-primary-foreground-gradient">
           {t("join.hero.plan")}
         </h2>
-        <p className="mt-2 text-5xl font-semibold tracking-tight text-balance text-white sm:text-6xl">
+        <p className="mt-2 text-5xl font-semibold tracking-tight text-white text-balance sm:text-6xl">
           {t("join.hero.title")}
         </p>
       </div>
-      <p className="mx-auto mt-6 max-w-2xl text-center text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
+      <p className="max-w-2xl mx-auto mt-6 text-lg font-medium text-center text-gray-400 text-pretty sm:text-xl/8">
         {t("join.hero.limitTimeOffer")}
       </p>
-      <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl">
+      <div className="items-center max-w-lg mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl">
         {tiers.map((tier, tierIdx) => {
           const features = t(tier.features, { returnObjects: true }) as string[];
           const isLifeTime = tier.name.includes("lifeTime");
@@ -129,7 +129,7 @@ export default function PriceSection() {
               >
                 {t(tier.name)}
               </h3>
-              <p className="mt-4 flex items-baseline gap-x-2">
+              <p className="flex items-baseline mt-4 gap-x-2">
                 <span
                   className={cn(
                     tier.featured ? "text-white" : "text-white",
@@ -178,13 +178,13 @@ export default function PriceSection() {
                 ))}
               </ul>
               {joinedGloryShare ? (
-                <p className="text-2xl text-center mt-5">
+                <p className="mt-5 text-2xl text-center">
                   {t("gloryShare.hero.primaryCtaAfterJoin")}
                 </p>
               ) : (
                 <Button
                   size="lg"
-                  className="px-8 rounded-full mx-auto w-full mt-5"
+                  className="w-full px-8 mx-auto mt-5 rounded-full"
                   onClick={() => {
                     if (!profile) {
                       toast.warning(t("gloryShare.toast.requestSignIn"));
