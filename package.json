@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "stripe:local:webhook": "stripe listen --forward-to localhost:3000/api/webhook/stripe",
-    "stripe:trigger:webhook": "stripe trigger checkout.session.completed --add checkout_session:metadata.uid=1OQnurJ4zEfDN2HGG1VU4DsEgkk1"
+    "stripe:trigger:webhook": "stripe trigger checkout.session.completed --add checkout_session:metadata.uid=1OQnurJ4zEfDN2HGG1VU4DsEgkk1",
+    "delete:glory-share": "pnpm dlx tsx src/lib/firebase/scripts/deleteGloryShare.ts"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -87,6 +88,7 @@
     "@types/node": "^22.15.31",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "dotenv": "^17.2.3",
     "postcss": "^8.5.5",
     "tailwindcss": "^4.1.16",
     "typescript": "^5.8.3"
