@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import useProfile from "@/hooks/use-profile";
 import { cn } from "@/lib/utils";
 import Price from "@/models/prices";
+import Profile from "@/models/profiles";
 import { useMutation } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -76,7 +77,7 @@ export default function PriceSection() {
     return <Loading />;
   }
 
-  const joinedGloryShare = profile?.joinedGloryShare;
+  const isGloryShareMember = Profile.isGloryShareMember(profile)
   return (
     <div className="relative px-6 py-24 bg-gray-900 isolate sm:py-32 lg:px-8">
       <div
@@ -177,7 +178,7 @@ export default function PriceSection() {
                   </li>
                 ))}
               </ul>
-              {joinedGloryShare ? (
+              {isGloryShareMember ? (
                 <p className="mt-5 text-2xl text-center">
                   {t("gloryShare.hero.primaryCtaAfterJoin")}
                 </p>

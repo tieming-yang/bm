@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe, STRIPE_WEBHOOK_SECRET } from "@/lib/stripe";
 import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
+import { MemberType } from "@/models/profiles";
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("stripe-signature");
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     try {
       await firebaseAdmin.db.doc(`profiles/${uid}`).set(
         {
-          joinedGloryShare: true,
+          memberType: MemberType.LiftTime,
           gloryShare: {
             joinedAt: FieldValue.serverTimestamp(),
             sessionId: session.id,

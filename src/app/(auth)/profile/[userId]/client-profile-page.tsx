@@ -31,7 +31,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   }
 
   const isOwnProfile = authUser?.uid === profile.uid;
-  const isGloryShareMember = Boolean(profile.joinedGloryShare);
+  const isGloryShareMember = Profile.isGloryShareMember(profile)
   const gloryShare = profile.gloryShare;
   const locale = currentLanguage === "zh-TW" ? "zh-TW" : "en-US";
 

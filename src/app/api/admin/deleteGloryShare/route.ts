@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
+import { MemberType } from "@/models/profiles";
 
 const ADMIN_KEY = "NAEBO777!!!"
 
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await firebaseAdmin.db.doc(`profiles/${uid}`).update({
-      joinedGloryShare: false,
+      memberType: MemberType.Free,
       gloryShare: FieldValue.delete(),
       customerDetails: FieldValue.delete(),
     });

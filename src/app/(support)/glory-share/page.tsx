@@ -25,6 +25,7 @@ import useAuthUser from "@/hooks/use-auth-user";
 import Loading from "@/app/loading";
 import useProfile from "@/hooks/use-profile";
 import { useRemoteFlags } from "@/lib/firebase/hooks/use-remote-flags";
+import Profile from "@/models/profiles";
 
 type BenefitContent = { title: string; description: string };
 type MissionHighlightContent = BenefitContent;
@@ -64,7 +65,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
     }
   }, [canceled, t]);
 
-  const joinedGloryShare = profile?.joinedGloryShare;
+  const isGloryShareMember = Profile.isGloryShareMember(profile);
 
   const benefits = (
     (t("gloryShare.benefits", { returnObjects: true }) as BenefitContent[]) ?? []
@@ -120,7 +121,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
           <div className="flex flex-wrap justify-center-safe gap-4">
             {isGloryShareJoinable ? (
-              joinedGloryShare ? (
+              isGloryShareMember ? (
                 <p className="text-xl">{t("gloryShare.hero.primaryCtaAfterJoin")}</p>
               ) : (
                 <Button

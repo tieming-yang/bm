@@ -261,8 +261,9 @@ export function ImageGallery({
     });
   };
 
-  const showContentBlock = (index) => !profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS;
-
+  const isFreeMember = !profile || profile?.memberType === "free";
+  const showContentBlock = (index) => isFreeMember && index > MAXIMUM_FREE_ARTS;
+  console.log({isFreeMember})
   return (
     <>
       {/* Gallery Grid */}
@@ -283,7 +284,7 @@ export function ImageGallery({
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
                   <Thumbnail
-                    isBlur={(!profile?.joinedGloryShare && index > MAXIMUM_FREE_ARTS) ?? true}
+                    isBlur={showContentBlock(index)}
                     artwork={artwork}
                     onClick={handleImageClick}
                     router={router}

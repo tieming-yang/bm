@@ -24,7 +24,7 @@ type ProfileInput = {
 };
 
 type Profile = ProfileInput & {
-  joinedGloryShare: boolean;
+  memberType: MemberType;
   gloryShareId?: string;
   totalContributed: number;
   newsletterOptIn: boolean;
@@ -39,6 +39,13 @@ type Profile = ProfileInput & {
     email: string;
   };
 };
+export const MemberType = {
+  Free: "free",
+  Monthly: "monthly",
+  Yearly: "yearly",
+  LiftTime: "lifeTime",
+} as const;
+export type MemberType = (typeof MemberType)[keyof typeof MemberType];
 
 const Profiles = {
   getCollection(uid: string) {
@@ -65,7 +72,7 @@ const Profile = {
       profileRef,
       {
         ...values,
-        joinedGloryShare: false,
+        memberType: MemberType.Free,
         totalContributed: 0,
         newsletterOptIn: true,
         createdAt: serverTimestamp(),
@@ -88,12 +95,16 @@ const Profile = {
     return snap.exists();
   },
 
-  async joinedGloryShare(uid: string): Promise<boolean> {
-    const snap = await Profile.getSnap(uid);
-    if (!snap.exists()) return false;
-    const data = snap.data();
+  /**
+   * 
+   * @since get profile will be a Promise which can't use directly inside a component,
+   * I think pass a profile will be the easiest way to do it.
+   */
+  isGloryShareMember(profile: Profile | undefined): boolean {
+    if (!profile) return false;
+    if (!profile.memberType) return false;
 
-    return Boolean(data.joinedGloryShare);
+    return profile.memberType !== "free";
   },
 };
 

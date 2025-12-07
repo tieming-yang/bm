@@ -12,6 +12,7 @@ import { useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BibleArtwork } from "@/types/bible-artwork";
+import Profile from "@/models/profiles";
 
 export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
@@ -37,6 +38,8 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
     });
   }
 
+  const isGloryShareMember = Profile.isGloryShareMember(profile);
+
   return (
     <div className="relative z-50">
       <motion.div
@@ -54,7 +57,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
           </p>
         </div>
 
-        {!profile?.joinedGloryShare && (
+        {!isGloryShareMember && (
           <Link href={"/glory-share"}>
             <Button
               variant={"outline"}
@@ -76,7 +79,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
             artworks={artworks}
             infiniteScroll={false}
             book={book}
-            isGloryShareMember={profile?.joinedGloryShare ?? false}
+            isGloryShareMember={isGloryShareMember}
           />
         )
       )}
