@@ -40,20 +40,6 @@ type Profile = ProfileInput & {
   };
 };
 
-export type Donation = {
-  id: string;
-  amount: number;
-  currency: string;
-  createdAt: Timestamp;
-  project: string;
-  artworkId?: string;
-  paymentMethod: string;
-  transactionId: string;
-  status: "pending" | "succeeded" | "failed";
-  message?: string;
-  receiptURL?: string;
-};
-
 const Profiles = {
   getCollection(uid: string) {
     return collection(Profile.getRef(uid), "profiles");
@@ -108,24 +94,6 @@ const Profile = {
     const data = snap.data();
 
     return Boolean(data.joinedGloryShare);
-  },
-
-  async addDonation(uid: string, donation: Omit<Donation, "id" | "createdAt">) {
-    const col = Profiles.getCollection(uid);
-    const docRef = doc(col);
-    await setDoc(docRef, {
-      ...donation,
-      createdAt: serverTimestamp(),
-    });
-  },
-
-  async listDonations(uid: string): Promise<Donation[]> {
-    const col = Profiles.getCollection(uid);
-    const snaps = await getDocs(query(col, where("status", "==", "succeeded")));
-    return snaps.docs.map((d) => ({
-      id: d.id,
-      ...(d.data() as any),
-    })) as Donation[];
   },
 };
 
