@@ -2,25 +2,35 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
     function isAdmin() {
       return request.auth != null && request.auth.token.admin == true;
     }
-
-    match /donators/{uid} {
-      allow read: if request.auth.uid == uid;
-      allow update: if request.auth.uid == uid;      // for newsletterOptIn, etc.
-
-      match /donations/{donationId} {
-        allow create: if request.auth.uid == uid;
-        allow read: if request.auth.uid == uid;
-      }
+    function isSelf(uid) {
+      return request.auth != null && request.auth.uid == uid;
     }
-    //TODO: user can't update glory share membership
+    function allowedProfileFields() {
+      return ['displayName', 'newsletterOptIn', 'photoURL'];
+    }
+
     match /profiles/{uid} {
-      allow create: if (request.auth != null && request.auth.uid == uid) || isAdmin();
-      allow update: if (request.auth != null && request.auth.uid == uid) || isAdmin();
-      allow read;
+      allow read: if true;
+
+      allow create: if isAdmin() ||
+        (isSelf(uid) && request.resource.data.keys().hasOnly(allowedProfileFields()));
+
+      allow update: if isAdmin() ||
+        (isSelf(uid) &&
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowedProfileFields()));
+      
+      allow delete: if isAdmin()
+
+      // Block user writes to subcollections like transactions/subscriptions
+      match /{sub=**} {
+        allow read: if isSelf(uid) || isAdmin();
+        allow write: if isAdmin();
+        allow update: if isAdmin();
+        allow delete: if isAdmin();
+      }
     }
   }
 }
