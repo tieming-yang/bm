@@ -1,0 +1,36 @@
+{
+  "id": "il_1SyJlfCSXuz1o7AS3Sv8sl1a",
+  "object": "line_item",
+  "amount": 770,
+  "currency": "usd",
+  "description": "1 ? Monthly Glory Share (at $7.70 / month)",
+  "discount_amounts": [],
+  "discountable": true,
+  "discounts": [],
+  "invoice": "in_1SbqGHCSXuz1o7ASL3SHkNxb",
+  "livemode": false,
+  "metadata": {},
+  "parent": {
+    "invoice_item_details": null,
+    "subscription_item_details": {
+      "invoice_item": null,
+      "proration": false,
+      "proration_details": { "credited_items": null },
+      "subscription": "sub_1SbqDfCSXuz1o7ASep3VS3lH",
+      "subscription_item": "si_TYy9ywTTH3T0WF"
+    },
+    "type": "subscription_item_details"
+  },
+  "period": { "end": 1772921659, "start": 1770502459 },
+  "pretax_credit_amounts": [],
+  "pricing": {
+    "price_details": {
+      "price": "price_1Sbq3ICSXuz1o7ASu0ZBrewR",
+      "product": "prod_TYxzTrRAAxh6OA"
+    },
+    "type": "price_details",
+    "unit_amount_decimal": "770"
+  },
+  "quantity": 1,
+  "taxes": []
+}

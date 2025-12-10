@@ -15,12 +15,22 @@ import { toast } from "sonner";
 
 const tiers = [
   {
+    name: "join.plans.monthly.title",
+    id: "tier-individuel",
+    href: "#",
+    price: Price.MONTHLY_PRICE,
+    description: "join.plans.monthly.description",
+    features: "join.plans.monthly.features",
+    featured: false,
+    priceId: Price.getMonthlyPriceId(),
+  },
+  {
     name: "join.plans.lifeTime.title",
     id: "tier-individuel",
     href: "#",
     price: Price.LIFE_TIME_PRICE,
     description: "gloryShare.hero.description",
-    features: "gloryShare.membership.bullets",
+    features: "join.plans.lifeTime.features",
     featured: true,
     priceId: Price.getLiftTimePriceId(),
   },
@@ -77,7 +87,8 @@ export default function PriceSection() {
     return <Loading />;
   }
 
-  const isGloryShareMember = Profile.isGloryShareMember(profile)
+  const isGloryShareMember = Profile.isGloryShareMember(profile);
+
   return (
     <div className="relative px-6 py-24 bg-gray-900 isolate sm:py-32 lg:px-8">
       <div
@@ -89,28 +100,35 @@ export default function PriceSection() {
             clipPath:
               "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
           }}
-          className="mx-auto aspect-1155/678 w-288.75 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-20"
+          className="mx-auto aspect-1155/678 w-288.75 bg-linear-to-tr from-primary to-secondary opacity-20"
         />
       </div>
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="font-semibold text-base/7 text-primary-foreground-gradient">
           {t("join.hero.plan")}
         </h2>
-        <p className="mt-2 text-5xl font-semibold tracking-tight text-white text-balance sm:text-6xl">
+        <p className="mt-2 text-2xl font-semibold tracking-wider sm:leading-20 text-white text-balance sm:text-6xl">
           {t("join.hero.title")}
         </p>
       </div>
-      <p className="max-w-2xl mx-auto mt-6 text-lg font-medium text-center text-gray-400 text-pretty sm:text-xl/8">
+      <p className="max-w-3xl text-primary-foreground-gradient mx-auto mt-6 text-3xl font-medium text-center text-pretty">
         {t("join.hero.limitTimeOffer")}
       </p>
-      <div className="items-center max-w-lg mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl">
+      <div
+        className={cn(
+          "items-center max-w-lg mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl",
+          tiers.length === 1 && "xl:grid-cols-1",
+          tiers.length === 2 && "xl:grid-cols-2",
+          tiers.length >= 3 && "xl:grid-cols-3"
+        )}
+      >
         {tiers.map((tier, tierIdx) => {
           const features = t(tier.features, { returnObjects: true }) as string[];
           const isLifeTime = tier.name.includes("lifeTime");
 
           return (
             <div
-              key={tier.id}
+              key={tier.priceId}
               className={cn(
                 tier.featured ? "relative bg-gray-800" : "bg-white/2.5 sm:mx-8 lg:mx-0",
                 tier.featured
