@@ -24,6 +24,11 @@
       "Exclusive updates and annual gratitude gifts",
       "Dedicated support from the Glory Share team"
     ],
-    "cta": "View member resources"
+    "cta": "View member resources",
+    "cancelGloryShare": "Cancel Glory Share",
+    "toast": {
+      "cancelSuccessfully": "Your Glory Share has been canceled. Thank you for your support!",
+      "cancelFailed": "Cancellation failed. Please try again later or contact us via our official email. Thank you!"
+    } 
   }
 }

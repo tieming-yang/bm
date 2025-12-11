@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import Loading from "@/app/loading";
 import useAuthUser from "@/hooks/use-auth-user";
@@ -15,6 +15,7 @@ import SignOutButton from "../../signout/signout-button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function ClientProfilePage({ userId }: { userId: string }) {
   const { authUser } = useAuthUser();
@@ -26,30 +27,65 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     enabled: !!userId,
   });
 
-  if (isLoading || !profile) {
-    return <Loading />;
-  }
-
-  const isOwnProfile = authUser?.uid === profile.uid;
-  const isGloryShareMember = Profile.isGloryShareMember(profile)
-  const gloryShare = profile.gloryShare;
+  const isOwnProfile = profile && authUser?.uid === profile.uid;
+  const isGloryShareMember = Profile.isGloryShareMember(profile);
   const locale = currentLanguage === "zh-TW" ? "zh-TW" : "en-US";
 
-  const joinedDate =
-    gloryShare?.joinedAt && typeof gloryShare.joinedAt.toDate === "function"
-      ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(gloryShare.joinedAt.toDate())
-      : null;
+  //FIXME use started At from subscription
+  // const joinedDate =
+  //   profile.joinedAt && typeof profile.joinedAt.toDate === "function"
+  //     ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(profile.joinedAt.toDate())
+  //     : null;
 
-  const formattedAmount =
-    typeof gloryShare?.amount === "number"
-      ? new Intl.NumberFormat(locale, {
-          style: "currency",
-          currency: (gloryShare?.currency ?? "usd").toUpperCase(),
-        }).format(gloryShare.amount / 100)
-      : null;
+  // const formattedAmount =
+  //   typeof gloryShare?.amount === "number"
+  //     ? new Intl.NumberFormat(locale, {
+  //         style: "currency",
+  //         currency: (gloryShare?.currency ?? "usd").toUpperCase(),
+  //       }).format(gloryShare.amount / 100)
+  //     : null;
 
   const gloryPerks =
     (t("gloryShareBadge.perks", { returnObjects: true }) as string[] | undefined) ?? [];
+
+  const cancelMutation = useMutation<string, Error, { subscriptionId: string }>({
+    mutationKey: ["glory-share", "user"],
+    mutationFn: async ({ subscriptionId }) => {
+      const payload = { uid: profile!.uid, subscriptionId };
+
+      try {
+        const rawResponse = await fetch("/api/subscriptions/cancel", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const response = await rawResponse.json();
+        if (!rawResponse.ok) {
+          console.log(response);
+          throw new Error(response?.error);
+        }
+
+        if (!response?.url) throw new Error("Missing checkout URL");
+        return response.url as string;
+      } catch (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success(t("gloryShareBadge.toast.cancelSuccessfully"));
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error(t("gloryShareBadge.toast.cancelFailed"));
+    },
+  });
+
+  if (isLoading || !profile) {
+    return <Loading />;
+  }
 
   return (
     <motion.div
@@ -81,11 +117,11 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                     <CardTitle className="text-2xl text-white drop-shadow-[0_4px_15px_rgba(0,0,0,0.45)]">
                       {t("gloryShareBadge.title")}
                     </CardTitle>
-                    {joinedDate && (
+                    {/* {joinedDate && (
                       <p className="text-sm text-purple-100">
                         {t("gloryShareBadge.joinedAt", { date: joinedDate })}
                       </p>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </CardHeader>
@@ -94,7 +130,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 <p className="text-base text-white">{t("gloryShareBadge.description")}</p>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  {formattedAmount && (
+                  {/* {formattedAmount && (
                     <div className="rounded-2xl border border-amber-300/40 bg-linear-to-br from-amber-200/15 to-transparent p-4 shadow-[0_0_20px_rgba(251,191,36,0.2)]">
                       <p className="text-xs uppercase tracking-[0.35em] text-amber-200">
                         {t("gloryShareBadge.amountLabel")}
@@ -107,7 +143,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                       <p className="text-xs uppercase tracking-[0.35em] text-purple-200">Email</p>
                       <p className="text-lg font-semibold text-white">{gloryShare.email}</p>
                     </div>
-                  )}
+                  )} */}
                 </div>
 
                 {/* Hide perks first */}
@@ -158,7 +194,24 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
             </p>
           </section>
         </CardContent>
-        <CardFooter className="flex justify-center">{isOwnProfile && <SignOutButton />}</CardFooter>
+        {isOwnProfile && (
+          <CardFooter className="flex justify-center flex-col gap-y-3">
+            <SignOutButton />
+            <Button
+              variant={"destructive"}
+              className="w-full max-w-md"
+              onClick={() => {
+                if (!profile.lastSubscriptionId) {
+                  console.error("Missing subscribtion id in profile");
+                  return;
+                }
+                cancelMutation.mutate({ subscriptionId: profile.lastSubscriptionId });
+              }}
+            >
+              {t("gloryShareBadge.cancelGloryShare")}
+            </Button>
+          </CardFooter>
+        )}
       </Card>
     </motion.div>
   );
