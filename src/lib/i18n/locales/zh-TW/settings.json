@@ -26,9 +26,14 @@
     ],
     "cta": "前往榮耀成員資源",
     "cancelGloryShare": "取消榮耀份額",
+    "cancelGloryShareTitle": "您確定要取消支持嗎？",
+    "cancelGloryShareDescription": "正是因為有您的支持我們的藝術事奉才能得以延續，傳播神的愛與國。",
+    "continueSupport": "繼續支持藝術事奉！",
+    "gloryShareWillBeEndedAt": "榮耀份額到期日：",
     "toast": {
       "cancelSuccessfully": "榮耀份額已經取消，謝謝您的支持！",
-      "cancelFailed": "取消失敗，請稍後再試，或請通過官方郵件聯繫我們，萬分感謝！"
+      "cancelFailed": "取消失敗，請稍後再試，或請通過官方郵件聯繫我們，萬分感謝！",
+      "canceledAlready": "您的榮耀成員已經取消了"
     }
   }
 }

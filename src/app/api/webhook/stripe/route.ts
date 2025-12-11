@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Invalid signature: ${error}` }, { status: 400 });
   }
 
-  console.log("📧 Incoming Event:", event.type, "-----")
+  console.log("📧 Incoming Event from Stripe:", event.type, "↓↓↓↓↓↓↓↓")
 
   try {
     switch (event.type) {

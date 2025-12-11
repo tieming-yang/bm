@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { motion, progressPercentage } from "framer-motion";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import Loading from "@/app/loading";
 import useAuthUser from "@/hooks/use-auth-user";
@@ -16,11 +16,27 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { assertIsDefined } from "@/lib/utils";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from "react";
 
 export default function ClientProfilePage({ userId }: { userId: string }) {
   const { authUser } = useAuthUser();
   const { t, currentLanguage } = useTranslation("settings");
 
+  const [isCancelModalOpen, setIsCancelModelOpen] = useState(false);
+
+  const query = useQueryClient();
   const { data: profile, isLoading } = useQuery({
     queryKey: QueryKey.profile(userId),
     queryFn: () => Profile.get(userId),
@@ -48,13 +64,25 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const gloryPerks =
     (t("gloryShareBadge.perks", { returnObjects: true }) as string[] | undefined) ?? [];
 
-  const cancelMutation = useMutation<string, Error, { subscriptionId: string }>({
-    mutationKey: ["glory-share", "user"],
-    mutationFn: async ({ subscriptionId }) => {
-      const payload = { uid: profile!.uid, subscriptionId };
+  const gloryShareEndAtSecs = profile?.subscriptions?.at(-1)?.currentPeriodEnd;
+  const gloryShareEndAtDate = gloryShareEndAtSecs ? new Date(gloryShareEndAtSecs * 1000) : null;
+  const gloryShareEndAtString = gloryShareEndAtDate
+    ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(gloryShareEndAtDate)
+    : "";
+
+  const cancelMutation = useMutation<
+    { uid: string },
+    Error,
+    { uid: string; subscriptionId: string }
+  >({
+    mutationKey: ["glory-share", "profile"],
+    mutationFn: async ({ uid, subscriptionId }) => {
+      assertIsDefined(uid);
+      assertIsDefined(subscriptionId);
+      const payload = { uid };
 
       try {
-        const rawResponse = await fetch("/api/subscriptions/cancel", {
+        const rawResponse = await fetch(`/api/subscriptions/${subscriptionId}/cancel`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -64,21 +92,29 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
         const response = await rawResponse.json();
         if (!rawResponse.ok) {
-          console.log(response);
+          console.debug(response);
           throw new Error(response?.error);
         }
-
-        if (!response?.url) throw new Error("Missing checkout URL");
-        return response.url as string;
       } catch (error) {
         throw error;
       }
+
+      return { uid };
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
+      setIsCancelModelOpen((prev) => !prev);
       toast.success(t("gloryShareBadge.toast.cancelSuccessfully"));
+      query.invalidateQueries({
+        queryKey: QueryKey.profile(result.uid),
+      });
     },
     onError: (error) => {
       console.error(error);
+      setIsCancelModelOpen((prev) => !prev);
+      if (error.message.includes("No such subscription:")) {
+        toast.warning(t("gloryShareBadge.toast.canceledAlready"));
+        return;
+      }
       toast.error(t("gloryShareBadge.toast.cancelFailed"));
     },
   });
@@ -160,14 +196,67 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                     ))}
                   </ul>
                 )} */}
-
+              </CardContent>
+              <CardFooter className="flex flex-col gap-y-2 items-center-safe">
                 <Button
                   asChild
-                  className="w-full text-black rounded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90"
+                  className="w-full max-w-md text-black runded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90"
                 >
                   <Link href="/glory-share">{t("gloryShareBadge.cta")}</Link>
                 </Button>
-              </CardContent>
+                {profile?.subscriptions?.at(-1)?.status !== "canceled" ? (
+                  <Dialog open={isCancelModalOpen}>
+                    <DialogTrigger className="w-full">
+                      <Button
+                        variant={"destructive"}
+                        className="w-full max-w-md"
+                        onClick={() => setIsCancelModelOpen((prev) => !prev)}
+                      >
+                        {t("gloryShareBadge.cancelGloryShare")}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="font-mono">
+                      <DialogHeader>
+                        <DialogTitle>{t("gloryShareBadge.cancelGloryShareTitle")}</DialogTitle>
+                        <DialogDescription>
+                          {t("gloryShareBadge.cancelGloryShareDescription")}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button
+                          variant={"destructive"}
+                          // className="w-full max-w-md"
+                          onClick={() => {
+                            if (!profile || !profile.uid || !profile.lastSubscriptionId) {
+                              console.error("Missing necessary arguments");
+                              return;
+                            }
+                            cancelMutation.mutate({
+                              uid: profile.uid,
+                              subscriptionId: profile.lastSubscriptionId,
+                            });
+                          }}
+                        >
+                          {t("gloryShareBadge.cancelGloryShare")}
+                        </Button>
+                        <DialogClose asChild>
+                          <Button
+                            variant="default"
+                            onClick={() => setIsCancelModelOpen((prev) => !prev)}
+                          >
+                            {t("gloryShareBadge.continueSupport")}
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <div>
+                    <span>{t("gloryShareBadge.gloryShareWillBeEndedAt")}</span>{" "}
+                    <span>{gloryShareEndAtString}</span>
+                  </div>
+                )}
+              </CardFooter>
             </div>
           </div>
         </Card>
@@ -197,19 +286,6 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         {isOwnProfile && (
           <CardFooter className="flex justify-center flex-col gap-y-3">
             <SignOutButton />
-            <Button
-              variant={"destructive"}
-              className="w-full max-w-md"
-              onClick={() => {
-                if (!profile.lastSubscriptionId) {
-                  console.error("Missing subscribtion id in profile");
-                  return;
-                }
-                cancelMutation.mutate({ subscriptionId: profile.lastSubscriptionId });
-              }}
-            >
-              {t("gloryShareBadge.cancelGloryShare")}
-            </Button>
           </CardFooter>
         )}
       </Card>

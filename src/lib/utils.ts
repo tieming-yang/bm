@@ -7,9 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export function assertIsDefined<T>(
   value: T,
-  message: string,
+  message?: string,
 ): asserts value is NonNullable<T> {
   if (value === undefined || value === null) {
-    throw new Error(message);
+    throw new Error(message ?? `Assert value is ${value}`);
   }
 }

@@ -13,6 +13,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
+import Stripe from "stripe";
 
 type ProfileInput = {
   uid: string;
@@ -31,6 +32,7 @@ type Profile = ProfileInput & {
   createdAt: Timestamp;
   lastTransactionId?: string;
   lastSubscriptionId?: string;
+  subscriptions?: Subscription[];
 }
 
 export interface MemberDetails {
@@ -56,6 +58,18 @@ export const MemberType = {
 } as const;
 export type MemberType = (typeof MemberType)[keyof typeof MemberType];
 
+type Subscription = {
+  id: string;
+  status: Stripe.Subscription.Status;
+  startDate: number;
+  endAt: number | null;
+  currentPeriodStart: number;
+  currentPeriodEnd: number;
+  canceledAt?: number;
+  updatedAt?: Timestamp;
+  createdAt?: Timestamp;
+};
+
 const Profile = {
   getRef(uid: string): DocumentReference {
     return doc(firebase.db, "profiles", uid);
@@ -64,6 +78,13 @@ const Profile = {
   async getSnap(uid: string): Promise<DocumentSnapshot> {
     const profileRef = Profile.getRef(uid);
     return await getDoc(profileRef);
+  },
+
+  async getSubscriptions(uid: string): Promise<Subscription[]> {
+    const profileRef = Profile.getRef(uid);
+    const subsRef = collection(profileRef, "subscriptions");
+    const snap = await getDocs(subsRef);
+    return snap.docs.map((doc) => (doc.data() as Subscription))
   },
 
   async create(values: ProfileInput) {
@@ -87,10 +108,15 @@ const Profile = {
     return data;
   },
 
-  async get(uid: string) {
+  async get(uid: string): Promise<Profile> {
     const snap = await Profile.getSnap(uid);
-    if (!snap.exists()) throw new Error("M9KX - Donator not found");
-    return snap.data() as Profile;
+    if (!snap.exists()) throw new Error("M9KX - Profile not found");
+    const subscriptions = await Profile.getSubscriptions(uid);
+
+    return {
+      ...snap.data(),
+      subscriptions,
+    } as Profile;
   },
 
   async isExits(uid: string) {

@@ -26,9 +26,14 @@
     ],
     "cta": "View member resources",
     "cancelGloryShare": "Cancel Glory Share",
+    "cancelGloryShareTitle": "Are you sure you want to cancel your support?",
+    "cancelGloryShareDescription": "Your support keeps our art ministry going and sharing God’s love and kingdom.",
+    "continueSupport": "Keep supporting the art ministry!",
+    "gloryShareWillBeEndedAt": "Glory Share will be ended at:",
     "toast": {
       "cancelSuccessfully": "Your Glory Share has been canceled. Thank you for your support!",
-      "cancelFailed": "Cancellation failed. Please try again later or contact us via our official email. Thank you!"
+      "cancelFailed": "Cancellation failed. Please try again later or contact us via our official email. Thank you!",
+      "canceledAlready": "Your Glory Share has canceled already"
     } 
   }
 }
