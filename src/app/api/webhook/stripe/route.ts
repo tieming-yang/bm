@@ -175,13 +175,6 @@ export async function POST(req: NextRequest) {
         const subscriptionRef = profileRef.collection("subscriptions").doc(subscriptionId)
 
         await Promise.all([
-          profileRef.set(
-            {
-              memberType: MemberType.Free,
-              updatedAt: FieldValue.serverTimestamp(),
-            },
-            { merge: true }
-          ),
           subscriptionRef.set({
             status: status,
             canceledAt: canceled_at,
