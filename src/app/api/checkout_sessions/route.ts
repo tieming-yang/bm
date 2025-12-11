@@ -10,25 +10,27 @@ import Stripe from "stripe";
 export async function POST(request: NextRequest) {
   const { uid, email, priceId } = await request.json();
   if (!priceId || !uid) {
-    return NextResponse.json({ error: "Missing required fields: uid and priceId" }),
-      { status: 400 }
+    return NextResponse.json({ error: "Missing required fields: uid and priceId" }, { status: 400 });
   }
 
-  let mode;
+  let mode: Stripe.Checkout.Session.Mode;
+  console.log({ priceId });
 
-  switch (priceId) {
-    case Price.LIFE_TIME_PRICE_ID || Price.LIFE_TIME_PRICE_ID_TEST:
-      mode = "payment"
-      break;
-
-    case Price.MONTHLY_PRICE_ID_TEST:
-      mode = "subscription"
-      break;
-    default:
-      return NextResponse.json({ error: "Unknown Price Id" }),
-        { status: 400 }
+  if ([Price.LIFE_TIME_PRICE_ID, Price.LIFE_TIME_PRICE_ID_TEST].includes(priceId)) {
+    mode = "payment";
+  } else if (
+    [
+      Price.MONTHLY_PRICE_ID,
+      Price.MONTHLY_PRICE_ID_TEST,
+      Price.YEARLY_PRICE_ID,
+      Price.YEARLY_PRICE_ID_TEST,
+    ].includes(priceId)
+  ) {
+    mode = "subscription";
+  } else {
+    return NextResponse.json({ error: "Unknown Price Id" }, { status: 400 });
   }
-
+  console.log({ mode });
   try {
     const headersList = await headers();
     const origin = headersList.get("origin") ?? headersList.get("referer") ?? "";
@@ -56,6 +58,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unexpected error";
+    console.log({ err })
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

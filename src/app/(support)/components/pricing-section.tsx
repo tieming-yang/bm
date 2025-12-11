@@ -34,6 +34,16 @@ const tiers = [
     featured: true,
     priceId: Price.getLiftTimePriceId(),
   },
+  {
+    name: "join.plans.yearly.title",
+    id: "tier-individuel",
+    href: "#",
+    price: Price.YEARLY_PRICE,
+    description: "gloryShare.hero.description",
+    features: "join.plans.yearly.features",
+    featured: false,
+    priceId: Price.getYearlyPriceId(),
+  },
   // TODO: add subscribtion tiers
 ];
 
@@ -160,20 +170,24 @@ export default function PriceSection() {
                 <span
                   className={cn(
                     tier.featured ? "text-gray-400" : "text-gray-400",
-                    `text-base ${isLifeTime && "hidden"}`
+                    `text-base`
                   )}
                 >
-                  /month
+                  {tier.price === Price.MONTHLY_PRICE
+                    ? t("join.plans.month")
+                    : isLifeTime
+                    ? t("join.plans.life")
+                    : t("join.plans.year")}
                 </span>
               </p>
-              <p
+              {/* <p
                 className={cn(
                   tier.featured ? "text-gray-300" : "text-gray-300",
                   "mt-6 text-base/7"
                 )}
               >
                 {t(tier.description)}
-              </p>
+              </p> */}
               <ul
                 role="list"
                 className={cn(

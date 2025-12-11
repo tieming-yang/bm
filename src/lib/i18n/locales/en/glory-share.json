@@ -162,17 +162,29 @@
         "title": "Lifetime Glory Share",
         "features": [
           "Lifetime access to Beyond Digital Media's creative content and resources",
-          "Exclusive invitations to annual gatherings, the internal community, behind-the-scenes, and premieres",
-          "Glory share inheritance rights",
-          "40% off all Bible gifts",
-          "Included in the annual roster"
+          "Exclusive welcome gift",
+          "Invitations to annual gatherings, the internal community, behind-the-scenes, and premieres",
+          "Glory Share inheritance rights",
+          "Listed in the annual roster",
+          "40% off all Bible gifts"
         ]
       },
       "monthly": {
         "title": "Monthly Support",
         "description": "Enjoy all Bible content from Beyond Digital Media for just $7.7 per month.",
-        "features": ["Bible Gallery", "Beyond Music", "Daily Grace", "10% off Bible gifts"]
-      }
+        "features": ["Bible Gallery", "Beyond Music", "Daily Grace", "20% off Bible gifts"]
+      },
+      "yearly": {
+        "title": "Annual Support",
+        "description": "Enjoy all Bible content from Beyond Digital Media for just $77 per year.",
+        "features": [
+          "Access to Beyond Digital Media's creative content and resources",
+          "30% off Bible gifts"
+        ]
+      },
+      "life": "/forever",
+      "month": "/month",
+      "year": "/year"
     }
   }
 }
