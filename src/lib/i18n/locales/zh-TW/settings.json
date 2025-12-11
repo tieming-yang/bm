@@ -14,8 +14,8 @@
     "donate": "捐款"
   },
   "gloryShareBadge": {
-    "label": "榮耀份額會員",
-    "title": "感謝您以終身份額同行事工",
+    "label": "榮耀份額成員",
+    "title": "感謝您以榮耀份額同行事工",
     "description": "您的奉獻點亮了我們的藝術事工，也為您開啟一系列專屬資源與榮耀回饋。",
     "joinedAt": "加入於 {{date}}",
     "amountLabel": "終身奉獻",
