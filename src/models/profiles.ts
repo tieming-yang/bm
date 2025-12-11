@@ -24,21 +24,30 @@ type ProfileInput = {
 };
 
 type Profile = ProfileInput & {
-  memberType: MemberType;
-  gloryShareId?: string;
-  totalContributed: number;
   newsletterOptIn: boolean;
-  createdAt: Timestamp;
+  memberDetails: MemberDetails;
+  memberType: MemberType;
   updatedAt: Timestamp;
-  gloryShare: {
-    joinedAt: Timestamp;
-    sessionId: string;
-    paymentIntentId: string;
-    amount: number;
-    currency: Currency;
-    email: string;
-  };
-};
+  createdAt: Timestamp;
+  lastTransactionId?: string;
+  lastSubscriptionId?: string;
+}
+
+export interface MemberDetails {
+  name: string;
+  phone: null;
+  address: Address;
+}
+
+export interface Address {
+  state: string;
+  city: string;
+  line2: null;
+  country: string;
+  postalCode: string;
+  line1: string;
+}
+
 export const MemberType = {
   Free: "free",
   Monthly: "monthly",
@@ -46,12 +55,6 @@ export const MemberType = {
   LiftTime: "lifeTime",
 } as const;
 export type MemberType = (typeof MemberType)[keyof typeof MemberType];
-
-const Profiles = {
-  getCollection(uid: string) {
-    return collection(Profile.getRef(uid), "profiles");
-  },
-};
 
 const Profile = {
   getRef(uid: string): DocumentReference {
