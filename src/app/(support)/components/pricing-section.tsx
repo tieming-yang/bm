@@ -44,7 +44,6 @@ const tiers = [
     featured: false,
     priceId: Price.getYearlyPriceId(),
   },
-  // TODO: add subscribtion tiers
 ];
 
 export default function PriceSection() {
