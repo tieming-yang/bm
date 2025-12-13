@@ -2,6 +2,7 @@
 
 import Loading from "@/app/loading";
 import { Button } from "@/components/ui/button";
+import useInnerWidth from "@/hooks/use-inner-width";
 import useProfile from "@/hooks/use-profile";
 import { cn } from "@/lib/utils";
 import Price from "@/models/prices";
@@ -25,16 +26,6 @@ const tiers = [
     priceId: Price.getMonthlyPriceId(),
   },
   {
-    name: "join.plans.lifeTime.title",
-    id: "tier-individuel",
-    href: "#",
-    price: Price.LIFE_TIME_PRICE,
-    description: "gloryShare.hero.description",
-    features: "join.plans.lifeTime.features",
-    featured: true,
-    priceId: Price.getLiftTimePriceId(),
-  },
-  {
     name: "join.plans.yearly.title",
     id: "tier-individuel",
     href: "#",
@@ -43,6 +34,16 @@ const tiers = [
     features: "join.plans.yearly.features",
     featured: false,
     priceId: Price.getYearlyPriceId(),
+  },
+  {
+    name: "join.plans.lifeTime.title",
+    id: "tier-individuel",
+    href: "#",
+    price: Price.LIFE_TIME_PRICE,
+    description: "gloryShare.hero.description",
+    features: "join.plans.lifeTime.features",
+    featured: true,
+    priceId: Price.getLiftTimePriceId(),
   },
 ];
 
@@ -92,6 +93,9 @@ export default function PriceSection() {
     },
   });
 
+  const innerWidth = useInnerWidth();
+  const renderTiers = innerWidth && innerWidth >= 1280 ? [tiers[0], tiers[2], tiers[1]] : tiers;
+
   if (isProfileLoading) {
     return <Loading />;
   }
@@ -125,13 +129,13 @@ export default function PriceSection() {
       </p>
       <div
         className={cn(
-          "items-center max-w-lg mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:mt-20 sm:gap-y-0 lg:max-w-4xl",
-          tiers.length === 1 && "xl:grid-cols-1",
-          tiers.length === 2 && "xl:grid-cols-2",
-          tiers.length >= 3 && "xl:grid-cols-3"
+          " max-w-3xl mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:gap-x-5 sm:mt-20 lg:max-w-4xl",
+          tiers.length === 1 && "md:grid-cols-1",
+          tiers.length === 2 && "md:grid-cols-2",
+          tiers.length >= 3 && "md:grid-cols-2 xl:grid-cols-3"
         )}
       >
-        {tiers.map((tier, tierIdx) => {
+        {renderTiers.map((tier, tierIdx) => {
           const features = t(tier.features, { returnObjects: true }) as string[];
           const isLifeTime = tier.name.includes("lifeTime");
 
@@ -139,13 +143,8 @@ export default function PriceSection() {
             <div
               key={tier.priceId}
               className={cn(
-                tier.featured ? "relative bg-gray-800" : "bg-white/2.5 sm:mx-8 lg:mx-0",
-                tier.featured
-                  ? ""
-                  : tierIdx === 0
-                  ? "rounded-t-3xl sm:rounded-b-none lg:rounded-tr-none lg:rounded-bl-3xl"
-                  : "sm:rounded-t-none lg:rounded-tr-3xl lg:rounded-bl-none",
-                "rounded-3xl p-8 ring-1 ring-white/10 sm:p-10"
+                tier.featured ? "relative bg-gray-800" : "bg-white/2.5 lg:mx-0",
+                "rounded-3xl p-8 flex flex-col justify-between ring-1 ring-white/10 sm:p-10"
               )}
             >
               <h3
@@ -167,10 +166,7 @@ export default function PriceSection() {
                   ${tier.price}
                 </span>
                 <span
-                  className={cn(
-                    tier.featured ? "text-gray-400" : "text-gray-400",
-                    `text-base`
-                  )}
+                  className={cn(tier.featured ? "text-gray-400" : "text-gray-400", `text-base`)}
                 >
                   {tier.price === Price.MONTHLY_PRICE
                     ? t("join.plans.month")
@@ -179,14 +175,6 @@ export default function PriceSection() {
                     : t("join.plans.year")}
                 </span>
               </p>
-              {/* <p
-                className={cn(
-                  tier.featured ? "text-gray-300" : "text-gray-300",
-                  "mt-6 text-base/7"
-                )}
-              >
-                {t(tier.description)}
-              </p> */}
               <ul
                 role="list"
                 className={cn(
