@@ -139,6 +139,108 @@ const sections = [
       "我們進一步說明，任何範例、說明或列舉內容，均不構成超出本條款所明示權利之外的法律義務。",
     ],
   },
+  {
+    id: "no-refunds",
+    title: "16. No Refunds and Chargebacks 無退款與拒付政策",
+    paragraphs: [
+      "We state that all payments, including one-time purchases and recurring subscriptions, are final and non-refundable to the fullest extent permitted by law.",
+      "We do not provide refunds, credits, or exchanges for partial use, unused time, dissatisfaction, plan changes, benefit modifications, or termination of access.",
+      "We reserve the right to immediately suspend or terminate access if a chargeback, payment dispute, or fraudulent transaction is initiated through Stripe or any payment provider.",
+      "我們聲明，所有一次性付款與訂閱付款在法律允許的最大範圍內均不提供退款。",
+      "我們不因未使用期間、部分使用、不滿意、方案調整或權益變更而提供退款、補償或折抵。",
+      "若發生拒付、爭議付款或疑似詐欺交易，我們保留立即暫停或終止會員權益之權利。",
+    ],
+  },
+  {
+    id: "benefit-availability",
+    title: "17. Benefit Availability and Substitution 權益可得性與替代",
+    paragraphs: [
+      "We clarify that all benefits, including events, gifts, premieres, features, and recognitions, are subject to availability and operational feasibility.",
+      "We reserve the right to substitute, modify, delay, or cancel any benefit and, where reasonable, provide an alternative of comparable nature or value, without constituting a breach of these Terms.",
+      "We state that certain benefits may be aspirational or future-facing and are not guaranteed to occur.",
+      "我們說明，所有權益（包含活動、禮品、首映、功能與榮譽）皆視實際可得性與營運狀況而定。",
+      "我們保留替換、調整、延後或取消任何權益之權利，並可於合理情況下提供性質相當之替代方案，且不構成違約。",
+      "我們進一步說明，部分權益屬於願景性或未來規劃，並非必然實現之保證。",
+    ],
+  },
+  {
+    id: "platform-availability",
+    title: "18. Platform and Access Availability 平台與存取說明",
+    paragraphs: [
+      "We grant access rights to content, not a guarantee of perpetual platform availability, delivery method, or specific technical format.",
+      "We reserve the right to modify, migrate, replace, or discontinue platforms, applications, websites, hosting services, or delivery mechanisms used to provide access.",
+      "We confirm that such changes do not constitute termination of access rights, provided reasonable alternative access is offered when feasible.",
+      "我們授予的是內容存取權，而非對特定平台、技術形式或永久系統運作之保證。",
+      "我們保留變更、遷移、替換或停止使用任何提供內容之平台、網站、應用程式或技術方式之權利。",
+      "只要在可行範圍內提供合理替代存取方式，此類調整不構成權益終止。",
+    ],
+  },
+  {
+    id: "force-majeure",
+    title: "19. Force Majeure 不可抗力",
+    paragraphs: [
+      "We are not liable for any delay, suspension, or failure to perform resulting from events beyond our reasonable control, including acts of God, natural disasters, pandemics, war, government actions, labor disputes, platform outages, supply chain disruptions, or technical failures.",
+      "We reserve the right to suspend, modify, or delay benefits during such events without liability.",
+      "若因不可抗力事件（包含天災、疫情、戰爭、政府行為、平台中斷、技術故障或供應鏈問題）導致服務延遲、暫停或無法履行，我們不承擔責任。",
+      "於不可抗力期間，我們得調整、延後或暫停相關權益，而不構成違約。",
+    ],
+  },
+  {
+    id: "discretionary-suspension",
+    title: "20. Discretionary Suspension and Risk Control 自主暫停與風險控管",
+    paragraphs: [
+      "We reserve the right to suspend or restrict access, at our sole discretion, if we determine that continued access poses legal, security, reputational, or community risk.",
+      "We are not obligated to provide detailed justification prior to suspension or restriction.",
+      "若我們判定會員行為可能構成法律、安全、聲譽或社群風險，我們得依自主判斷暫停或限制其存取權限。",
+      "我們無義務於暫停或限制前提供詳細理由。",
+    ],
+  },
+  {
+    id: "no-reliance",
+    title: "21. No Reliance and No Expectation 不可依賴與無期待保證",
+    paragraphs: [
+      "We state that you acknowledge and agree that you have not relied on any future promise, projection, vision statement, or informal communication in deciding to purchase a plan.",
+      "We clarify that creative direction, scope, and output may evolve over time.",
+      "您確認並同意，您未依賴任何未來承諾、預期成果、願景描述或非正式說明而購買方案。",
+      "我們說明，創作方向、內容範圍與產出可能隨時間調整與演進。",
+    ],
+  },
+  {
+    id: "language-priority",
+    title: "22. Language Priority 語言優先順序",
+    paragraphs: [
+      "We state that in the event of any inconsistency or discrepancy between language versions, the Tranditional Chinese version shall prevail and control.",
+      "若不同語言版本間出現不一致或歧義，應以繁體中文版本為準。",
+    ],
+  },
+  {
+    id: "arbitration",
+    title: "23. Arbitration 仲裁條款",
+    paragraphs: [
+      "We require that any dispute arising out of or relating to these Terms be resolved through binding arbitration, except where prohibited by law.",
+      "We waive the right to pursue disputes in court to the extent legally permitted.",
+      "除法律禁止外，任何因本條款所生之爭議應以具拘束力之仲裁方式解決。",
+      "在法律允許範圍內，我們放棄透過法院訴訟解決爭議之權利。",
+    ],
+  },
+  {
+    id: "class-action-waiver",
+    title: "24. Class Action Waiver 集體訴訟放棄",
+    paragraphs: [
+      "We require that all claims be brought on an individual basis and waive the right to participate in any class or representative action.",
+      "所有爭議須以個人名義提出，並放棄參與任何集體或代表性訴訟之權利。",
+    ],
+  },
+  {
+    id: "public-license-upsell",
+    title: "25. Public Use and Licensing 公開使用與授權",
+    paragraphs: [
+      "We prohibit public, institutional, educational, or commercial use of our content without a separate written license.",
+      "We invite organizations, churches, schools, or groups seeking such use to contact us for licensing options.",
+      "未經另行書面授權，禁止於公開、教育、機構或商業場景中使用本內容。",
+      "如需相關授權，請與我們聯絡以洽談授權方案。",
+    ],
+  },
 ];
 
 export default function TermsPage() {
