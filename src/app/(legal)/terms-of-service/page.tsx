@@ -7,126 +7,136 @@ const sections = [
     id: "overview",
     title: "1. Overview 概述",
     paragraphs: [
-      "Beyond Digital Media is a creative studio dedicated to faith-based storytelling and artistic expression.",
-      "The Glory Share (榮耀份額) is a one-time lifetime membership plan that provides access to exclusive creative content, project previews, workshops, and participation benefits within the Beyond Digital Media ecosystem. It is not a charitable donation or financial investment.",
-      "Beyond Digital Media 是一個以信仰為核心的創意媒體團隊，致力於以藝術和故事傳遞真理。",
-      "榮耀份額（Glory Share）為一次性、終身制會員方案，讓成員能夠獲得專屬創作內容、計畫搶先預覽、工作坊以及參與式榮耀權益。此方案並非募款、捐贈或投資計畫。",
+      "We are Beyond Digital Media, a creative studio dedicated to faith-based storytelling and artistic expression.",
+      "We offer multiple membership and support plans (the “Support Plans”), including Lifetime, Yearly, and Monthly options, which provide access to curated creative content, events, and member benefits within the Beyond Digital Media ecosystem. We clarify that these plans represent creative support and participation, not charitable donations or financial investments.",
+      "我們是 Beyond Digital Media，一個以信仰為核心的創意媒體團隊，致力於以藝術與故事傳遞真理。",
+      "我們提供多種支持方案（包含終身、年度與月度方案），讓成員能參與創作內容、活動與專屬權益。我們特此聲明，所有方案皆屬創作支持與同行關係，並非募款、捐贈或投資計畫。",
     ],
   },
   {
     id: "eligibility",
     title: "2. Eligibility 資格",
     paragraphs: [
-      "You must be 18 years or older or have a guardian’s consent to join. All registration information must be accurate and current.",
-      "您必須年滿 18 歲，或經監護人同意後方可註冊。所提供的註冊資訊須正確且為最新資料。",
+      "We require that you be at least 18 years old, or have valid guardian consent, to join our Support Plans. We require all registration information to be accurate and current.",
+      "我們要求您年滿 18 歲，或經監護人同意後方可註冊。我們要求您所提供的註冊資訊須正確且為最新資料。",
     ],
   },
   {
     id: "membership",
-    title: "3. Glory Share Membership 榮耀份額會員條款",
+    title: "3. Membership Plans 會員方案條款",
     paragraphs: [
-      "The Glory Share membership is a one-time lifetime plan currently priced at USD 77 (excluding tax). The price may change in future offerings, but existing members will retain their original benefits.",
-      "Membership is for individual, personal use only. Each Glory Share is tied to one person and may not be transferred, sold, rented, or shared beyond the member’s immediate household (defined as spouse and direct descendants such as children or grandchildren).",
-      "If a member wishes to transfer their membership to a direct descendant, they must submit a formal transfer request to Beyond Digital Media for verification and approval. The transfer is effective only upon written confirmation from Beyond Digital Media.",
-      "Use of Glory Share content for public viewing, classroom instruction, live streaming, screenings, or community presentations is strictly prohibited without prior written authorization.",
-      "Members may not download, copy, distribute, broadcast, or upload any content obtained through their membership. All materials remain the intellectual property of Beyond Digital Media.",
-      "If you represent an organization, institution, school, church, or collective entity and wish to use or display Beyond Digital Media content, you must first contact us at beyonddigitalmedia.art@gmail.com to obtain a separate license or written permission.",
-      "Beyond Digital Media reserves the right to introduce new membership tiers or benefits. Glory Share memberships will continue to provide lifetime access under the terms active at the time of purchase.",
-      "榮耀份額為一次性終身會員方案，目前價格為 77 美元（未稅）。未來價格可能調整，但不影響已購會員的既有權益。",
-      "會員資格僅限於個人、非商業用途。每一份榮耀份額僅屬單一個人，不得轉讓、出售、出租或與他人共用，除非為直系家庭成員（配偶、子女、孫子女）之間的合理家庭使用。",
-      "若會員希望將會員資格轉移給直系後代，須向 Beyond Digital Media 提出正式申請，經審核與書面同意後方可生效。未經批准之轉讓皆屬無效。",
-      "未經書面授權，嚴禁於公開場合、課堂、直播、放映或社群活動中播放或展示榮耀份額內容。",
-      "會員不得下載、複製、再散佈、轉播或上傳任何會員內容，所有素材及權利均屬 Beyond Digital Media 所有。",
-      "若您為任何機構、團體、學校或教會等組織，並希望使用或展示 Beyond Digital Media 的內容，請先以電子郵件至 beyonddigitalmedia.art@gmail.com 聯絡以申請授權。",
-      "Beyond Digital Media 保留推出新會員等級或權益的權利，已購榮耀份額會員將繼續依購買時之條款享有終身權益。",
+      "We currently offer three membership plans: (1) Lifetime Honor Share, (2) Yearly Support, and (3) Monthly Support. We define and present the specific benefits of each plan on our official website or purchase pages at the time of subscription.",
+      "We define the Lifetime Honor Share as a one-time, lifetime plan that grants permanent access to designated creative content, recognition privileges, inheritance rights, and Bible-related gift discounts as specified at the time of purchase.",
+      "We define the Yearly and Monthly Support plans as recurring subscriptions that grant access to selected digital content and benefits only during the active subscription period. We terminate access automatically if the subscription is canceled or payment fails.",
+      "We restrict all memberships to individual, personal, and non-commercial use. We prohibit sharing, resale, sublicensing, or redistribution of any membership content.",
+      "We grant inheritance or transfer rights only to Lifetime Honor Share members. We limit such transfers to direct descendants and require formal written approval from us before any transfer becomes effective.",
+      "We reserve the right to adjust pricing, features, content scope, or availability of any plan for future offerings. We confirm that existing members retain access according to the terms in effect at the time of purchase.",
+      "我們目前提供三種會員支持方案：（1）終身榮耀份額、（2）年度支持、（3）月度支持。我們以購買當下官方頁面所載內容作為各方案權益之依據。",
+      "我們將終身榮耀份額定義為一次性、永久方案，提供指定創作內容之永久存取、名錄載入、傳承權，以及聖經禮品相關折扣。",
+      "我們將年度與月度支持方案定義為訂閱制方案，僅於訂閱有效期間內提供內容與權益；若取消或付款失敗，我們將自動終止存取權限。",
+      "我們限制所有會員方案僅限個人、非商業使用，並禁止分享、轉售、再授權或散布任何會員內容。",
+      "我們僅允許終身榮耀份額具備傳承或轉移權利，且僅限直系後代，並須經我們書面核准。",
+      "我們保留未來調整價格、內容與方案結構之權利；已購會員仍依購買當時條款享有其權益。",
     ],
   },
   {
     id: "use-of-service",
     title: "4. Use of Service 服務使用",
     paragraphs: [
-      "You agree to use the Service only for lawful, personal, and non-commercial purposes. You may not copy, redistribute, or publicly display membership content. Use of membership materials for commercial, public, or institutional purposes is prohibited.",
-      "您同意僅以合法、個人、非商業目的使用本服務。不得複製、再散布或公開播放會員內容，亦不得將會員素材用於商業、公共或機構用途。",
+      "We require that you use all membership content solely for lawful, personal, and non-commercial purposes, and only in accordance with your active plan.",
+      "我們要求您僅依所購方案內容，以合法、個人、非商業目的使用本服務。",
     ],
   },
   {
     id: "intellectual-property",
     title: "5. Intellectual Property 智慧財產權",
     paragraphs: [
-      "All content (artwork, video, music, design, and writing) is owned or licensed by Beyond Digital Media. Members receive a limited, non-commercial, personal-use license only.",
-      "所有內容（包含影像、音樂、設計與文字）皆為 Beyond Digital Media 之所有或授權使用。會員僅享有非商業性、個人使用的有限授權。",
+      "We own or license all content, including artwork, video, music, design, and written materials. We grant members a limited, personal, non-commercial license only.",
+      "我們擁有或合法授權所有內容（包含影像、音樂、設計與文字）。我們僅授予會員非商業性、個人使用的有限授權。",
     ],
   },
   {
     id: "payment-processing",
     title: "6. Payment Processing 付款處理",
     paragraphs: [
-      "Payments are securely processed via Stripe. Beyond Digital Media does not store payment credentials. By purchasing, you agree to Stripe’s Terms of Service. All prices are in USD unless otherwise stated.",
-      "所有付款皆透過 Stripe 安全處理。Beyond Digital Media 不保存您的付款資訊。完成付款即表示您同意遵守 Stripe 服務條款。所有金額除另有說明外均以美元計價。",
+      "We process all payments and subscriptions securely through Stripe. We confirm that recurring plans renew automatically unless canceled before the renewal date.",
+      "我們透過 Stripe 安全處理所有一次性付款與訂閱。訂閱方案將自動續訂，除非於續訂日前取消。",
     ],
   },
   {
     id: "no-financial-status",
     title: "7. No Financial or Charitable Status 非投資或募款性質",
     paragraphs: [
-      "The Glory Share represents creative participation and spiritual partnership, not a donation or security. Payments are not tax-deductible and do not generate profit, dividends, or ownership rights.",
-      "榮耀份額代表的是創作同行與屬靈夥伴關係，而非捐贈或金融性商品。所有付款不具備抵稅資格，且不產生任何分紅、股權或財務回報。",
+      "We clarify that all membership payments represent creative support and content access rights only. We do not treat any payment as a donation, security, equity, or financial product.",
+      "我們明確說明，所有方案之付款皆屬創作支持與內容使用權，不構成捐贈、證券、股權或任何金融商品。",
     ],
   },
   {
     id: "termination",
     title: "8. Termination 終止權益",
     paragraphs: [
-      "Beyond Digital Media may suspend or revoke access if a member violates these Terms or misuses the Service.",
-      "若會員違反條款或不當使用服務，Beyond Digital Media 保留暫停或終止其權益之權利。",
+      "We reserve the right to suspend or revoke access if a member violates these Terms or misuses our services.",
+      "若會員違反本條款或不當使用服務，我們保留暫停或終止其權益之權利。",
     ],
   },
   {
     id: "disclaimer",
     title: "9. Disclaimer 免責聲明",
     paragraphs: [
-      "The Service is provided “as is.” Beyond Digital Media makes no warranty regarding uninterrupted access or error-free content.",
-      "本服務依「現況」提供，Beyond Digital Media 不保證服務不中斷或內容完全無誤。",
+      "We provide the Service on an “as is” basis and make no guarantees regarding uninterrupted access or error-free content.",
+      "我們依「現況」提供本服務，且不保證服務不中斷或內容完全無誤。",
     ],
   },
   {
     id: "limitation",
     title: "10. Limitation of Liability 責任限制",
     paragraphs: [
-      "To the fullest extent permitted by law, Beyond Digital Media and its affiliates are not liable for indirect or consequential damages arising from use of the Service.",
-      "在法律允許的最大範圍內，Beyond Digital Media 及其附屬機構對因使用本服務所引起的間接或附帶損害不承擔責任。",
+      "We, to the fullest extent permitted by law, disclaim liability for indirect, incidental, or consequential damages arising from use of the Service.",
+      "在法律允許的最大範圍內，我們不對因使用本服務所引起的任何間接或附帶損害承擔責任。",
     ],
   },
   {
     id: "privacy",
     title: "11. Privacy 隱私",
     paragraphs: [
-      "Your data is handled according to our Privacy Policy. By using the Service, you consent to such processing.",
-      "您的個人資料將依據《隱私政策》進行處理。使用本服務即表示您同意相關資料使用。",
+      "We handle your personal data in accordance with our Privacy Policy, and we require your consent to such processing when you use our Service.",
+      "我們將依據《隱私政策》處理您的個人資料；您使用本服務即表示同意相關資料處理方式。",
     ],
   },
   {
     id: "governing-law",
     title: "12. Governing Law 準據法",
     paragraphs: [
-      "These Terms are governed by the laws of the State of Texas, USA. Any disputes shall be resolved in the courts of Harris County, Texas.",
-      "本條款依美國德州法律管轄並據以解釋。任何爭議將於德州哈里斯郡法院解決。",
+      "We govern and interpret these Terms under the laws of the State of Texas, USA, and we require that disputes be resolved in the courts of Harris County, Texas.",
+      "我們依美國德州法律管轄並解釋本條款，並要求任何爭議於德州哈里斯郡法院解決。",
     ],
   },
   {
     id: "changes",
     title: "13. Changes to Terms 條款修訂",
     paragraphs: [
-      "Beyond Digital Media may update these Terms at any time. Updates take effect upon publication, and continued use constitutes acceptance.",
-      "Beyond Digital Media 得隨時修訂本條款，修改後即時生效。會員持續使用本服務視為同意更新內容。",
+      "We reserve the right to update or modify these Terms at any time, and we consider continued use of the Service as acceptance of such changes.",
+      "我們得隨時修訂本條款；會員持續使用本服務即視為同意更新內容。",
     ],
   },
   {
     id: "contact",
     title: "14. Contact 聯絡方式",
     paragraphs: [
-      "For any inquiries regarding these Terms, please contact us at beyonddigitalmedia.art@gmail.com.",
-      "如有關於本條款之任何問題，請聯絡：beyonddigitalmedia.art@gmail.com。",
+      "We invite you to contact us at beyonddigitalmedia.art@gmail.com for any questions regarding these Terms.",
+      "如對本條款有任何疑問，請透過 beyonddigitalmedia.art@gmail.com 與我們聯絡。",
+    ],
+  },
+  {
+    id: "final-authority",
+    title: "15. Final Authority on Benefits 權益最終解釋權",
+    paragraphs: [
+      "We state that all membership benefits, features, privileges, discounts, access rights, recognitions, events, gifts, and related offerings described on our website, purchase pages, marketing materials, or other communications are subject to our final interpretation, adjustment, and determination.",
+      "We retain sole and final authority to define, modify, replace, limit, suspend, or discontinue any benefit, in whole or in part, at any time, provided that we do not retroactively remove the core access rights explicitly granted under the active plan at the time of purchase.",
+      "We clarify that no statement, listing, illustration, or example creates a legally binding obligation beyond the rights expressly granted under these Terms.",
+      "我們聲明，所有於官網、購買頁面、行銷素材或其他說明中所列之會員權益，其最終解釋權、調整權與決定權皆屬我們所有。",
+      "我們保留在任何時間依實際營運與創作需求，對任何會員權益進行定義、修改、替換、限制、暫停或終止之最終權利，但不會追溯性剝奪會員於購買當下方案中已明確授予的核心存取權限。",
+      "我們進一步說明，任何範例、說明或列舉內容，均不構成超出本條款所明示權利之外的法律義務。",
     ],
   },
 ];
@@ -136,7 +146,7 @@ export default function TermsPage() {
     <div className="container max-w-3xl px-4 py-12 mx-auto space-y-8">
       <header className="text-center space-y-2">
         <h1 className="text-3xl font-semibold">Terms of Service (服務條款)</h1>
-        <p className="text-sm text-muted-foreground">Last updated: 11-08-2025</p>
+        <p className="text-sm text-muted-foreground">Last updated: 12-12-2025</p>
       </header>
 
       <nav className="flex flex-wrap text-sm gap-3 text-primary">
