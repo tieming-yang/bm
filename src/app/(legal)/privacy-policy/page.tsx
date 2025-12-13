@@ -1,3 +1,4 @@
+import { BEYOND_EMAIL } from "@/app/(marketing)/contact/page";
 import Link from "next/link";
 
 const sections = [
@@ -70,7 +71,7 @@ const sections = [
     title: "9. Your Rights 您的權利",
     paragraphs: [
       "You may request access, correction, deletion, or opt out of newsletters anytime by contacting support@beyonddigital.media.",
-      "您可要求查閱、更正、刪除資料，或取消電子報，請聯絡 support@beyonddigital.media。",
+      `您可要求查閱、更正、刪除資料，或取消電子報，請聯絡 ${BEYOND_EMAIL}。`,
     ],
   },
   {
