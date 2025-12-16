@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Loading from "@/app/loading";
 import Auth, { AuthMethod, EmailSignInInput } from "@/models/auth";
@@ -19,12 +18,10 @@ type Props = {};
 export default function SignInPage({}: Props) {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
-  const { t, currentLanguage } = useTranslation();
+  const { t } = useTranslation();
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
   const query = useQueryClient();
-  console.log({ redirectTo });
-  if (isAuthUserLoading) return <Loading />;
 
   //TODO: since there is no sign up with goolge, we choose simplify the process by sign up and sign in at same time, separate the logic when add different sign in mathod
   const signInMutation = useMutation({
@@ -64,6 +61,8 @@ export default function SignInPage({}: Props) {
       console.error(msg);
     },
   });
+
+  if (isAuthUserLoading) return <Loading />;
 
   return (
     <div className="relative z-50 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
