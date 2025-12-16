@@ -21,7 +21,7 @@
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
+  --color-ring: var(--ring);
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
 
@@ -111,7 +111,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 346 77% 49%;
+    --ring: #edc043;
     --radius: 1rem;
   }
 
@@ -134,7 +134,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 346 77% 49%;
+    --ring: var(--secondary);
   }
 }
 
