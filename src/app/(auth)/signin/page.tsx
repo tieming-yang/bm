@@ -60,6 +60,7 @@ export default function SignInPage({}: Props) {
     },
     onError: (err: unknown) => {
       const msg = err instanceof Error ? err.message : "Sign up failed";
+      toast.error(t("toast.signInError"));
       console.error(msg);
     },
   });
