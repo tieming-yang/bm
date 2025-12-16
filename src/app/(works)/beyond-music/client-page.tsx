@@ -8,10 +8,16 @@ import Link from "next/link";
 import { toast } from "sonner";
 import Loading from "@/app/loading";
 import { sendGAEvent } from "@next/third-parties/google";
+import useAuthUser from "@/hooks/use-auth-user";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function ClientBeyondMusicPage() {
+  const router = useRouter();
+  const path = usePathname();
   const { t } = useTranslation("beyond-music");
   const { t: tUI } = useTranslation("ui");
+  const { t: tCommon } = useTranslation("common");
+  const { authUser, isAuthUserLoading } = useAuthUser();
 
   const {
     data: songs,
@@ -23,8 +29,14 @@ export default function ClientBeyondMusicPage() {
     staleTime: Infinity,
   });
 
-  if (isLoading) {
+  if (isLoading || isAuthUserLoading) {
     return <Loading />;
+  }
+
+  if (!authUser) {
+    toast.error(tCommon("toast.mustSignIn"));
+
+    router.push(`/signin?redirectTo=${encodeURIComponent(path)}`);
   }
 
   if (error) {
