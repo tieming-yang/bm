@@ -10,6 +10,7 @@ import Loading from "@/app/loading";
 import { sendGAEvent } from "@next/third-parties/google";
 import useAuthUser from "@/hooks/use-auth-user";
 import { useRouter, usePathname } from "next/navigation";
+import useProtectedRoute from "@/hooks/use-protected-route";
 
 export default function ClientBeyondMusicPage() {
   const router = useRouter();
@@ -18,6 +19,8 @@ export default function ClientBeyondMusicPage() {
   const { t: tUI } = useTranslation("ui");
   const { t: tCommon } = useTranslation("common");
   const { authUser, isAuthUserLoading } = useAuthUser();
+
+  useProtectedRoute();
 
   const {
     data: songs,
@@ -33,11 +36,11 @@ export default function ClientBeyondMusicPage() {
     return <Loading />;
   }
 
-  if (!authUser) {
-    toast.error(tCommon("toast.mustSignIn"));
+  // if (!authUser) {
+  //   toast.error(tCommon("toast.mustSignIn"));
 
-    router.push(`/signin?redirectTo=${encodeURIComponent(path)}`);
-  }
+  //   router.replace(`/signin?redirectTo=${encodeURIComponent(path)}`);
+  // }
 
   if (error) {
     toast.error(tUI("loading.error.title"), {
