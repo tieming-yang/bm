@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe, STRIPE_WEBHOOK_SECRET } from "@/lib/stripe";
 import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
-import { MemberType } from "@/models/profiles";
+import { AccountType, MemberType } from "@/models/profiles";
 import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
@@ -60,14 +60,21 @@ export async function POST(req: NextRequest) {
         const transactionRef = profileRef.collection("transactions").doc(session.id);
 
         if (session.mode === "payment") {
+          const updates = {
+            memberType: MemberType.LiftTime,
+            lastTransactionId: transactionRef.id,
+            memberDetails,
+            updatedAt: FieldValue.serverTimestamp()
+          }
+
+          if (session.amount_total === 388850 || session.amount_total === 777700) {
+            updates["accountType"] = AccountType.Organization
+          }
+
           await Promise.all([
             profileRef.set(
-              {
-                memberType: MemberType.LiftTime,
-                lastTransactionId: transactionRef.id,
-                memberDetails,
-                updatedAt: FieldValue.serverTimestamp()
-              },
+              updates
+              ,
               { merge: true }
             ),
             transactionRef.set({

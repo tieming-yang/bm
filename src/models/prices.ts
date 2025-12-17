@@ -14,7 +14,16 @@ const Price = {
   YEARLY_PRICE: "77",
   YEARLY_PRICE_ID: "price_1SdH4iCEoRN5rFZ6OAmwBwoE",
   YEARLY_PRICE_ID_TEST: "price_1SdH9HCSXuz1o7ASsWvUsbMX",
-  getYearlyPriceId: () => Config.isProd ? Price.YEARLY_PRICE_ID : Price.YEARLY_PRICE_ID_TEST
+  getYearlyPriceId: () => Config.isProd ? Price.YEARLY_PRICE_ID : Price.YEARLY_PRICE_ID_TEST,
+
+  ORG_LIFE_TIME_PRICE: "7777",
+  ORG_LIFE_TIME_PRICE_ID: "price_1SdH4iCEoRN5rFZ6OAmwBwoE",
+  ORG_LIFE_TIME_PRICE_ID_TEST: "price_1SfR7LCSXuz1o7ASRo34ykPg",
+  ORG_LIFE_TIME_COUPON_CODE: "CHURCH50OFF",
+  ORG_LIFE_TIME_COUPON_ID: "ihn1UBXW",
+  ORG_LIFE_TIME_COUPON_ID_TEST: "ihn1UBXW",
+  getORGLifeTimeCouponId: () => Config.isProd ? Price.ORG_LIFE_TIME_COUPON_ID : Price.ORG_LIFE_TIME_COUPON_ID_TEST,
+  getORGLieftTimePriceId: () => Config.isProd ? Price.ORG_LIFE_TIME_PRICE_ID : Price.ORG_LIFE_TIME_PRICE_ID_TEST
 }
 
 export default Price

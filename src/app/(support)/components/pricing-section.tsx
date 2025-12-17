@@ -17,33 +17,51 @@ import { toast } from "sonner";
 const tiers = [
   {
     name: "join.plans.monthly.title",
-    id: "tier-individuel",
+    id: "tier-personal",
     href: "#",
     price: Price.MONTHLY_PRICE,
     description: "join.plans.monthly.description",
     features: "join.plans.monthly.features",
     featured: false,
+    discount: null,
     priceId: Price.getMonthlyPriceId(),
   },
   {
     name: "join.plans.yearly.title",
-    id: "tier-individuel",
+    id: "tier-personal",
     href: "#",
     price: Price.YEARLY_PRICE,
     description: "gloryShare.hero.description",
     features: "join.plans.yearly.features",
     featured: false,
+    discount: null,
     priceId: Price.getYearlyPriceId(),
   },
   {
     name: "join.plans.lifeTime.title",
-    id: "tier-individuel",
+    id: "tier-personal",
     href: "#",
     price: Price.LIFE_TIME_PRICE,
     description: "gloryShare.hero.description",
     features: "join.plans.lifeTime.features",
-    featured: true,
+    discount: null,
     priceId: Price.getLiftTimePriceId(),
+  },
+  {
+    name: "join.plans.org.lifeTime.title",
+    id: "tier-organization",
+    href: "#",
+    price: Price.ORG_LIFE_TIME_PRICE,
+    description: "gloryShare.hero.description",
+    features: "join.plans.org.lifeTime.features",
+    featured: true,
+    discount: 0.5,
+    priceId: Price.getORGLieftTimePriceId(),
+    coupon: {
+      code: Price.ORG_LIFE_TIME_COUPON_CODE,
+      id: Price.getORGLifeTimeCouponId(),
+    },
+    promotion: "join.plans.org.lifeTime.promotion",
   },
 ];
 
@@ -61,10 +79,10 @@ export default function PriceSection() {
     }
   }, [canceled, t]);
 
-  const joinMutation = useMutation<string, Error, { priceId: string }>({
+  const joinMutation = useMutation<string, Error, { priceId: string; couponId: string | null }>({
     mutationKey: ["glory-share", "checkout"],
-    mutationFn: async ({ priceId }) => {
-      const payload = { uid: profile!.uid, email: profile!.email, priceId };
+    mutationFn: async ({ priceId, couponId }) => {
+      const payload = { uid: profile!.uid, email: profile!.email, priceId, couponId };
 
       const rawResponse = await fetch("/api/checkout_sessions", {
         method: "POST",
@@ -138,13 +156,15 @@ export default function PriceSection() {
         {renderTiers.map((tier, tierIdx) => {
           const features = t(tier.features, { returnObjects: true }) as string[];
           const isLifeTime = tier.name.includes("lifeTime");
+          const isOnSale = Boolean(tier.discount);
 
           return (
             <div
               key={tier.priceId}
               className={cn(
-                tier.featured ? "relative bg-gray-800" : "bg-white/2.5 lg:mx-0",
-                "rounded-3xl p-8 flex flex-col justify-between ring-1 ring-white/10 sm:p-10"
+                tier.featured ? "relative bg-gray-800" : "bg-white/2.5",
+                tier.id === "tier-organization" && "bg-primary-gradient-50",
+                "rounded-3xl p-8 flex flex-col justify-between ring-1 ring-white/10 sm:p-10 lg:mx-0"
               )}
             >
               <h3
@@ -156,15 +176,37 @@ export default function PriceSection() {
               >
                 {t(tier.name)}
               </h3>
-              <p className="flex items-baseline mt-4 gap-x-2">
+              {isOnSale && (
+                <p className="font-mono font-bold">
+                  {t(tier.promotion!, { code: tier.coupon!.code })}
+                </p>
+              )}
+              <p className="flex text-5xl items-baseline mt-4 gap-x-2">
+                <span>$</span>
                 <span
                   className={cn(
                     tier.featured ? "text-white" : "text-white",
-                    "text-5xl font-semibold tracking-tight"
+                    isOnSale && "text-4xl",
+                    "font-mono font-semibold tracking-tight"
                   )}
+                  style={
+                    isOnSale
+                      ? {
+                          textDecorationLine: "line-through",
+                          textDecorationColor: "red",
+                          textDecorationStyle: "wavy",
+                          textDecorationThickness: "5px",
+                        }
+                      : undefined
+                  }
                 >
-                  ${tier.price}
+                  {tier.price}
                 </span>
+                {isOnSale && (
+                  <span className="font-mono">
+                    {Math.floor(Number(tier.price) * tier.discount!)}
+                  </span>
+                )}
                 <span
                   className={cn(tier.featured ? "text-gray-400" : "text-gray-400", `text-base`)}
                 >
@@ -211,8 +253,10 @@ export default function PriceSection() {
                       router.push(`/signin?redirectTo=${currentPathname}`);
                       return;
                     }
+                    const couponId = tier.coupon?.id ? tier.coupon?.id : null;
+                    // const couponId = null;
 
-                    joinMutation.mutate({ priceId: tier.priceId });
+                    joinMutation.mutate({ priceId: tier.priceId, couponId });
                   }}
                 >
                   {joinMutation.isPending

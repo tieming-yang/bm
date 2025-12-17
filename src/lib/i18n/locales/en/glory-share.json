@@ -158,6 +158,9 @@
       "limitTimeOffer": "Lifetime Glory Share is open for a limited time. One offering, lifetime benefits."
     },
     "plans": {
+      "life": "/forever",
+      "month": "/month",
+      "year": "/year",
       "lifeTime": {
         "title": "Lifetime Glory Share",
         "features": [
@@ -185,9 +188,20 @@
           "30% off Bible gifts"
         ]
       },
-      "life": "/forever",
-      "month": "/month",
-      "year": "/year"
+      "org": {
+        "lifeTime": {
+          "title": "Organization Lifetime Glory Share",
+          "promotion": "Use code {{code}} for a limited-time half-price upgrade to Lifetime Glory Organization.",
+          "features": [
+            "Perpetual public performance rights to Beyond’s digital media and resources",
+            "Specially made children’s fellowship content",
+            "Organization collector’s edition gratitude gift set",
+            "Exclusive invitations to annual gatherings, private communities, behind-the-scenes, and premieres",
+            "Listed in the annual roster",
+            "40% off all group-buy Bible gifts"
+          ]
+        }
+      }
     }
   }
 }

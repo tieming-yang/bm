@@ -8,15 +8,15 @@ import Price from "@/models/prices";
 import Stripe from "stripe";
 
 export async function POST(request: NextRequest) {
-  const { uid, email, priceId } = await request.json();
+  const { uid, email, priceId, couponId } = await request.json();
   if (!priceId || !uid) {
     return NextResponse.json({ error: "Missing required fields: uid and priceId" }, { status: 400 });
   }
 
   let mode: Stripe.Checkout.Session.Mode;
-  console.log({ priceId });
 
-  if ([Price.LIFE_TIME_PRICE_ID, Price.LIFE_TIME_PRICE_ID_TEST].includes(priceId)) {
+  //TODO: add prduction price id
+  if ([Price.LIFE_TIME_PRICE_ID, Price.LIFE_TIME_PRICE_ID_TEST, Price.ORG_LIFE_TIME_PRICE_ID_TEST].includes(priceId)) {
     mode = "payment";
   } else if (
     [
@@ -30,13 +30,13 @@ export async function POST(request: NextRequest) {
   } else {
     return NextResponse.json({ error: "Unknown Price Id" }, { status: 400 });
   }
-  console.log({ mode });
+
   try {
     const headersList = await headers();
     const origin = headersList.get("origin") ?? headersList.get("referer") ?? "";
     if (!origin) throw new Error("Missing request origin");
 
-    const session = await stripe.checkout.sessions.create({
+    const sessionCreateParams: Stripe.Checkout.SessionCreateParams = {
       line_items: [
         {
           price: priceId,
@@ -51,8 +51,18 @@ export async function POST(request: NextRequest) {
         uid,
         email,
         priceId
-      },
-    });
+      }
+    }
+
+    if (couponId !== null) {
+      sessionCreateParams["discounts"] = [
+        {
+          coupon: couponId
+        }
+      ]
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionCreateParams);
     if (!session.url) throw new Error("Failed to create checkout session");
 
     return NextResponse.json({ url: session.url });
