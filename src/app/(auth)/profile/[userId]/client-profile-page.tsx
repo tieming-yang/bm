@@ -287,15 +287,18 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         </CardContent>
         {isOwnProfile && (
           <CardFooter className="flex justify-center flex-col gap-y-3">
-            <Button
-              variant={"secondary"}
-              className="px-8 rounded-full text-gray-900"
-              onClick={() => {
-                router.push("/glory-share/join");
-              }}
-            >
-              {tGloryShare("gloryShare.hero.primaryCta")}
-            </Button>
+            {!isGloryShareMember && (
+              <Button
+                variant={"secondary"}
+                className="px-8 rounded-full text-gray-900"
+                onClick={() => {
+                  router.push("/glory-share/join");
+                }}
+              >
+                {tGloryShare("gloryShare.hero.primaryCta")}
+              </Button>
+            )}
+
             <SignOutButton />
           </CardFooter>
         )}
