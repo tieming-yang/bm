@@ -25,6 +25,7 @@ type ProfileInput = {
 };
 
 type Profile = ProfileInput & {
+  accountType: AccountType;
   newsletterOptIn: boolean;
   memberDetails: MemberDetails;
   memberType: MemberType;
@@ -57,6 +58,12 @@ export const MemberType = {
   LiftTime: "lifeTime",
 } as const;
 export type MemberType = (typeof MemberType)[keyof typeof MemberType];
+
+export const AccountType = {
+  Personal: "personal",
+  Organization: "organization"
+} as const;
+export type AccountType = (typeof AccountType)[keyof typeof AccountType]
 
 type Subscription = {
   id: string;
@@ -91,11 +98,13 @@ const Profile = {
     if (await Profile.isExits(values.uid)) throw new Error("Profile existed");
 
     const profileRef = Profile.getRef(values.uid);
-    console.log({ profileRef });
+
     const data = await setDoc(
       profileRef,
       {
         ...values,
+        //? default to personal account, change to organization when purchase organization plan
+        accountType: AccountType.Personal,
         memberType: MemberType.Free,
         totalContributed: 0,
         newsletterOptIn: true,
