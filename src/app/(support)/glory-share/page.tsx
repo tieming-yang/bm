@@ -130,7 +130,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
                   onClick={() => {
                     if (!profile) {
                       toast.warning(t("gloryShare.toast.requestSignIn"));
-                      router.push(`/signin?redirectTo=${currentPathname}`);
+                      router.replace(`/signin?redirectTo=${currentPathname}`);
                       return;
                     }
 
