@@ -209,12 +209,16 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 </Button>
                 {profile?.subscriptions?.at(-1)?.status !== "canceled" ? (
                   <Dialog open={isCancelModalOpen}>
-                    <DialogTrigger
-                      className="w-full max-w-md"
-                      onClick={() => setIsCancelModelOpen((prev) => !prev)}
-                    >
-                      {t("gloryShareBadge.cancelGloryShare")}
-                    </DialogTrigger>
+                    {profile.memberType === "monthly" ||
+                      (profile.memberType === "yearly" && (
+                        <DialogTrigger
+                          className="w-full max-w-md"
+                          onClick={() => setIsCancelModelOpen((prev) => !prev)}
+                        >
+                          {t("gloryShareBadge.cancelGloryShare")}
+                        </DialogTrigger>
+                      ))}
+
                     <DialogContent className="font-mono">
                       <DialogHeader>
                         <DialogTitle>{t("gloryShareBadge.cancelGloryShareTitle")}</DialogTitle>
