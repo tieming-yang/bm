@@ -251,10 +251,12 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                     </DialogContent>
                   </Dialog>
                 ) : (
-                  <div>
-                    <span>{t("gloryShareBadge.gloryShareWillBeEndedAt")}</span>{" "}
-                    <span>{gloryShareEndAtString}</span>
-                  </div>
+                  profile?.memberType !== "lifeTime" && (
+                    <div>
+                      <span>{t("gloryShareBadge.gloryShareWillBeEndedAt")}</span>{" "}
+                      <span>{gloryShareEndAtString}</span>
+                    </div>
+                  )
                 )}
               </CardFooter>
             </div>
