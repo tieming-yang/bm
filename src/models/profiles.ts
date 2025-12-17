@@ -103,10 +103,6 @@ const Profile = {
       profileRef,
       {
         ...values,
-        //? default to personal account, change to organization when purchase organization plan
-        accountType: AccountType.Personal,
-        memberType: MemberType.Free,
-        totalContributed: 0,
         newsletterOptIn: true,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
