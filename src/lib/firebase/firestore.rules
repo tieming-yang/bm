@@ -9,14 +9,14 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
     function allowedProfileFields() {
-      return ['displayName', 'newsletterOptIn', 'photoURL', 'email'];
+      return ['displayName', 'newsletterOptIn', 'photoURL', 'email', 'createdAt', 'updatedAt'];
     }
 
     match /profiles/{uid} {
       allow read: if true;
 
       allow create: if isAdmin() ||
-        (isSelf(uid) && request.resource.data.keys().hasOnly(allowedProfileFields()));
+        (isSelf(uid) && request.resource.data.keys().hasAll(allowedProfileFields()));
 
       allow update: if isAdmin() ||
         (isSelf(uid) &&
