@@ -29,10 +29,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ClientProfilePage({ userId }: { userId: string }) {
+  const router = useRouter();
   const { authUser } = useAuthUser();
   const { t, currentLanguage } = useTranslation("settings");
+  const { t: tGloryShare } = useTranslation("glory-share");
 
   const [isCancelModalOpen, setIsCancelModelOpen] = useState(false);
 
@@ -287,6 +290,15 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         </CardContent>
         {isOwnProfile && (
           <CardFooter className="flex justify-center flex-col gap-y-3">
+            <Button
+              variant={"secondary"}
+              className="px-8 rounded-full text-gray-900"
+              onClick={() => {
+                router.push("/glory-share/join");
+              }}
+            >
+              {tGloryShare("gloryShare.hero.primaryCta")}
+            </Button>
             <SignOutButton />
           </CardFooter>
         )}
