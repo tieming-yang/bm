@@ -172,3 +172,7 @@
 @utility bg-primary-gradient-50 {
   @apply border-primary/50 bg-linear-to-br from-primary/50 via-background to-secondary/50 shadow-primary/10 backdrop-blur-lg;
 }
+
+@utility bg-glory-share {
+  @apply bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90
+}
