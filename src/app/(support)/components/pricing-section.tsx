@@ -44,6 +44,7 @@ const tiers = [
     price: Price.LIFE_TIME_PRICE,
     description: "gloryShare.hero.description",
     features: "join.plans.lifeTime.features",
+    featured: true,
     discount: null,
     priceId: Price.getLiftTimePriceId(),
   },
@@ -54,7 +55,7 @@ const tiers = [
     price: Price.ORG_LIFE_TIME_PRICE,
     description: "gloryShare.hero.description",
     features: "join.plans.org.lifeTime.features",
-    featured: true,
+    featured: false,
     discount: 0.5,
     priceId: Price.getORGLieftTimePriceId(),
     coupon: {
@@ -112,7 +113,7 @@ export default function PriceSection() {
   });
 
   const innerWidth = useInnerWidth();
-  const renderTiers = innerWidth && innerWidth >= 1280 ? [tiers[0], tiers[2], tiers[1]] : tiers;
+  const renderTiers = tiers;
 
   if (isProfileLoading) {
     return <Loading />;
@@ -147,10 +148,10 @@ export default function PriceSection() {
       </p>
       <div
         className={cn(
-          " max-w-3xl mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:gap-x-5 sm:mt-20 lg:max-w-4xl",
+          "mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:gap-x-5 sm:mt-20 xl:max-w-360",
           tiers.length === 1 && "md:grid-cols-1",
           tiers.length === 2 && "md:grid-cols-2",
-          tiers.length >= 3 && "md:grid-cols-2 xl:grid-cols-3"
+          tiers.length >= 3 && "md:grid-cols-2 xl:grid-cols-4"
         )}
       >
         {renderTiers.map((tier, tierIdx) => {
@@ -162,9 +163,9 @@ export default function PriceSection() {
             <div
               key={tier.priceId}
               className={cn(
-                tier.featured ? "relative bg-gray-800" : "bg-white/2.5",
-                tier.id === "tier-organization" && "bg-primary-gradient-50",
-                "rounded-3xl p-8 flex flex-col justify-between ring-1 ring-white/10 sm:p-10 lg:mx-0"
+                tier.featured ? "relative bg-primary-gradient-50" : "bg-white/2.5",
+                tier.id === "tier-organization" && "bg-primary-gradient-30",
+                "rounded-3xl py-10 px-5 flex flex-col justify-between ring-1 ring-white/10 lg:mx-0"
               )}
             >
               <h3
@@ -182,7 +183,7 @@ export default function PriceSection() {
                 </p>
               )}
               <p className="flex items-baseline mt-4 text-5xl gap-x-2 text-primary-foreground-gradient">
-                <span className="text-white">$</span>
+                <span className="text-white text-3xl">$</span>
                 <span
                   className={cn(
                     isOnSale &&
