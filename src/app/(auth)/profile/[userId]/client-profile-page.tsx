@@ -50,23 +50,6 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const isGloryShareMember = Profile.isGloryShareMember(profile);
   const locale = currentLanguage === "zh-TW" ? "zh-TW" : "en-US";
 
-  //FIXME use started At from subscription
-  // const joinedDate =
-  //   profile.joinedAt && typeof profile.joinedAt.toDate === "function"
-  //     ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(profile.joinedAt.toDate())
-  //     : null;
-
-  // const formattedAmount =
-  //   typeof gloryShare?.amount === "number"
-  //     ? new Intl.NumberFormat(locale, {
-  //         style: "currency",
-  //         currency: (gloryShare?.currency ?? "usd").toUpperCase(),
-  //       }).format(gloryShare.amount / 100)
-  //     : null;
-
-  const gloryPerks =
-    (t("gloryShareBadge.perks", { returnObjects: true }) as string[] | undefined) ?? [];
-
   const gloryShareEndAtSecs = profile?.subscriptions?.at(-1)?.currentPeriodEnd;
   const gloryShareEndAtDate = gloryShareEndAtSecs ? new Date(gloryShareEndAtSecs * 1000) : null;
   const gloryShareEndAtString = gloryShareEndAtDate
@@ -156,49 +139,12 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                     <CardTitle className="text-2xl text-white drop-shadow-[0_4px_15px_rgba(0,0,0,0.45)]">
                       {t("gloryShareBadge.title")}
                     </CardTitle>
-                    {/* {joinedDate && (
-                      <p className="text-sm text-purple-100">
-                        {t("gloryShareBadge.joinedAt", { date: joinedDate })}
-                      </p>
-                    )} */}
                   </div>
                 </div>
               </CardHeader>
 
               <CardContent className="text-sm text-purple-100 space-y-5">
                 <p className="text-base text-white">{t("gloryShareBadge.description")}</p>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  {/* {formattedAmount && (
-                    <div className="rounded-2xl border border-amber-300/40 bg-linear-to-br from-amber-200/15 to-transparent p-4 shadow-[0_0_20px_rgba(251,191,36,0.2)]">
-                      <p className="text-xs uppercase tracking-[0.35em] text-amber-200">
-                        {t("gloryShareBadge.amountLabel")}
-                      </p>
-                      <p className="text-lg font-semibold text-white">{formattedAmount}</p>
-                    </div>
-                  )}
-                  {gloryShare?.email && (
-                    <div className="rounded-2xl border border-purple-300/40 bg-linear-to-br from-purple-200/15 to-transparent p-4 shadow-[0_0_18px_rgba(192,132,252,0.25)]">
-                      <p className="text-xs uppercase tracking-[0.35em] text-purple-200">Email</p>
-                      <p className="text-lg font-semibold text-white">{gloryShare.email}</p>
-                    </div>
-                  )} */}
-                </div>
-
-                {/* Hide perks first */}
-                {/* 
-                {gloryPerks.length > 0 && (
-                  <ul className="grid gap-3 md:grid-cols-3">
-                    {gloryPerks.map((perk) => (
-                      <li
-                        key={perk}
-                        className="rounded-xl border border-primary/25 bg-gray-950/70 px-4 py-3 text-center text-sm text-white shadow-[0_0_18px_rgba(147,51,234,0.25)]"
-                      >
-                        {perk}
-                      </li>
-                    ))}
-                  </ul>
-                )} */}
               </CardContent>
               <CardFooter className="flex flex-col gap-y-2 items-center-safe">
                 <Button
