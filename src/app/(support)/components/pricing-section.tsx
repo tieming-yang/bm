@@ -138,11 +138,11 @@ export default function PriceSection() {
         <h2 className="font-semibold text-base/7 text-primary-foreground-gradient">
           {t("join.hero.plan")}
         </h2>
-        <p className="mt-2 text-2xl font-semibold tracking-wider sm:leading-20 text-white text-balance sm:text-6xl">
+        <p className="mt-2 text-2xl font-semibold tracking-wider text-white sm:leading-20 text-balance sm:text-6xl">
           {t("join.hero.title")}
         </p>
       </div>
-      <p className="max-w-3xl text-primary-foreground-gradient mx-auto mt-6 text-3xl font-medium text-center text-pretty">
+      <p className="max-w-3xl mx-auto mt-6 text-3xl font-medium text-center text-primary-foreground-gradient text-pretty">
         {t("join.hero.limitTimeOffer")}
       </p>
       <div
@@ -181,24 +181,14 @@ export default function PriceSection() {
                   {t(tier.promotion!, { code: tier.coupon!.code })}
                 </p>
               )}
-              <p className="flex text-5xl items-baseline mt-4 gap-x-2">
-                <span>$</span>
+              <p className="flex items-baseline mt-4 text-5xl gap-x-2 text-primary-foreground-gradient">
+                <span className="text-white">$</span>
                 <span
                   className={cn(
-                    tier.featured ? "text-white" : "text-white",
-                    isOnSale && "text-4xl",
+                    isOnSale &&
+                      "text-4xl line-through decoration-3 decoration-wavy decoration-pink-500",
                     "font-mono font-semibold tracking-tight"
                   )}
-                  style={
-                    isOnSale
-                      ? {
-                          textDecorationLine: "line-through",
-                          textDecorationColor: "red",
-                          textDecorationStyle: "wavy",
-                          textDecorationThickness: "5px",
-                        }
-                      : undefined
-                  }
                 >
                   {tier.price}
                 </span>
