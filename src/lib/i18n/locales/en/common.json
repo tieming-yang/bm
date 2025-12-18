@@ -1,4 +1,6 @@
 {
+  "organization": "Organization",
+  "personal": "Personal",
   "auth": {
     "noAccount": "New here?",
     "goToSignup": "Create an account",

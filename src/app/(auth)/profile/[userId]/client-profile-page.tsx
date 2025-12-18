@@ -36,6 +36,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const { authUser } = useAuthUser();
   const { t, currentLanguage } = useTranslation("settings");
   const { t: tGloryShare } = useTranslation("glory-share");
+  const { t: tCommon } = useTranslation("common");
 
   const [isCancelModalOpen, setIsCancelModelOpen] = useState(false);
 
@@ -232,6 +233,9 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
             </p>
             <p>
               <strong>{t("donator.name")}:</strong> {profile.displayName || ""}
+            </p>
+            <p>
+              <strong>{t("donator.type")}:</strong> {tCommon(`${profile.accountType}`) || ""}
             </p>
           </section>
         </CardContent>

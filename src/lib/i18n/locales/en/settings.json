@@ -8,7 +8,8 @@
     "email": "Email",
     "preferredLanguage": "Preferred Language",
     "newsletter": "Newsletter Subscription",
-    "total": "Total Donation"
+    "total": "Total Donation",
+    "type": "Type"
   },
   "donation": {
     "donate": "Donate"

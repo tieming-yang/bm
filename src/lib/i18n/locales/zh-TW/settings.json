@@ -8,7 +8,8 @@
     "email": "電子郵件",
     "preferredLanguage": "偏好語言",
     "newsletter": "訂閱電子報",
-    "total": "總捐款"
+    "total": "總捐款",
+    "type": "帳號類別"
   },
   "donation": {
     "donate": "捐款"

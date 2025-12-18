@@ -1,4 +1,6 @@
 {
+  "organization": "組織",
+  "personal": "個人",
   "auth": {
     "noAccount": "還沒有帳號？",
     "goToSignup": "馬上註冊",
