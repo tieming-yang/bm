@@ -43,7 +43,7 @@
   --color-popover: hsl(var(--popover));
   --color-popover-foreground: hsl(var(--popover-foreground));
 
-  --color-card: hsl(var(--card));
+  --color-card: var(--card);
   --color-card-foreground: hsl(var(--card-foreground));
 
   --radius-lg: var(--radius);
@@ -94,7 +94,7 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
+    --card: #131313;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
@@ -118,7 +118,7 @@
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: #131313;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -174,5 +174,5 @@
 }
 
 @utility bg-glory-share {
-  @apply bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90
+  @apply bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90;
 }
