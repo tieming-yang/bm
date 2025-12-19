@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   setDoc,
   Timestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import Stripe from "stripe";
@@ -35,6 +36,7 @@ type Profile = ProfileInput & {
   lastSubscriptionId?: string;
   subscriptions?: Subscription[];
   organizationEmail?: string;
+  organizationEmailUpdateCount?: number;
 }
 
 export interface MemberDetails {
@@ -128,6 +130,24 @@ const Profile = {
   async isExits(uid: string) {
     const snap = await Profile.getSnap(uid);
     return snap.exists();
+  },
+
+  async updateOrgEmail(values: { uid: string, organizationEmail: string, currentOrganizationEmailUpdateCount: number }) {
+    const { uid, organizationEmail, currentOrganizationEmailUpdateCount } = values
+    if (!(await Profile.isExits(uid))) throw new Error("Profile existed");
+
+    const profileRef = Profile.getRef(uid);
+
+    const data = await updateDoc(
+      profileRef,
+      {
+        organizationEmail,
+        organizationEmailUpdateCount: currentOrganizationEmailUpdateCount + 1,
+        updatedAt: serverTimestamp(),
+      },
+    );
+
+    return data;
   },
 
   /**

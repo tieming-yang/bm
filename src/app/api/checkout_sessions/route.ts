@@ -15,8 +15,7 @@ export async function POST(request: NextRequest) {
 
   let mode: Stripe.Checkout.Session.Mode;
 
-  //TODO: add prduction price id
-  if ([Price.LIFE_TIME_PRICE_ID, Price.LIFE_TIME_PRICE_ID_TEST, Price.ORG_LIFE_TIME_PRICE_ID_TEST].includes(priceId)) {
+  if ([Price.LIFE_TIME_PRICE_ID, Price.LIFE_TIME_PRICE_ID_TEST, Price.ORG_LIFE_TIME_PRICE_ID, Price.ORG_LIFE_TIME_PRICE_ID_TEST].includes(priceId)) {
     mode = "payment";
   } else if (
     [

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe, STRIPE_WEBHOOK_SECRET } from "@/lib/stripe";
 import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
-import { AccountType, MemberType } from "@/models/profiles";
+import Profile, { AccountType, MemberType } from "@/models/profiles";
 import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
@@ -30,8 +30,9 @@ export async function POST(req: NextRequest) {
         // console.log(session)
         // console.log("========================session=====================")
         const uid = session.metadata?.uid;
-        if (!uid) {
-          throw new Error(`Missing Uid in ${event.type}`)
+        const email = session.metadata?.email;
+        if (!uid || !email) {
+          throw new Error(`Missing Uid or Email in ${event.type}`)
         }
 
         const memberDetails = {
@@ -65,10 +66,12 @@ export async function POST(req: NextRequest) {
             lastTransactionId: transactionRef.id,
             memberDetails,
             updatedAt: FieldValue.serverTimestamp()
-          }
+          } as Profile
 
           if (session.amount_total === 388850 || session.amount_total === 777700) {
             updates["accountType"] = AccountType.Organization
+            updates["organizationEmail"] = email
+            updates["organizationEmailUpdateCount"] = 0
           }
 
           await Promise.all([

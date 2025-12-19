@@ -28,9 +28,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
+type Modal = "none" | "cancel" | "save";
+type ErrorValues = { isError: boolean; message: string | null };
+type Errors = Record<string, ErrorValues>;
 export default function ClientProfilePage({ userId }: { userId: string }) {
   const router = useRouter();
   const { authUser } = useAuthUser();
@@ -38,7 +43,16 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const { t: tGloryShare } = useTranslation("glory-share");
   const { t: tCommon } = useTranslation("common");
 
-  const [isCancelModalOpen, setIsCancelModelOpen] = useState(false);
+  const [modal, setModal] = useState<Modal>("none");
+  const [errors, setErrors] = useState<Errors>({
+    email: {
+      isError: false,
+      message: null,
+    },
+  });
+  const [updates, setUpdates] = useState({
+    organizationEmail: "",
+  });
 
   const query = useQueryClient();
   const { data: profile, isLoading } = useQuery({
@@ -46,6 +60,14 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     queryFn: () => Profile.get(userId),
     enabled: !!userId,
   });
+
+  useEffect(() => {
+    if (!profile || !profile.email) return;
+
+    setUpdates({
+      organizationEmail: profile.organizationEmail ? profile.organizationEmail : profile.email,
+    });
+  }, [profile]);
 
   const isOwnProfile = profile && authUser?.uid === profile.uid;
   const isGloryShareMember = Profile.isGloryShareMember(profile);
@@ -56,6 +78,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const gloryShareEndAtString = gloryShareEndAtDate
     ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(gloryShareEndAtDate)
     : "";
+  const hasOrgEmailUpdated = profile && (profile.organizationEmailUpdateCount ?? 0) > 0;
 
   const cancelMutation = useMutation<
     { uid: string },
@@ -89,7 +112,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
       return { uid };
     },
     onSuccess: (result) => {
-      setIsCancelModelOpen((prev) => !prev);
+      setModal("none");
       toast.success(t("gloryShareBadge.toast.cancelSuccessfully"));
       query.invalidateQueries({
         queryKey: QueryKey.profile(result.uid),
@@ -97,12 +120,52 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     },
     onError: (error) => {
       console.error(error);
-      setIsCancelModelOpen((prev) => !prev);
+      setModal("none");
       if (error.message.includes("No such subscription:")) {
         toast.warning(t("gloryShareBadge.toast.canceledAlready"));
         return;
       }
       toast.error(t("gloryShareBadge.toast.cancelFailed"));
+    },
+  });
+
+  const saveMutation = useMutation({
+    mutationKey: ["profile"],
+    mutationFn: async ({
+      uid,
+      updatedOrgEmail,
+      currentCount,
+    }: {
+      uid: string;
+      updatedOrgEmail: string;
+      currentCount: number;
+    }) => {
+      assertIsDefined(uid);
+      assertIsDefined(updatedOrgEmail);
+
+      try {
+        await Profile.updateOrgEmail({
+          uid,
+          organizationEmail: updatedOrgEmail,
+          currentOrganizationEmailUpdateCount: currentCount,
+        });
+      } catch (error) {
+        throw error;
+      }
+
+      return { uid };
+    },
+    onSuccess: (result) => {
+      setModal("none");
+      toast.success(t("organization.toast.success"));
+      query.invalidateQueries({
+        queryKey: QueryKey.profile(result.uid),
+      });
+    },
+    onError: (error) => {
+      console.error(error);
+      setModal("none");
+      toast.error(t("organization.toast.error"));
     },
   });
 
@@ -155,12 +218,13 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                   <Link href="/glory-share">{t("gloryShareBadge.cta")}</Link>
                 </Button>
                 {profile?.subscriptions?.at(-1)?.status !== "canceled" ? (
-                  <Dialog open={isCancelModalOpen}>
+                  <Dialog open={modal === "cancel"}>
                     {profile.memberType === "monthly" ||
                       (profile.memberType === "yearly" && (
                         <DialogTrigger
+                          id="cancel"
                           className="w-full max-w-md"
-                          onClick={() => setIsCancelModelOpen((prev) => !prev)}
+                          onClick={() => setModal("cancel")}
                         >
                           {t("gloryShareBadge.cancelGloryShare")}
                         </DialogTrigger>
@@ -191,10 +255,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                           {t("gloryShareBadge.cancelGloryShare")}
                         </Button>
                         <DialogClose asChild>
-                          <Button
-                            variant="default"
-                            onClick={() => setIsCancelModelOpen((prev) => !prev)}
-                          >
+                          <Button variant="default" onClick={() => setModal("none")}>
                             {t("gloryShareBadge.continueSupport")}
                           </Button>
                         </DialogClose>
@@ -252,11 +313,134 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 {tGloryShare("gloryShare.hero.primaryCta")}
               </Button>
             )}
-
             <SignOutButton />
           </CardFooter>
         )}
       </Card>
+
+      {/* Organization settings */}
+      {isOwnProfile && isGloryShareMember && profile.accountType === "organization" && (
+        <Card className="w-full max-w-3xl">
+          <CardHeader>
+            <CardTitle>{t("organization.title")}</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 place-self-center-safe gap-6">
+            <section className="space-y-4">
+              <div className="flex flex-col items-start md:flex-row gap-2">
+                <Label htmlFor="organization-email" className="basis-1/3 text-xl">
+                  {t("organization.emailLabel")}
+                </Label>
+                <div className="flex flex-col gap-2 w-full">
+                  <Input
+                    id="organization-email"
+                    className="flex-1 font-mono w-full"
+                    type="email"
+                    value={updates.organizationEmail}
+                    disabled={hasOrgEmailUpdated}
+                    onChange={(e) => {
+                      const updates = e.target.value;
+                      const emailRegex = /^.+@.+\..+$/;
+                      const isEmail = emailRegex.test(updates.trim());
+
+                      let newError: ErrorValues = {
+                        isError: false,
+                        message: null,
+                      };
+                      if (!isEmail) {
+                        newError.isError = true;
+                        newError.message = "organization.invalidEmailFormat";
+                      }
+                      setErrors((prev) => {
+                        return {
+                          ...prev,
+                          email: newError,
+                        };
+                      });
+
+                      setUpdates((prev) => ({ ...prev, organizationEmail: updates }));
+                    }}
+                  ></Input>
+                  {errors.email.isError && (
+                    <p className="text-red-700">{t(errors.email.message ?? "")}</p>
+                  )}
+                </div>
+              </div>
+              <p>{t("organization.emailInstructionPrimary")}</p>
+              <div className="text-foreground/90">
+                <p className="italic">{t("organization.emailInstructionDefault")}</p>
+                <p className="italic">
+                  {t("organization.emailChangeLimitPrefix")}
+                  <span className="text-red-500">
+                    {t("organization.emailChangeLimitHighlight")}
+                  </span>
+                  {t("organization.emailChangeLimitSuffix")}
+                </p>
+              </div>
+            </section>
+          </CardContent>
+
+          <CardFooter className="flex justify-center flex-col gap-y-3">
+            {!hasOrgEmailUpdated ? (
+              <Dialog open={modal === "save"}>
+                <Button
+                  variant={"default"}
+                  disabled={updates.organizationEmail === profile.organizationEmail || updates.organizationEmail === ""}
+                  onClick={() => {
+                    const hasError = Object.values(errors).every((error) => error.isError === true);
+                    if (hasError) {
+                      toast.error(t("organization.invalidInputTitle"), {
+                        description: t("organization.invalidInputDescription"),
+                      });
+
+                      return;
+                    }
+
+                    setModal("save");
+                  }}
+                >
+                  {t("organization.save")}
+                </Button>
+
+                <DialogContent className="font-mono">
+                  <DialogHeader>
+                    <DialogTitle>{t("organization.confirmSaveTitle")}</DialogTitle>
+                    <DialogDescription>
+                      {t("organization.confirmSaveDescription")}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      variant={"default"}
+                      onClick={() => {
+                        if (!profile || profile.organizationEmailUpdateCount === undefined) {
+                          return;
+                        }
+
+                        saveMutation.mutate({
+                          uid: profile.uid,
+                          updatedOrgEmail: updates.organizationEmail,
+                          currentCount: profile.organizationEmailUpdateCount,
+                        });
+                      }}
+                    >
+                      {t("organization.confirmSaveCta")}
+                    </Button>
+                    <DialogClose asChild>
+                      <Button variant="secondary" onClick={() => setModal("none")}>
+                        {t("organization.cancel")}
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <div className="text-xl">
+                <p>{t("organization.limitReached")}</p>
+              </div>
+            )}
+          </CardFooter>
+        </Card>
+      )}
     </motion.div>
   );
 }

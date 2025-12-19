@@ -36,5 +36,27 @@
       "cancelFailed": "Cancellation failed. Please try again later or contact us via our official email. Thank you!",
       "canceledAlready": "Your Glory Share has canceled already"
     } 
+  },
+  "organization": {
+    "title": "Organization Settings",
+    "save": "Save",
+    "emailLabel": "Organization email:",
+    "emailInstructionPrimary": "Please double check the organization email. All commissioned content will be sent there and can only be viewed via that address.",
+    "emailInstructionDefault": "The default email is the one you used to sign up.",
+    "emailChangeLimitPrefix": "You can only change this email ",
+    "emailChangeLimitHighlight": "once",
+    "emailChangeLimitSuffix": "; after saving, it cannot be modified again.",
+    "invalidInputTitle": "Invalid input",
+    "invalidInputDescription": "Please double check your inputs.",
+    "confirmSaveTitle": "Are you sure you want to save the new email?",
+    "confirmSaveDescription": "Once saved, it cannot be changed again.",
+    "confirmSaveCta": "Save changes",
+    "cancel": "Cancel",
+    "limitReached": "Organization email change limit reached",
+    "invalidEmailFormat": "Invalid email format",
+    "toast": {
+      "success": "Organization email updated successfully",
+      "error": "Failed to update organization email. Please try again later."
+    }
   }
-}
+} 
