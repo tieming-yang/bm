@@ -29,7 +29,7 @@
   --color-primary-foreground: hsl(var(--primary-foreground));
 
   --color-secondary: var(--secondary);
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-foreground: var(--secondary-foreground);
 
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
@@ -102,7 +102,7 @@
     --primary: #9eb8a4; /* Using hex for primary color */
     --primary-foreground: 240 50% 3%;
     --secondary: #edc043;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary-foreground:#131313; 
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
     --accent: 240 4.8% 95.9%;
@@ -125,7 +125,7 @@
     --primary: #98a68a;
     --primary-foreground: 355 100% 97%;
     --secondary: #f1d7a4;
-    --secondary-foreground: 0 0% 98%;
+    --secondary-foreground: #131313;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
     --accent: 240 3.7% 15.9%;

@@ -34,6 +34,7 @@ type Profile = ProfileInput & {
   lastTransactionId?: string;
   lastSubscriptionId?: string;
   subscriptions?: Subscription[];
+  organizationEmail?: string;
 }
 
 export interface MemberDetails {
