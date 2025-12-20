@@ -1,9 +1,9 @@
 "use client";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, progressPercentage } from "framer-motion";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import Loading from "@/app/loading";
 import useAuthUser from "@/hooks/use-auth-user";
@@ -11,12 +11,12 @@ import useTranslation from "@/hooks/use-translation";
 import Profile from "@/models/profiles";
 import { QueryKey } from "@/utils/query-keys";
 
-import SignOutButton from "../../signout/signout-button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { assertIsDefined } from "@/lib/utils";
+import { toast } from "sonner";
+import SignOutButton from "../../signout/signout-button";
 
 import {
   Dialog,
@@ -28,10 +28,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Modal = "none" | "cancel" | "save";
 type ErrorValues = { isError: boolean; message: string | null };
@@ -384,7 +384,10 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
               <Dialog open={modal === "save"}>
                 <Button
                   variant={"default"}
-                  disabled={updates.organizationEmail === profile.organizationEmail || updates.organizationEmail === ""}
+                  disabled={
+                    updates.organizationEmail === profile.organizationEmail ||
+                    updates.organizationEmail === ""
+                  }
                   onClick={() => {
                     const hasError = Object.values(errors).every((error) => error.isError === true);
                     if (hasError) {
