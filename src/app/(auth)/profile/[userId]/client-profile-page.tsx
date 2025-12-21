@@ -32,6 +32,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Auth from "@/models/auth";
 
 type Modal = "none" | "cancel" | "save";
 type ErrorValues = { isError: boolean; message: string | null };
@@ -133,21 +134,25 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     mutationKey: ["profile"],
     mutationFn: async ({
       uid,
-      updatedOrgEmail,
-      currentCount,
+      newOrganizationEmail,
     }: {
       uid: string;
-      updatedOrgEmail: string;
+      newOrganizationEmail: string;
       currentCount: number;
     }) => {
       assertIsDefined(uid);
-      assertIsDefined(updatedOrgEmail);
+      assertIsDefined(newOrganizationEmail);
 
       try {
-        await Profile.updateOrgEmail({
-          uid,
-          organizationEmail: updatedOrgEmail,
-          currentOrganizationEmailUpdateCount: currentCount,
+        const token = await Auth.user?.getIdToken();
+
+        await fetch(`/api/profiles/${uid}/organization-email`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ newOrganizationEmail }),
         });
       } catch (error) {
         throw error;
@@ -421,7 +426,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
                         saveMutation.mutate({
                           uid: profile.uid,
-                          updatedOrgEmail: updates.organizationEmail,
+                          newOrganizationEmail: updates.organizationEmail,
                           currentCount: profile.organizationEmailUpdateCount,
                         });
                       }}
