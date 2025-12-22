@@ -14,7 +14,7 @@ import enBooks from "./locales/en/books.json";
 import enGloryShare from "./locales/en/glory-share.json";
 import enDailyGraceSnacks from "./locales/en/daily-grace-snacks.json";
 import enBeyondMusic from "./locales/en/beyond-music.json";
-import enBibleGifts from "./locales/en/bible-gifts.json";
+import enBibleProducts from "./locales/en/bible-products.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
@@ -27,7 +27,7 @@ import zhBooks from "./locales/zh-TW/books.json";
 import zhGloryShare from "./locales/zh-TW/glory-share.json";
 import zhDailyGraceSnacks from "./locales/zh-TW/daily-grace-snacks.json";
 import zhBeyondMusic from "./locales/zh-TW/beyond-music.json";
-import zhBibleGifts from "./locales/zh-TW/bible-gifts.json";
+import zhBibleProducts from "./locales/zh-TW/bible-products.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -44,7 +44,7 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhGloryShare, "zh-TW/glory-share.json");
   verifyTranslationEncoding(zhDailyGraceSnacks, "zh-TW/daily-grace-snacks.json");
   verifyTranslationEncoding(zhBeyondMusic, "zh-TW/beyond-music.json");
-  verifyTranslationEncoding(zhBibleGifts, "zh-TW/bible-gifts.json");
+  verifyTranslationEncoding(zhBibleProducts, "zh-TW/bible-products.json");
 }
 
 // Initialize i18n instance
@@ -64,7 +64,7 @@ i18n
         "glory-share": enGloryShare,
         "daily-grace-snacks": enDailyGraceSnacks,
         "beyond-music": enBeyondMusic,
-        "bible-gifts": enBibleGifts,
+        "bible-products": enBibleProducts,
       },
       "zh-TW": {
         common: zhCommon,
@@ -77,7 +77,7 @@ i18n
         "glory-share": zhGloryShare,
         "daily-grace-snacks": zhDailyGraceSnacks,
         "beyond-music": zhBeyondMusic,
-        "bible-gifts": zhBibleGifts,
+        "bible-products": zhBibleProducts,
       },
     },
     fallbackLng: "zh-TW",

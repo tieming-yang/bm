@@ -10,13 +10,13 @@ const collectionItems = [
   { key: "print", accent: "from-primary/10 via-background to-secondary/5" },
 ] as const;
 
-export default function BibleGiftsPage() {
-  const { t } = useTranslation("bible-gifts");
+export default function bibleProductsPage() {
+  const { t } = useTranslation("bible-products");
   const [activeHash, setActiveHash] = useState<string>("#overview");
   const navLinks = [
-    { href: "#overview", label: t("bibleGifts.navigation.overview") },
-    { href: "#collections", label: t("bibleGifts.navigation.collections") },
-    { href: "#customization", label: t("bibleGifts.navigation.customization") },
+    { href: "#overview", label: t("bibleProducts.navigation.overview") },
+    { href: "#collections", label: t("bibleProducts.navigation.collections") },
+    { href: "#customization", label: t("bibleProducts.navigation.customization") },
   ];
 
   return (
@@ -45,15 +45,15 @@ export default function BibleGiftsPage() {
             ))}
           </div>
           <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-primary">
-            {t("bibleGifts.badge")}
+            {t("bibleProducts.badge")}
           </span>
           <div className="space-y-4">
             <h1 className="text-4xl font-semibold leading-tight text-balance md:text-5xl">
-              {t("bibleGifts.hero.title")}
+              {t("bibleProducts.hero.title")}
             </h1>
-            <p className="text-lg text-muted-foreground">{t("bibleGifts.hero.subtitle")}</p>
+            <p className="text-lg text-muted-foreground">{t("bibleProducts.hero.subtitle")}</p>
           </div>
-          <p className="text-sm text-muted-foreground">{t("bibleGifts.hero.ctaNote")}</p>
+          <p className="text-sm text-muted-foreground">{t("bibleProducts.hero.ctaNote")}</p>
         </div>
         <div className="absolute inset-0 pointer-events-none -z-10 opacity-30">
           <div className="absolute inset-y-0 right-0 w-1/2 rounded-l-full bg-gradient-to-r from-transparent via-primary/20 to-primary/40 blur-3xl" />
@@ -70,9 +70,9 @@ export default function BibleGiftsPage() {
         </div>
         <div className="max-w-5xl space-y-8">
           <div className="space-y-3">
-            <h3 className="text-3xl font-semibold">{t("bibleGifts.collections.title")}</h3>
+            <h3 className="text-3xl font-semibold">{t("bibleProducts.collections.title")}</h3>
             <p className="text-lg text-muted-foreground">
-              {t("bibleGifts.collections.description")}
+              {t("bibleProducts.collections.description")}
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -83,10 +83,10 @@ export default function BibleGiftsPage() {
               >
                 <div className="space-y-3">
                   <h4 className="text-2xl font-semibold">
-                    {t(`bibleGifts.collections.lines.${item.key}.title`)}
+                    {t(`bibleProducts.collections.lines.${item.key}.title`)}
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    {t(`bibleGifts.collections.lines.${item.key}.description`)}
+                    {t(`bibleProducts.collections.lines.${item.key}.description`)}
                   </p>
                 </div>
               </div>
@@ -103,21 +103,23 @@ export default function BibleGiftsPage() {
           <div className="absolute inset-y-0 left-0 w-1/3 rounded-r-full bg-gradient-to-r from-secondary/40 via-secondary/20 to-transparent blur-3xl" />
         </div>
         <div className="max-w-3xl space-y-6">
-          <h3 className="text-3xl font-semibold">{t("bibleGifts.customization.title")}</h3>
-          <p className="text-lg text-muted-foreground">{t("bibleGifts.customization.message")}</p>
+          <h3 className="text-3xl font-semibold">{t("bibleProducts.customization.title")}</h3>
+          <p className="text-lg text-muted-foreground">
+            {t("bibleProducts.customization.message")}
+          </p>
           <div className="flex flex-wrap gap-3">
             <Button size="lg" className="rounded-full" asChild>
-              <a href="/contact?from=bible-gifts&intent=catalog">
-                {t("bibleGifts.customization.ctaPrimary")}
+              <a href="/contact?from=bible-products&intent=catalog">
+                {t("bibleProducts.customization.ctaPrimary")}
               </a>
             </Button>
             <Button size="lg" variant="outline" className="rounded-full" asChild>
-              <a href="/contact?from=bible-gifts&intent=consultation">
-                {t("bibleGifts.customization.ctaSecondary")}
+              <a href="/contact?from=bible-products&intent=consultation">
+                {t("bibleProducts.customization.ctaSecondary")}
               </a>
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">{t("bibleGifts.customization.note")}</p>
+          <p className="text-sm text-muted-foreground">{t("bibleProducts.customization.note")}</p>
         </div>
       </section>
     </div>

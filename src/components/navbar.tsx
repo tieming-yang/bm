@@ -24,7 +24,7 @@ export const navRoutes = [
     href: "/daily-grace-snacks",
     label: (t: TFunction<string, undefined>) => t("nav.dailyGraceSnacks"),
   },
-  { href: "/bible-gifts", label: (t: TFunction<string, undefined>) => t("nav.bibleGifts") },
+  { href: "/bible-products", label: (t: TFunction<string, undefined>) => t("nav.bibleProducts") },
   { href: "/contact", label: (t: TFunction<string, undefined>) => t("nav.contact") },
   // { href: "/donate", label:(t: TFunction<string, undefined>) => t("nav.donate") },
   // { href: "/signin", label:(t: TFunction<string, undefined>) => t("nav.signin") },
