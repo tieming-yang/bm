@@ -1,16 +1,7 @@
+import { ApiError } from "@/app/api/api";
 import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import Profile from "@/models/profiles";
 import { NextRequest, NextResponse } from "next/server";
-
-
-class ApiError extends Error {
-  status: number;
-
-  constructor(status: number, message: string) {
-    super(message)
-    this.status = status
-  }
-}
 
 function getBearerToken(request: NextRequest) {
   const authorization = request.headers.get("authorization")
