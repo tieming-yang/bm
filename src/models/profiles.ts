@@ -25,6 +25,12 @@ type ProfileInput = {
   favoriteArtworks?: string[];
 };
 
+export const Role = {
+  Admin: "admin",
+  User: "user",
+} as const;
+export type Role = (typeof Role)[keyof typeof Role];
+
 type Profile = ProfileInput & {
   accountType: AccountType;
   newsletterOptIn: boolean;
@@ -32,6 +38,7 @@ type Profile = ProfileInput & {
   memberType: MemberType;
   updatedAt: Timestamp;
   createdAt: Timestamp;
+  role: Role;
   lastTransactionId?: string;
   lastSubscriptionId?: string;
   subscriptions?: Subscription[];

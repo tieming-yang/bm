@@ -1,3 +1,4 @@
+import { assertIsDefined } from "@/lib/utils"
 import Config from "./config"
 
 const Price = {
@@ -23,7 +24,13 @@ const Price = {
   ORG_LIFE_TIME_COUPON_ID: "1PH8KtEe",
   ORG_LIFE_TIME_COUPON_ID_TEST: "ihn1UBXW",
   getORGLifeTimeCouponId: () => Config.isProd ? Price.ORG_LIFE_TIME_COUPON_ID : Price.ORG_LIFE_TIME_COUPON_ID_TEST,
-  getORGLieftTimePriceId: () => Config.isProd ? Price.ORG_LIFE_TIME_PRICE_ID : Price.ORG_LIFE_TIME_PRICE_ID_TEST
+  getORGLieftTimePriceId: () => Config.isProd ? Price.ORG_LIFE_TIME_PRICE_ID : Price.ORG_LIFE_TIME_PRICE_ID_TEST,
+
+  toDollars: (cents: number) => {
+    assertIsDefined(cents)
+
+    return cents / 100
+  }
 }
 
 export default Price
