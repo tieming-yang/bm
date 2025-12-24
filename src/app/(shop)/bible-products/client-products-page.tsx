@@ -1,3 +1,5 @@
+"use client";
+
 import Loading from "@/app/loading";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
@@ -8,15 +10,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Config from "@/models/config";
-import Product, { ProductStatus } from "@/models/products";
+import Product from "@/models/products";
 import { QueryKey } from "@/utils/query-keys";
 import { useQuery } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Price from "../../../models/prices";
+import Price from "@/models/prices";
+import { useShoppingCart, useShoppingCartSetter } from "@/providers/shopping-cart-provider";
 
 export default function ClientProductsPage() {
+  const shoppingCart = useShoppingCart();
+  const setShoppingCart = useShoppingCartSetter();
+
   const {
     data: products,
     isPending,
@@ -25,6 +30,7 @@ export default function ClientProductsPage() {
     queryKey: [QueryKey.products],
     queryFn: () => Product.getAll(),
   });
+
   if (isPending) {
     return <Loading />;
   }
@@ -55,10 +61,15 @@ export default function ClientProductsPage() {
 
                 <CardFooter className="flex flex-col gap-5 justify-between">
                   <p className="text-2xl">
-                    <span>$</span>{" "}
-                    <span className="text-3xl">{Price.toDollars(price)}</span>
+                    <span>$</span> <span className="text-3xl">{Price.toDollars(price)}</span>
                   </p>
-                  <Button>加入購物車</Button>
+                  <Button
+                    onClick={() => {
+                      setShoppingCart((prev) => [...prev, product]);
+                    }}
+                  >
+                    加入購物車
+                  </Button>
                 </CardFooter>
               </Card>
             </li>

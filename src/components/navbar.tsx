@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, User } from "lucide-react";
+import { Moon, ShoppingCartIcon, Sun, User } from "lucide-react";
 
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
@@ -13,6 +13,7 @@ import useTranslation from "../hooks/use-translation";
 import useAuthUser from "@/hooks/use-auth-user";
 import { Button, topGlowBorder } from "@/components/ui/button";
 import { TFunction } from "i18next";
+import { useShoppingCart } from "@/providers/shopping-cart-provider";
 
 export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
@@ -36,6 +37,8 @@ export default function Navbar() {
   const { t } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const shoppingCart = useShoppingCart();
 
   useEffect(() => {
     setIsMounted(true);
@@ -92,7 +95,7 @@ export default function Navbar() {
 
           <section className="z-50 flex gap-2">
             {isMounted && (
-              <>
+              <div className="flex gap-x-5">
                 <LanguageSwitcher />
                 {authUser ? (
                   <Link
@@ -108,7 +111,18 @@ export default function Navbar() {
                     <Button variant={"outline"}>{t("nav.signin")}</Button>
                   </Link>
                 )}
-              </>
+
+                <Link href={"/cart"}>
+                  <Button size={"icon"} variant={"secondary"} className="relative">
+                    {shoppingCart.length > 0 && (
+                      <span className="absolute font-mono -top-3 -right-3 inline-flex min-w-7 h-7 items-center justify-center rounded-full bg-red-500/70 backdrop-blur-3xl px-1 text-md font-semibold text-white">
+                        {shoppingCart.length}
+                      </span>
+                    )}
+                    <ShoppingCartIcon />
+                  </Button>
+                </Link>
+              </div>
             )}
           </section>
           <button

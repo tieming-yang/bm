@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import "../lib/i18n";
 import { motion } from "framer-motion";
+import ShoppingCartProvider from "@/providers/shopping-cart-provider";
 
 function ClientRoot({ children }: React.PropsWithChildren) {
   const pathname = usePathname();
@@ -16,7 +17,7 @@ function ClientRoot({ children }: React.PropsWithChildren) {
         animate={{ opacity: 0, backdropFilter: "blur(0px)" }}
         transition={{ duration: 1.5, ease: "easeOut" }}
       />
-      {children}
+      <ShoppingCartProvider>{children}</ShoppingCartProvider>
     </motion.div>
   );
 }
