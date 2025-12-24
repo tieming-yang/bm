@@ -94,16 +94,6 @@ export default function Navbar() {
             {isMounted && (
               <>
                 <LanguageSwitcher />
-                {/* Theme Toggle */}
-                {/* <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="rounded-full"
-                >
-                  {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
-                  <span className="sr-only">Toggle theme</span>
-                </Button> */}
                 {authUser ? (
                   <Link
                     href={`/profile/${authUser.uid}`}
