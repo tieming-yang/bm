@@ -128,12 +128,6 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
                   size="lg"
                   className="px-8 rounded-full"
                   onClick={() => {
-                    if (!profile) {
-                      toast.warning(t("gloryShare.toast.requestSignIn"));
-                      router.replace(`/signin?redirectTo=${currentPathname}`);
-                      return;
-                    }
-
                     router.push("/glory-share/join");
                   }}
                 >
