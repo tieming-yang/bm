@@ -32,5 +32,10 @@ service cloud.firestore {
         allow delete: if isAdmin();
       }
     }
+
+    match /coupons/{accountType} {
+      allow get: if isAdmin();
+      allow write: if isAdmin();
+    }
   }
 }
