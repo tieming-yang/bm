@@ -21,7 +21,7 @@ import { useShoppingCart, useShoppingCartSetter } from "@/providers/shopping-car
 export default function ClientProductsPage() {
   const shoppingCart = useShoppingCart();
   const setShoppingCart = useShoppingCartSetter();
-
+  console.log({ shoppingCart });
   const {
     data: products,
     isPending,
@@ -65,7 +65,13 @@ export default function ClientProductsPage() {
                   </p>
                   <Button
                     onClick={() => {
-                      setShoppingCart((prev) => [...prev, product]);
+                      setShoppingCart((prev) => {
+                        const nextQuantity = (prev[priceId]?.quantity ?? 0) + 1;
+                        return {
+                          ...prev,
+                          [priceId]: { quantity: nextQuantity, product },
+                        };
+                      });
                     }}
                   >
                     加入購物車

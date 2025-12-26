@@ -8,7 +8,7 @@ export const ProductStatus = {
 } as const;
 export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
 
-type Product = {
+export type Product = {
   id: string;
   name: string;
   slug: string;

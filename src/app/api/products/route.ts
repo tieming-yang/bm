@@ -71,12 +71,16 @@ export async function GET() {
 
     const withPrice = await Promise.all(
       entries.map(async (entry) => {
+        if (!entry.priceId) return null;
         const price = await stripe.prices.retrieve(entry.priceId) as Stripe.Price
         return { ...entry, price: price.unit_amount }
       })
     )
+    const filtered = withPrice.filter(
+      (item): item is NonNullable<typeof item> => item !== null
+    );
 
-    return NextResponse.json(withPrice);
+    return NextResponse.json(filtered);
   } catch (error) {
     console.error("Error fetching songs:", error);
     return NextResponse.json({ error: "Failed to fetch songs" }, { status: 500 });

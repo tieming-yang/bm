@@ -61,6 +61,7 @@ export async function POST(req: NextRequest) {
         const transactionRef = profileRef.collection("transactions").doc(session.id);
 
         if (session.mode === "payment") {
+          //TODO: Separate membership and product
           const updates = {
             memberType: MemberType.LiftTime,
             lastTransactionId: transactionRef.id,

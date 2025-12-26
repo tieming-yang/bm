@@ -14,6 +14,7 @@ import useAuthUser from "@/hooks/use-auth-user";
 import { Button, topGlowBorder } from "@/components/ui/button";
 import { TFunction } from "i18next";
 import { useShoppingCart } from "@/providers/shopping-cart-provider";
+import Cart from "@/models/cart";
 
 export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
@@ -42,6 +43,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const shoppingCart = useShoppingCart();
+  const cartItems = Cart.getItemsCount(shoppingCart);
 
   useEffect(() => {
     setIsMounted(true);
@@ -115,16 +117,16 @@ export default function Navbar() {
                   </Link>
                 )}
 
-                <Link href={"/cart"}>
+                {/* <Link href={"/cart"}>
                   <Button size={"icon"} variant={"secondary"} className="relative">
-                    {shoppingCart.length > 0 && (
-                      <span className="absolute font-mono -top-3 -right-3 inline-flex min-w-7 h-7 items-center justify-center rounded-full bg-red-500/70 backdrop-blur-3xl px-1 text-md font-semibold text-white">
-                        {shoppingCart.length}
+                    {cartItems > 0 && (
+                      <span className="absolute font-mono -top-3 -right-3 inline-flex min-w-7 h-7 items-center justify-center rounded-full bg-red-500 backdrop-blur-3xl px-1 text-md font-semibold text-white">
+                        {cartItems}
                       </span>
                     )}
                     <ShoppingCartIcon />
                   </Button>
-                </Link>
+                </Link> */}
               </div>
             )}
           </section>
