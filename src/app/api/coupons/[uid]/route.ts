@@ -23,6 +23,10 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/coupons/
     const profile = profileSnap.data() as Profile;
     const { accountType, memberType } = profile
     if (memberType === "free") return NextResponse.json({ couponId: null })
+    if (accountType === "organization" && memberType !== "lifeTime") {
+      console.log("we should return here")
+      API.throwAPIError()
+    }
 
     const couponsRef = firebaseAdmin.db.doc(`coupons/${accountType}`)
     const couponsSnap = await couponsRef.get()
@@ -38,7 +42,6 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/coupons/
 
     return NextResponse.json({ couponId })
   } catch (error) {
-    console.log({ error })
     const { status, message } = API.getErrorInfo(error);
 
     return NextResponse.json({ error: message }, { status })

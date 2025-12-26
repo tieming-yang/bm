@@ -1,3 +1,4 @@
+import Auth from "./auth";
 import Config from "./config";
 
 export interface Coupon {
@@ -5,10 +6,10 @@ export interface Coupon {
 }
 
 export interface MemberType {
-  free:     null;
+  free: null;
   lifeTime: LifeTime;
-  monthly:  LifeTime;
-  yearly:   LifeTime;
+  monthly: LifeTime;
+  yearly: LifeTime;
 }
 
 export interface LifeTime {
@@ -19,20 +20,27 @@ export interface LifeTime {
 
 const Coupon = {
   get: async (uid: string): Promise<string> => {
-
-    const res = await fetch(`${Config.baseUrl}/api/coupons`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ uid }),
-      cache: "no-store"
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch products from API");
+    if (!Auth.user) {
+      throw new Error("No user");
     }
 
-    return res.json();
+    const token = await Auth.user.getIdToken();
+    const couponRawResponse = await fetch(`/api/coupons/${uid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const couponResponse = await couponRawResponse.json().catch(() => ({}));
+    if (!couponRawResponse.ok) {
+      throw new Error(couponResponse?.error ?? "Faild to get coupon id");
+    }
+    if (!couponResponse.couponId) throw new Error("Missing ConponId");
+
+    return couponResponse.couponId;
   }
 }
+
+export default Coupon;

@@ -33,6 +33,7 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Auth from "@/models/auth";
+import Coupon from "@/models/coupons";
 
 type Modal = "none" | "cancel" | "save";
 type ErrorValues = { isError: boolean; message: string | null };
@@ -174,7 +175,18 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     },
   });
 
-  if (isLoading || !profile) {
+  const {
+    data: coupon,
+    isPending: isCouponPending,
+    error: couponError,
+  } = useQuery({
+    queryKey: [QueryKey.coupon(userId)],
+    queryFn: () => Coupon.get(userId),
+    enabled: !!userId,
+    staleTime: Infinity,
+  });
+
+  if (isLoading || isCouponPending || !profile) {
     return <Loading />;
   }
 
@@ -216,12 +228,23 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 <p className="text-base text-white">{t("gloryShareBadge.description")}</p>
               </CardContent>
               <CardFooter className="flex flex-col gap-y-2 items-center-safe">
-                <Button
-                  asChild
-                  className="w-full max-w-md text-black runded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90"
-                >
-                  <Link href="/glory-share">{t("gloryShareBadge.cta")}</Link>
-                </Button>
+                {!couponError && (
+                  <Button
+                    className="w-full max-w-md text-black runded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90 relative"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(coupon);
+                        toast.success("專屬優惠折扣已複製到了您的剪貼簿！");
+                      } catch (error) {
+                        console.error("Copy failed", error);
+                        toast.error("專屬優惠折扣複製失敗，請再試一次");
+                      }
+                    }}
+                  >
+                    {t("gloryShareBadge.copyCouponCode")}
+                  </Button>
+                )}
+
                 {profile?.subscriptions?.at(-1)?.status !== "canceled" ? (
                   <Dialog open={modal === "cancel"}>
                     {profile.memberType === "monthly" ||
