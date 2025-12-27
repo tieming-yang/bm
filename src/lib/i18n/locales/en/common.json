@@ -46,6 +46,7 @@
     "intro": "Walking in light and creation, every step of life meets God."
   },
   "about": {
+    "intro": "A life prepared by God, created to walk this journey with you.",
     "title": "My Story",
     "subtitle": "I have spent my whole life moving between creation, design, and technology. From childhood stages of art to the frontiers of 3D, VR, and immersive interaction, I have seen how technology shapes culture, yet only when my life fell apart did I understand its true purpose.",
     "story": [
@@ -54,6 +55,24 @@
       "At the same time, I long to see faith not stop at Sunday. On the road, in the rush of life, we can still worship and praise, letting God walk with us through every journey.",
       "When worship enters daily life, pop culture is no longer hollow, fashion is no longer only for self, and it becomes a living testimony that glorifies God."
     ]
+  },
+  "bibleGallery": {
+    "intro": "Opening the Bible through art, inviting hearts into God’s story and paradise."
+  },
+  "bibleGift": {
+    "intro": "Faith woven into what we wear and use, life itself glorifying God."
+  },
+  "gloryShare": {
+    "intro": "We turn creativity and work into a lifestyle that gives glory to God."
+  },
+  "beyondMusic": {
+    "intro": "Let worship move beyond walls, praising God in every journey of life."
+  },
+  "dailyGrace": {
+    "intro": "A daily light to walk with God through ordinary days."
+  },
+  "contactUs": {
+    "intro": "If you long to walk together, we will meet you on the journey."
   },
   "footer": {
     "explore": "Illuminate everyday life with the Gospel",

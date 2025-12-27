@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useTranslation from "@/hooks/use-translation";
+import Intro from "@/components/intro";
 
 type Episode = {
   number: string;
@@ -168,6 +169,7 @@ export default function DailyGraceSnacksPage() {
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
             {t("dailyGraceSnacks.hero.title")}
           </h1>
+          <Intro i18nKey="dailyGrace.intro" />
           <p className="text-lg text-muted-foreground">{t("dailyGraceSnacks.hero.description")}</p>
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="px-8 rounded-full" asChild>

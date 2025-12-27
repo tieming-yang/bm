@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BibleArtwork } from "@/types/bible-artwork";
 import Profile from "@/models/profiles";
+import Intro from "./intro";
 
 export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
@@ -52,9 +53,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
           <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
             {t("bibleGallery.title")}
           </h1>
-          <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
-            {t("bibleGallery.subtitle")}
-          </p>
+          <Intro i18nKey="bibleGallery.intro" />
         </div>
 
         {!isGloryShareMember && (

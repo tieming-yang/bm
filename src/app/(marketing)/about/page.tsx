@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Trans } from "react-i18next";
 import useTranslation from "@/hooks/use-translation";
+import Intro from "../../../components/intro";
 
 export default function About() {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ export default function About() {
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
+        <Intro i18nKey="about.intro" />
         <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
           {t("about.title")}
         </h1>

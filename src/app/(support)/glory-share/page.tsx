@@ -26,6 +26,7 @@ import Loading from "@/app/loading";
 import useProfile from "@/hooks/use-profile";
 import { useRemoteFlags } from "@/lib/firebase/hooks/use-remote-flags";
 import Profile from "@/models/profiles";
+import Intro from "@/components/intro";
 
 type BenefitContent = { title: string; description: string };
 type MissionHighlightContent = BenefitContent;
@@ -118,6 +119,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
             {t("gloryShare.hero.title")}
           </h1>
+          <Intro i18nKey="gloryShare.intro" />
           <p className="text-lg text-muted-foreground">{t("gloryShare.hero.description")}</p>
           <div className="flex flex-wrap justify-center-safe gap-4">
             {isGloryShareJoinable ? (

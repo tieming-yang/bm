@@ -11,6 +11,7 @@ import { sendGAEvent } from "@next/third-parties/google";
 import useAuthUser from "@/hooks/use-auth-user";
 import { useRouter, usePathname } from "next/navigation";
 import useProtectedRoute from "@/hooks/use-protected-route";
+import Intro from "@/components/intro";
 
 export default function ClientBeyondMusicPage() {
   const router = useRouter();
@@ -49,10 +50,11 @@ export default function ClientBeyondMusicPage() {
   }
 
   return (
-    <div className="container px-4 pt-3 mx-auto min-w-svw bg-primary-gradient-30 pb-50 space-y-16 min-h-svh">
+    <div className="container px-4 pt-3 mx-auto min-w-svw bg-primary-gradient-30 pb-50 min-h-svh">
       <h1 className="text-4xl leading-tight tracking-tight text-center text-balance md:text-5xl">
         {t("beyondMusic.hero.title")}
       </h1>
+      <Intro i18nKey="beyondMusic.intro" />
       {songs && (
         <ul className="flex flex-col gap-y-5">
           {songs.map((song) => {
