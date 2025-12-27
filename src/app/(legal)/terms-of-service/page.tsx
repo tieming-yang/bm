@@ -9,8 +9,10 @@ const sections = [
     paragraphs: [
       "We are Beyond Digital Media, a creative studio dedicated to faith-based storytelling and artistic expression.",
       "We offer multiple membership and support plans (the “Support Plans”), including Lifetime, Yearly, and Monthly options, which provide access to curated creative content, events, and member benefits within the Beyond Digital Media ecosystem. We clarify that these plans represent creative support and participation, not charitable donations or financial investments.",
+      "We also operate a Shopify-based gift shop under the name 彼岸媒體禮品店. Gift shop purchases are subject to these Terms and to Shopify’s platform terms and policies.",
       "我們是 Beyond Digital Media，一個以信仰為核心的創意媒體團隊，致力於以藝術與故事傳遞真理。",
       "我們提供多種支持方案（包含終身、年度與月度方案），讓成員能參與創作內容、活動與專屬權益。我們特此聲明，所有方案皆屬創作支持與同行關係，並非募款、捐贈或投資計畫。",
+      "我們亦透過 Shopify 經營禮品店，店名為「彼岸媒體禮品店」。禮品店之交易同樣受本條款以及 Shopify 平台條款與政策之約束。",
     ],
   },
   {
@@ -61,8 +63,8 @@ const sections = [
     id: "payment-processing",
     title: "6. Payment Processing 付款處理",
     paragraphs: [
-      "We process all payments and subscriptions securely through Stripe. We confirm that recurring plans renew automatically unless canceled before the renewal date.",
-      "我們透過 Stripe 安全處理所有一次性付款與訂閱。訂閱方案將自動續訂，除非於續訂日前取消。",
+      "We process membership payments and subscriptions securely through Stripe. We process gift shop orders via Shopify (彼岸媒體禮品店), and Shopify may handle payment processing and checkout services. We confirm that recurring plans renew automatically unless canceled before the renewal date.",
+      "我們透過 Stripe 安全處理會員方案之一次性付款與訂閱。禮品店訂單由 Shopify（彼岸媒體禮品店）處理，且 Shopify 可能負責付款與結帳服務。訂閱方案將自動續訂，除非於續訂日前取消。",
     ],
   },
   {
@@ -147,9 +149,11 @@ const sections = [
     paragraphs: [
       "We state that all payments, including one-time purchases and recurring subscriptions, are final and non-refundable to the fullest extent permitted by law.",
       "We do not provide refunds, credits, or exchanges for partial use, unused time, dissatisfaction, plan changes, benefit modifications, or termination of access.",
+      "We do not accept refunds or returns for any purchases from our Shopify gift shop 彼岸媒體禮品店; all gift shop sales are final to the fullest extent permitted by law.",
       "We reserve the right to immediately suspend or terminate access if a chargeback, payment dispute, or fraudulent transaction is initiated through Stripe or any payment provider.",
       "我們聲明，所有一次性付款與訂閱付款在法律允許的最大範圍內均不提供退款。",
       "我們不因未使用期間、部分使用、不滿意、方案調整或權益變更而提供退款、補償或折抵。",
+      "我們不接受任何來自 Shopify 禮品店「彼岸媒體禮品店」之退款或退貨；在法律允許的最大範圍內，所有禮品店銷售皆為最終交易。",
       "若發生拒付、爭議付款或疑似詐欺交易，我們保留立即暫停或終止會員權益之權利。",
     ],
   },
