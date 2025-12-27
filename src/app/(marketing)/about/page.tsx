@@ -2,10 +2,12 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Trans } from "react-i18next";
 import useTranslation from "@/hooks/use-translation";
 
 export default function About() {
   const { t } = useTranslation();
+  const story = t("about.story", { returnObjects: true }) as string[];
 
   return (
     <div className="container relative z-50 px-4 py-12 mx-auto font-serif">
@@ -30,7 +32,7 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <div className="relative h-[500px] w-full rounded-3xl overflow-hidden">
-            <Image src="/logos/logo-3d.webp" alt="Logo" fill className="object-cover" />
+            <Image src="/logos/logo.webp" alt="Logo" fill className="object-cover" />
           </div>
         </motion.div>
 
@@ -40,36 +42,16 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="space-y-6"
         >
-          <h2 className="text-3xl font-bold">{t("about.founder.title")}</h2>
-          <p className="text-lg text-muted-foreground">{t("about.founder.description1")}</p>
-          <p className="text-lg text-muted-foreground">{t("about.founder.description2")}</p>
-          <p className="text-lg text-muted-foreground">{t("about.founder.description3")}</p>
+          {story.map((_, index) => (
+            <p key={index} className="text-lg text-muted-foreground">
+              <Trans
+                i18nKey={`about.story.${index}`}
+                components={{ bold: <strong className="font-semibold text-foreground" /> }}
+              />
+            </p>
+          ))}
         </motion.div>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        className="p-8 mt-24 border bg-linear-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl border-primary/10"
-      >
-        <h2 className="mb-6 text-3xl font-bold text-center">{t("about.mission.title")}</h2>
-        <p className="max-w-4xl mx-auto text-lg text-center text-muted-foreground">
-          {t("about.mission.description")}
-        </p>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        className="p-8 mt-24 border bg-linear-to-r from-background/80 to-background/60 backdrop-blur-lg rounded-3xl border-primary/10"
-      >
-        <h2 className="mb-6 text-3xl font-bold text-center">{t("about.vision.title")}</h2>
-        <p className="max-w-4xl mx-auto text-lg text-center text-muted-foreground">
-          {t("about.vision.description")}
-        </p>
-      </motion.div>
     </div>
   );
 }

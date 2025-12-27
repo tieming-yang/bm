@@ -45,22 +45,14 @@
     "subtitle": "Born of a vision, \nbearing a soul, \nfrom Genesis to Revelation, \none hand paints the eternal."
   },
   "about": {
-    "title": "About Us",
-    "subtitle": "Mission: Christ-centered and modeled after Jesus, we carry God's truth and love through digital media and artistic innovation, bringing faith into everyday life so people walk with God daily. Vision: Build a global platform that unites digital media with Christian faith, becoming a vessel God can use to deliver Scripture through cultural creativity, artistic immersion, and lifestyle products in fresh and compelling ways.",
-    "founder": {
-      "title": "Core Values and Business Pillars",
-      "description1": "Core Values:\n1. Gospel-Centered - Every product and service is grounded in Scripture.\n2. Creativity as a Bridge - Use art, digital media, and design to reach the next generation.\n3. Faith in Everyday Life - Bring Christ's love beyond church walls into daily living.\n4. Global Perspective - Craft art and products that resonate with international audiences.",
-      "description2": "Digital Media Experiences: Immersive Bible culture journeys that blend ancient Scripture with modern technology, featuring the 3D BOX immersive show, Bible Hologram Theater, Bible Light & Sound spectacles, VR Sunday School, Eden Interactive Playground for kids, and the 3D Immersive Mission Van. Highlights: Integrates VR, AR, and holographic projection, scales across churches, expos, and mission fields worldwide, and lays the groundwork for a digital Gospel theme park.",
-      "description3": "Bible Commemorative Art Gifts: Laser-etched metal pieces, carved wood collectibles, laser relief artworks, and original textured painting albums delivered as premium, customizable, and limited-edition collections that pair with exhibitions. Carry the Cross Lifestyle Essentials: Faith-infused everyday, home, office, and in-car products that embrace an international design language (\"Cross x Fashion\") and connect physical items with metaverse identities for dual digital-physical engagement."
-    },
-    "mission": {
-      "title": "Business Model and Target Markets",
-      "description": "Business Model: B2C via the official store, art halls, and exhibitions, plus retail partnerships with Christian bookstores, churches, and festivals; B2B collaborations with churches, missions, schools, museums, and cultural venues for VR curricula and immersive projects; IP licensing to designer brands, gift houses, and publishers; memberships and subscriptions for annual VR Sunday School access and Bible Art Collectors programs. Target Markets: Core focus on churches, schools, ministries, and Christian families; expansion to younger audiences, art lovers, and designers; global reach to regions with significant Christian populations across North America, Europe, Southeast Asia, and Africa."
-    },
-    "vision": {
-      "title": "Advantages, Roadmap, and Partnership Invitation",
-      "description": "Competitive Advantages: The only platform merging Bible culture with leading-edge digital technology, delivering a diversified revenue ecosystem, international aesthetics, and high-growth potential in immersive experiences and art collecting. Growth Roadmap: Short term (1-2 years) launch the first immersive light show and art gift line while building brand influence; mid term (3-5 years) expand VR Sunday School and the mobile mission van to enter global markets; long term (5-10 years) develop a full Bible digital theme park and global art hub. Investment & Partnerships: Funding supports technology R&D, artistic creation, brand marketing, and supply-chain buildout. We welcome equity partnerships, joint ventures, IP licensing, and distribution alliances. Partner Highlights: Capture returns from the convergence of immersive entertainment, collectible art, and faith-based lifestyle goods while advancing a cultural mission with lasting spiritual value."
-    }
+    "title": "My Story",
+    "subtitle": "I have spent my whole life moving between creation, design, and technology. From childhood stages of art to the frontiers of 3D, VR, and immersive interaction, I have seen how technology shapes culture, yet only when my life fell apart did I understand its true purpose.",
+    "story": [
+      "In 2020, I was stranded in the United States because of the pandemic. My company collapsed, my marriage broke, and I was left with nothing. At my weakest moment, I walked into a church. God healed me step by step and let me see that He was already preparing this day when I was six drawing and nine playing piano.",
+      "Today, I use painting, theater, film, animation, and 3D immersive interactive technology to build a path for <bold>young people and children</bold> to <bold>freely explore and draw near to the Bible</bold>. It is not about being forced to believe; it is about meeting God naturally in stories, light, and interaction.",
+      "At the same time, I long to see faith not stop at Sunday. On the road, in the rush of life, we can still worship and praise, letting God walk with us through every journey.",
+      "When worship enters daily life, pop culture is no longer hollow, fashion is no longer only for self, and it becomes a living testimony that glorifies God."
+    ]
   },
   "footer": {
     "explore": "Illuminate everyday life with the Gospel",
