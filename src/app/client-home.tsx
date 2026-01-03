@@ -17,7 +17,14 @@ export default function ClientHome({}: Props) {
         className="flex flex-col items-center justify-center w-full px-3 mx-auto text-transparent gap-y-5 h-svh"
       >
         <h1 className="flex flex-col text-2xl text-center md:text-5xl sm:text-3xl transition-all duration-300 gap-y-16 md:gap-y-12 xl:text-7xl text-primary-foreground-gradient">
-          {t("home.intro")}
+          {t("home.subtitle")
+            .split("\n")
+            .map((line, index) => (
+              <motion.span key={index}>
+                {line}
+                <br />
+              </motion.span>
+            ))}
         </h1>
       </motion.section>
 
