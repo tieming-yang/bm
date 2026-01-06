@@ -263,7 +263,7 @@ export function ImageGallery({
 
   const isFreeMember = !profile || profile?.memberType === "free";
   const showContentBlock = (index) => isFreeMember && index > MAXIMUM_FREE_ARTS;
-  console.log({isFreeMember})
+
   return (
     <>
       {/* Gallery Grid */}
