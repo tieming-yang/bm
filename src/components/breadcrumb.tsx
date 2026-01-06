@@ -20,6 +20,7 @@ const routeMap: Record<string, string> = {
   join: "nav.join",
   "daily-grace-snacks": "nav.dailyGraceSnacks",
   "beyond-music": "nav.beyondMusic",
+  school: "nav.bibleSchool",
   success: "gloryShareSuccess.breadcrumb",
   profile: "nav.profile",
 };

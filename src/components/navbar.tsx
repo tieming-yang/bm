@@ -26,6 +26,7 @@ export const navRoutes = [
     href: "/daily-grace-snacks",
     label: (t: TFunction<string, undefined>) => t("nav.dailyGraceSnacks"),
   },
+  { href: "/school", label: (t: TFunction<string, undefined>) => t("nav.bibleSchool") },
   {
     href: "https://shop.beyond-media.art/",
     label: (t: TFunction<string, undefined>) => t("nav.bibleProducts"),
