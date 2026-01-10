@@ -15,6 +15,7 @@ export default function About() {
   const story = t("about.story", { returnObjects: true }) as string[];
   const lawMember = t("about.members.law", { returnObjects: true }) as MemberContent;
   const johnMember = t("about.members.john", { returnObjects: true }) as MemberContent;
+  const yangMember = t("about.members.yangyi", { returnObjects: true }) as MemberContent;
 
   return (
     <div className="container relative z-50 px-4 py-12 mx-auto font-serif">
@@ -40,7 +41,7 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mx-auto max-w-4xl"
         >
-          <MemberCard name="楊毅" role="創辦人" image={yangyiPicture} imageAlt="楊毅">
+          <MemberCard name={yangMember.name} role={yangMember.role} image={yangyiPicture} imageAlt="楊毅">
             {story.map((_, index) => (
               <p key={index}>
                 <Trans
@@ -129,33 +130,33 @@ type MemberContent = {
 };
 
 function MemberCard({ name, role, image, imageAlt, children }: MemberCardProps) {
-  if (name === "yangyi" || name === "楊毅") {
-    return (
-      <div className="grid md:grid-cols-2 relative overflow-hidden border border-primary/70 bg-primary-gradient-30 p-6 shadow-sm backdrop-blur-sm">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="relative self-center-safe h-96 w-52 lg:h-127 lg:w-77 shrink-0 overflow-hidden border border-primary/50 bg-primary-gradient-50">
-            <Image
-              src={image}
-              alt={imageAlt}
-              fill
-              className="object-cover"
-              placeholder="blur"
-              sizes="(min-width: 768px) 96px, 80px"
-            />
-          </div>
-          <div className="space-y-1">
-            <p className="text-xl sm:text-3xl font-medium text-primary-foreground-gradient">
-              {role}
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">{name}</h2>
-          </div>
-        </div>
-        <div className="mt-6 space-y-4 text-lg leading-relaxed sm:text-xl text-muted-foreground">
-          {children}
-        </div>
-      </div>
-    );
-  }
+  // if (name === "yangyi" || name === "楊毅") {
+  //   return (
+  //     <div className="grid md:grid-cols-2 relative overflow-hidden border border-primary/70 bg-primary-gradient-30 p-6 shadow-sm backdrop-blur-sm">
+  //       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+  //         <div className="relative self-center-safe h-96 w-52 lg:h-127 lg:w-77 shrink-0 overflow-hidden border border-primary/50 bg-primary-gradient-50">
+  //           <Image
+  //             src={image}
+  //             alt={imageAlt}
+  //             fill
+  //             className="object-cover"
+  //             placeholder="blur"
+  //             sizes="(min-width: 768px) 96px, 80px"
+  //           />
+  //         </div>
+  //         <div className="space-y-1">
+  //           <p className="text-xl sm:text-3xl font-medium text-primary-foreground-gradient">
+  //             {role}
+  //           </p>
+  //           <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">{name}</h2>
+  //         </div>
+  //       </div>
+  //       <div className="mt-6 space-y-4 text-lg leading-relaxed sm:text-xl text-muted-foreground">
+  //         {children}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="relative overflow-hidden rounded-4xl border border-primary/70 bg-primary-gradient-30 p-6 shadow-sm backdrop-blur-sm">
