@@ -47,15 +47,43 @@
     "intro": "Walking in light and creation, every step of life meets God."
   },
   "about": {
-    "intro": "A life prepared by God, created to walk this journey with you.",
-    "title": "My Story",
-    "subtitle": "I have spent my whole life moving between creation, design, and technology. From childhood stages of art to the frontiers of 3D, VR, and immersive interaction, I have seen how technology shapes culture, yet only when my life fell apart did I understand its true purpose.",
+    "intro": "A team called by God, creating and serving as we walk this journey with you.",
+    "title": "Our Team",
+    "subtitle": "We come from different journeys, walking together in creation and service, hoping to draw you closer to God through real stories and grace.",
     "story": [
       "In 2020, I was stranded in the United States because of the pandemic. My company collapsed, my marriage broke, and I was left with nothing. At my weakest moment, I walked into a church. God healed me step by step and let me see that He was already preparing this day when I was six drawing and nine playing piano.",
       "Today, I use painting, theater, film, animation, and 3D immersive interactive technology to build a path for <bold>young people and children</bold> to <bold>freely explore and draw near to the Bible</bold>. It is not about being forced to believe; it is about meeting God naturally in stories, light, and interaction.",
       "At the same time, I long to see faith not stop at Sunday. On the road, in the rush of life, we can still worship and praise, letting God walk with us through every journey.",
       "When worship enters daily life, pop culture is no longer hollow, fashion is no longer only for self, and it becomes a living testimony that glorifies God."
-    ]
+    ],
+    "members": {
+      "law": {
+        "name": "Luo Ronghua",
+        "role": "Marketing Strategist",
+        "title": "From Wandering to Homecoming - My Testimony of Knowing God",
+        "story": [
+          "In 1988, I moved from Guangzhou to Canada, and in 2002 I came to the United States. I have wandered most of my life. From childhood I had gifts in the arts, martial arts, and traditional Chinese therapeutic massage. I also ran businesses in hairdressing, food service, and antiques, relying on myself to make my way in the world.",
+          "The breakdown of my marriage was the first time I saw human limits. I then worked for years in traditional Chinese therapeutic massage and helped many patients, but when I was diagnosed with cancer, I truly faced the end of life.",
+          "In those weakest days, I opened myself to God. He not only healed my body but renewed my life, showing me that we do not live by our own strength but by His grace.",
+          "At Easter 2025, I was baptized and returned to the Lord. I know that everything in the past, whether gifts or wounds, was not accidental, but God leading me step by step back home."
+        ]
+      },
+      "john": {
+        "name": "Jia Zhiyong",
+        "role": "Preacher, Marketing Outreach",
+        "title": "Testimony of Faith and Calling",
+        "story": [
+          "My name is Jia Zhiyong, born in Sichuan. Influenced by my family and schooling, I was a standard atheist, viewing the world through evolution and \"survival of the fittest.\" I cared only about results and not people's feelings, often hurting others without realizing it.",
+          "In September 2010 I came to the United States. In 2012, a close friend traveled from Trinidad to Houston to visit me and share the gospel. At the time I worked at a consulate in a sensitive environment, and I clearly said I could not believe in God, so we often debated. But he patiently explained the gospel, prayed for me, and invited me to church.",
+          "The first time I walked into church, I was shaken: there were PhDs, engineers, doctors, and accountants. Why would they gather on weekends to worship God? When I heard that \"God is perfect love and justice,\" I suddenly understood - what I had always pursued as justice was not in human hands but only in God. My worldview, view of life, and values were completely renewed.",
+          "At that time I faced difficult choices at work, where injustice and temptation were present. I prayed: if You give me a chance, I will leave this unjust path. In July 2012, I decided to follow Christ, and in October I was baptized, publicly confessing Jesus as my Savior.",
+          "For thirteen years I have followed Jesus, because this faith is life, not religion. Many encouraged me to serve full-time, but I waited for God's confirmation, hoping to have a good testimony in my relationships with God, family, children, and the church.",
+          "At a recent evangelistic meeting, I witnessed God instantly heal a seriously ill brother. I knew deeply: it is not about whether I can, but that God with us is enough. With the blessing and support of the church, I responded to God's call and am willing to serve full-time."
+        ],
+        "closing": "Now I choose the words of the Apostle Paul as the direction of my life:",
+        "quote": "\"Forgetting what is behind and pressing on toward what is ahead, I run toward the goal to win the prize for which God has called me heavenward in Christ Jesus.\""
+      }
+    }
   },
   "bibleGallery": {
     "intro": "Opening the Bible through art, inviting hearts into God’s story and paradise."

@@ -56,7 +56,7 @@ export async function GET() {
       })
     );
     const sanitized = entries.filter((entry) => entry.imageUrl !== "");
-
+ 
     return NextResponse.json(sanitized);
   } catch (error) {
     console.error("Error fetching wiki entries:", error);
