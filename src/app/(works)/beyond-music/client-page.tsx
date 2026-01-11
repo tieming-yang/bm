@@ -21,7 +21,7 @@ export default function ClientBeyondMusicPage() {
   const { t: tCommon } = useTranslation("common");
   const { authUser, isAuthUserLoading } = useAuthUser();
 
-  useProtectedRoute();
+  // useProtectedRoute();
 
   const {
     data: songs,
