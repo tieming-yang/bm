@@ -186,8 +186,13 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     staleTime: Infinity,
   });
 
-  if (isLoading || isCouponPending || !profile) {
+  if (isLoading) {
     return <Loading />;
+  }
+
+  if (!profile) {
+    router.replace("/signin");
+    return;
   }
 
   return (
@@ -230,7 +235,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 <p className="text-base text-white">{t("gloryShareBadge.description")}</p>
               </CardContent>
               <CardFooter className="flex flex-col gap-y-2 items-center-safe">
-                {!couponError && (
+                {!couponError && coupon && (
                   <Button
                     className="w-full max-w-md text-black runded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90 relative"
                     onClick={async () => {
@@ -313,7 +318,11 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <section className="place-self-center">
             <Avatar className="w-24 h-24 md:h-48 md:w-48">
-              <Image fill src={profile.photoURL ?? "/public/logos/logo.webp"} alt={profile.displayName || ""} />
+              <Image
+                fill
+                src={profile.photoURL ?? "/public/logos/logo.webp"}
+                alt={profile.displayName || ""}
+              />
             </Avatar>
           </section>
 
