@@ -70,7 +70,7 @@ export default function SignInPage({}: Props) {
   return (
     <div className="relative z-50 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
       <Button
-        variant="outline"
+        variant="default"
         className="flex items-center shadow-lg gap-3"
         onClick={() => {
           signInMutation.mutate({ method: AuthMethod.Google });
