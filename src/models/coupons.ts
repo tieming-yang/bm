@@ -17,7 +17,6 @@ export interface LifeTime {
   testCouponId: string;
 }
 
-
 const Coupon = {
   get: async (uid: string): Promise<string> => {
     if (!Auth.user) {
@@ -40,7 +39,7 @@ const Coupon = {
     if (!couponResponse.couponId) throw new Error("Missing ConponId");
 
     return couponResponse.couponId;
-  }
-}
+  },
+};
 
 export default Coupon;

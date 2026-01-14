@@ -182,7 +182,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   } = useQuery({
     queryKey: [QueryKey.coupon(userId)],
     queryFn: () => Coupon.get(userId),
-    enabled: !!userId,
+    enabled: isGloryShareMember,
     staleTime: Infinity,
   });
 
