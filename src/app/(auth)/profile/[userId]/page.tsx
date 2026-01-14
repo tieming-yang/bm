@@ -6,7 +6,6 @@ export default async function ProfilePage(props: PageProps<"/profile/[userId]">)
 
   if (!userId) {
     redirect("/signin");
-    return;
   }
 
   return <ClientProfilePage userId={userId} />;
