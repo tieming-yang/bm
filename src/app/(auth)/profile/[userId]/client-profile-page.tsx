@@ -215,7 +215,9 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                   </div>
                   <div className="text-left space-y-1">
                     <p className="text-xs uppercase tracking-[0.5em] text-amber-200 drop-shadow">
-                      {t("gloryShareBadge.label")}
+                      {profile.uid === "9gD5LvY70wZzyQjNwEVnsnnfGf62"
+                        ? "您是首位加入榮耀份額的成員，感謝您對藝術事奉的支持！"
+                        : t("gloryShareBadge.label")}
                     </p>
                     <CardTitle className="text-2xl text-white drop-shadow-[0_4px_15px_rgba(0,0,0,0.45)]">
                       {t("gloryShareBadge.title")}
