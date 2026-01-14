@@ -1,23 +1,27 @@
-import { usePathname, useRouter } from "next/navigation";
-import useTranslation from "./use-translation";
-import useAuthUser from "./use-auth-user";
-import Loading from "@/app/loading";
-import { toast } from "sonner";
-import { useEffect } from "react";
+// src/components/protected-route.tsx
+"use client";
 
-export default function useProtectedRoute() {
+import { ReactNode, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import useAuthUser from "@/hooks/use-auth-user";
+import Loading from "@/app/loading";
+import useTranslation from "@/hooks/use-translation";
+
+export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { t: tCommon } = useTranslation("common");
   const { authUser, isAuthUserLoading } = useAuthUser();
-
-  if (isAuthUserLoading) {
-    return <Loading />;
-  }
 
   useEffect(() => {
     if (isAuthUserLoading || authUser) return;
     toast.error(tCommon("toast.mustSignIn"));
     router.replace(`/signin?redirectTo=${encodeURIComponent(pathname)}`);
   }, [authUser, isAuthUserLoading, pathname, router, tCommon]);
+
+  if (isAuthUserLoading) return <Loading />;
+  if (!authUser) return null;
+
+  return <>{children}</>;
 }

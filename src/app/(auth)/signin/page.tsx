@@ -63,6 +63,9 @@ export default function SignInPage({}: Props) {
   });
 
   if (isAuthUserLoading) return <Loading />;
+  if (redirectTo && authUser) {
+    router.replace(redirectTo)
+  }
 
   return (
     <div className="relative z-50 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
