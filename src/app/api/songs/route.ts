@@ -14,7 +14,7 @@ export async function GET() {
   try {
     const { results } = await notion.databases.query({
       database_id: dbID,
-      sorts: [{ property: "createdAt", direction: "ascending" }],
+      sorts: [{ property: "createdAt", direction: "descending" }],
       page_size: 100,
       filter: {
         "property": "isPublic",
