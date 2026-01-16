@@ -22,7 +22,6 @@ export default function ClientBeyondMusicPage() {
   } = useQuery({
     queryKey: [QueryKey.songs],
     queryFn: () => Song.getAll(),
-    staleTime: Infinity,
   });
 
   if (isLoading) {
