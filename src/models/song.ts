@@ -81,7 +81,7 @@ const Song = {
   },
 
   getAll: async (): Promise<Song[]> => {
-    const res = await fetch(`${Config.baseUrl}/api/songs`, { cache: "force-cache" });
+    const res = await fetch(`${Config.baseUrl}/api/songs`, { cache: "default" });
     if (!res.ok) {
       throw new Error("Failed to fetch songs from API");
     }
