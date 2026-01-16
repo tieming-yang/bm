@@ -15,24 +15,24 @@ type Lesson = {
 const lessons: Lesson[] = [
   {
     number: "01",
-    title: "影片一",
+    title: "魚",
     theme: "學堂精選",
     summary: "點擊播放，開始今天的聖經學堂。",
     videoId: "B6e347CbetE",
   },
   {
     number: "02",
-    title: "影片二",
+    title: "約伯記",
     theme: "學堂精選",
     summary: "跟著影片一起讀經，建立信仰根基。",
-    videoId: "xS_ICn3cTsM",
+    videoId: "afCWlscA5Io",
   },
   {
     number: "03",
-    title: "影片三",
+    title: "諾亞方舟",
     theme: "學堂精選",
     summary: "邀請家人朋友共學，讓真理成為日常。",
-    videoId: "cSNWIEtJSMo",
+    videoId: "d_84en-sgDc",
   },
 ];
 
