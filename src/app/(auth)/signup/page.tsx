@@ -21,7 +21,8 @@ type Props = {};
 export default function SignUpPage({}: Props) {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
-  const { t, currentLanguage } = useTranslation();
+  const { t } = useTranslation("sign-up");
+  const { t: tCommon } = useTranslation("common");
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo") ?? `/`;
   const query = useQueryClient();
@@ -69,7 +70,7 @@ export default function SignUpPage({}: Props) {
       router.replace(`/profile/${uid}`);
     },
     onError: (err: unknown) => {
-      toast.error(t("toast.signUpError"));
+      toast.error(tCommon("toast.signUpError"));
     },
   });
 
@@ -85,12 +86,12 @@ export default function SignUpPage({}: Props) {
         }}
       >
         <FcGoogle className="w-7 h-7" />
-        {t("nav.signupWithGoogle")}
+        {tCommon("nav.signupWithGoogle")}
       </Button>
 
       <div className="flex items-center w-full max-w-md gap-3">
         <span className="flex-1 h-px bg-border" />
-        <span className="text-xs text-muted-foreground">or</span>
+        <span className="text-xs text-muted-foreground">{t("divider")}</span>
         <span className="flex-1 h-px bg-border" />
       </div>
 
@@ -104,10 +105,10 @@ export default function SignUpPage({}: Props) {
           void form.handleSubmit();
         }}
       >
-        <h2 className="text-2xl">Email Sign up</h2>
+        <h2 className="text-2xl">{t("formTitle")}</h2>
         <div className="flex flex-col py-5 gap-y-5">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("labels.email")}</Label>
             <form.AppField
               name="email"
               children={(field) => (
@@ -128,7 +129,7 @@ export default function SignUpPage({}: Props) {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("labels.password")}</Label>
             <form.AppField
               name="password"
               children={(field) => (
@@ -149,7 +150,7 @@ export default function SignUpPage({}: Props) {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="displayName">Display Name</Label>
+            <Label htmlFor="displayName">{t("labels.displayName")}</Label>
             <form.AppField
               name="displayName"
               children={(field) => (
@@ -174,7 +175,7 @@ export default function SignUpPage({}: Props) {
             children={([canSubmit, isSubmitting]) => {
               return (
                 <Button className="relative" type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? <Loading isInlined /> : "Sign up"}
+                  {isSubmitting ? <Loading isInlined /> : t("actions.submit")}
                 </Button>
               );
             }}
@@ -193,11 +194,11 @@ export default function SignUpPage({}: Props) {
         <Label htmlFor="terms" /> */}
 
         <span>
-          {t("auth.consentPrefix")}{" "}
+          {tCommon("auth.consentPrefix")}{" "}
           <Link href="/terms" className="underline text-primary">
-            {t("auth.consentLink")}
+            {tCommon("auth.consentLink")}
           </Link>{" "}
-          {t("auth.consentSuffix")}
+          {tCommon("auth.consentSuffix")}
         </span>
       </div>
     </div>

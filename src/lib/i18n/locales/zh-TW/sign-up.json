@@ -1,0 +1,12 @@
+{
+  "divider": "或",
+  "formTitle": "使用電子郵件註冊",
+  "labels": {
+    "email": "電子郵件",
+    "password": "密碼",
+    "displayName": "顯示名稱"
+  },
+  "actions": {
+    "submit": "註冊"
+  }
+}

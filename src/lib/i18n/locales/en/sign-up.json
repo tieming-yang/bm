@@ -1,0 +1,12 @@
+{
+  "divider": "or",
+  "formTitle": "Email Sign up",
+  "labels": {
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Display Name"
+  },
+  "actions": {
+    "submit": "Sign up"
+  }
+}
