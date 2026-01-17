@@ -12,30 +12,10 @@ import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
-import Profile from "@/models/profiles";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { assertIsDefined } from "@/lib/utils";
-import { createFormHook, createFormHookContexts } from "@tanstack/react-form-nextjs";
-import * as v from "valibot";
-
-// https://tanstack.com/form/latest/docs/framework/react/quick-start
-const { fieldContext, formContext } = createFormHookContexts();
-
-// Allow us to bind components to the form to keep type safety but reduce production boilerplate
-// Define this once to have a generator of consistent form instances throughout your app
-const { useAppForm } = createFormHook({
-  fieldComponents: {
-    Input,
-  },
-  formComponents: {
-    Button,
-  },
-  fieldContext,
-  formContext,
-});
+import { useAppForm } from "@/hooks/use-app-form";
 
 type Props = {};
 export default function SignUpPage({}: Props) {
