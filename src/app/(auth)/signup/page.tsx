@@ -76,10 +76,10 @@ export default function SignUpPage({}: Props) {
   if (isAuthUserLoading) return <Loading />;
 
   return (
-    <div className="relative z-50 px-5 md:px-0 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
+    <div className="relative z-50 flex flex-col items-center justify-center px-5 font-mono md:px-0 gap-y-5 min-h-dvh">
       <Button
         variant="default"
-        className="flex items-center shadow-lg gap-3"
+        className="flex items-center gap-3 shadow-lg"
         onClick={() => {
           signUpMutation.mutate({ method: AuthMethod.Google });
         }}
@@ -88,15 +88,15 @@ export default function SignUpPage({}: Props) {
         {t("nav.signupWithGoogle")}
       </Button>
 
-      <div className="flex w-full max-w-md items-center gap-3">
-        <span className="h-px flex-1 bg-border" />
+      <div className="flex items-center w-full max-w-md gap-3">
+        <span className="flex-1 h-px bg-border" />
         <span className="text-xs text-muted-foreground">or</span>
-        <span className="h-px flex-1 bg-border" />
+        <span className="flex-1 h-px bg-border" />
       </div>
 
       {/* Email sign up */}
       <form
-        className="w-full max-w-md border rounded-4xl px-7 py-5 bg-card"
+        className="w-full max-w-md py-5 border rounded-4xl px-7 bg-card"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -105,8 +105,8 @@ export default function SignUpPage({}: Props) {
         }}
       >
         <h2 className="text-2xl">Email Sign up</h2>
-        <div className="flex gap-y-5 flex-col py-5">
-          <div className="flex gap-2 flex-col">
+        <div className="flex flex-col py-5 gap-y-5">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
             <form.AppField
               name="email"
@@ -127,7 +127,7 @@ export default function SignUpPage({}: Props) {
               )}
             />
           </div>
-          <div className="flex gap-2 flex-col">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="password">Password</Label>
             <form.AppField
               name="password"
@@ -148,7 +148,7 @@ export default function SignUpPage({}: Props) {
               )}
             />
           </div>
-          <div className="flex gap-2 flex-col">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="displayName">Display Name</Label>
             <form.AppField
               name="displayName"
