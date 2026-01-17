@@ -1,0 +1,11 @@
+{
+  "divider": "或",
+  "formTitle": "使用電子郵件登入",
+  "labels": {
+    "email": "電子郵件",
+    "password": "密碼"
+  },
+  "actions": {
+    "submit": "登入"
+  }
+}

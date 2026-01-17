@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Loading from "@/app/loading";
-import Auth, { AuthMethod, EmailSignInInput } from "@/models/auth";
+import Auth, { AuthMethod, EmailSignInInput, EmailSignInSchema } from "@/models/auth";
 import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
@@ -13,23 +13,44 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
 import Profile from "@/models/profiles";
 import Link from "next/link";
+import { useAppForm } from "@/hooks/use-app-form";
+import { assertIsDefined } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 type Props = {};
 export default function SignInPage({}: Props) {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
-  const { t } = useTranslation();
+  const { t } = useTranslation("sign-in");
+  const { t: tCommon } = useTranslation("common");
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
   const query = useQueryClient();
+
+  const defaultEmailSignInInputs: EmailSignInInput = {
+    email: "",
+    password: "",
+  };
+
+  const form = useAppForm({
+    defaultValues: defaultEmailSignInInputs,
+    validators: {
+      onBlur: EmailSignInSchema,
+    },
+    onSubmit: ({ value }) => {
+      signInMutation.mutate({ method: "email", payload: value });
+    },
+  });
 
   //TODO: since there is no sign up with goolge, we choose simplify the process by sign up and sign in at same time, separate the logic when add different sign in mathod
   const signInMutation = useMutation({
     mutationKey: QueryKey.signUp,
     mutationFn: ({ method, payload }: { method: AuthMethod; payload?: EmailSignInInput }) => {
       if (method === "google") return Auth.signInWithGoogle();
-      if (method === "email") {
-        if (!payload) throw new Error("Email sign-up requires credentials");
+      if (method === "email" && payload) {
+        assertIsDefined(payload.email, "Email is undefine");
+        assertIsDefined(payload.password, "Password is undefine");
+
         return Auth.signInWithEmail(payload);
       }
       throw new Error(`Unsupported method: ${method}`);
@@ -43,28 +64,21 @@ export default function SignInPage({}: Props) {
 
       console.info("Sign up success", user);
       const { uid } = user;
-      await query.fetchQuery({
-        queryKey: QueryKey.profile(uid),
-        queryFn: () => Profile.get(uid),
-        staleTime: 0,
-        retry: 2,
-      });
-
-      toast.success(t("toast.signInSuccess"));
+      toast.success(tCommon("toast.signInSuccess"));
 
       const goTo = redirectTo ?? `/profile/${uid}`;
       router.replace(goTo);
     },
     onError: (err: unknown) => {
       const msg = err instanceof Error ? err.message : "Sign up failed";
-      toast.error(t("toast.signInError"));
+      toast.error(tCommon("toast.signInError"));
       console.error(msg);
     },
   });
 
   if (isAuthUserLoading) return <Loading />;
   if (redirectTo && authUser) {
-    router.replace(redirectTo)
+    router.replace(redirectTo);
   }
 
   return (
@@ -77,24 +91,98 @@ export default function SignInPage({}: Props) {
         }}
       >
         <FcGoogle className="w-7 h-7" />
-        {t("nav.signinWithGoogle")}
+        {tCommon("nav.signinWithGoogle")}
       </Button>
 
-      {/* <p className="text-sm text-muted-foreground">
-        {t("auth.noAccount")}{" "}
+      <div className="flex w-full max-w-md items-center gap-3">
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-xs text-muted-foreground">{t("divider")}</span>
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
+      {/* Email sign in*/}
+      <form
+        className="w-full max-w-md py-5 border rounded-4xl px-7 bg-card"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          void form.handleSubmit();
+        }}
+      >
+        <h2 className="text-2xl">{t("formTitle")}</h2>
+        <div className="flex flex-col py-5 gap-y-5">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email">{t("labels.email")}</Label>
+            <form.AppField
+              name="email"
+              children={(field) => (
+                <>
+                  <field.Input
+                    id="email"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                  />
+                  {!field.state.meta.isValid && (
+                    <em className="text-red-500">
+                      {field.state.meta.errorMap["onBlur"]?.at(0)?.message}
+                    </em>
+                  )}
+                </>
+              )}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="password">{t("labels.password")}</Label>
+            <form.AppField
+              name="password"
+              children={(field) => (
+                <>
+                  <field.Input
+                    id="password"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                  />
+                  {!field.state.meta.isValid && (
+                    <em className="text-red-500">
+                      {field.state.meta.errorMap["onBlur"]?.at(0)?.message}
+                    </em>
+                  )}
+                </>
+              )}
+            />
+          </div>
+
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => {
+              return (
+                <Button className="relative" type="submit" disabled={!canSubmit}>
+                  {isSubmitting ? <Loading isInlined /> : t("actions.submit")}
+                </Button>
+              );
+            }}
+          />
+        </div>
+      </form>
+
+      <p className="text-sm text-muted-foreground">
+        {tCommon("auth.noAccount")}{" "}
         <Link href="/signup" className="text-xl underline text-primary underline-offset-5">
-          {t("auth.goToSignup")}{" "}
+          {tCommon("auth.goToSignup")}{" "}
         </Link>
-      </p> */}
-      <p className="font-sans text-xl font-bold">{t("auth.signupSuffix")}</p>
+      </p>
+      <p className="font-sans text-xl font-bold">{tCommon("auth.signupSuffix")}</p>
 
       <div className="flex flex-row items-center px-10 text-xs md:px-0 text-wrap gap-1">
         <span>
-          {t("auth.consentPrefix")}{" "}
+          {tCommon("auth.consentPrefix")}{" "}
           <Link href="/terms-of-service" className="underline text-primary">
-            {t("auth.consentLink")}
+            {tCommon("auth.consentLink")}
           </Link>{" "}
-          {t("auth.consentSuffix")}
+          {tCommon("auth.consentSuffix")}
         </span>
       </div>
     </div>

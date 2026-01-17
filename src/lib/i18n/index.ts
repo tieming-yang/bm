@@ -16,6 +16,7 @@ import enDailyGraceSnacks from "./locales/en/daily-grace-snacks.json";
 import enBeyondMusic from "./locales/en/beyond-music.json";
 import enBibleProducts from "./locales/en/bible-products.json";
 import enSignUp from "./locales/en/sign-up.json";
+import enSignIn from "./locales/en/sign-in.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
@@ -30,6 +31,7 @@ import zhDailyGraceSnacks from "./locales/zh-TW/daily-grace-snacks.json";
 import zhBeyondMusic from "./locales/zh-TW/beyond-music.json";
 import zhBibleProducts from "./locales/zh-TW/bible-products.json";
 import zhSignUp from "./locales/zh-TW/sign-up.json";
+import zhSignIn from "./locales/zh-TW/sign-in.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -48,6 +50,7 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhBeyondMusic, "zh-TW/beyond-music.json");
   verifyTranslationEncoding(zhBibleProducts, "zh-TW/bible-products.json");
   verifyTranslationEncoding(zhSignUp, "zh-TW/sign-up.json");
+  verifyTranslationEncoding(zhSignIn, "zh-TW/sign-in.json");
 }
 
 // Initialize i18n instance
@@ -69,6 +72,7 @@ i18n
         "beyond-music": enBeyondMusic,
         "bible-products": enBibleProducts,
         "sign-up": enSignUp,
+        "sign-in": enSignIn,
       },
       "zh-TW": {
         common: zhCommon,
@@ -83,6 +87,7 @@ i18n
         "beyond-music": zhBeyondMusic,
         "bible-products": zhBibleProducts,
         "sign-up": zhSignUp,
+        "sign-in": zhSignIn,
       },
     },
     fallbackLng: "zh-TW",

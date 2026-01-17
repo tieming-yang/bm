@@ -1,0 +1,11 @@
+{
+  "divider": "or",
+  "formTitle": "Email Sign in",
+  "labels": {
+    "email": "Email",
+    "password": "Password"
+  },
+  "actions": {
+    "submit": "Sign in"
+  }
+}

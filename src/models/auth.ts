@@ -26,6 +26,8 @@ export const EmailSignUpSchema = v.object({
   password: v.pipe(v.string(), v.minLength(8)),
   displayName: v.pipe(v.string(), v.maxLength(30)),
 });
+export const EmailSignInSchema = v.omit(EmailSignUpSchema, ["displayName"]);
+
 export type EmailSignUpInput = v.InferOutput<typeof EmailSignUpSchema>;
 export type EmailSignInInput = Omit<EmailSignUpInput, "displayName">;
 
@@ -101,9 +103,8 @@ const Auth = {
 
   async signInWithEmail(input: EmailSignInInput): Promise<User> {
     const { email, password } = input;
-    if (!email || !password) throw new Error("sign in with email input error");
-
     const { user } = await signInWithEmailAndPassword(firebase.auth, email, password);
+    
     return user;
   },
 };
