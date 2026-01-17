@@ -85,7 +85,7 @@ export default function SignInPage({}: Props) {
     <div className="relative z-50 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
       <Button
         variant="default"
-        className="flex items-center shadow-lg gap-3"
+        className="flex items-center gap-3 shadow-lg"
         onClick={() => {
           signInMutation.mutate({ method: AuthMethod.Google });
         }}
@@ -94,10 +94,10 @@ export default function SignInPage({}: Props) {
         {tCommon("nav.signinWithGoogle")}
       </Button>
 
-      <div className="flex w-full max-w-md items-center gap-3">
-        <span className="h-px flex-1 bg-border" />
+      <div className="flex items-center w-full max-w-md gap-3">
+        <span className="flex-1 h-px bg-border" />
         <span className="text-xs text-muted-foreground">{t("divider")}</span>
-        <span className="h-px flex-1 bg-border" />
+        <span className="flex-1 h-px bg-border" />
       </div>
 
       {/* Email sign in*/}
@@ -176,7 +176,7 @@ export default function SignInPage({}: Props) {
       </p>
       <p className="font-sans text-xl font-bold">{tCommon("auth.signupSuffix")}</p>
 
-      <div className="flex flex-row items-center px-10 text-xs md:px-0 text-wrap gap-1">
+      <div className="flex flex-row items-center gap-1 px-10 text-xs md:px-0 text-wrap">
         <span>
           {tCommon("auth.consentPrefix")}{" "}
           <Link href="/terms-of-service" className="underline text-primary">
