@@ -32,7 +32,7 @@ const lessons: Lesson[] = [
     title: "諾亞方舟",
     theme: "學堂精選",
     summary: "邀請家人朋友共學，讓真理成為日常。",
-    videoId: "d_84en-sgDc",
+    videoId: "fdj-FbA2ykQ",
   },
 ];
 
