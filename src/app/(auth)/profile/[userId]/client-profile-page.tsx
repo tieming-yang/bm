@@ -317,10 +317,10 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <section className="place-self-center">
-            <Avatar className="w-24 h-24 md:h-48 md:w-48">
+            <Avatar className="w-36 h-36 md:h-48 md:w-48 border">
               <Image
                 fill
-                src={profile.photoURL ?? "/public/logos/logo.webp"}
+                src={profile.photoURL ?? "/logos/logo.webp"}
                 alt={profile.displayName || ""}
               />
             </Avatar>
@@ -334,9 +334,11 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
             <p>
               <strong>{t("donator.name")}:</strong> {profile.displayName || ""}
             </p>
-            <p>
-              <strong>{t("donator.type")}:</strong> {tCommon(`${profile.accountType}`) || ""}
-            </p>
+            {profile.accountType && (
+              <p>
+                <strong>{t("donator.type")}:</strong> {tCommon(`${profile.accountType}`) || ""}
+              </p>
+            )}
           </section>
         </CardContent>
         {isOwnProfile && (
