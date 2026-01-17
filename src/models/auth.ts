@@ -7,10 +7,13 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  UserCredential,
 } from "firebase/auth";
 
 import firebase from "../lib/firebase/firebase";
 import Profile from "./profiles";
+import { assertIsDefined } from "@/lib/utils";
+import * as v from "valibot";
 
 export const AuthMethod = {
   Google: "google",
@@ -18,7 +21,12 @@ export const AuthMethod = {
 } as const;
 export type AuthMethod = (typeof AuthMethod)[keyof typeof AuthMethod];
 
-export type EmailSignUpInput = { email: string; password: string; displayName: string };
+export const EmailSignUpSchema = v.object({
+  email: v.pipe(v.string(), v.trim(), v.email()),
+  password: v.pipe(v.string(), v.minLength(8)),
+  displayName: v.pipe(v.string(), v.maxLength(30)),
+});
+export type EmailSignUpInput = v.InferOutput<typeof EmailSignUpSchema>;
 export type EmailSignInInput = Omit<EmailSignUpInput, "displayName">;
 
 const Auth = {
@@ -68,11 +76,14 @@ const Auth = {
 
   async signUpWithEmail(input: EmailSignUpInput): Promise<User> {
     const { email, password, displayName } = input;
-    if (!email || !password || !displayName) throw new Error("sign up with email input error");
+    let userCredential: UserCredential | null = null;
+    try {
+      userCredential = await createUserWithEmailAndPassword(firebase.auth, email, password);
+    } catch (error) {
+      throw error;
+    }
 
-    const { user } = await createUserWithEmailAndPassword(firebase.auth, email, password);
-
-    const { uid } = user;
+    const { uid } = userCredential.user;
     const isProfileExist = await Profile.isExits(uid);
     if (isProfileExist) {
       throw new Error("Profile Exist");
@@ -85,7 +96,7 @@ const Auth = {
       photoURL: null,
     });
 
-    return user;
+    return userCredential.user;
   },
 
   async signInWithEmail(input: EmailSignInInput): Promise<User> {

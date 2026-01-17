@@ -5,11 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function assertIsDefined<T>(
-  value: T,
-  message?: string,
-): asserts value is NonNullable<T> {
-  if (value === undefined || value === null) {
+export function assertIsDefined<T>(value: T, message?: string): asserts value is NonNullable<T> {
+  if (value === undefined || value === null || value === "") {
     throw new Error(message ?? `Assert value is ${value}`);
   }
 }
