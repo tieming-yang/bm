@@ -30,33 +30,14 @@ export async function GET() {
         const artwork = page.properties.Artwork.files[0]?.file.url ?? "";
         const createdTime = page.created_time;
 
-        // Get block content for every page
-        const { results: blocks } = await notion.blocks.children.list({
-          block_id: id,
-        });
-
-        const paragraphs = blocks.filter((block) => block.type === "paragraph");
-        const scripture = paragraphs
-          ?.map((block) => {
-            return block.paragraph.rich_text.map((text) => text.plain_text)?.join("");
-          })
-          ?.join("\n")
-          ?.split("\n\n");
-
         return {
           id,
           title,
           book,
           section,
           scriptures: {
-            en:
-              section === "49:1-33"
-                ? en.map((text) => text.plain_text)?.join("")
-                : scripture[0],
-            zh:
-              section === "49:1-33"
-                ? zh.map((text) => text.plain_text)?.join("")
-                : scripture[1],
+            en: en.map((text) => text.plain_text)?.join(""),
+            zh: zh.map((text) => text.plain_text)?.join(""),
           },
           imageUrl: artwork,
           createdTime,
@@ -64,10 +45,10 @@ export async function GET() {
       })
     );
     const sanitized = entries.filter((entry) => entry.imageUrl !== "");
- 
+
     return NextResponse.json(sanitized);
   } catch (error) {
-    console.error("Error fetching wiki entries:", error);
-    return NextResponse.error("Failed to fetch wiki entries", { status: 500 });
+    console.error("Error fetching artwork entries:", error);
+    return NextResponse.error("Failed to fetch artwork entries", { status: 500 });
   }
 }
