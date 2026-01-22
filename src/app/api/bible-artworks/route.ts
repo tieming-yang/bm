@@ -56,7 +56,7 @@ export async function GET() {
             zh:
               section === "49:1-33"
                 ? zh.map((text) => text.plain_text)?.join("")
-                : scripture[0],
+                : scripture[1],
           },
           imageUrl: artwork,
           createdTime,
