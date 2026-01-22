@@ -23,6 +23,8 @@ export async function GET() {
       results.map(async (page: PageObjectResponse) => {
         const id = page.id;
         const title = page.properties.Name.title[0]?.plain_text ?? "";
+        const zh = page.properties.zh?.rich_text ?? "";
+        const en = page.properties.en?.rich_text ?? "";
         const book = page.properties.Book.select?.name ?? "";
         const section = page.properties.Section.rich_text[0]?.plain_text ?? "";
         const artwork = page.properties.Artwork.files[0]?.file.url ?? "";
@@ -47,8 +49,14 @@ export async function GET() {
           book,
           section,
           scriptures: {
-            en: scripture[0],
-            zh: scripture[1],
+            en:
+              section === "49:1-33"
+                ? en.map((text) => text.plain_text)?.join("")
+                : scripture[0],
+            zh:
+              section === "49:1-33"
+                ? zh.map((text) => text.plain_text)?.join("")
+                : scripture[0],
           },
           imageUrl: artwork,
           createdTime,
