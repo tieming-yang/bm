@@ -21,7 +21,7 @@ const BibleArtworks = {
   order: Books.order,
 
   getAll: async (): Promise<BibleArtwork[]> => {
-    const res = await fetch(`${Config.baseUrl}/api/bible-artworks`, { cache: "force-cache" });
+    const res = await fetch(`${Config.baseUrl}/api/bible-artworks`);
     if (!res.ok) {
       throw new Error("Failed to fetch bible artworks from API");
     }
@@ -34,8 +34,8 @@ const BibleArtworks = {
 
     const localedArtworks = artworks.map((artwork) => {
       const scripture = currentLanguage.split("-").includes("zh")
-        ? artwork.scriptures.zh ?? ""
-        : artwork.scriptures.en ?? "";
+        ? (artwork.scriptures.zh ?? "")
+        : (artwork.scriptures.en ?? "");
 
       return {
         ...artwork,
