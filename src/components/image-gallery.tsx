@@ -364,7 +364,7 @@ export function ImageGallery({
                                   src={artwork.imageUrl}
                                   alt={"Slow Internet Connecting, Please Try It Again"}
                                   fill
-                                  loading="lazy"
+                                  preload
                                   className="object-contain"
                                   placeholder="blur"
                                   blurDataURL="/placeholders/blur-noise-placeholder.webp"
