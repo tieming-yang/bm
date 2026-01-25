@@ -41,7 +41,12 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mx-auto max-w-4xl"
         >
-          <MemberCard name={yangMember.name} role={yangMember.role} image={yangyiPicture} imageAlt="楊毅">
+          <MemberCard
+            name={yangMember.name}
+            role={yangMember.role}
+            image={yangyiPicture}
+            imageAlt="楊毅"
+          >
             {story.map((_, index) => (
               <p key={index}>
                 <Trans
@@ -52,61 +57,6 @@ export default function About() {
             ))}
           </MemberCard>
         </motion.div>
-
-        <div className="mx-auto mt-10 max-w-5xl">
-          <div className="relative hidden md:block">
-            <div className="relative h-16 w-full">
-              <span className="absolute left-1/2 top-0 h-8 w-px -translate-x-1/2 bg-primary/70" />
-              <span className="absolute left-[25%] right-[25%] top-8 h-px bg-primary/70" />
-              <span className="absolute left-[25%] top-8 h-8 w-px bg-primary/70" />
-              <span className="absolute right-[25%] top-8 h-8 w-px bg-primary/70" />
-            </div>
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <MemberCard
-                name={lawMember.name}
-                role={lawMember.role}
-                image={lawPicture}
-                imageAlt={lawMember.name}
-              >
-                <h3 className="text-lg font-bold text-foreground">{lawMember.title}</h3>
-                {lawMember.story.map((paragraph, index) => (
-                  <p key={`law-${index}`}>{paragraph}</p>
-                ))}
-              </MemberCard>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <MemberCard
-                name={johnMember.name}
-                role={johnMember.role}
-                image={johnPicture}
-                imageAlt={johnMember.name}
-              >
-                <h3 className="text-lg font-semibold text-foreground">{johnMember.title}</h3>
-                {johnMember.story.map((paragraph, index) => (
-                  <p key={`john-${index}`}>{paragraph}</p>
-                ))}
-                {johnMember.closing ? <p>{johnMember.closing}</p> : null}
-                {johnMember.quote ? (
-                  <blockquote className="border-l-4 border-primary/40 pl-4 font-semibold text-foreground">
-                    {johnMember.quote}
-                  </blockquote>
-                ) : null}
-              </MemberCard>
-            </motion.div>
-          </div>
-        </div>
       </section>
     </div>
   );
