@@ -14,6 +14,7 @@ import Link from "next/link";
 import { BibleArtwork } from "@/types/bible-artwork";
 import Profile from "@/models/profiles";
 import Intro from "./intro";
+import { QueryKey } from "@/utils/query-keys";
 
 export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
@@ -28,7 +29,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["bibleArtworks", currentLanguage],
+    queryKey: [QueryKey.artworks, currentLanguage],
     queryFn: () => BibleArtworks.getAll(),
     staleTime: Infinity,
   });

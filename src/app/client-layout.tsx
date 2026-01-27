@@ -15,7 +15,7 @@ function ClientRoot({ children }: React.PropsWithChildren) {
   const { currentLanguage } = useTranslation();
 
   useQuery({
-    queryKey: ["bibleArtworks", currentLanguage],
+    queryKey: [QueryKey.artworks, currentLanguage],
     queryFn: () => BibleArtworks.getAll(),
     staleTime: Infinity,
   });
