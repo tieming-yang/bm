@@ -43,7 +43,7 @@ async function getAllArtworks() {
   }
 }
 
-function safeName(name) {
+function safePathname(name) {
   return String(name)
     .trim()
     .replace(/[^\w\-]+/g, "_")
@@ -85,8 +85,8 @@ async function main() {
       continue;
     }
 
-    const book = safeName(artwork.book);
-    const section = safeName(artwork.section);
+    const book = safePathname(artwork.book);
+    const section = safePathname(artwork.section);
     const extension = extFromUrl(artwork.url);
     const file = path.join(outputDirectory, `${book}${section}${extension}`);
     const result = await downloadImage(artwork.url);
