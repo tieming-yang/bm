@@ -1,53 +1,41 @@
-"use client";
+import type { Metadata } from "next";
+import Config from "@/models/config";
+import ClientDonatePage from "./client-page";
 
-import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Heart } from "lucide-react";
-import useTranslation from "@/hooks/use-translation";
+const title = "Donate | Beyond Digital Media";
+const description =
+  "Your donation helps us continue creating innovative art and media experiences.";
+const canonicalUrl = new URL("/donate", Config.baseUrl).href;
 
-export default function Donate() {
-  const { t } = useTranslation("donate");
+export const metadata: Metadata = {
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: canonicalUrl,
+    type: "website",
+    siteName: "Beyond Digital Media",
+    images: [
+      {
+        url: Config.OGImage,
+        width: 1200,
+        height: 630,
+        alt: title,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: [Config.OGImage],
+  },
+  alternates: {
+    canonical: canonicalUrl,
+  },
+};
 
-  return (
-    <div className="container relative z-50 px-4 py-12 mx-auto">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="mb-16 text-center"
-      >
-        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
-          {t("donate.title")}
-        </h1>
-        <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
-          {t("donate.subtitle")}
-        </p>
-      </motion.div>
-
-      <div className="max-w-2xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <Card className="border backdrop-blur-lg bg-card border-primary/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="w-5 h-5 text-primary" />
-                {t("donate.card.zelle.title")}
-              </CardTitle>
-              <CardDescription>{t("donate.card.zelle.description")}</CardDescription>
-            </CardHeader>
-            <CardContent className="font-mono">{t("donate.card.zelle.account")}</CardContent>
-          </Card>
-        </motion.div>
-      </div>
-    </div>
-  );
+export default function DonatePage() {
+  return <ClientDonatePage />;
 }
