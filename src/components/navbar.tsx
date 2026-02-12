@@ -32,7 +32,7 @@ export const navRoutes = [
     label: (t: TFunction<string, undefined>) => t("nav.bibleProducts"),
   },
   { href: "/contact", label: (t: TFunction<string, undefined>) => t("nav.contact") },
-  // { href: "/donate", label:(t: TFunction<string, undefined>) => t("nav.donate") },
+  { href: "/donate", label:(t: TFunction<string, undefined>) => t("nav.donate") },
   // { href: "/signin", label:(t: TFunction<string, undefined>) => t("nav.signin") },
 ];
 
@@ -79,12 +79,12 @@ export default function Navbar() {
         <div
           className={`${topGlowBorder} container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-primary-gradient-10 border-black/10`}
         >
-          <div className="items-center hidden md:flex gap-6">
+          <div className="items-center hidden lg:flex gap-6">
             {navRoutes.map((route) => (
               <Link
                 key={route.href}
                 href={route.href}
-                className={`text-sm md:text-md lg:text-lg font-medium transition-colors hover:text-primary ${
+                className={`text-lg font-medium transition-colors hover:text-primary ${
                   pathname?.includes(route.href) && route.href !== "/"
                     ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                     : ""
@@ -133,7 +133,7 @@ export default function Navbar() {
           </section>
           <button
             onClick={toggleMenu}
-            className="relative flex flex-col items-center justify-center z-60 md:hidden size-10 focus:outline-hidden"
+            className="relative flex flex-col items-center justify-center z-60 lg:hidden size-10 focus:outline-hidden"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
           >
@@ -159,10 +159,10 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 font-serif md:hidden bg-primary-gradient-50"
+            className="fixed inset-0 z-50 font-serif lg:hidden bg-primary-gradient-50"
           >
             <div className="flex flex-col h-full px-6 pt-20 pb-10">
-              <div className="flex flex-col items-center justify-center gap-6 sm:gap-9">
+              <div className="flex flex-col items-center justify-center gap-5 sm:gap-9">
                 {navRoutes.map((route, index) => (
                   <motion.div
                     key={route.href}
@@ -172,7 +172,7 @@ export default function Navbar() {
                   >
                     <Link
                       href={route.href}
-                      className={`text-2xl sm:text-2xl duration-300 transition-all font-medium  hover:text-primary ${
+                      className={`text-xl sm:text-2xl duration-300 transition-all font-medium  hover:text-primary ${
                         pathname?.includes(route.href) && route.href !== "/"
                           ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                           : ""

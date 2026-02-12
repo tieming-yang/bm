@@ -1,20 +1,13 @@
 {
   "donate": {
     "title": "支持我們的願景",
-    "subtitle": "您的捐款幫助我們繼續創作創新的藝術和媒體體驗。",
-    "scanTitle": "掃描以捐款",
-    "scanDescription": "您的支持使我們能夠繼續突破藝術和媒體的界限。",
-    "later": "或許稍後再說",
+    "subtitle": "您的捐款將通過彼岸教會幫助我們繼續創作創新的藝術和媒體體驗。",
     "card": {
-      "title": "捐款支持",
-      "description": "選擇金額以支持我們的藝術計劃",
-      "amount": "選擇金額",
-      "custom": "自訂",
-      "name": "姓名",
-      "name_placeholder": "您的姓名",
-      "email": "電子郵件",
-      "email_placeholder": "您的電子郵件地址",
-      "complete": "完成捐款"
+      "zelle": {
+        "title": "Zelle",
+        "account": "ekklesiabeyond@gmail.com",
+        "description": "請註明該捐款用於支持彼岸媒體藝術事奉"
+      }
     }
   }
 }
