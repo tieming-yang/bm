@@ -28,8 +28,9 @@ export async function GET() {
         const book = page.properties.Book.select?.name ?? "";
         const section = page.properties.Section.rich_text[0]?.plain_text ?? "";
         const artwork = page.properties.Artwork.files[0]?.file.url ?? "";
+        const videoUrl = page.properties.VideoUrl.url ?? null;
         const createdTime = page.created_time;
-
+        
         return {
           id,
           title,
@@ -40,6 +41,7 @@ export async function GET() {
             zh: zh.map((text) => text.plain_text)?.join(""),
           },
           imageUrl: artwork,
+          videoUrl,
           createdTime,
         } as BibleArtwork;
       })

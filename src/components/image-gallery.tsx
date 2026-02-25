@@ -5,7 +5,16 @@ import React, { useState, useEffect, useRef, use } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { X, Download, Share, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  X,
+  Download,
+  Share,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+  PlayIcon,
+  ImageIcon,
+} from "lucide-react";
 import { UseEmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
 import type { BibleArtworksLocale, BibleArtworksCanonical } from "../types/bible-artwork";
@@ -20,6 +29,7 @@ import { toast } from "sonner";
 import Loading from "../app/loading";
 import useProfile from "@/hooks/use-profile";
 import BibleArtworks from "@/models/bible-artworks";
+import { YoutubePlayer } from "./youtube-player";
 
 interface ImageGalleryProps {
   artworks: BibleArtwork[];
@@ -47,6 +57,7 @@ export function ImageGallery({
 
   const [emblaApi, setEmblaApi] = useState<UseEmblaCarouselType[1] | null>(null);
 
+  const [displayMode, setDisplayMode] = useState<"image" | "video">("image");
   // Refs
   const observerRef = useRef<HTMLDivElement>(null);
   const urlUpdatingRef = useRef(false);
@@ -334,56 +345,63 @@ export function ImageGallery({
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-center">
                     {/* Image Carousel */}
                     <section className="sticky top-0 w-full overflow-x-hidden place-self-center">
-                      <Carousel
-                        opts={{
-                          loop: true,
-                          startIndex: selectedIndexInBook,
-                        }}
-                        className="w-full min-h-10/12"
-                        onSelect={() => {
-                          if (!lightboxCarouselInitialized) {
-                            setLightboxCarouselInitialized(true);
-                          }
-                        }}
-                        setApi={setEmblaApi}
-                      >
-                        <CarouselContent>
-                          {currentBook?.map((artwork: ibleArtworksLocale, index) => (
-                            <CarouselItem key={artwork.id}>
-                              <AspectRatio
-                                ratio={Config.aspectRatio}
-                                className="relative overflow-hidden"
-                              >
-                                {showContentBlock(index) && (
-                                  <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
-                                )}
-                                {!showContentBlock(index) && isSelectedArtworkLoading && (
-                                  <Loading isInlined show />
-                                )}
-                                <Image
-                                  src={artwork.imageUrl}
-                                  alt={"Slow Internet Connecting, Please Try It Again"}
-                                  fill
-                                  preload
-                                  className="object-contain"
-                                  placeholder="blur"
-                                  blurDataURL="/placeholders/blur-noise-placeholder.webp"
-                                  onLoad={() => {
-                                    if (
-                                      artwork.id === selectedArtworkId &&
-                                      !lightboxCarouselInitialized
-                                    ) {
-                                      setLightboxCarouselInitialized(true);
-                                    }
+                      {displayMode === "image" ? (
+                        <Carousel
+                          opts={{
+                            loop: true,
+                            startIndex: selectedIndexInBook,
+                          }}
+                          className="w-full min-h-10/12"
+                          onSelect={() => {
+                            if (!lightboxCarouselInitialized) {
+                              setLightboxCarouselInitialized(true);
+                            }
+                          }}
+                          setApi={setEmblaApi}
+                        >
+                          <CarouselContent>
+                            {currentBook?.map((artwork: BibleArtworksLocale, index) => (
+                              <CarouselItem key={artwork.id}>
+                                <AspectRatio
+                                  ratio={Config.aspectRatio}
+                                  className="relative overflow-hidden"
+                                >
+                                  {showContentBlock(index) && (
+                                    <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
+                                  )}
+                                  {!showContentBlock(index) && isSelectedArtworkLoading && (
+                                    <Loading isInlined show />
+                                  )}
+                                  <Image
+                                    src={artwork.imageUrl}
+                                    alt={"Slow Internet Connecting, Please Try It Again"}
+                                    fill
+                                    preload
+                                    className="object-contain"
+                                    placeholder="blur"
+                                    blurDataURL="/placeholders/blur-noise-placeholder.webp"
+                                    onLoad={() => {
+                                      if (
+                                        artwork.id === selectedArtworkId &&
+                                        !lightboxCarouselInitialized
+                                      ) {
+                                        setLightboxCarouselInitialized(true);
+                                      }
 
-                                    setIsSelectedArtworkLoading(false);
-                                  }}
-                                />
-                              </AspectRatio>
-                            </CarouselItem>
-                          ))}
-                        </CarouselContent>
-                      </Carousel>
+                                      setIsSelectedArtworkLoading(false);
+                                    }}
+                                  />
+                                </AspectRatio>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                        </Carousel>
+                      ) : (
+                        <YoutubePlayer
+                          src={selectedArtwork.videoUrl}
+                          title={selectedArtwork.title}
+                        />
+                      )}
                     </section>
                     <div className="flex flex-col px-2 gap-4 md:px-0">
                       {/* Title and Reference */}
@@ -409,7 +427,7 @@ export function ImageGallery({
             </div>
 
             {/* Tool Bar */}
-            <section className="flex items-center justify-end px-6 border-b border-border">
+            <section className="flex items-center justify-end py-3 px-6 border-b border-border">
               <div className="flex items-center gap-4">
                 {/* <Button
                   variant={"ghost"}
@@ -427,42 +445,51 @@ export function ImageGallery({
                   <Download className="size-5" />
                   <span className="sr-only">Download</span>
                 </Button> */}
-                <Button
-                  variant={"outline"}
-                  onClick={handleClose}
-                  className="flex items-center justify-center"
-                >
-                  <X className="size-7" />
+                {selectedArtwork.videoUrl && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="size-10"
+                    onClick={() => {
+                      if (displayMode === "image") {
+                        setDisplayMode("video");
+                      } else {
+                        setDisplayMode("image");
+                      }
+                    }}
+                  >
+                    {displayMode === "image" ? <PlayIcon /> : <ImageIcon />}
+                  </Button>
+                )}
+                <div className="flex items-center gap-3 justify-between">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      emblaApi?.scrollPrev();
+                    }}
+                    disabled={!emblaApi?.canScrollPrev()}
+                  >
+                    <ChevronLeft className="size-12" />
+                    <span className="sr-only">Previous</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      emblaApi?.scrollNext();
+                    }}
+                    disabled={!emblaApi?.canScrollNext()}
+                  >
+                    <ChevronRight className="size-12" />
+                    <span className="sr-only">Next</span>
+                  </Button>
+                </div>
+                <Button type="button" variant={"icon"} onClick={handleClose}>
+                  <X />
                   <span className="sr-only">Close</span>
                 </Button>
               </div>
-            </section>
-
-            <section className="flex items-center justify-between">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => {
-                  emblaApi?.scrollPrev();
-                }}
-                disabled={!emblaApi?.canScrollPrev()}
-                className="flex items-center justify-center w-full border-r rounded-none py-7"
-              >
-                <ChevronLeft className="size-10" />
-                <span className="sr-only">Previous</span>
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => {
-                  emblaApi?.scrollNext();
-                }}
-                disabled={!emblaApi?.canScrollNext()}
-                className="flex items-center justify-center w-full border-l rounded-none py-7"
-              >
-                <ChevronRight className="size-10" />
-                <span className="sr-only">Next</span>
-              </Button>
             </section>
           </div>
         </div>
