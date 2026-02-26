@@ -45,16 +45,16 @@ async function getAllScriptures() {
  * @see http://new.text-to-speech.cn/tts/
  * @example @@@批量生成分隔@@@
  */
-const SEPARATER = "@@@批量生成分隔@@@";
+const SEPARATER = "\n@@@批量生成分隔@@@\n";
 async function main() {
-  const scriptures = await getAllScriptures();
-  const parsed = scriptures;
-  // const scriptures = await readFile(new URL("../../temp.txt", import.meta.url), "utf-8");
-  // const parsed = vm.runInNewContext(scriptures);
+  // const scriptures = await getAllScriptures();
+  // const parsed = scriptures;
+  const scriptures = await readFile(new URL("../../temp.txt", import.meta.url), "utf-8");
+  const parsed = vm.runInNewContext(scriptures);
 
   const vo = parsed.map((p) => {
-    // const script = p.zh.replace(/\d+/g, "").trim();
-    const script = p.en.replace(/\d+/g, "").trim();
+    const script = p.zh.replace(/\d+/g, "").trim();
+    // const script = p.en.replace(/\d+/g, "").trim();
     return script + SEPARATER;
   });
 
