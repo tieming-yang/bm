@@ -71,8 +71,8 @@ async function downloadImage(url) {
 }
 
 async function main() {
-  const outputDirectory = path.join(os.homedir(), "Desktop", "bible-artworks");
-  console.log({ outputDirectory });
+  // const outputDirectory = path.join(os.homedir(), "Desktop", "bible-artworks");
+  // console.log({ outputDirectory });
 
   const artworks = await getAllArtworks();
   const total = artworks.length;
@@ -88,16 +88,18 @@ async function main() {
     const book = safePathname(artwork.book);
     const section = safePathname(artwork.section);
     const extension = extFromUrl(artwork.url);
-    const file = path.join(outputDirectory, `${book}${section}${extension}`);
-    const result = await downloadImage(artwork.url);
-    if (!result.ok) {
-      console.error("❌", result.error);
-      continue;
-    }
-    await writeFile(file, result.data);
+    console.warn(`${book}-${section}`);
+    
+    // const file = path.join(outputDirectory, `${book}${section}${extension}`);
+    // const result = await downloadImage(artwork.url);
+    // if (!result.ok) {
+    //   console.error("❌", result.error);
+    //   continue;
+    // }
+    // await writeFile(file, result.data);
     done++;
     const percentage = Math.round((done / total) * 100);
-    console.log(`downloaded ${done} / ${total} (${percentage}%)`);
+    // console.log(`downloaded ${done} / ${total} (${percentage}%)`);
   }
 }
 

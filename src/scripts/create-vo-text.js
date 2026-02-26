@@ -3,10 +3,10 @@ import { config } from "dotenv";
 import path from "node:path";
 import { readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
-config({ path: ".env.local" });
+config({ path: "../../.env.local" });
 import vm from "node:vm";
 
-console.log("start working");
+console.log("Start working");
 if (!process.env.NOTION_TOKEN || !process.env.BIBLE_ARTWORKS_DB_ID) {
   console.warn("⚠️ ", "no env is found");
   process.exit();
@@ -47,21 +47,29 @@ async function getAllScriptures() {
  */
 const SEPARATER = "\n@@@批量生成分隔@@@\n";
 const RAW_SCRIPTURES_PATH = new URL("./create-vo-text/raw-vo-scripts.txt", import.meta.url);
-async function main() {
-  const rawScriptures = await getAllScriptures();
-  await writeFile(RAW_SCRIPTURES_PATH, rawScriptures, { encoding: "utf-8" });
+async function main(fetch = false) {
+  if (fetch) {
+    console.warn("⚠️", "Start Fetching");
 
+    const rawScriptures = await getAllScriptures();
+    console.warn("⚠️", "Start Writing");
+    await writeFile(RAW_SCRIPTURES_PATH, rawScriptures, { encoding: "utf-8" });
+  }
+
+  console.warn("⚠️", `Start Reading From ${RAW_SCRIPTURES_PATH}`);
   const scriptures = await readFile(RAW_SCRIPTURES_PATH, "utf-8");
   const parsed = vm.runInNewContext(scriptures);
 
-  const vo = parsed.map((p) => {
-    const script = p.zh.replace(/\d+/g, "").trim();
-    // const script = p.en.replace(/\d+/g, "").trim();
-    return script + SEPARATER;
-  });
+  const vo = parsed
+    .map((p) => {
+      const script = p.zh.replace(/\d+/g, "").trim();
+      // const script = p.en.replace(/\d+/g, "").trim();
+      return script + SEPARATER;
+    })
+    .join("");
 
-  console.debug(vo.join(""));
-  return vo.join("");
+  console.debug(vo);
+  return vo;
 }
 
 await main();
