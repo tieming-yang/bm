@@ -345,62 +345,64 @@ export function ImageGallery({
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-center">
                     {/* Image Carousel */}
                     <section className="sticky top-0 w-full overflow-x-hidden place-self-center">
-                      {displayMode === "image" ? (
-                        <Carousel
-                          opts={{
-                            loop: true,
-                            startIndex: selectedIndexInBook,
-                          }}
-                          className="w-full min-h-10/12"
-                          onSelect={() => {
-                            if (!lightboxCarouselInitialized) {
-                              setLightboxCarouselInitialized(true);
-                            }
-                          }}
-                          setApi={setEmblaApi}
-                        >
-                          <CarouselContent>
-                            {currentBook?.map((artwork: BibleArtworksLocale, index) => (
-                              <CarouselItem key={artwork.id}>
-                                <AspectRatio
-                                  ratio={Config.aspectRatio}
-                                  className="relative overflow-hidden"
-                                >
-                                  {showContentBlock(index) && (
-                                    <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
-                                  )}
-                                  {!showContentBlock(index) && isSelectedArtworkLoading && (
-                                    <Loading isInlined show />
-                                  )}
-                                  <Image
-                                    src={artwork.imageUrl}
-                                    alt={"Slow Internet Connecting, Please Try It Again"}
-                                    fill
-                                    preload
-                                    className="object-contain"
-                                    placeholder="blur"
-                                    blurDataURL="/placeholders/blur-noise-placeholder.webp"
-                                    onLoad={() => {
-                                      if (
-                                        artwork.id === selectedArtworkId &&
-                                        !lightboxCarouselInitialized
-                                      ) {
-                                        setLightboxCarouselInitialized(true);
-                                      }
+                      <Carousel
+                        opts={{
+                          loop: true,
+                          startIndex: selectedIndexInBook,
+                        }}
+                        className="w-full min-h-10/12"
+                        onSelect={() => {
+                          if (!lightboxCarouselInitialized) {
+                            setLightboxCarouselInitialized(true);
+                          }
+                        }}
+                        setApi={setEmblaApi}
+                      >
+                        <CarouselContent>
+                          {currentBook?.map((artwork: BibleArtworksLocale, index) => (
+                            <CarouselItem key={artwork.id}>
+                              <AspectRatio
+                                ratio={Config.aspectRatio}
+                                className="relative overflow-hidden"
+                              >
+                                {showContentBlock(index) && (
+                                  <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
+                                )}
+                                {!showContentBlock(index) && isSelectedArtworkLoading && (
+                                  <Loading isInlined show />
+                                )}
+                                <Image
+                                  src={artwork.imageUrl}
+                                  alt={"Slow Internet Connecting, Please Try It Again"}
+                                  fill
+                                  preload
+                                  className="object-contain"
+                                  placeholder="blur"
+                                  blurDataURL="/placeholders/blur-noise-placeholder.webp"
+                                  onLoad={() => {
+                                    if (
+                                      artwork.id === selectedArtworkId &&
+                                      !lightboxCarouselInitialized
+                                    ) {
+                                      setLightboxCarouselInitialized(true);
+                                    }
 
-                                      setIsSelectedArtworkLoading(false);
-                                    }}
-                                  />
-                                </AspectRatio>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                        </Carousel>
-                      ) : (
-                        <YoutubePlayer
-                          src={selectedArtwork.videoUrl}
-                          title={selectedArtwork.title}
-                        />
+                                    setIsSelectedArtworkLoading(false);
+                                  }}
+                                />
+                              </AspectRatio>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                      </Carousel>
+
+                      {displayMode === "video" && (
+                        <div className="fixed top-0 w-full">
+                          <YoutubePlayer
+                            src={selectedArtwork.videoUrl}
+                            title={selectedArtwork.title}
+                          />
+                        </div>
                       )}
                     </section>
                     <div className="flex flex-col px-2 gap-4 md:px-0">
