@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../app/loading";
 import { toast } from "sonner";
 import { useState } from "react";
+import { QueryKey } from "@/utils/query-keys";
 
 type Props = {};
 
@@ -25,7 +26,7 @@ export default function BibleBooks({}: Props) {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["bibleArtworks", currentLanguage],
+    queryKey: [QueryKey.artworks, currentLanguage],
     queryFn: () => BibleArtworks.getAll(),
     staleTime: Infinity,
   });
