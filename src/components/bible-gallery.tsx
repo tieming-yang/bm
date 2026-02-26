@@ -29,7 +29,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
     isLoading,
     error,
   } = useQuery({
-    queryKey: [QueryKey.artworks, currentLanguage],
+    queryKey: [QueryKey.artworks],
     queryFn: () => BibleArtworks.getAll(),
     staleTime: Infinity,
   });

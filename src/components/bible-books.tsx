@@ -26,7 +26,7 @@ export default function BibleBooks({}: Props) {
     isLoading,
     error,
   } = useQuery({
-    queryKey: [QueryKey.artworks, currentLanguage],
+    queryKey: [QueryKey.artworks],
     queryFn: () => BibleArtworks.getAll(),
     staleTime: Infinity,
   });
