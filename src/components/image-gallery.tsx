@@ -330,13 +330,13 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 flex items-start justify-center z-100 md:mt-12 md:items-start">
+        <div className="fixed inset-0 flex flex-col z-100 md:mt-12 md:items-start">
           {/* Backdrop with close handler */}
           <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
 
           {/* Lightbox Content */}
           <div
-            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-5rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-b-3xl overflow-hidden border border-primary/10 flex flex-col"
+            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-9rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-b-3xl overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full overflow-y-auto grow">
@@ -421,7 +421,6 @@ export function ImageGallery({
                     </div>
                   </div>
                 </div>
-
                 {/* Details */}
               </div>
             </div>
@@ -492,6 +491,19 @@ export function ImageGallery({
               </div>
             </section>
           </div>
+
+          {currentLanguage.startsWith("zh") && (
+            <audio
+              src={selectedArtwork.voUrl}
+              autoPlay={false}
+              loop
+              controls
+              style={{
+                margin: ".5rem auto 0",
+                padding: "0",
+              }}
+            ></audio>
+          )}
         </div>
       )}
 

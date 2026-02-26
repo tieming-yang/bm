@@ -29,6 +29,7 @@ export async function GET() {
         const section = page.properties.Section.rich_text[0]?.plain_text ?? "";
         const artwork = page.properties.Artwork.files[0]?.file.url ?? "";
         const videoUrl = page.properties.VideoUrl.url ?? null;
+        const voUrl = page.properties.VO.files[0]?.file.url ?? null;
         const createdTime = page.created_time;
         
         return {
@@ -42,6 +43,7 @@ export async function GET() {
           },
           imageUrl: artwork,
           videoUrl,
+          voUrl,
           createdTime,
         } as BibleArtwork;
       })

@@ -11,6 +11,7 @@ export type BibleArtwork = {
   location?: string;
   imageUrl: StaticImageData;
   videoUrl: string | null;
+  voUrl: string;
   customFields?: Record<string, string | undefined>;
   book: Book;
   section: string;
