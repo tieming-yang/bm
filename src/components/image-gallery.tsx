@@ -496,6 +496,7 @@ export function ImageGallery({
 
           {currentLanguage.startsWith("zh") && (
             <audio
+              className="md:fixed md:left-5 md:bottom-25 z-1000"
               src={selectedArtwork.voUrl}
               autoPlay={false}
               loop
