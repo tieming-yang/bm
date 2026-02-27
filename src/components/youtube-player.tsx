@@ -10,7 +10,7 @@ export function YoutubePlayer({ src, title }: YouTubePlayerProps) {
 
   return (
     <iframe
-      className="w-full aspect-video"
+      className="aspect-video"
       src={withLoop}
       title={title}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

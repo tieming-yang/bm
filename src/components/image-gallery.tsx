@@ -350,7 +350,7 @@ export function ImageGallery({
                           loop: true,
                           startIndex: selectedIndexInBook,
                         }}
-                        className="w-full min-h-10/12"
+                        className="w-full"
                         onSelect={() => {
                           if (!lightboxCarouselInitialized) {
                             setLightboxCarouselInitialized(true);
@@ -393,17 +393,17 @@ export function ImageGallery({
                               </AspectRatio>
                             </CarouselItem>
                           ))}
+                          {displayMode === "video" && (
+                            <div className="fixed z-10001 top-0 w-full">
+                              {/* <div className="top-0 fixed w-32 h-16 z-1002"></div> */}
+                              <YoutubePlayer
+                                src={selectedArtwork.videoUrl}
+                                title={selectedArtwork.title}
+                              />
+                            </div>
+                          )}
                         </CarouselContent>
                       </Carousel>
-
-                      {displayMode === "video" && (
-                        <div className="fixed top-0 w-full">
-                          <YoutubePlayer
-                            src={selectedArtwork.videoUrl}
-                            title={selectedArtwork.title}
-                          />
-                        </div>
-                      )}
                     </section>
                     <div className="flex flex-col px-2 gap-4 md:px-0">
                       {/* Title and Reference */}
@@ -428,8 +428,8 @@ export function ImageGallery({
             </div>
 
             {/* Tool Bar */}
-            <section className="flex items-center justify-end py-3 px-6 border-b border-border">
-              <div className="flex items-center gap-4">
+            <section className="flex items-center justify-center py-3 px-6 border-b border-border">
+              <div className="flex justify-between md:justify-end gap-7 w-full">
                 {/* <Button
                   variant={"ghost"}
                   onClick={handleShare}
@@ -467,17 +467,22 @@ export function ImageGallery({
                     type="button"
                     variant="ghost"
                     onClick={() => {
+                      if (!selectedArtwork.videoUrl && displayMode === "video") {
+                        setDisplayMode("image");
+                      }
                       emblaApi?.scrollPrev();
                     }}
                     disabled={!emblaApi?.canScrollPrev()}
                   >
-                    <ChevronLeft className="size-12" />
-                    <span className="sr-only">Previous</span>
+                    <ChevronLeft className="size-12" /> <span className="sr-only">Previous</span>
                   </Button>
                   <Button
                     type="button"
                     variant="ghost"
                     onClick={() => {
+                      if (!selectedArtwork.videoUrl && displayMode === "video") {
+                        setDisplayMode("image");
+                      }
                       emblaApi?.scrollNext();
                     }}
                     disabled={!emblaApi?.canScrollNext()}
@@ -486,7 +491,7 @@ export function ImageGallery({
                     <span className="sr-only">Next</span>
                   </Button>
                 </div>
-                <Button type="button" variant={"icon"} onClick={handleClose}>
+                <Button className="basis-0" type="button" variant={"icon"} onClick={handleClose}>
                   <X />
                   <span className="sr-only">Close</span>
                 </Button>
@@ -495,17 +500,19 @@ export function ImageGallery({
           </div>
 
           {currentLanguage.startsWith("zh") && (
-            <audio
-              className="md:fixed md:left-5 md:bottom-25 z-1000"
-              src={selectedArtwork.voUrl}
-              autoPlay={false}
-              loop
-              controls
-              style={{
-                margin: ".5rem auto 0",
-                padding: "0",
-              }}
-            ></audio>
+            <div className="md:fixed md:left-5 md:bottom-25 z-1000 bg-black/70 backdrop-blur-3xl md:bg-transparent md:backdrop-blur-none pb-24 md:pb-0">
+              <audio
+                className=""
+                src={selectedArtwork.voUrl}
+                autoPlay={false}
+                loop
+                controls
+                style={{
+                  margin: ".5rem auto 0",
+                  padding: "0",
+                }}
+              ></audio>
+            </div>
           )}
         </div>
       )}
