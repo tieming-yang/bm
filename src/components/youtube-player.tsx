@@ -1,8 +1,9 @@
 type YouTubePlayerProps = {
   src: string;
   title: string;
+  loop: boolean;
 };
-export function YoutubePlayer({ src, title }: YouTubePlayerProps) {
+export function YoutubePlayer({ src, title, loop = false }: YouTubePlayerProps) {
   if (!src) return null;
   const youtubeUrl = new URL(src);
   const id = youtubeUrl.pathname.split("/").at(2);
@@ -11,7 +12,7 @@ export function YoutubePlayer({ src, title }: YouTubePlayerProps) {
   return (
     <iframe
       className="aspect-video w-px min-w-full"
-      src={withLoop}
+      src={loop ? withLoop : src}
       title={title}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowFullScreen

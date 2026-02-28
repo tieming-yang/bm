@@ -395,7 +395,6 @@ export function ImageGallery({
                           ))}
                           {displayMode === "video" && (
                             <div className="fixed z-10001 top-0 w-px min-w-full">
-                              {/* <div className="top-0 fixed w-32 h-16 z-1002"></div> */}
                               <YoutubePlayer
                                 src={selectedArtwork.videoUrl}
                                 title={selectedArtwork.title}
