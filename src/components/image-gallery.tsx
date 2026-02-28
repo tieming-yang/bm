@@ -504,7 +504,6 @@ export function ImageGallery({
                 className=""
                 src={selectedArtwork.voUrl}
                 autoPlay={false}
-                loop
                 controls
                 style={{
                   margin: ".5rem auto 0",
