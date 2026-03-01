@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 
 import React, { useState, useEffect, useRef, use } from "react";
@@ -14,10 +13,16 @@ import {
   ChevronRight,
   PlayIcon,
   ImageIcon,
+  ImagePlayIcon,
+  SpeechIcon,
 } from "lucide-react";
 import { UseEmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
-import type { BibleArtworksLocale, BibleArtworksCanonical } from "../types/bible-artwork";
+import type {
+  BibleArtworksLocale,
+  BibleArtworksCanonical,
+  BibleArtwork,
+} from "../types/bible-artwork";
 import useTranslation from "../hooks/use-translation";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { DonationSheet } from "./donation-sheet";
@@ -30,6 +35,9 @@ import Loading from "../app/loading";
 import useProfile from "@/hooks/use-profile";
 import BibleArtworks from "@/models/bible-artworks";
 import { YoutubePlayer } from "./youtube-player";
+import { PlayerStatue } from "@/app/(works)/beyond-music/components/audio-player";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { TFunction } from "i18next";
 
 interface ImageGalleryProps {
   artworks: BibleArtwork[];
@@ -58,9 +66,11 @@ export function ImageGallery({
   const [emblaApi, setEmblaApi] = useState<UseEmblaCarouselType[1] | null>(null);
 
   const [displayMode, setDisplayMode] = useState<"image" | "video">("image");
+  const [playerStatus, setPlayerStatus] = useState<PlayerStatue>("loading");
   // Refs
   const observerRef = useRef<HTMLDivElement>(null);
   const urlUpdatingRef = useRef(false);
+  const voPlayerRef = useRef<HTMLAudioElement>(null);
 
   // Hooks
   const router = useRouter();
@@ -273,7 +283,7 @@ export function ImageGallery({
   };
 
   const isFreeMember = !profile || profile?.memberType === "free";
-  const showContentBlock = (index) => isFreeMember && index > MAXIMUM_FREE_ARTS;
+  const showContentBlock = (index: number) => isFreeMember && index > MAXIMUM_FREE_ARTS;
 
   return (
     <>
@@ -330,13 +340,13 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 flex flex-col z-100 md:mt-12 md:items-start">
+        <div className="fixed inset-0 md:px-3 flex flex-col z-100 md:mt-12 md:items-start">
           {/* Backdrop with close handler */}
           <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
 
           {/* Lightbox Content */}
           <div
-            className="relative z-101 mx-1 lg:mx-5 h-[calc(100dvh-9rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-b-3xl overflow-hidden border border-primary/10 flex flex-col"
+            className="relative z-101 h-[calc(100dvh-5rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-b-3xl overflow-hidden border border-primary/10 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full overflow-y-auto grow">
@@ -398,6 +408,7 @@ export function ImageGallery({
                               <YoutubePlayer
                                 src={selectedArtwork.videoUrl}
                                 title={selectedArtwork.title}
+                                loop={false}
                               />
                             </div>
                           )}
@@ -416,7 +427,7 @@ export function ImageGallery({
                           }`}</span>
                         </span>
                       </section>
-                      <p className="text-xl md:text-2xl whitespace-pre-wrap leading-8 text-foreground overflow-auto border rounded-md px-3 py-4 bg-accent-foreground/10 md:max-h-[70vh]">
+                      <p className="text-xl md:text-2xl whitespace-pre-wrap leading-8 text-foreground overflow-auto border rounded-md px-3 py-4 bg-accent-foreground/5 md:max-h-[70vh]">
                         {selectedArtwork.scripture}
                       </p>
                     </div>
@@ -427,8 +438,8 @@ export function ImageGallery({
             </div>
 
             {/* Tool Bar */}
-            <section className="flex items-center justify-center py-3 px-6 border-b border-border">
-              <div className="flex justify-between md:justify-end gap-7 w-full">
+            <section className="flex items-center justify-center py-3 px-6 md:px-10 border-b border-border">
+              <div className="flex justify-between md:justify-end gap-x-7 gap-y-3 flex-wrap w-full">
                 {/* <Button
                   variant={"ghost"}
                   onClick={handleShare}
@@ -445,22 +456,46 @@ export function ImageGallery({
                   <Download className="size-5" />
                   <span className="sr-only">Download</span>
                 </Button> */}
-                {selectedArtwork.videoUrl && (
+                <div className="flex items-center-safe gap-5">
+                  {selectedArtwork.videoUrl && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="size-10"
+                      onClick={() => {
+                        if (displayMode === "image") {
+                          setDisplayMode("video");
+                        } else {
+                          setDisplayMode("image");
+                        }
+                      }}
+                    >
+                      {displayMode === "image" ? <ImagePlayIcon /> : <ImageIcon />}
+                    </Button>
+                  )}
                   <Button
                     type="button"
                     variant="ghost"
-                    className="size-10"
+                    disabled={playerStatus === "loading"}
                     onClick={() => {
-                      if (displayMode === "image") {
-                        setDisplayMode("video");
-                      } else {
-                        setDisplayMode("image");
+                      if (playerStatus === "pause") {
+                        if (!voPlayerRef.current) return;
+                        voPlayerRef.current.play();
+                        setPlayerStatus("play");
+                      } else if (playerStatus === "play") {
+                        if (!voPlayerRef.current) return;
+                        voPlayerRef.current.pause();
+                        setPlayerStatus("pause");
                       }
                     }}
                   >
-                    {displayMode === "image" ? <PlayIcon /> : <ImageIcon />}
+                    {!voPlayerRef.current && <Loading isInlined />}
+                    <SpeechIcon
+                      className={`${playerStatus === "pause" ? "text-gray-400" : "text-white animate-pulse"}  `}
+                    />
                   </Button>
-                )}
+                </div>
+
                 <div className="flex items-center gap-3 justify-between">
                   <Button
                     type="button"
@@ -490,7 +525,7 @@ export function ImageGallery({
                     <span className="sr-only">Next</span>
                   </Button>
                 </div>
-                <Button className="basis-0" type="button" variant={"icon"} onClick={handleClose}>
+                <Button className="basis-0" type="button" variant="ghost" onClick={handleClose}>
                   <X />
                   <span className="sr-only">Close</span>
                 </Button>
@@ -499,8 +534,9 @@ export function ImageGallery({
           </div>
 
           {currentLanguage.startsWith("zh") && (
-            <div className="md:fixed md:left-5 md:bottom-25 z-1000 bg-black/70 backdrop-blur-3xl md:bg-transparent md:backdrop-blur-none pb-24 md:pb-0">
+            <div className="md:fixed md:left-5 md:bottom-25 z-1000 bg-black/70 backdrop-blur-3xl hidden md:bg-transparent md:backdrop-blur-none pb-24 md:pb-0">
               <audio
+                ref={voPlayerRef}
                 className=""
                 src={selectedArtwork.voUrl}
                 autoPlay={false}
@@ -508,6 +544,11 @@ export function ImageGallery({
                 style={{
                   margin: ".5rem auto 0",
                   padding: "0",
+                }}
+                onLoadedMetadata={() => {
+                  if (!voPlayerRef.current) return;
+                  console.debug("🔎", "loaded audio data");
+                  setPlayerStatus("pause");
                 }}
               ></audio>
             </div>

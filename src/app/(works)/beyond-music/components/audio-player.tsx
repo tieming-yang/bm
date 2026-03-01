@@ -26,7 +26,7 @@ import { sendGAEvent } from "@next/third-parties/google";
 type AudioPlayerProps = {
   song: SongType;
 };
-type PlayerStatue = "loading" | "play" | "pause";
+export type PlayerStatue = "loading" | "play" | "pause";
 type LoopMode = "none" | "single" | "all";
 
 const ICON_SIZE = 35;
