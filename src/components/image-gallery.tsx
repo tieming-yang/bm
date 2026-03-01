@@ -301,7 +301,7 @@ export function ImageGallery({
             {/* </a> */}
 
             {/* Artworks */}
-            <ul className="w-full font-mono grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
+            <ul className="grid w-full grid-cols-1 font-mono sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
                   <Thumbnail
@@ -340,7 +340,7 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 md:px-3 flex flex-col z-100 md:mt-12 md:items-start">
+        <div className="fixed inset-0 flex flex-col md:px-3 z-100 md:mt-12 md:items-start">
           {/* Backdrop with close handler */}
           <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
 
@@ -350,7 +350,7 @@ export function ImageGallery({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full overflow-y-auto grow">
-              <div className="flex flex-col h-full justify-center-safe gap-6">
+              <div className="flex flex-col h-full gap-6 justify-center-safe">
                 <div className="flex flex-col w-full">
                   <div className="grid w-full gap-6 md:gap-0 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-center">
                     {/* Image Carousel */}
@@ -404,7 +404,7 @@ export function ImageGallery({
                             </CarouselItem>
                           ))}
                           {displayMode === "video" && (
-                            <div className="fixed z-10001 top-0 w-px min-w-full">
+                            <div className="fixed top-0 w-px min-w-full z-10001">
                               <YoutubePlayer
                                 src={selectedArtwork.videoUrl}
                                 title={selectedArtwork.title}
@@ -415,9 +415,9 @@ export function ImageGallery({
                         </CarouselContent>
                       </Carousel>
                     </section>
-                    <div className="flex flex-col px-2 gap-4 md:px-0">
+                    <div className="flex flex-col gap-4 px-2 md:px-0">
                       {/* Title and Reference */}
-                      <section className="flex items-start justify-between md:pt-3 md:px-3 gap-4">
+                      <section className="flex items-start justify-between gap-4 md:pt-3 md:px-3">
                         <h3 className="font-serif font-medium underline underline-offset-2">
                           {t("bibleGallery.properties.scripture") || "Scripture"}
                         </h3>
@@ -438,8 +438,8 @@ export function ImageGallery({
             </div>
 
             {/* Tool Bar */}
-            <section className="flex items-center justify-center py-3 px-6 md:px-10 border-b border-border">
-              <div className="flex justify-between md:justify-end gap-x-7 gap-y-3 flex-wrap w-full">
+            <section className="flex items-center justify-center px-6 py-3 border-b md:px-10 border-border">
+              <div className="flex flex-wrap justify-between w-full md:justify-end gap-x-7 gap-y-3">
                 {/* <Button
                   variant={"ghost"}
                   onClick={handleShare}
@@ -456,7 +456,7 @@ export function ImageGallery({
                   <Download className="size-5" />
                   <span className="sr-only">Download</span>
                 </Button> */}
-                <div className="flex items-center-safe gap-5">
+                <div className="flex gap-5 items-center-safe">
                   {selectedArtwork.videoUrl && (
                     <Button
                       type="button"
@@ -496,7 +496,7 @@ export function ImageGallery({
                   </Button>
                 </div>
 
-                <div className="flex items-center gap-3 justify-between">
+                <div className="flex items-center justify-between gap-3">
                   <Button
                     type="button"
                     variant="ghost"
@@ -534,7 +534,7 @@ export function ImageGallery({
           </div>
 
           {currentLanguage.startsWith("zh") && (
-            <div className="md:fixed md:left-5 md:bottom-25 z-1000 bg-black/70 backdrop-blur-3xl hidden md:bg-transparent md:backdrop-blur-none pb-24 md:pb-0">
+            <div className="hidden pb-24 md:fixed md:left-5 md:bottom-25 z-1000 bg-black/70 backdrop-blur-3xl md:bg-transparent md:backdrop-blur-none md:pb-0">
               <audio
                 ref={voPlayerRef}
                 className=""
