@@ -1,0 +1,32 @@
+{
+  "services": {
+    "beyond-art": {
+      "hero": {
+        "title": "超越藝術",
+        "description": "彼岸數位媒體擁有豐富的舞台藝術視頻客製化經驗，運用唯美，寫意的風格昇華您的舞台。",
+        "primaryCta": "立即加入榮耀成員"
+      },
+      "toast": {},
+      "demo": {
+        "title": "過往作品",
+        "works": [{ "title": "荷塘月色" }]
+      },
+      "types": {
+        "hero": {
+          "plan": "製作您專屬的藝術視頻",
+          "title": "客製化選項"
+        },
+        "mv": {
+          "title": "音樂視頻客製化製作",
+          "features": ["3～5分鐘音樂視頻"]
+        },
+        "monthly": {
+          "title": "大型舞台藝術客製化製作",
+          "description": "聯繫我們獲得報價",
+          "features": [""]
+        }
+      },
+      "contact": "聯繫我們進行客製化製作"
+    }
+  }
+}

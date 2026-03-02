@@ -1,0 +1,32 @@
+{
+  "services": {
+    "beyond-art": {
+      "hero": {
+        "title": "Beyond Art",
+        "description": "Beyond Digital Media has extensive experience in customizing stage art videos, elevating your performance through an aesthetic and expressive visual style.",
+        "primaryCta": "Join Glory Membership Now"
+      },
+      "toast": {},
+      "demo": {
+        "title": "Previous Works",
+        "works": [{ "title": "Moonlight Over the Lotus Pond" }]
+      },
+      "types": {
+        "hero": {
+          "plan": "Create Your Exclusive Artistic Video",
+          "title": "Customization Options"
+        },
+        "mv": {
+          "title": "Custom Music Video Production",
+          "features": ["3~5 Minute Music Video"]
+        },
+        "monthly": {
+          "title": "Large-Scale Stage Art Production",
+          "description": "Contact Us for a Quote",
+          "features": [""]
+        }
+      },
+      "contact": "Contact Us for Custom Production"
+    }
+  }
+}

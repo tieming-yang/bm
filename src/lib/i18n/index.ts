@@ -17,6 +17,7 @@ import enBeyondMusic from "./locales/en/beyond-music.json";
 import enBibleProducts from "./locales/en/bible-products.json";
 import enSignUp from "./locales/en/sign-up.json";
 import enSignIn from "./locales/en/sign-in.json";
+import enServices from "./locales/en/services.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
@@ -32,6 +33,7 @@ import zhBeyondMusic from "./locales/zh-TW/beyond-music.json";
 import zhBibleProducts from "./locales/zh-TW/bible-products.json";
 import zhSignUp from "./locales/zh-TW/sign-up.json";
 import zhSignIn from "./locales/zh-TW/sign-in.json";
+import zhServices from "./locales/zh-TW/services.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -73,6 +75,7 @@ i18n
         "bible-products": enBibleProducts,
         "sign-up": enSignUp,
         "sign-in": enSignIn,
+        services: enServices,
       },
       "zh-TW": {
         common: zhCommon,
@@ -88,6 +91,7 @@ i18n
         "bible-products": zhBibleProducts,
         "sign-up": zhSignUp,
         "sign-in": zhSignIn,
+        services: zhServices,
       },
     },
     fallbackLng: "zh-TW",

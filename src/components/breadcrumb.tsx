@@ -23,6 +23,7 @@ const routeMap: Record<string, string> = {
   school: "nav.bibleSchool",
   success: "gloryShareSuccess.breadcrumb",
   profile: "nav.profile",
+  "beyond-art": "nav.beyond-art",
 };
 
 const UUID_LENGTH = 28;
