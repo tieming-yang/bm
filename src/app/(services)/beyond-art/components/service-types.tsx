@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { CheckIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const Price = {
   mv: 700,
@@ -28,7 +29,12 @@ export default function ServiceTypes() {
   const renderTiers = tiers;
 
   return (
-    <div className="relative px-6 py-24 space-y-7 isolate sm:py-32 lg:px-8">
+    <motion.div
+      className="relative px-6 py-24 space-y-7 isolate sm:py-32 lg:px-8"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.7 }}
+    >
       <div
         aria-hidden="true"
         className="absolute inset-x-0 overflow-hidden -top-3 -z-10 transform-gpu px-36 blur-3xl"
@@ -52,7 +58,7 @@ export default function ServiceTypes() {
 
       <div
         className={cn(
-          "mx-auto grid grid-cols-1 gap-y-6 sm:gap-x-5 sm:mt-20 xl:max-w-360",
+          "mx-auto grid grid-cols-1 gap-y-6 sm:gap-x-5 sm:mt-20 max-w-xl",
           tiers.length === 1 && "md:grid-cols-1",
           tiers.length === 2 && "md:grid-cols-2",
           tiers.length >= 3 && "md:grid-cols-2 xl:grid-cols-4"
@@ -66,7 +72,7 @@ export default function ServiceTypes() {
             <div
               key={tier.id}
               className={cn(
-                "bg-neutral-700 font-mono rounded-3xl space-y-5 py-10 px-5 flex flex-col justify-between ring-1 ring-white/10 lg:mx-0"
+                "bg-neutral-900 font-mono rounded-3xl space-y-5 py-10 px-5 flex flex-col justify-between ring-1 ring-white/10 lg:mx-0"
               )}
             >
               <h3
@@ -119,7 +125,7 @@ export default function ServiceTypes() {
                 ))}
               </ul>
 
-              <Button>
+              <Button className="self-center-safe">
                 <Link href="mailto:beyonddigitalmedia.art@gmail.com">
                   {t("services.beyond-art.contact")}
                 </Link>
@@ -128,6 +134,6 @@ export default function ServiceTypes() {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

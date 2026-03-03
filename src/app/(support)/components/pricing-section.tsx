@@ -183,7 +183,7 @@ export default function PriceSection() {
                 </p>
               )}
               <p className="flex items-baseline mt-4 text-5xl gap-x-2 text-primary-foreground-gradient">
-                <span className="text-3xl text-white">$</span>
+                <span className="text-white text-3xl">$</span>
                 <span
                   className={cn(
                     isOnSale &&
@@ -204,8 +204,8 @@ export default function PriceSection() {
                   {tier.price === Price.MONTHLY_PRICE
                     ? t("join.plans.month")
                     : isLifeTime
-                    ? t("join.plans.life")
-                    : t("join.plans.year")}
+                      ? t("join.plans.life")
+                      : t("join.plans.year")}
                 </span>
               </p>
               <ul
