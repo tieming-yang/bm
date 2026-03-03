@@ -2,7 +2,6 @@
 
 import useTranslation from "@/hooks/use-translation";
 import ServiceTypes from "./components/service-types";
-import Intro from "../../../components/intro";
 import { motion } from "framer-motion";
 
 export default function ClientBeyondArtPage() {
