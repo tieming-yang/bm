@@ -19,7 +19,6 @@ import Cart from "@/models/cart";
 export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
   { href: "/about", label: (t: TFunction<string, undefined>) => t("nav.about") },
-  { href: "/beyond-art", label: (t: TFunction<string, undefined>) => t("nav.beyond-art") },
   { href: "/glory-share", label: (t: TFunction<string, undefined>) => t("nav.gloryShare") },
   { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
   { href: "/bible-gallery", label: (t: TFunction<string, undefined>) => t("nav.bibleGallery") },
@@ -34,6 +33,7 @@ export const navRoutes = [
   },
   { href: "/contact", label: (t: TFunction<string, undefined>) => t("nav.contact") },
   { href: "/donate", label: (t: TFunction<string, undefined>) => t("nav.donate") },
+  { href: "/beyond-art", label: (t: TFunction<string, undefined>) => t("nav.beyond-art") },
   // { href: "/signin", label:(t: TFunction<string, undefined>) => t("nav.signin") },
 ];
 
