@@ -11,7 +11,7 @@ export function YoutubePlayer({ src, title, loop = false }: YouTubePlayerProps) 
 
   return (
     <iframe
-      className="aspect-video w-px min-w-full"
+      className="w-px min-w-full aspect-video"
       src={loop ? withLoop : src}
       title={title ?? ""}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

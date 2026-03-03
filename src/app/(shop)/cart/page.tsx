@@ -97,7 +97,7 @@ export default function ClientCartPage() {
   }
 
   return (
-    <div className="container min-h-svh max-w-3xl px-4 py-16 mx-auto space-y-16">
+    <div className="container max-w-3xl px-4 py-16 mx-auto min-h-svh space-y-16">
       <ul className="flex flex-col gap-5">
         {cartItems > 0 &&
           Object.entries(cart).map(([_priceId, item]) => {
@@ -120,7 +120,7 @@ export default function ClientCartPage() {
                 <ItemActions className="justify-center w-full sm:w-fit">
                   <Input
                     type="number"
-                    className="h-12 w-18 text-xl text-center font-mono"
+                    className="h-12 font-mono text-xl text-center w-18"
                     value={quantity}
                     onChange={(e) => {
                       const newCount = e.target.valueAsNumber;
@@ -160,7 +160,7 @@ export default function ClientCartPage() {
           })}
       </ul>
 
-      <div className="flex flex-col gap-5 justify-center-safe items-center-safe text-2xl">
+      <div className="flex flex-col text-2xl gap-5 justify-center-safe items-center-safe">
         <p>
           <span>總額：</span>
           <span>{Cart.getTotalPrice(cart)}</span>

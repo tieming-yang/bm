@@ -59,7 +59,7 @@ export default function SchoolPage() {
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
             聖經學堂
           </h1>
-          <p className="text-md md:text-2xl italic font-chinese text-primary-foreground-gradient">
+          <p className="italic text-md md:text-2xl font-chinese text-primary-foreground-gradient">
             用聖經故事與真理裝備每一天。
           </p>
           <p className="text-lg text-muted-foreground">

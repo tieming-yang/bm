@@ -80,7 +80,7 @@ export default function SignUpClientPage({}: Props) {
     <div className="relative z-50 flex flex-col items-center justify-center px-5 font-mono md:px-0 gap-y-5 min-h-dvh">
       <Button
         variant="default"
-        className="flex items-center gap-3 shadow-lg"
+        className="flex items-center shadow-lg gap-3"
         onClick={() => {
           signUpMutation.mutate({ method: AuthMethod.Google });
         }}

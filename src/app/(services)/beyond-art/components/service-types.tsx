@@ -28,7 +28,7 @@ export default function ServiceTypes() {
   const renderTiers = tiers;
 
   return (
-    <div className="relative space-y-7 px-6 py-24 isolate sm:py-32 lg:px-8">
+    <div className="relative px-6 py-24 space-y-7 isolate sm:py-32 lg:px-8">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 overflow-hidden -top-3 -z-10 transform-gpu px-36 blur-3xl"
@@ -80,7 +80,7 @@ export default function ServiceTypes() {
               </h3>
 
               <p className="flex items-baseline mt-4 text-5xl gap-x-2 text-primary-foreground-gradient">
-                <span className="text-white text-3xl">$</span>
+                <span className="text-3xl text-white">$</span>
                 <span
                   className={cn(
                     isOnSale &&

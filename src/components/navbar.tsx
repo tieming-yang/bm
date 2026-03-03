@@ -122,7 +122,7 @@ export default function Navbar() {
                 {/* <Link href={"/cart"}>
                   <Button size={"icon"} variant={"secondary"} className="relative">
                     {cartItems > 0 && (
-                      <span className="absolute font-mono -top-3 -right-3 inline-flex min-w-7 h-7 items-center justify-center rounded-full bg-red-500 backdrop-blur-3xl px-1 text-md font-semibold text-white">
+                      <span className="absolute inline-flex items-center justify-center px-1 font-mono font-semibold text-white bg-red-500 rounded-full -top-3 -right-3 min-w-7 h-7 backdrop-blur-3xl text-md">
                         {cartItems}
                       </span>
                     )}

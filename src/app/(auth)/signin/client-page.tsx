@@ -93,10 +93,10 @@ export default function SignInClientPage({}: Props) {
         {tCommon("nav.signinWithGoogle")}
       </Button>
 
-      <div className="flex w-full max-w-md items-center gap-3">
-        <span className="h-px flex-1 bg-border" />
+      <div className="flex items-center w-full max-w-md gap-3">
+        <span className="flex-1 h-px bg-border" />
         <span className="text-xs text-muted-foreground">{t("divider")}</span>
-        <span className="h-px flex-1 bg-border" />
+        <span className="flex-1 h-px bg-border" />
       </div>
 
       {/* Email sign in*/}

@@ -44,9 +44,9 @@ export default function ClientProductsPage() {
 
           return (
             <li key={id}>
-              <Card className="h-full flex flex-col justify-around">
+              <Card className="flex flex-col justify-around h-full">
                 <CardContent className="p-0">
-                  <AspectRatio className="flex snap-x snap-mandatory overflow-x-auto rounded-t-2xl">
+                  <AspectRatio className="flex overflow-x-auto snap-x snap-mandatory rounded-t-2xl">
                     {imageURLs.map((url) => {
                       return <img key={url} src={url} alt={name} className="snap-center" />;
                     })}
@@ -54,12 +54,12 @@ export default function ClientProductsPage() {
                 </CardContent>
                 <CardHeader>
                   <CardTitle className="text-md">{name}</CardTitle>
-                  <CardDescription className="min-h-24 overflow-y-scroll">
+                  <CardDescription className="overflow-y-scroll min-h-24">
                     {description}
                   </CardDescription>
                 </CardHeader>
 
-                <CardFooter className="flex flex-col gap-5 justify-between">
+                <CardFooter className="flex flex-col justify-between gap-5">
                   <p className="text-2xl">
                     <span>$</span> <span className="text-3xl">{Price.toDollars(price)}</span>
                   </p>

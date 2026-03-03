@@ -16,7 +16,7 @@ export default function ClientBeyondArtPage() {
           <p className="text-xl">{t("services.beyond-art.hero.description")}</p>
         </div>
         <div>
-          <h2 className="px-3 lg:px-0 text-center text-2xl">
+          <h2 className="px-3 text-2xl text-center lg:px-0">
             {t("services.beyond-art.demo.title")}
           </h2>
           <div>

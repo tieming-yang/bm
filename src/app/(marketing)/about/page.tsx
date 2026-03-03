@@ -39,7 +39,7 @@ export default function About() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mx-auto max-w-4xl"
+          className="max-w-4xl mx-auto"
         >
           <MemberCard
             name={yangMember.name}
@@ -82,9 +82,9 @@ type MemberContent = {
 function MemberCard({ name, role, image, imageAlt, children }: MemberCardProps) {
   // if (name === "yangyi" || name === "楊毅") {
   //   return (
-  //     <div className="grid md:grid-cols-2 relative overflow-hidden border border-primary/70 bg-primary-gradient-30 p-6 shadow-sm backdrop-blur-sm">
+  //     <div className="relative p-6 overflow-hidden border grid md:grid-cols-2 border-primary/70 bg-primary-gradient-30 shadow-sm backdrop-blur-sm">
   //       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-  //         <div className="relative self-center-safe h-96 w-52 lg:h-127 lg:w-77 shrink-0 overflow-hidden border border-primary/50 bg-primary-gradient-50">
+  //         <div className="relative overflow-hidden border self-center-safe h-96 w-52 lg:h-127 lg:w-77 shrink-0 border-primary/50 bg-primary-gradient-50">
   //           <Image
   //             src={image}
   //             alt={imageAlt}
@@ -95,13 +95,13 @@ function MemberCard({ name, role, image, imageAlt, children }: MemberCardProps) 
   //           />
   //         </div>
   //         <div className="space-y-1">
-  //           <p className="text-xl sm:text-3xl font-medium text-primary-foreground-gradient">
+  //           <p className="text-xl font-medium sm:text-3xl text-primary-foreground-gradient">
   //             {role}
   //           </p>
-  //           <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">{name}</h2>
+  //           <h2 className="text-3xl font-semibold sm:text-4xl text-foreground">{name}</h2>
   //         </div>
   //       </div>
-  //       <div className="mt-6 space-y-4 text-lg leading-relaxed sm:text-xl text-muted-foreground">
+  //       <div className="mt-6 text-lg leading-relaxed space-y-4 sm:text-xl text-muted-foreground">
   //         {children}
   //       </div>
   //     </div>
@@ -109,9 +109,9 @@ function MemberCard({ name, role, image, imageAlt, children }: MemberCardProps) 
   // }
 
   return (
-    <div className="relative overflow-hidden rounded-4xl border border-primary/70 bg-primary-gradient-30 p-6 shadow-sm backdrop-blur-sm">
+    <div className="relative p-6 overflow-hidden border rounded-4xl border-primary/70 bg-primary-gradient-30 shadow-sm backdrop-blur-sm">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative self-center-safe h-52 w-52 shrink-0 overflow-hidden rounded-full border border-primary/50 bg-primary-gradient-50">
+        <div className="relative overflow-hidden border rounded-full self-center-safe h-52 w-52 shrink-0 border-primary/50 bg-primary-gradient-50">
           <Image
             src={image}
             alt={imageAlt}
@@ -122,11 +122,11 @@ function MemberCard({ name, role, image, imageAlt, children }: MemberCardProps) 
           />
         </div>
         <div className="space-y-1">
-          <p className="text-xl sm:text-3xl font-medium text-primary-foreground-gradient">{role}</p>
-          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">{name}</h2>
+          <p className="text-xl font-medium sm:text-3xl text-primary-foreground-gradient">{role}</p>
+          <h2 className="text-3xl font-semibold sm:text-4xl text-foreground">{name}</h2>
         </div>
       </div>
-      <div className="mt-6 space-y-4 text-lg leading-relaxed sm:text-xl text-muted-foreground">
+      <div className="mt-6 text-lg leading-relaxed space-y-4 sm:text-xl text-muted-foreground">
         {children}
       </div>
     </div>

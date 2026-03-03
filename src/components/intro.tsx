@@ -9,7 +9,7 @@ export default function Intro({ i18nKey }: IntroProps) {
 
   return (
     <div className="py-10 text-center">
-      <p className="text-md md:text-2xl italic font-chinese text-primary-foreground-gradient">
+      <p className="italic text-md md:text-2xl font-chinese text-primary-foreground-gradient">
         {t(`${i18nKey}`)}
       </p>
     </div>

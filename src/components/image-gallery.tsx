@@ -301,7 +301,7 @@ export function ImageGallery({
             {/* </a> */}
 
             {/* Artworks */}
-            <ul className="grid w-full grid-cols-1 font-mono sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
+            <ul className="w-full font-mono grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
                   <Thumbnail
@@ -415,7 +415,7 @@ export function ImageGallery({
                         </CarouselContent>
                       </Carousel>
                     </section>
-                    <div className="flex flex-col gap-4 px-2 md:px-0">
+                    <div className="flex flex-col px-2 gap-4 md:px-0">
                       {/* Title and Reference */}
                       <section className="flex items-start justify-between gap-4 md:pt-3 md:px-3">
                         <h3 className="font-serif font-medium underline underline-offset-2">

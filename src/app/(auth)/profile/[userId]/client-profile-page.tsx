@@ -237,7 +237,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
               <CardFooter className="flex flex-col gap-y-2 items-center-safe">
                 {!couponError && coupon && (
                   <Button
-                    className="w-full max-w-md text-black runded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90 relative"
+                    className="relative w-full max-w-md text-black runded-full bg-linear-to-r from-amber-300 via-amber-400 to-purple-500 hover:opacity-90"
                     onClick={async () => {
                       try {
                         await navigator.clipboard.writeText(coupon);
@@ -317,7 +317,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <section className="place-self-center">
-            <Avatar className="w-36 h-36 md:h-48 md:w-48 border">
+            <Avatar className="border w-36 h-36 md:h-48 md:w-48">
               <Image
                 fill
                 src={profile.photoURL ?? "/logos/logo.webp"}
@@ -342,11 +342,11 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
           </section>
         </CardContent>
         {isOwnProfile && (
-          <CardFooter className="flex justify-center flex-col gap-y-3">
+          <CardFooter className="flex flex-col justify-center gap-y-3">
             {!isGloryShareMember && (
               <Button
                 variant={"secondary"}
-                className="px-8 rounded-full text-gray-900"
+                className="px-8 text-gray-900 rounded-full"
                 onClick={() => {
                   router.push("/glory-share/join");
                 }}
@@ -368,13 +368,13 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
           <CardContent className="grid grid-cols-1 place-self-center-safe gap-6">
             <section className="space-y-4">
               <div className="flex flex-col items-start md:flex-row gap-2">
-                <Label htmlFor="organization-email" className="basis-1/3 text-xl">
+                <Label htmlFor="organization-email" className="text-xl basis-1/3">
                   {t("organization.emailLabel")}
                 </Label>
-                <div className="flex flex-col gap-2 w-full">
+                <div className="flex flex-col w-full gap-2">
                   <Input
                     id="organization-email"
-                    className="flex-1 font-mono w-full"
+                    className="flex-1 w-full font-mono"
                     type="email"
                     value={updates.organizationEmail}
                     disabled={hasOrgEmailUpdated}
@@ -420,7 +420,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
             </section>
           </CardContent>
 
-          <CardFooter className="flex justify-center flex-col gap-y-3">
+          <CardFooter className="flex flex-col justify-center gap-y-3">
             {!hasOrgEmailUpdated ? (
               <Dialog open={modal === "save"}>
                 <Button
