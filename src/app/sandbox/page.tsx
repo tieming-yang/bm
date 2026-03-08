@@ -15,12 +15,13 @@ function DepthParallaxPlane(props: {
   const { imageUrl, depthUrl, strength = 0.01 } = props;
 
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-  const { mouse } = useThree();
+  const { pointer } = useThree();
 
   const [textures, setTextures] = useState<{
     color?: THREE.Texture;
     depth?: THREE.Texture;
-  }>({});
+    aspect?: number; // width / height
+  }>({ aspect: 1 });
 
   // STEP 2: Load textures (color + depth). Depth is data → keep it linear.
   useEffect(() => {
@@ -42,6 +43,10 @@ function DepthParallaxPlane(props: {
       // @ts-ignore
       colorTex.colorSpace = THREE.SRGBColorSpace;
 
+      // Depth is data, not color.
+      // @ts-ignore
+      depthTex.colorSpace = THREE.NoColorSpace;
+
       colorTex.wrapS = colorTex.wrapT = THREE.ClampToEdgeWrapping;
       depthTex.wrapS = depthTex.wrapT = THREE.ClampToEdgeWrapping;
 
@@ -53,8 +58,14 @@ function DepthParallaxPlane(props: {
       colorTex.generateMipmaps = false;
       depthTex.generateMipmaps = false;
 
+      // Compute aspect ratio from the color image.
+      // Some formats set width/height on `image`; if missing, fall back to 1.
+      const w = (colorTex.image && (colorTex.image as any).width) || 1;
+      const h = (colorTex.image && (colorTex.image as any).height) || 1;
+      const aspect = h > 0 ? w / h : 1;
+
       if (!mounted) return;
-      setTextures({ color: colorTex, depth: depthTex });
+      setTextures({ color: colorTex, depth: depthTex, aspect });
     })().catch((e) => {
       console.error("Failed to load textures", e);
     });
@@ -85,7 +96,7 @@ function DepthParallaxPlane(props: {
   useFrame(() => {
     if (!materialRef.current) return;
     // mouse is in [-1, 1]. Small shift creates the illusion.
-    materialRef.current.uniforms.uShift.value.set(mouse.x, mouse.y);
+    materialRef.current.uniforms.uShift.value.set(pointer.x, pointer.y);
   });
 
   const vertexShader = useMemo(
@@ -132,10 +143,18 @@ function DepthParallaxPlane(props: {
     []
   );
 
+  // Preserve the source image aspect ratio so landscapes don't get squeezed into a square.
+  // If aspect > 1 (landscape), scale X. If aspect < 1 (portrait), scale Y.
+  const planeScale = useMemo<[number, number, number]>(() => {
+    const a = textures.aspect ?? 1;
+    if (a >= 1) return [a, 1, 1];
+    return [1, 1 / a, 1];
+  }, [textures.aspect]);
+
   // STEP 5: Render a single quad that fills most of the view.
   // We use a 1x1 plane and scale it in the parent if needed.
   return (
-    <mesh>
+    <mesh scale={planeScale}>
       <planeGeometry args={[1, 1, 1, 1]} />
       <shaderMaterial
         ref={materialRef}
@@ -153,18 +172,23 @@ export default function Sandbox() {
   // Example paths:
   //   /public/depth/photo.jpg
   //   /public/depth/photo_depth.png
-  const imageUrl = "/3d/test/jesus.png";
-  const depthUrl = "/3d/test/jesus-depth.png";
+  const imageUrl = "/3d/test/genesis_1_1-31.webp";
+  const depthUrl = "/3d/test/genesis_1_1-31-depth.png";
 
   return (
-    <>
+    <div className="h-dvh flex items-center-safe justify-center-safe flex-col">
       <h1>This is the sand box</h1>
 
-      <div className="w-full h-dvh">
-        <Canvas camera={{ position: [0, 0, 1.2], fov: 45 }}>
+      <div className="w-full h-96">
+        <Canvas
+          // `flat` disables tone mapping and uses a more neutral color output.
+          flat
+          gl={{ toneMapping: THREE.NoToneMapping }}
+          camera={{ position: [0, 0, 1.2], fov: 45 }}
+        >
           <DepthParallaxPlane imageUrl={imageUrl} depthUrl={depthUrl} strength={0.01} />
         </Canvas>
       </div>
-    </>
+    </div>
   );
 }
