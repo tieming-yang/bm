@@ -1,0 +1,46 @@
+{
+  "school": {
+    "badge": "聖經學堂",
+    "hero": {
+      "title": "聖經學堂",
+      "intro": "用聖經故事與真理裝備每一天。",
+      "description": "精選三支影片，適合個人靈修、小組共學或家庭同行。點選下方卡片即可切換播放。",
+      "watchOnYouTube": "前往 YouTube 觀看",
+      "joinGloryShare": "加入榮耀份額"
+    },
+    "playerTitle": "聖經學堂 - {{title}}",
+    "featuredSection": {
+      "eyebrow": "學堂精選",
+      "title": "三段影片帶你穩穩打底"
+    },
+    "lessons": [
+      {
+        "number": "01",
+        "title": "魚",
+        "theme": "學堂精選",
+        "summary": "點擊播放，開始今天的聖經學堂。",
+        "videoId": "B6e347CbetE"
+      },
+      {
+        "number": "02",
+        "title": "約伯記",
+        "theme": "學堂精選",
+        "summary": "跟著影片一起讀經，建立信仰根基。",
+        "videoId": "afCWlscA5Io"
+      },
+      {
+        "number": "03",
+        "title": "諾亞方舟",
+        "theme": "學堂精選",
+        "summary": "邀請家人朋友共學，讓真理成為日常。",
+        "videoId": "fdj-FbA2ykQ"
+      }
+    ],
+    "ctaSection": {
+      "title": "把聖經學堂分享給身邊的人",
+      "description": "邀請家人、孩子或小組一起看，讓經文成為日常的指引與力量。",
+      "watchOnYouTube": "在 YouTube 觀看",
+      "supportMinistry": "支持事工"
+    }
+  }
+}

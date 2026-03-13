@@ -1,0 +1,46 @@
+{
+  "school": {
+    "badge": "Bible School",
+    "hero": {
+      "title": "Bible School",
+      "intro": "Be equipped each day through Bible stories and truth.",
+      "description": "Three featured videos for personal devotion, small groups, or family discipleship. Select a card below to switch the lesson that is playing.",
+      "watchOnYouTube": "Watch on YouTube",
+      "joinGloryShare": "Join Glory Share"
+    },
+    "playerTitle": "Bible School - {{title}}",
+    "featuredSection": {
+      "eyebrow": "Featured Lessons",
+      "title": "Three videos to help you build a steady foundation"
+    },
+    "lessons": [
+      {
+        "number": "01",
+        "title": "Fish",
+        "theme": "Featured Lessons",
+        "summary": "Tap play to begin today’s Bible School lesson.",
+        "videoId": "B6e347CbetE"
+      },
+      {
+        "number": "02",
+        "title": "Job",
+        "theme": "Featured Lessons",
+        "summary": "Read Scripture through the video and strengthen your foundation of faith.",
+        "videoId": "afCWlscA5Io"
+      },
+      {
+        "number": "03",
+        "title": "Noah's Ark",
+        "theme": "Featured Lessons",
+        "summary": "Invite family and friends to learn together and let truth shape everyday life.",
+        "videoId": "fdj-FbA2ykQ"
+      }
+    ],
+    "ctaSection": {
+      "title": "Share Bible School with the people around you",
+      "description": "Invite family, children, or your small group to watch together so Scripture becomes a daily guide and source of strength.",
+      "watchOnYouTube": "Watch on YouTube",
+      "supportMinistry": "Support the ministry"
+    }
+  }
+}
