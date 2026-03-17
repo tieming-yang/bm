@@ -42,16 +42,12 @@ export default function SchoolPage() {
   const { t: tEn } = useTranslation("school", { lng: "en" });
   const zhLessons = (t("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
   const enLessons = (tEn("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
-  const renderLessons = useMemo(
-    () =>
-      zhLessons.map((lesson, index) => {
-        return {
-          ...lesson,
-          slug: toSlug(enLessons[index].title),
-        };
-      }),
-    [i18n]
-  );
+  const renderLessons = zhLessons.map((lesson, index) => {
+    return {
+      ...lesson,
+      slug: toSlug(enLessons[index].title),
+    };
+  });
   const selectedLesson = renderLessons.find((lesson) => lesson.slug === selectedLessonSlug);
 
   if (renderLessons.length === 0 || !selectedLesson) {
