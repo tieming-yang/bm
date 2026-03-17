@@ -15,28 +15,25 @@
     },
     "lessons": [
       {
-        "number": "01",
+        "id": "01",
         "title": "Fish",
         "theme": "Featured Lessons",
         "summary": "Tap play to begin today’s Bible School lesson.",
-        "videoId": "B6e347CbetE",
-        "slug": "fish"
+        "videoId": "B6e347CbetE"
       },
       {
-        "number": "02",
+        "id": "02",
         "title": "Job",
         "theme": "Featured Lessons",
         "summary": "Read Scripture through the video and strengthen your foundation of faith.",
-        "videoId": "afCWlscA5Io",
-        "slug": "job"
+        "videoId": "afCWlscA5Io"
       },
       {
-        "number": "03",
+        "id": "03",
         "title": "Noah's Ark",
         "theme": "Featured Lessons",
         "summary": "Invite family and friends to learn together and let truth shape everyday life.",
-        "videoId": "fdj-FbA2ykQ",
-        "slug": "noahs-ark"
+        "videoId": "fdj-FbA2ykQ"
       }
     ],
     "ctaSection": {

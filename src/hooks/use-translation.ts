@@ -1,11 +1,16 @@
 "use client";
 
-import { useTranslation as useI18nTranslation } from "react-i18next";
+import { useTranslation as useI18nTranslation, UseTranslationResponse } from "react-i18next";
 
 import { useEffect } from "react";
 
-export const useTranslation = (namespace = "common") => {
-  const { t, i18n } = useI18nTranslation(namespace);
+/**
+ * @note We use the `option` from `useI18nTranslation`'s `UseTranslationOptions<KPrefix>` but I don't want to figure out what `KPrefix` is, so I just hand picked `lng` for the use to get translation that is not the current langauge.
+ * @param namespace
+ * @param option
+ */
+export const useTranslation = (namespace = "common", option: { lng?: string } = {}) => {
+  const { t, i18n } = useI18nTranslation(namespace, option);
 
   // Preload fonts when language changes
   useEffect(() => {

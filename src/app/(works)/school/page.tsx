@@ -6,21 +6,46 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import useTranslation from "@/hooks/use-translation";
 
 type Lesson = {
-  number: string;
+  id: string;
   title: string;
   theme: string;
   summary: string;
   videoId: string;
+  slug: string;
 };
 
 const buildYouTubeLink = (videoId: string) => `https://youtu.be/${videoId}`;
+function toSlug(raw: string): string {
+  if (!raw) return "";
+  return raw
+    .normalize("NFKD") // split accents from letters
+    .replace(/[\u0300-\u036f]/g, "") // remove diacritics
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, " and ") // common readability tweak
+    .replace(/[^a-z0-9]+/g, "-") // non-alphanumerics -> hyphen
+    .replace(/^-+|-+$/g, ""); // trim leading/trailing hyphens
+}
 
 export default function SchoolPage() {
-  const { t } = useTranslation("school");
+  const { t, i18n } = useTranslation("school");
+  const { t: tEn } = useTranslation("school", { lng: "en" });
   const [selectedLesson, setSelectedLesson] = useState(0);
-  const lessons = (t("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
-  const safeIndex = lessons.length > 0 ? Math.min(selectedLesson, lessons.length - 1) : 0;
-  const activeLesson = lessons[safeIndex];
+  const zhLessons = (t("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
+  const enLessons = (tEn("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
+  const renderLessons = useMemo(
+    () =>
+      zhLessons.map((lesson, index) => {
+        return {
+          ...lesson,
+          slug: toSlug(enLessons[index].title),
+        };
+      }),
+    [i18n]
+  );
+  console.debug("🔎", renderLessons);
+  const safeIndex = zhLessons.length > 0 ? Math.min(selectedLesson, zhLessons.length - 1) : 0;
+  const activeLesson = zhLessons[safeIndex];
 
   if (!activeLesson) {
     return null;
@@ -85,7 +110,7 @@ export default function SchoolPage() {
           </h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {lessons.map((lesson, index) => {
+          {renderLessons.map((lesson, index) => {
             const isActive = selectedLesson === index;
             const handleSelect = () => setSelectedLesson(index);
             return (
@@ -109,7 +134,7 @@ export default function SchoolPage() {
               >
                 <CardHeader className="space-y-2">
                   <div className="flex flex-wrap items-center gap-3 text-primary">
-                    <span className="text-sm font-semibold">{lesson.number}</span>
+                    <span className="text-sm font-semibold">{lesson.id}</span>
                     <span className="text-sm uppercase tracking-[0.4em] text-primary/70">
                       {lesson.theme}
                     </span>
