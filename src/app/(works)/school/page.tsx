@@ -127,7 +127,7 @@ export default function SchoolPage() {
       </section>
 
       <section className="space-y-6">
-        <div className="text-center space-y-3">
+        <div className="space-y-3 text-center">
           <p className="text-sm uppercase tracking-[0.5em] text-primary/70">
             {t("school.featuredSection.eyebrow")}
           </p>
@@ -184,7 +184,7 @@ export default function SchoolPage() {
         <p className="max-w-3xl mx-auto mt-3 text-muted-foreground">
           {t("school.ctaSection.description")}
         </p>
-        <div className="flex flex-wrap justify-center mt-6 gap-4">
+        <div className="flex flex-wrap justify-center gap-4 mt-6">
           <Button size="lg" asChild>
             <a href={watchLink} target="_blank" rel="noopener noreferrer">
               {t("school.ctaSection.watchOnYouTube")}
