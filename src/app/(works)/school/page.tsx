@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useTranslation from "@/hooks/use-translation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Lesson = {
   id: string;
@@ -27,10 +28,18 @@ function toSlug(raw: string): string {
     .replace(/^-+|-+$/g, ""); // trim leading/trailing hyphens
 }
 
+const LESSON_KEY = "lesson";
+const DEFAULT_SLUG = "fish";
+
 export default function SchoolPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const slug = searchParams.get(LESSON_KEY);
+  const [selectedLessonSlug, setSelectedLessonSlug] = useState(slug ?? DEFAULT_SLUG);
+
   const { t, i18n } = useTranslation("school");
   const { t: tEn } = useTranslation("school", { lng: "en" });
-  const [selectedLesson, setSelectedLesson] = useState(0);
   const zhLessons = (t("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
   const enLessons = (tEn("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
   const renderLessons = useMemo(
@@ -43,19 +52,36 @@ export default function SchoolPage() {
       }),
     [i18n]
   );
-  console.debug("🔎", renderLessons);
-  const safeIndex = zhLessons.length > 0 ? Math.min(selectedLesson, zhLessons.length - 1) : 0;
-  const activeLesson = zhLessons[safeIndex];
+  const selectedLesson = renderLessons.find((lesson) => lesson.slug === selectedLessonSlug);
 
-  if (!activeLesson) {
+  if (renderLessons.length === 0 || !selectedLesson) {
+    console.error(
+      "❌",
+      `renderLessons.length: ${renderLessons.length}, selectedLesson: ${selectedLesson}`
+    );
     return null;
   }
 
-  const embedSrc = useMemo(
-    () => `https://www.youtube.com/embed/${activeLesson.videoId}`,
-    [activeLesson.videoId]
+  /** * @see https://nextjs.org/docs/app/api-reference/functions/use-search-params#updating-searchparams
+   */
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
   );
-  const watchLink = useMemo(() => buildYouTubeLink(activeLesson.videoId), [activeLesson.videoId]);
+
+  const embedSrc = useMemo(
+    () => `https://www.youtube.com/embed/${selectedLesson.videoId}`,
+    [selectedLesson.videoId]
+  );
+  const watchLink = useMemo(
+    () => buildYouTubeLink(selectedLesson.videoId),
+    [selectedLesson.videoId]
+  );
 
   return (
     <div className="container relative z-50 px-4 py-16 mx-auto space-y-16">
@@ -92,7 +118,7 @@ export default function SchoolPage() {
             <iframe
               className="w-full h-full"
               src={embedSrc}
-              title={t("school.playerTitle", { title: activeLesson.title })}
+              title={t("school.playerTitle", { title: selectedLesson.title })}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
@@ -111,19 +137,22 @@ export default function SchoolPage() {
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {renderLessons.map((lesson, index) => {
-            const isActive = selectedLesson === index;
-            const handleSelect = () => setSelectedLesson(index);
+            const isActive = selectedLessonSlug === lesson.slug;
+
             return (
               <Card
-                key={lesson.videoId}
+                key={lesson.slug}
                 role="button"
                 tabIndex={0}
                 aria-pressed={isActive}
-                onClick={handleSelect}
+                onClick={() => {
+                  setSelectedLessonSlug(lesson.slug);
+                  router.push(pathname + "?" + createQueryString(LESSON_KEY, lesson.slug));
+                }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    handleSelect();
+                    setSelectedLessonSlug(lesson.slug);
                   }
                 }}
                 className={`border bg-background/90 transition-all focus-visible:ring-2 focus-visible:ring-primary ${
