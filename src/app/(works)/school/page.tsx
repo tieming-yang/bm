@@ -16,7 +16,7 @@ type Lesson = {
 };
 
 const buildYouTubeLink = (videoId: string) => `https://youtu.be/${videoId}`;
-function toSlug(raw: string): string {
+export function toSlug(raw: string): string {
   if (!raw) return "";
   return raw
     .normalize("NFKD") // split accents from letters
@@ -137,7 +137,7 @@ export default function SchoolPage() {
 
             return (
               <Card
-                key={lesson.slug}
+                key={lesson.id}
                 role="button"
                 tabIndex={0}
                 aria-pressed={isActive}
@@ -159,7 +159,7 @@ export default function SchoolPage() {
               >
                 <CardHeader className="space-y-2">
                   <div className="flex flex-wrap items-center gap-3 text-primary">
-                    <span className="text-sm font-semibold">{lesson.id}</span>
+                    <span className="text-sm font-semibold">{index + 1}</span>
                     <span className="text-sm uppercase tracking-[0.4em] text-primary/70">
                       {lesson.theme}
                     </span>
