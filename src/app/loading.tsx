@@ -22,7 +22,7 @@ export default function Loading({ isInlined = false, show = true }: LoadingProps
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="fixed top-0 left-0 w-full h-full z-200 flex flex-col items-center bg-black justify-center min-h-screen p-4">
       <div className="flex flex-col items-center gap-4">
         <div className="relative w-16 h-16">
           <div className="absolute inset-0 rounded-full border-t-2 border-[#7ec0cd] animate-spin"></div>

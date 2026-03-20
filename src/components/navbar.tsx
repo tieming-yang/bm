@@ -76,7 +76,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed bottom-0 w-full px-3 font-serif z-100 h-fit 2xl:px-0">
+      <nav className="fixed bottom-0 w-full px-3 font-serif z-120 h-fit 2xl:px-0">
         <div
           className={`${topGlowBorder} container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-primary-gradient-10 border-black/10`}
         >
@@ -160,7 +160,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 font-serif lg:hidden bg-primary-gradient-50"
+            className="fixed inset-0 z-110 font-serif lg:hidden bg-primary-gradient-50"
           >
             <div className="flex flex-col h-full px-6 pt-20 pb-10">
               <div className="flex flex-col items-center justify-center gap-5 sm:gap-9">

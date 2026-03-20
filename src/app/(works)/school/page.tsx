@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useTranslation from "@/hooks/use-translation";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import ReactPlayer from "react-player";
 
 type Lesson = {
   id: string;
@@ -15,7 +17,7 @@ type Lesson = {
   slug: string;
 };
 
-const buildYouTubeLink = (videoId: string) => `https://youtu.be/${videoId}`;
+const buildYouTubeLink = (videoId: string | undefined) => `https://youtu.be/${videoId}`;
 export function toSlug(raw: string): string {
   if (!raw) return "";
   return raw
@@ -36,7 +38,30 @@ export default function SchoolPage() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const slug = searchParams.get(LESSON_KEY);
-  const [selectedLessonSlug, setSelectedLessonSlug] = useState(slug ?? DEFAULT_SLUG);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [viewStatus, setViewStatus] = useState<"none" | "videoModal" | "loading">("loading");
+
+  const playerRef = useRef(null);
+  const playerContainerRef = useRef<HTMLDivElement | null>(null);
+  const [playerHeight, setPlayerHeight] = useState(0);
+
+  useLayoutEffect(() => {
+    const playerContainer = playerContainerRef.current;
+    if (!playerContainer) return;
+
+    function updateHeight() {
+      if (!playerContainer) return;
+      setPlayerHeight(playerContainer.getBoundingClientRect().height);
+    }
+    updateHeight();
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(playerContainer);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const { t, i18n } = useTranslation("school");
   const { t: tEn } = useTranslation("school", { lng: "en" });
@@ -48,9 +73,25 @@ export default function SchoolPage() {
       slug: toSlug(enLessons[index].title),
     };
   });
-  const selectedLesson = renderLessons.find((lesson) => lesson.slug === selectedLessonSlug);
 
-  if (renderLessons.length === 0 || !selectedLesson) {
+  useEffect(() => {
+    const selected = renderLessons.find((lesson) => lesson.slug === slug) ?? renderLessons[0];
+
+    setSelectedLesson(selected);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedLesson) return;
+
+    const selectedEpisode = document.getElementById(selectedLesson.id);
+
+    selectedEpisode?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [selectedLesson]);
+
+  if (renderLessons.length === 0) {
     console.error(
       "❌",
       `renderLessons.length: ${renderLessons.length}, selectedLesson: ${selectedLesson}`
@@ -70,51 +111,97 @@ export default function SchoolPage() {
     [searchParams]
   );
 
-  const embedSrc = useMemo(
-    () => `https://www.youtube.com/embed/${selectedLesson.videoId}`,
-    [selectedLesson.videoId]
-  );
-  const watchLink = useMemo(
-    () => buildYouTubeLink(selectedLesson.videoId),
-    [selectedLesson.videoId]
-  );
+  const embedSrc = `https://www.youtube.com/embed/${selectedLesson?.videoId}`;
+  const watchLink = buildYouTubeLink(selectedLesson?.videoId);
 
   return (
-    <div className="container relative z-50 px-4 py-16 mx-auto space-y-16">
-      <section className="grid gap-10 lg:grid-cols-2">
-        <div className="space-y-6">
-          <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm uppercase tracking-[0.2em] text-primary">
-            {t("school.badge")}
-          </span>
-          <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
-            {t("school.hero.title")}
-          </h1>
-          <p className="italic text-md md:text-2xl font-chinese text-primary-foreground-gradient">
-            {t("school.hero.intro")}
-          </p>
-          <p className="text-lg text-muted-foreground">{t("school.hero.description")}</p>
-          <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="px-8 rounded-full" asChild>
-              <a href={watchLink} target="_blank" rel="noopener noreferrer">
-                {t("school.hero.watchOnYouTube")}
-              </a>
+    <div className="container relative px-4 py-16 mx-auto space-y-7 no-scrollbar overflow-y-auto">
+      <div
+        ref={playerContainerRef}
+        className="fixed lg:hidden space-y-5 top-0 right-0 left-0 w-dvw z-100 rounded-b-3xl pb-3 backdrop-blur-xl border shadow-xl border-primary/20 bg-background/10 shadow-primary/20"
+      >
+        <ReactPlayer
+          ref={playerRef}
+          style={{ width: "100%", height: "auto", aspectRatio: "16/9" }}
+          src={embedSrc}
+          controls
+          onReady={() => {
+            setViewStatus("none");
+          }}
+          onEnded={() => {
+            if (!selectedLesson) return;
+            let nextIndex = 0;
+            const currentIndex = renderLessons.findIndex(
+              (lesson) => lesson.id === selectedLesson.id
+            );
+            if (currentIndex === renderLessons.length - 1) {
+              nextIndex = 0;
+            } else {
+              nextIndex = currentIndex + 1;
+            }
+
+            setSelectedLesson(renderLessons.at(nextIndex)!);
+          }}
+        />
+
+        <div className="relative">
+          <div className="flex flex-row gap-x-5 max-w-32 mx-auto">
+            <Button
+              onClick={() => {
+                if (!selectedLesson) return;
+                const currentIndex = renderLessons.findIndex(
+                  (lesson) => lesson.id === selectedLesson.id
+                );
+                if (currentIndex === -1) return;
+                const nextIndex = (currentIndex - 1 + renderLessons.length) % renderLessons.length;
+
+                setSelectedLesson(renderLessons[nextIndex]);
+              }}
+            >
+              <ChevronLeftIcon />
             </Button>
             <Button
-              variant="outline"
-              size="lg"
-              className="px-8 rounded-full border-primary/40"
-              asChild
+              onClick={() => {
+                if (!selectedLesson) return;
+                const currentIndex = renderLessons.findIndex(
+                  (lesson) => lesson.id === selectedLesson.id
+                );
+                if (currentIndex === -1) return;
+                const nextIndex = (currentIndex + 1) % renderLessons.length;
+
+                setSelectedLesson(renderLessons[nextIndex]);
+              }}
             >
+              <ChevronRightIcon />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <section style={{ paddingTop: playerHeight }} className="grid gap-10 lg:grid-cols-2">
+        <div className="space-y-6">
+          <div className="flex flex-row justify-between">
+            <h1 className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm uppercase tracking-[0.2em] text-primary">
+              {t("school.badge")}
+            </h1>
+            <p className="italic text-md md:text-2xl font-chinese text-primary-foreground-gradient">
+              {t("school.hero.intro")}
+            </p>
+          </div>
+
+          <p className="text-lg text-muted-foreground">{t("school.hero.description")}</p>
+          <div className="flex flex-wrap gap-4 justify-center-safe">
+            <Button size="lg" className="px-8 rounded-full border-primary/40" asChild>
               <a href="/glory-share">{t("school.hero.joinGloryShare")}</a>
             </Button>
           </div>
         </div>
-        <div className="relative overflow-hidden border shadow-xl rounded-3xl border-primary/20 bg-background/80 shadow-primary/20">
+        <div className="overflow-hidden h-fit hidden lg:block border shadow-xl rounded-3xl border-primary/20 bg-background/10 shadow-primary/20">
           <div className="w-full aspect-video">
             <iframe
               className="w-full h-full"
               src={embedSrc}
-              title={t("school.playerTitle", { title: selectedLesson.title })}
+              title={t("school.playerTitle", { title: selectedLesson?.title })}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
@@ -123,32 +210,27 @@ export default function SchoolPage() {
       </section>
 
       <section className="space-y-6">
-        <div className="space-y-3 text-center">
-          <p className="text-sm uppercase tracking-[0.5em] text-primary/70">
-            {t("school.featuredSection.eyebrow")}
-          </p>
-          <h2 className="text-3xl font-semibold text-balance">
-            {t("school.featuredSection.title")}
-          </h2>
-        </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {renderLessons.map((lesson, index) => {
-            const isActive = selectedLessonSlug === lesson.slug;
+            const isActive = (selectedLesson && selectedLesson.slug) === lesson.slug;
 
             return (
               <Card
+                id={lesson.id}
                 key={lesson.id}
                 role="button"
                 tabIndex={0}
                 aria-pressed={isActive}
                 onClick={() => {
-                  setSelectedLessonSlug(lesson.slug);
-                  router.push(pathname + "?" + createQueryString(LESSON_KEY, lesson.slug));
+                  setSelectedLesson(lesson);
+                  router.replace(pathname + "?" + createQueryString(LESSON_KEY, lesson.slug), {
+                    scroll: false,
+                  });
                 }}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    setSelectedLessonSlug(lesson.slug);
+                    setSelectedLesson(lesson);
                   }
                 }}
                 className={`border bg-background/90 transition-all focus-visible:ring-2 focus-visible:ring-primary ${
@@ -181,12 +263,7 @@ export default function SchoolPage() {
           {t("school.ctaSection.description")}
         </p>
         <div className="flex flex-wrap justify-center gap-4 mt-6">
-          <Button size="lg" asChild>
-            <a href={watchLink} target="_blank" rel="noopener noreferrer">
-              {t("school.ctaSection.watchOnYouTube")}
-            </a>
-          </Button>
-          <Button variant="outline" size="lg" className="border-primary/40" asChild>
+          <Button size="lg" className="border-primary/40" asChild>
             <a href="/glory-share">{t("school.ctaSection.supportMinistry")}</a>
           </Button>
         </div>
