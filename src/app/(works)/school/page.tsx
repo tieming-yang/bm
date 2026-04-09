@@ -7,15 +7,8 @@ import useTranslation from "@/hooks/use-translation";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import ReactPlayer from "react-player";
-
-type Lesson = {
-  id: string;
-  title: string;
-  theme: string;
-  summary: string;
-  videoId: string;
-  slug: string;
-};
+import { Lesson, Curriculum, getCourses, Course } from "@/models/school";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const buildYouTubeLink = (videoId: string | undefined) => `https://youtu.be/${videoId}`;
 export function toSlug(raw: string): string {
@@ -31,34 +24,81 @@ export function toSlug(raw: string): string {
 }
 
 const LESSON_KEY = "lesson";
+const COURSE_KEY = "course";
 const DEFAULT_SLUG = "fish";
 
 export default function SchoolPage() {
   const router = useRouter();
+
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const slug = searchParams.get(LESSON_KEY);
+  const courseParam = searchParams.get(COURSE_KEY);
+
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [viewStatus, setViewStatus] = useState<"none" | "videoModal" | "loading">("loading");
+
+  const courses = getCourses();
+  const [course, setCourse] = useState<Course>(Course.Genesis);
 
   const playerRef = useRef(null);
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { t, i18n } = useTranslation("school");
   const { t: tEn } = useTranslation("school", { lng: "en" });
-  const zhLessons = (t("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
-  const enLessons = (tEn("school.lessons", { returnObjects: true }) as Lesson[]) ?? [];
-  const renderLessons = zhLessons.map((lesson, index) => {
+  const curriculums = (t("school.curriculums", { returnObjects: true }) as Curriculum) ?? {};
+  const enCurriculums = (tEn("school.curriculums", { returnObjects: true }) as Curriculum) ?? {};
+
+  // Genesis
+  const genesisLessons = curriculums.genesis.lessons ?? [];
+  const enGenesisLessons = enCurriculums.genesis.lessons ?? [];
+  const renderGenesisLessons = genesisLessons.map((lesson, index) => {
     return {
       ...lesson,
-      slug: toSlug(enLessons[index].title),
+      slug: toSlug(enGenesisLessons[index].title),
     };
   });
 
+  // Characters
+  const charatersLessons = curriculums.characters.lessons ?? [];
+  const enCharatersLessons = enCurriculums.characters.lessons ?? [];
+  const renderCharactersLessons = charatersLessons.map((lesson, index) => {
+    return {
+      ...lesson,
+      slug: toSlug(enCharatersLessons[index].title),
+    };
+  });
+
+  const lessons = {
+    [Course.Genesis]: renderGenesisLessons,
+    [Course.Characters]: renderCharactersLessons,
+  };
+
+  const selectedLessons = lessons[course];
+
+  // set default lesson
   useEffect(() => {
-    const selected = renderLessons.find((lesson) => lesson.slug === slug) ?? renderLessons[0];
+    let selected;
+    switch (courseParam) {
+      case Course.Characters:
+        selected =
+          renderCharactersLessons.find((lesson) => lesson.slug === slug) ??
+          renderCharactersLessons[0];
+        break;
+      case Course.Genesis:
+        selected =
+          renderGenesisLessons.find((lesson) => lesson.slug === slug) ?? renderGenesisLessons[0];
+        break;
+      default:
+        selected = renderGenesisLessons[0];
+    }
 
     setSelectedLesson(selected);
+  }, []);
+
+  useEffect(() => {
+    if (!courseParam) return;
+    setCourse(courseParam as Course);
   }, []);
 
   useEffect(() => {
@@ -72,10 +112,10 @@ export default function SchoolPage() {
     });
   }, [selectedLesson]);
 
-  if (renderLessons.length === 0) {
+  if (renderGenesisLessons.length === 0) {
     console.error(
       "❌",
-      `renderLessons.length: ${renderLessons.length}, selectedLesson: ${selectedLesson}`
+      `renderLessons.length: ${renderGenesisLessons.length}, selectedLesson: ${selectedLesson}`
     );
     return null;
   }
@@ -83,9 +123,12 @@ export default function SchoolPage() {
   /** * @see https://nextjs.org/docs/app/api-reference/functions/use-search-params#updating-searchparams
    */
   const createQueryString = useCallback(
-    (name: string, value: string) => {
+    (inputParams: [name: string, value: string][]) => {
+      console.debug("🔎", inputParams);
       const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
+      for (const [name, value] of inputParams) {
+        params.set(name, value);
+      }
 
       return params.toString();
     },
@@ -96,7 +139,7 @@ export default function SchoolPage() {
   const watchLink = buildYouTubeLink(selectedLesson?.videoId);
 
   return (
-    <div className="relative pb-16 space-y-7 mx-auto no-scrollbar">
+    <div className="relative pb-16 space-y-7 w-full no-scrollbar">
       <div
         ref={playerContainerRef}
         className="sticky lg:hidden space-y-5 top-0 right-0 left-0 w-dvw z-100 rounded-b-3xl pb-3 backdrop-blur-xl border shadow-xl border-primary/20 bg-background/10 shadow-primary/20"
@@ -113,46 +156,49 @@ export default function SchoolPage() {
           onEnded={() => {
             if (!selectedLesson) return;
             let nextIndex = 0;
-            const currentIndex = renderLessons.findIndex(
+            const currentIndex = selectedLessons.findIndex(
               (lesson) => lesson.id === selectedLesson.id
             );
-            if (currentIndex === renderLessons.length - 1) {
+            if (currentIndex === selectedLessons.length - 1) {
               nextIndex = 0;
             } else {
               nextIndex = currentIndex + 1;
             }
 
-            setSelectedLesson(renderLessons.at(nextIndex)!);
+            setSelectedLesson(selectedLessons.at(nextIndex)!);
           }}
         />
 
         <div className="relative">
           <div className="flex flex-row gap-x-5 max-w-32 mx-auto">
             <Button
+              disabled={selectedLessons.length === 1}
               onClick={() => {
                 if (!selectedLesson) return;
-                const currentIndex = renderLessons.findIndex(
+                const currentIndex = selectedLessons.findIndex(
                   (lesson) => lesson.id === selectedLesson.id
                 );
                 if (currentIndex === -1) return;
-                const nextIndex = (currentIndex - 1 + renderLessons.length) % renderLessons.length;
+                const nextIndex =
+                  (currentIndex - 1 + selectedLessons.length) % selectedLessons.length;
 
-                setSelectedLesson(renderLessons[nextIndex]);
+                setSelectedLesson(selectedLessons[nextIndex]);
               }}
               size="sm"
             >
               <ChevronLeftIcon />
             </Button>
             <Button
+              disabled={selectedLessons.length === 1}
               onClick={() => {
                 if (!selectedLesson) return;
-                const currentIndex = renderLessons.findIndex(
+                const currentIndex = selectedLessons.findIndex(
                   (lesson) => lesson.id === selectedLesson.id
                 );
                 if (currentIndex === -1) return;
-                const nextIndex = (currentIndex + 1) % renderLessons.length;
+                const nextIndex = (currentIndex + 1) % selectedLessons.length;
 
-                setSelectedLesson(renderLessons[nextIndex]);
+                setSelectedLesson(selectedLessons[nextIndex]);
               }}
               size="sm"
             >
@@ -195,51 +241,95 @@ export default function SchoolPage() {
         </section>
 
         <section className="space-y-6">
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {renderLessons.map((lesson, index) => {
-              const isActive = (selectedLesson && selectedLesson.slug) === lesson.slug;
+          <Tabs
+            defaultValue={courses[0]}
+            className="w-full"
+            value={course}
+            onValueChange={(v) => {
+              const nextCourse = v as Course;
+              const nextLesson = lessons[nextCourse][0]?.slug ?? DEFAULT_SLUG;
 
-              return (
-                <Card
-                  id={lesson.id}
-                  key={lesson.id}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={isActive}
-                  onClick={() => {
-                    setSelectedLesson(lesson);
-                    router.replace(pathname + "?" + createQueryString(LESSON_KEY, lesson.slug), {
-                      scroll: false,
-                    });
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      setSelectedLesson(lesson);
-                    }
-                  }}
-                  className={`border bg-background/90 transition-all focus-visible:ring-2 focus-visible:ring-primary ${
-                    isActive
-                      ? "cursor-default border-primary/60 shadow-lg shadow-primary/20"
-                      : "cursor-pointer border-primary/15 hover:border-primary/40"
-                  }`}
-                >
-                  <CardHeader className="space-y-2">
-                    <div className="flex flex-wrap items-center gap-3 text-primary">
-                      <span className="text-sm font-semibold">{index + 1}</span>
-                      <span className="text-sm uppercase tracking-[0.4em] text-primary/70">
-                        {lesson.theme}
-                      </span>
-                    </div>
-                    <CardTitle className="text-xl">{lesson.title}</CardTitle>
-                    <CardDescription className="text-base text-muted-foreground">
-                      {lesson.summary}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
+              setCourse(nextCourse);
+              setSelectedLesson(lessons[nextCourse][0] ?? null);
+
+              router.replace(
+                pathname +
+                  "?" +
+                  createQueryString([
+                    [COURSE_KEY, nextCourse],
+                    [LESSON_KEY, nextLesson],
+                  ]),
+                {
+                  scroll: false,
+                }
               );
-            })}
-          </div>
+            }}
+          >
+            <TabsList className="mx-auto">
+              {courses.map((course) => {
+                return (
+                  <TabsTrigger value={course} key={course}>
+                    {course}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+            <TabsContent value={course}>
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {lessons[course].map((lesson, index) => {
+                  const isActive = (selectedLesson && selectedLesson.slug) === lesson.slug;
+
+                  return (
+                    <Card
+                      id={lesson.id}
+                      key={lesson.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-pressed={isActive}
+                      onClick={() => {
+                        setSelectedLesson(lesson);
+                        router.replace(
+                          pathname +
+                            "?" +
+                            createQueryString([
+                              [COURSE_KEY, course],
+                              [LESSON_KEY, lesson.slug],
+                            ]),
+                          {
+                            scroll: false,
+                          }
+                        );
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setSelectedLesson(lesson);
+                        }
+                      }}
+                      className={`border bg-background/90 transition-all focus-visible:ring-2 focus-visible:ring-primary ${
+                        isActive
+                          ? "cursor-default border-primary/60 shadow-lg shadow-primary/20"
+                          : "cursor-pointer border-primary/15 hover:border-primary/40"
+                      }`}
+                    >
+                      <CardHeader className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-3 text-primary">
+                          <span className="text-sm font-semibold">{index + 1}</span>
+                          <span className="text-sm uppercase tracking-[0.4em] text-primary/70">
+                            {lesson.course}
+                          </span>
+                        </div>
+                        <CardTitle className="text-xl">{lesson.title}</CardTitle>
+                        <CardDescription className="text-base text-muted-foreground">
+                          {lesson.summary}
+                        </CardDescription>
+                      </CardHeader>
+                    </Card>
+                  );
+                })}
+              </div>
+            </TabsContent>
+          </Tabs>
         </section>
 
         <section className="p-8 text-center border shadow-lg rounded-3xl border-primary/10 bg-background/80 shadow-primary/5">
