@@ -124,7 +124,6 @@ export default function SchoolPage() {
    */
   const createQueryString = useCallback(
     (inputParams: [name: string, value: string][]) => {
-      console.debug("🔎", inputParams);
       const params = new URLSearchParams(searchParams.toString());
       for (const [name, value] of inputParams) {
         params.set(name, value);
@@ -265,11 +264,11 @@ export default function SchoolPage() {
               );
             }}
           >
-            <TabsList className="mx-auto">
+            <TabsList className="flex w-fit mx-auto">
               {courses.map((course) => {
                 return (
                   <TabsTrigger value={course} key={course}>
-                    {course}
+                    {t(`school.curriculums.${course}.title`)}
                   </TabsTrigger>
                 );
               })}

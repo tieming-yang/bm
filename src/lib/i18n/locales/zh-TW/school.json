@@ -15,6 +15,7 @@
     },
     "curriculums": {
       "genesis": {
+        "title": "創世記",
         "lessons": [
           {
             "id": "01",
@@ -201,6 +202,7 @@
         ]
       },
       "characters": {
+        "title": "聖經人物",
         "lessons": [
           {
             "id": "adam",

@@ -19,7 +19,7 @@
   --font-sans: var(--font-eagle-lake), var(--font-yuji-mai), system-ui, sans-serif;
   --font-chinese: var(--font-yuji-mai), system-ui, sans-serif;
 
-  --color-border: hsl(var(--border));
+  --color-border: var(--border);
   --color-input: hsl(var(--input));
   --color-ring: var(--ring);
   --color-background: hsl(var(--background));
@@ -109,7 +109,7 @@
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
+    --border: #232622;
     --input: 240 5.9% 90%;
     --ring: #edc043;
     --radius: 1rem;

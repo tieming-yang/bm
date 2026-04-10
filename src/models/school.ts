@@ -4,6 +4,7 @@ export interface Curriculum {
 }
 
 export interface Lessons {
+  title: string;
   lessons: Lesson[];
 }
 
