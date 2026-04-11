@@ -34,7 +34,7 @@ export default function SchoolPage() {
   const searchParams = useSearchParams();
   const slug = searchParams.get(LESSON_KEY);
   const courseParam = searchParams.get(COURSE_KEY);
-
+  console.debug("🔎", { courseParam });
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [viewStatus, setViewStatus] = useState<"none" | "videoModal" | "loading">("loading");
 
@@ -90,7 +90,8 @@ export default function SchoolPage() {
           renderGenesisLessons.find((lesson) => lesson.slug === slug) ?? renderGenesisLessons[0];
         break;
       default:
-        selected = renderGenesisLessons[0];
+        selected =
+          renderGenesisLessons.find((lesson) => lesson.slug === slug) ?? renderGenesisLessons[0];
     }
 
     setSelectedLesson(selected);
