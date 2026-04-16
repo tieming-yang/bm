@@ -172,8 +172,8 @@ export default function Depth3D() {
   // Example paths:
   //   /public/depth/photo.jpg
   //   /public/depth/photo_depth.png
-  const imageUrl = "/3d/test/genesis_1_1-31.webp";
-  const depthUrl = "/3d/test/genesis_1_1-31-depth.png";
+  const imageUrl = "/depth-3d/test/genesis_1_1-31.webp";
+  const depthUrl = "/depth-3d/test/genesis_1_1-31-depth.png";
 
   return (
     <div className="h-dvh flex items-center-safe justify-center-safe flex-col">
