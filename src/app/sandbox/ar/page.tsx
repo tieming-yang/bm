@@ -11,7 +11,8 @@ type MindArSceneElement = HTMLElement & {
   };
 };
 
-const targetSrc = "/ar/targets.mind";
+const targetSrc = "/ar/adam-targets.mind";
+const logoModelSrc = "/3d/adam.glb";
 
 function revealMindArCamera(scene: HTMLElement) {
   const container = scene.parentElement;
@@ -232,6 +233,14 @@ export default function AR() {
               "look-controls": "enabled: false",
             }),
             React.createElement(
+              "a-assets",
+              null,
+              React.createElement("a-asset-item", {
+                id: "logo-3d-model",
+                src: logoModelSrc,
+              })
+            ),
+            React.createElement(
               "a-entity",
               {
                 ref: targetRef,
@@ -271,22 +280,12 @@ export default function AR() {
                     "shader: flat; color: #2563eb; opacity: 0.58; transparent: true; depthWrite: false; side: double",
                 })
               ),
-              React.createElement("a-box", {
-                color: "#facc15",
-                position: "0 0 0.12",
-                depth: "0.12",
-                height: "0.18",
-                width: "0.18",
-                rotation: "0 45 0",
-                animation: "property: rotation; to: 0 405 0; loop: true; dur: 2200; easing: linear",
-              }),
-              React.createElement("a-text", {
-                value: "AR Testing",
-                align: "center",
-                color: "blue",
-                position: "0 -0.42 0.03",
-                width: "1.4",
-                size: "3rem",
+              React.createElement("a-gltf-model", {
+                src: "#logo-3d-model",
+                position: "0 0 0.16",
+                rotation: "0 0 0",
+                scale: "1 1 1",
+                animation: "property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear",
               })
             )
           )
