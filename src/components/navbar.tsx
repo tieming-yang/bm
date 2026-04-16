@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/use-translation";
 import useAuthUser from "@/hooks/use-auth-user";
-import { Button, topGlowBorder } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { TFunction } from "i18next";
 import { useShoppingCart } from "@/providers/shopping-cart-provider";
 import Cart from "@/models/cart";
@@ -78,7 +78,7 @@ export default function Navbar() {
     <>
       <nav className="fixed bottom-0 w-full px-3 font-serif z-120 h-fit 2xl:px-0">
         <div
-          className={`${topGlowBorder} container flex items-center justify-between h-16 px-4 my-2 border rounded-full shadow-md  backdrop-blur-xl bg-primary-gradient-10 border-black/10`}
+          className="container flex items-center justify-between h-16 px-4 my-2 md:border md:rounded-full md:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] md:backdrop-blur-xl md:bg-primary-gradient-10 md:border-black/10"
         >
           <div className="items-center hidden lg:flex gap-6">
             {navRoutes.map((route) => (
@@ -132,8 +132,10 @@ export default function Navbar() {
               </div>
             )}
           </section>
-          <button
+          <Button
             onClick={toggleMenu}
+            type='button'
+            variant={'outline'}
             className="relative flex flex-col items-center justify-center z-60 lg:hidden size-10 focus:outline-hidden"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
@@ -148,7 +150,7 @@ export default function Navbar() {
                 isMenuOpen ? "-rotate-45 translate-y-0" : "translate-y-1"
               }`}
             ></span>
-          </button>
+          </Button>
         </div>
       </nav>
 

@@ -32,12 +32,12 @@ export default function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <Globe className="w-5 h-5" />
+        <Button variant="outline">
+          <Globe />
           <span className="sr-only">Switch language</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="mb-3">
+      <DropdownMenuContent align="center" className="md:mb-3">
         <DropdownMenuItem
           onClick={() => changeLanguage("zh-TW")}
           className={currentLanguage === "zh-TW" ? "bg-primary/10" : ""}
