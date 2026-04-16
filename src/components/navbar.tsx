@@ -108,7 +108,7 @@ export default function Navbar() {
                     href={`/profile/${authUser.uid}`}
                     className="text-sm font-medium text-primary-foreground"
                   >
-                    <Button size="lg">
+                    <Button size="icon">
                       <User />
                     </Button>
                   </Link>
