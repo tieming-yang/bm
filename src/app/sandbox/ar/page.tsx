@@ -15,18 +15,29 @@ const targetSrc = "/ar/targets.mind";
 
 function revealMindArCamera(scene: HTMLElement) {
   const container = scene.parentElement;
-  const video = container?.querySelector("video");
-  const canvas = scene.querySelector("canvas");
+  const video = container?.querySelector<HTMLVideoElement>("video");
+  const canvas = scene.querySelector<HTMLCanvasElement>("canvas");
 
   if (video) {
-    video.style.zIndex = "0";
-    video.style.pointerEvents = "none";
+    video.style.setProperty("position", "absolute", "important");
+    video.style.setProperty("top", "50%", "important");
+    video.style.setProperty("left", "50%", "important");
+    video.style.setProperty("width", "100%", "important");
+    video.style.setProperty("height", "100%", "important");
+    video.style.setProperty("object-fit", "cover", "important");
+    video.style.setProperty("object-position", "center center", "important");
+    video.style.setProperty("transform", "translate(-50%, -50%)", "important");
+    video.style.setProperty("z-index", "0", "important");
+    video.style.setProperty("pointer-events", "none", "important");
   }
 
   if (canvas) {
-    canvas.style.position = "relative";
-    canvas.style.zIndex = "1";
-    canvas.style.background = "transparent";
+    canvas.style.setProperty("position", "absolute", "important");
+    canvas.style.setProperty("inset", "0", "important");
+    canvas.style.setProperty("width", "100%", "important");
+    canvas.style.setProperty("height", "100%", "important");
+    canvas.style.setProperty("background", "transparent", "important");
+    canvas.style.setProperty("z-index", "1", "important");
   }
 }
 
@@ -34,12 +45,31 @@ function setMindArScanningOverlay(enabled: boolean) {
   document.querySelectorAll<HTMLElement>(".mindar-ui-scanning").forEach((overlay) => {
     if (enabled) {
       overlay.style.removeProperty("display");
+      overlay.style.setProperty("inset", "0", "important");
+      overlay.style.setProperty("z-index", "60", "important");
+      overlay.style.setProperty("pointer-events", "none", "important");
     } else {
       overlay.style.setProperty("display", "none", "important");
+      overlay.style.setProperty("position", "fixed", "important");
     }
   });
 }
 
+/**
+ * @description
+camera <video> z-0
+  shows the real-world camera feed
+
+A-Frame <canvas> z-1
+  transparent WebGL layer
+  draws the tracked plane, box, text
+
+React controls z-50
+  buttons/status UI
+
+MindAR scan UI z-60
+  scan-frame overlay
+ */
 export default function AR() {
   const sceneRef = useRef<MindArSceneElement | null>(null);
   const targetRef = useRef<HTMLElement | null>(null);
@@ -137,7 +167,7 @@ export default function AR() {
   };
 
   return (
-    <main className="min-h-dvh bg-black text-white">
+    <main className="fixed inset-0 z-50 overflow-hidden bg-black text-white">
       <div className="relative isolate h-dvh w-full overflow-hidden bg-transparent">
         {!started ? (
           <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
@@ -160,7 +190,7 @@ export default function AR() {
               ].join("; "),
               "vr-mode-ui": "enabled: false",
               "device-orientation-permission-ui": "enabled: false",
-              "loading-screen": "enabled: false",
+              "loading-screen": "enabled: true",
               renderer: "colorManagement: true; physicallyCorrectLights: true; alpha: true",
               embedded: "true",
               style: {
@@ -182,14 +212,40 @@ export default function AR() {
                 ref: targetRef,
                 "mindar-image-target": "targetIndex: 0",
               },
-              React.createElement("a-plane", {
-                color: "#2563eb",
-                opacity: "0.35",
-                position: "0 0 0",
-                height: "0.65",
-                width: "1",
-                rotation: "0 0 0",
-              }),
+              React.createElement(
+                "a-entity",
+                {
+                  position: "0 0 0",
+                },
+                React.createElement("a-plane", {
+                  height: "0.82",
+                  width: "1.24",
+                  position: "0 0 -0.006",
+                  material:
+                    "shader: flat; color: #2563eb; opacity: 0.08; transparent: true; depthWrite: false; side: double",
+                }),
+                React.createElement("a-plane", {
+                  height: "0.74",
+                  width: "1.14",
+                  position: "0 0 -0.004",
+                  material:
+                    "shader: flat; color: #2563eb; opacity: 0.14; transparent: true; depthWrite: false; side: double",
+                }),
+                React.createElement("a-plane", {
+                  height: "0.69",
+                  width: "1.06",
+                  position: "0 0 -0.002",
+                  material:
+                    "shader: flat; color: #2563eb; opacity: 0.22; transparent: true; depthWrite: false; side: double",
+                }),
+                React.createElement("a-plane", {
+                  height: "0.65",
+                  width: "1",
+                  position: "0 0 0",
+                  material:
+                    "shader: flat; color: #2563eb; opacity: 0.58; transparent: true; depthWrite: false; side: double",
+                })
+              ),
               React.createElement("a-box", {
                 color: "#facc15",
                 position: "0 0 0.12",
@@ -200,11 +256,12 @@ export default function AR() {
                 animation: "property: rotation; to: 0 405 0; loop: true; dur: 2200; easing: linear",
               }),
               React.createElement("a-text", {
-                value: "MindAR Test",
+                value: "AR Testing",
                 align: "center",
-                color: "#ffffff",
+                color: "blue",
                 position: "0 -0.42 0.03",
                 width: "1.4",
+                size: "3rem",
               })
             )
           )
