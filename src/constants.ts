@@ -4,3 +4,5 @@ export const Currency = {
 } as const;
 
 export type Currency = (typeof Currency)[keyof typeof Currency];
+
+export const ADMIN_UID = "YqBaPnXiqBPzxokpPmBDM3TF7TQ2";
