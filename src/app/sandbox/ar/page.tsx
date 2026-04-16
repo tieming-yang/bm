@@ -43,15 +43,34 @@ function revealMindArCamera(scene: HTMLElement) {
 
 function setMindArScanningOverlay(enabled: boolean) {
   document.querySelectorAll<HTMLElement>(".mindar-ui-scanning").forEach((overlay) => {
+    overlay.style.setProperty("position", "fixed", "important");
+    overlay.style.setProperty("inset", "0", "important");
+    overlay.style.setProperty("z-index", "60", "important");
+    overlay.style.setProperty("pointer-events", "none", "important");
+
     if (enabled) {
       overlay.style.removeProperty("display");
-      overlay.style.setProperty("inset", "0", "important");
-      overlay.style.setProperty("z-index", "60", "important");
-      overlay.style.setProperty("pointer-events", "none", "important");
     } else {
       overlay.style.setProperty("display", "none", "important");
-      overlay.style.setProperty("position", "fixed", "important");
     }
+  });
+}
+
+function removeMindArUiOverlays() {
+  document
+    .querySelectorAll<HTMLElement>(".mindar-ui-overlay")
+    .forEach((overlay) => overlay.remove());
+}
+
+function stopCameraVideos(container?: HTMLElement | null) {
+  container?.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+    const stream = video.srcObject;
+
+    if (stream instanceof MediaStream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+
+    video.remove();
   });
 }
 
@@ -100,6 +119,8 @@ export default function AR() {
 
     return () => {
       mounted = false;
+      removeMindArUiOverlays();
+      stopCameraVideos(sceneRef.current?.parentElement);
     };
   }, []);
 
@@ -140,6 +161,9 @@ export default function AR() {
       } catch (error) {
         console.warn("MindAR cleanup failed", error);
       }
+
+      removeMindArUiOverlays();
+      stopCameraVideos(scene.parentElement);
     };
   }, [started]);
 
@@ -163,6 +187,7 @@ export default function AR() {
     }
 
     setStatus("Starting camera...");
+    removeMindArUiOverlays();
     setStarted(true);
   };
 
@@ -268,7 +293,7 @@ export default function AR() {
         )}
 
         {started ? (
-          <div className="absolute bottom-5 right-5 z-20">
+          <div className="absolute bottom-17 right-5 z-20">
             <Button
               type="button"
               aria-pressed={!scanUiEnabled}
