@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, ShoppingCartIcon, Sun, User } from "lucide-react";
+import { Axe, Moon, ShoppingCartIcon, Sun, User } from "lucide-react";
 
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { TFunction } from "i18next";
 import { useShoppingCart } from "@/providers/shopping-cart-provider";
 import Cart from "@/models/cart";
+import Config from "@/models/config";
 
 export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
@@ -119,6 +120,13 @@ export default function Navbar() {
                   </Link>
                 )}
 
+                {!Config.isProd && (
+                  <Link href="/sandbox">
+                    <Button variant={"outline"} size={"default"}>
+                      <Axe />
+                    </Button>
+                  </Link>
+                )}
                 {/* <Link href={"/cart"}>
                   <Button size={"icon"} variant={"secondary"} className="relative">
                     {cartItems > 0 && (
