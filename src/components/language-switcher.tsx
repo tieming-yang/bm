@@ -23,7 +23,7 @@ export default function LanguageSwitcher() {
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" className="rounded-full">
-        <Globe className="w-5 h-5" />
+        <Globe className="w-10 h-10" />
         <span className="sr-only">Switch language</span>
       </Button>
     );
@@ -32,7 +32,7 @@ export default function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" size={"icon"}>
           <Globe />
           <span className="sr-only">Switch language</span>
         </Button>
