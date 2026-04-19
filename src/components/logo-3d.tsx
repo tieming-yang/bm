@@ -18,7 +18,7 @@ export default function Logo3D() {
 
   return (
     <div
-      className="h-svh w-full touch-none bg-background"
+      className="relative h-svh w-full touch-none overflow-hidden bg-[#08070c]"
       onPointerDown={(event) => {
         draggingRef.current = true;
         lastPointerRef.current = {
@@ -50,7 +50,72 @@ export default function Logo3D() {
         };
       }}
     >
-      <Canvas camera={{ position: [0, 0, 7], fov: 45 }}>
+      <style>
+        {`
+          .logo-3d-wave {
+            position: absolute;
+            inset: -35%;
+            opacity: 1;
+            filter: blur(100px);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            will-change: transform, opacity;
+            background:
+              radial-gradient(ellipse at 16% 82%, rgba(168, 85, 247, 0.42), transparent 28%),
+              radial-gradient(ellipse at 42% 62%, rgba(59, 130, 246, 0.34), transparent 30%),
+              radial-gradient(ellipse at 70% 46%, rgba(14, 165, 233, 0.4), transparent 28%),
+              linear-gradient(38deg, transparent 26%, rgba(168, 85, 247, 0.3) 39%, rgba(59, 130, 246, 0.28) 52%, rgba(14, 165, 233, 0.3) 64%, transparent 76%);
+            animation: logo-3d-wave-flow 12s linear infinite;
+          }
+
+          .logo-3d-wave-secondary {
+            filter: blur(90px);
+            opacity: 1;
+            animation-duration: 18s;
+            animation-delay: -6s;
+            transform: scale(0.82);
+          }
+
+          @keyframes logo-3d-wave-flow {
+            0% {
+              opacity: 0;
+              transform: translate3d(-18%, 18%, 0) rotate(-9deg) scale(0.98);
+            }
+
+            16% {
+              opacity: 0.64;
+            }
+
+            55% {
+              opacity: 0.52;
+            }
+
+            100% {
+              opacity: 0;
+              transform: translate3d(18%, -18%, 0) rotate(-9deg) scale(1.08);
+            }
+          }
+        `}
+      </style>
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[linear-gradient(135deg,#08070c_0%,#241142_34%,#172554_68%,#075985_100%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-55 mix-blend-screen bg-[linear-gradient(115deg,transparent_0%,rgba(168,85,247,0.38)_24%,transparent_43%,rgba(59,130,246,0.34)_62%,rgba(14,165,233,0.3)_84%,transparent_100%)]"
+      />
+      <div aria-hidden="true" className="logo-3d-wave" />
+      <div aria-hidden="true" className="logo-3d-wave logo-3d-wave-secondary" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-black/20 backdrop-blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,7,12,0.18)_0%,transparent_35%,rgba(8,7,12,0.48)_100%)]"
+      />
+      <Canvas className="relative z-10" camera={{ position: [0, 0, 7], fov: 45 }}>
         <LogoParticleObject imageUrl={LOGO_URL} rotationTargetRef={rotationTargetRef} />
       </Canvas>
     </div>
