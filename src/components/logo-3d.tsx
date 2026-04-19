@@ -7,16 +7,62 @@ import * as THREE from "three";
 
 const LOGO_URL = "/logos/logo-metalic.webp";
 export default function Logo3D() {
+  const rotationTargetRef = useRef({
+    x: 0.25,
+    z: -0.12,
+  });
+
+  const draggingRef = useRef(false);
+  const lastPointerRef = useRef({ x: 0, y: 0 });
+
   return (
-    <div className="h-svh w-full bg-background">
+    <div
+      className="h-svh w-full bg-background"
+      onPointerDown={(event) => {
+        draggingRef.current = true;
+        lastPointerRef.current = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }}
+      onPointerUp={(event) => {
+        draggingRef.current = false;
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }}
+      onPointerCancel={() => {
+        draggingRef.current = false;
+      }}
+      onPointerMove={(event) => {
+        if (!draggingRef.current) return;
+
+        const dx = event.clientX - lastPointerRef.current.x;
+        const dy = event.clientY - lastPointerRef.current.y;
+
+        rotationTargetRef.current.z += dx * 0.006;
+        rotationTargetRef.current.x += dy * 0.006;
+
+        lastPointerRef.current = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+      }}
+    >
       <Canvas camera={{ position: [0, 0, 7], fov: 45 }}>
-        <LogoParticleObject imageUrl={LOGO_URL} />
+        <LogoParticleObject imageUrl={LOGO_URL} rotationTargetRef={rotationTargetRef} />
       </Canvas>
     </div>
   );
 }
 
-function LogoParticles({ data }: { data: LogoParticleData }) {
+function LogoParticles({
+  data,
+  rotationTargetRef,
+}: {
+  data: LogoParticleData;
+  rotationTargetRef: React.MutableRefObject<{ x: number; z: number }>;
+}) {
   const pointsRef = useRef<THREE.Points>(null);
 
   const groupRef = useRef<THREE.Group>(null);
@@ -35,51 +81,29 @@ function LogoParticles({ data }: { data: LogoParticleData }) {
   }, [data]);
 
   useFrame(({ clock }) => {
+    const group = groupRef.current;
     const points = pointsRef.current;
-    if (!points) return;
 
-    const elapsed = clock.getElapsedTime();
-    const pulse = Math.sin(elapsed * 2.2) * 0.5 + 0.5;
+    if (group) {
+      group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, rotationTargetRef.current.x, 0.16);
 
-    points.scale.setScalar(1 + pulse * 0.025);
+      group.rotation.z = THREE.MathUtils.lerp(group.rotation.z, rotationTargetRef.current.z, 0.16);
+    }
 
-    const material = points.material as THREE.PointsMaterial;
-    material.size = 0.022 + pulse * 0.01;
-    material.opacity = 0.62 + pulse * 0.22;
+    if (points) {
+      const elapsed = clock.getElapsedTime();
+      const pulse = Math.sin(elapsed * 2.2) * 0.5 + 0.5;
+
+      points.scale.setScalar(1 + pulse * 0.025);
+
+      const material = points.material as THREE.PointsMaterial;
+      material.size = 0.022 + pulse * 0.01;
+      material.opacity = 0.62 + pulse * 0.22;
+    }
   });
 
   return (
-    <group
-      ref={groupRef}
-      rotation={[0.25, 0, -0.12]}
-      onPointerDown={(event) => {
-        draggingRef.current = true;
-        lastPointerRef.current = {
-          x: event.clientX,
-          y: event.clientY,
-        };
-      }}
-      onPointerUp={() => {
-        draggingRef.current = false;
-      }}
-      onPointerLeave={() => {
-        draggingRef.current = false;
-      }}
-      onPointerMove={(event) => {
-        if (!draggingRef.current || !groupRef.current) return;
-
-        const dx = event.clientX - lastPointerRef.current.x;
-        const dy = event.clientY - lastPointerRef.current.y;
-
-        groupRef.current.rotation.z += dx * 0.006;
-        groupRef.current.rotation.x += dy * 0.006;
-
-        lastPointerRef.current = {
-          x: event.clientX,
-          y: event.clientY,
-        };
-      }}
-    >
+    <group ref={groupRef} rotation={[0.25, 0, -0.12]}>
       <points ref={pointsRef} geometry={geometry}>
         <pointsMaterial
           size={0.6}
@@ -94,7 +118,13 @@ function LogoParticles({ data }: { data: LogoParticleData }) {
   );
 }
 
-function LogoParticleObject({ imageUrl }: { imageUrl: string }) {
+function LogoParticleObject({
+  imageUrl,
+  rotationTargetRef,
+}: {
+  imageUrl: string;
+  rotationTargetRef: React.RefObject<{ x: number; z: number }>;
+}) {
   const [particleData, setParticleData] = useState<LogoParticleData | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -108,7 +138,7 @@ function LogoParticleObject({ imageUrl }: { imageUrl: string }) {
     };
   }, [imageUrl]);
   if (particleData === null) return null;
-  return <LogoParticles data={particleData} />;
+  return <LogoParticles data={particleData} rotationTargetRef={rotationTargetRef} />;
 }
 
 function loadImage(imageUrl: string) {
