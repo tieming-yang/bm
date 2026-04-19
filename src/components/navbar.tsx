@@ -103,7 +103,9 @@ export default function Navbar() {
           <section className="z-50 flex gap-2">
             {isMounted && (
               <div className="flex gap-x-5">
-                <LanguageSwitcher />
+                <div className="hidden lg:block">
+                  <LanguageSwitcher />
+                </div>
                 {authUser ? (
                   <Link
                     href={`/profile/${authUser.uid}`}
@@ -207,6 +209,11 @@ export default function Navbar() {
                 transition={{ duration: 0.3, delay: 0.5 }}
                 className="flex flex-col mt-auto gap-4"
               >
+                {isMounted && (
+                  <div className="flex justify-center">
+                    <LanguageSwitcher />
+                  </div>
+                )}
                 <div className="pt-6 border-t border-primary/10">
                   <p className="text-sm text-muted-foreground">
                     &copy; {new Date().getFullYear()} 彼岸數位媒體
