@@ -131,6 +131,7 @@ function LogoParticles({
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const viewport = useThree((state) => state.viewport);
+  const canvasSize = useThree((state) => state.size);
   const particleTexture = useMemo(createCircleParticleTexture, []);
   const logoMotionData = useMemo(() => createLogoMotionData(data), [data]);
   const logoMaterial = useMemo(() => createLogoParticleMaterial(particleTexture), [particleTexture]);
@@ -139,6 +140,12 @@ function LogoParticles({
 
     return THREE.MathUtils.clamp(fitScale, 0.42, 1);
   }, [viewport.height, viewport.width]);
+  const particleSizeScale = useMemo(() => {
+    if (canvasSize.width < 480) return 0.58;
+    if (canvasSize.width < 768) return 0.74;
+
+    return 1;
+  }, [canvasSize.width]);
 
   useEffect(() => {
     return () => {
@@ -185,6 +192,7 @@ function LogoParticles({
     const pulse = Math.sin(elapsed * 1.2) * 0.5 + 0.5;
     logoMaterial.uniforms.time.value = elapsed;
     logoMaterial.uniforms.opacity.value = 0.78 + pulse * 0.16;
+    logoMaterial.uniforms.sizeScale.value = particleSizeScale;
   });
 
   return (
@@ -416,10 +424,12 @@ function createLogoParticleMaterial(particleTexture: THREE.Texture) {
     uniforms: {
       opacity: { value: 0.88 },
       pointTexture: { value: particleTexture },
+      sizeScale: { value: 1 },
       time: { value: 0 },
     },
     vertexShader: `
       uniform float time;
+      uniform float sizeScale;
 
       attribute vec3 particleColor;
       attribute float particleSize;
@@ -452,7 +462,7 @@ function createLogoParticleMaterial(particleTexture: THREE.Texture) {
 
         vec4 modelViewPosition = modelViewMatrix * vec4(animatedPosition, 1.0);
         gl_Position = projectionMatrix * modelViewPosition;
-        gl_PointSize = particleSize * sizePulse * (6.0 / max(0.1, -modelViewPosition.z));
+        gl_PointSize = particleSize * sizeScale * sizePulse * (6.0 / max(0.1, -modelViewPosition.z));
       }
     `,
     fragmentShader: `
