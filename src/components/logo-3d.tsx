@@ -15,34 +15,75 @@ export default function Logo3D() {
 
   const draggingRef = useRef(false);
   const lastPointerRef = useRef({ x: 0, y: 0 });
+  const pointerStartRef = useRef({ x: 0, y: 0 });
+  const touchGestureRef = useRef<"pending" | "dragging" | "scrolling">("pending");
 
   return (
     <div
-      className="relative h-svh w-full touch-none overflow-hidden bg-[#08070c]"
+      className="relative h-svh w-full touch-pan-y overflow-hidden bg-[#08070c]"
       onPointerDown={(event) => {
-        draggingRef.current = true;
-        lastPointerRef.current = {
+        const pointer = {
           x: event.clientX,
           y: event.clientY,
         };
 
-        event.currentTarget.setPointerCapture(event.pointerId);
+        draggingRef.current = event.pointerType !== "touch";
+        touchGestureRef.current = event.pointerType === "touch" ? "pending" : "dragging";
+        pointerStartRef.current = pointer;
+        lastPointerRef.current = {
+          x: pointer.x,
+          y: pointer.y,
+        };
+
+        if (event.pointerType !== "touch") {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        }
       }}
       onPointerUp={(event) => {
         draggingRef.current = false;
-        event.currentTarget.releasePointerCapture(event.pointerId);
+        touchGestureRef.current = "pending";
+
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }
       }}
       onPointerCancel={() => {
         draggingRef.current = false;
+        touchGestureRef.current = "pending";
       }}
       onPointerMove={(event) => {
-        if (!draggingRef.current) return;
+        if (event.pointerType === "touch" && touchGestureRef.current === "pending") {
+          const totalDx = event.clientX - pointerStartRef.current.x;
+          const totalDy = event.clientY - pointerStartRef.current.y;
+          const isScrollGesture = Math.abs(totalDy) > 8 && Math.abs(totalDy) > Math.abs(totalDx);
+          const isDragGesture = Math.abs(totalDx) > 8 && Math.abs(totalDx) > Math.abs(totalDy);
+
+          if (isScrollGesture) {
+            draggingRef.current = false;
+            touchGestureRef.current = "scrolling";
+            return;
+          }
+
+          if (isDragGesture) {
+            draggingRef.current = true;
+            touchGestureRef.current = "dragging";
+            lastPointerRef.current = {
+              x: event.clientX,
+              y: event.clientY,
+            };
+          }
+        }
+
+        if (!draggingRef.current || touchGestureRef.current === "scrolling") return;
 
         const dx = event.clientX - lastPointerRef.current.x;
         const dy = event.clientY - lastPointerRef.current.y;
 
         rotationTargetRef.current.y += dx * 0.006;
-        rotationTargetRef.current.x += dy * 0.006;
+
+        if (event.pointerType !== "touch") {
+          rotationTargetRef.current.x += dy * 0.006;
+        }
 
         lastPointerRef.current = {
           x: event.clientX,
