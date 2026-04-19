@@ -5,6 +5,39 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const LOGO_URL = "/logos/logo-metalic.webp";
+const STEAM_STREAMS = [
+  {
+    source: [-5.8, -2.2, -1.1],
+    controlA: [-4.8, -1.5, 0.9],
+    controlB: [-2.5, -0.5, 0.4],
+    tint: [0.35, 0.85, 1],
+  },
+  {
+    source: [-5.6, 2.3, 0.8],
+    controlA: [-4.4, 1.8, -0.7],
+    controlB: [-2.1, 0.6, -0.2],
+    tint: [0.75, 0.45, 1],
+  },
+  {
+    source: [5.7, -1.8, 1],
+    controlA: [4.6, -1.1, -0.8],
+    controlB: [2.3, -0.4, 0.1],
+    tint: [1, 0.55, 0.75],
+  },
+  {
+    source: [5.4, 2.4, -0.9],
+    controlA: [4.2, 1.8, 0.8],
+    controlB: [2.2, 0.5, 0.3],
+    tint: [0.55, 1, 0.85],
+  },
+  {
+    source: [0.2, 5, 0.4],
+    controlA: [-0.8, 4, -0.9],
+    controlB: [-0.2, 2.1, 0.2],
+    tint: [0.6, 0.7, 1],
+  },
+] as const;
+
 export default function Logo3D() {
   const rotationTargetRef = useRef({
     x: 0,
@@ -111,6 +144,7 @@ function LogoParticles({
 
   return (
     <group ref={groupRef} rotation={[0.25, 0, -0.12]}>
+      <SteamParticleStreams logoData={data} particleTexture={particleTexture} />
       <points ref={pointsRef} geometry={geometry}>
         <pointsMaterial
           map={particleTexture}
@@ -125,6 +159,103 @@ function LogoParticles({
         />
       </points>
     </group>
+  );
+}
+
+function SteamParticleStreams({
+  logoData,
+  particleTexture,
+}: {
+  logoData: LogoParticleData;
+  particleTexture: THREE.Texture;
+}) {
+  const pointsRef = useRef<THREE.Points>(null);
+  const streamData = useMemo(() => createSteamParticleData(logoData), [logoData]);
+
+  const geometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(streamData.positions, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(streamData.colors, 3));
+    geo.computeBoundingSphere();
+
+    return geo;
+  }, [streamData]);
+
+  useFrame(({ clock }) => {
+    const points = pointsRef.current;
+    if (!points) return;
+
+    const elapsed = clock.getElapsedTime();
+    const positionAttribute = geometry.getAttribute("position") as THREE.BufferAttribute;
+    const colorAttribute = geometry.getAttribute("color") as THREE.BufferAttribute;
+    const positions = positionAttribute.array as Float32Array;
+    const colors = colorAttribute.array as Float32Array;
+
+    for (let i = 0; i < streamData.count; i++) {
+      const index = i * 3;
+      const progress = (elapsed * streamData.speeds[i] + streamData.offsets[i]) % 1;
+      const eased = progress * progress * (3 - 2 * progress);
+      const spread = (1 - eased) * streamData.radii[i] + 0.0025;
+      const swirl = elapsed * (2.2 + streamData.speeds[i]) + streamData.phases[i] + progress * 8;
+
+      const baseX = cubicBezier(
+        streamData.sources[index],
+        streamData.controlsA[index],
+        streamData.controlsB[index],
+        streamData.targets[index],
+        eased
+      );
+      const baseY = cubicBezier(
+        streamData.sources[index + 1],
+        streamData.controlsA[index + 1],
+        streamData.controlsB[index + 1],
+        streamData.targets[index + 1],
+        eased
+      );
+      const baseZ = cubicBezier(
+        streamData.sources[index + 2],
+        streamData.controlsA[index + 2],
+        streamData.controlsB[index + 2],
+        streamData.targets[index + 2],
+        eased
+      );
+
+      positions[index] = baseX + Math.cos(swirl) * spread * streamData.swirlScales[index];
+      positions[index + 1] = baseY + Math.sin(swirl * 1.15) * spread * streamData.swirlScales[index + 1];
+      positions[index + 2] = baseZ + Math.cos(swirl * 0.82) * spread * streamData.swirlScales[index + 2];
+
+      const fadeIn = smoothStep(0, 0.12, progress);
+      const fadeOut = 1 - smoothStep(0.94, 1, progress);
+      const intensity = (0.18 + Math.pow(progress, 1.25) * 1.15) * fadeIn * fadeOut;
+
+      colors[index] = streamData.baseColors[index] * intensity;
+      colors[index + 1] = streamData.baseColors[index + 1] * intensity;
+      colors[index + 2] = streamData.baseColors[index + 2] * intensity;
+    }
+
+    positionAttribute.needsUpdate = true;
+    colorAttribute.needsUpdate = true;
+
+    const material = points.material as THREE.PointsMaterial;
+    const pulse = Math.sin(elapsed * 1.6) * 0.5 + 0.5;
+    material.size = 0.022 + pulse * 0.01;
+    material.opacity = 0.44 + pulse * 0.16;
+  });
+
+  return (
+    <points ref={pointsRef} geometry={geometry} frustumCulled={false}>
+      <pointsMaterial
+        map={particleTexture}
+        size={0.026}
+        vertexColors
+        transparent
+        alphaTest={0.01}
+        opacity={0.52}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        toneMapped={false}
+      />
+    </points>
   );
 }
 
@@ -165,6 +296,22 @@ type LogoParticleData = {
   positions: Float32Array;
   colors: Float32Array;
   randoms: Float32Array;
+  count: number;
+};
+
+type SteamParticleData = {
+  positions: Float32Array;
+  colors: Float32Array;
+  baseColors: Float32Array;
+  sources: Float32Array;
+  controlsA: Float32Array;
+  controlsB: Float32Array;
+  targets: Float32Array;
+  offsets: Float32Array;
+  phases: Float32Array;
+  radii: Float32Array;
+  speeds: Float32Array;
+  swirlScales: Float32Array;
   count: number;
 };
 
@@ -298,4 +445,112 @@ function createCircleParticleTexture() {
   texture.needsUpdate = true;
 
   return texture;
+}
+
+function createSteamParticleData(logoData: LogoParticleData): SteamParticleData {
+  const particlesPerStream = 260;
+  const count = STEAM_STREAMS.length * particlesPerStream;
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const baseColors = new Float32Array(count * 3);
+  const sources = new Float32Array(count * 3);
+  const controlsA = new Float32Array(count * 3);
+  const controlsB = new Float32Array(count * 3);
+  const targets = new Float32Array(count * 3);
+  const offsets = new Float32Array(count);
+  const phases = new Float32Array(count);
+  const radii = new Float32Array(count);
+  const speeds = new Float32Array(count);
+  const swirlScales = new Float32Array(count * 3);
+  const logoCount = Math.max(1, logoData.positions.length / 3);
+
+  for (let streamIndex = 0; streamIndex < STEAM_STREAMS.length; streamIndex++) {
+    const stream = STEAM_STREAMS[streamIndex];
+
+    for (let localIndex = 0; localIndex < particlesPerStream; localIndex++) {
+      const particleIndex = streamIndex * particlesPerStream + localIndex;
+      const index = particleIndex * 3;
+      const logoIndex = Math.floor(Math.random() * logoCount) * 3;
+      const targetX = logoData.positions[logoIndex];
+      const targetY = logoData.positions[logoIndex + 1];
+      const targetZ = logoData.positions[logoIndex + 2];
+      const jitterX = (Math.random() - 0.5) * 0.55;
+      const jitterY = (Math.random() - 0.5) * 0.55;
+      const jitterZ = (Math.random() - 0.5) * 0.55;
+
+      sources[index] = stream.source[0] + jitterX;
+      sources[index + 1] = stream.source[1] + jitterY;
+      sources[index + 2] = stream.source[2] + jitterZ;
+
+      controlsA[index] = stream.controlA[0] + jitterX * 0.35;
+      controlsA[index + 1] = stream.controlA[1] + jitterY * 0.35;
+      controlsA[index + 2] = stream.controlA[2] + jitterZ * 0.35;
+
+      controlsB[index] = stream.controlB[0] * 0.65 + targetX * 0.35 + (Math.random() - 0.5) * 0.22;
+      controlsB[index + 1] = stream.controlB[1] * 0.65 + targetY * 0.35 + (Math.random() - 0.5) * 0.22;
+      controlsB[index + 2] = stream.controlB[2] * 0.65 + targetZ * 0.35 + (Math.random() - 0.5) * 0.22;
+
+      targets[index] = targetX;
+      targets[index + 1] = targetY;
+      targets[index + 2] = targetZ;
+
+      positions[index] = sources[index];
+      positions[index + 1] = sources[index + 1];
+      positions[index + 2] = sources[index + 2];
+
+      const logoRed = logoData.colors[logoIndex] ?? 0.65;
+      const logoGreen = logoData.colors[logoIndex + 1] ?? 0.85;
+      const logoBlue = logoData.colors[logoIndex + 2] ?? 1;
+
+      baseColors[index] = THREE.MathUtils.clamp(logoRed * 0.6 + stream.tint[0] * 0.55, 0, 1);
+      baseColors[index + 1] = THREE.MathUtils.clamp(logoGreen * 0.6 + stream.tint[1] * 0.55, 0, 1);
+      baseColors[index + 2] = THREE.MathUtils.clamp(logoBlue * 0.6 + stream.tint[2] * 0.55, 0, 1);
+
+      colors[index] = 0;
+      colors[index + 1] = 0;
+      colors[index + 2] = 0;
+
+      offsets[particleIndex] = localIndex / particlesPerStream + Math.random() * 0.18;
+      phases[particleIndex] = Math.random() * Math.PI * 2;
+      radii[particleIndex] = 0.18 + Math.random() * 0.52;
+      speeds[particleIndex] = 0.18 + Math.random() * 0.1;
+
+      swirlScales[index] = 0.55 + Math.random() * 0.65;
+      swirlScales[index + 1] = 0.55 + Math.random() * 0.65;
+      swirlScales[index + 2] = 0.35 + Math.random() * 0.55;
+    }
+  }
+
+  return {
+    positions,
+    colors,
+    baseColors,
+    sources,
+    controlsA,
+    controlsB,
+    targets,
+    offsets,
+    phases,
+    radii,
+    speeds,
+    swirlScales,
+    count,
+  };
+}
+
+function cubicBezier(start: number, controlA: number, controlB: number, end: number, progress: number) {
+  const inverse = 1 - progress;
+
+  return (
+    inverse * inverse * inverse * start +
+    3 * inverse * inverse * progress * controlA +
+    3 * inverse * progress * progress * controlB +
+    progress * progress * progress * end
+  );
+}
+
+function smoothStep(edge0: number, edge1: number, value: number) {
+  const progress = THREE.MathUtils.clamp((value - edge0) / (edge1 - edge0), 0, 1);
+
+  return progress * progress * (3 - 2 * progress);
 }
