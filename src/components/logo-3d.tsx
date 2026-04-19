@@ -100,6 +100,8 @@ function LogoParticles({
 
   const groupRef = useRef<THREE.Group>(null);
   const particleTexture = useMemo(createCircleParticleTexture, []);
+  const logoMotionData = useMemo(() => createLogoMotionData(data), [data]);
+  const logoMaterial = useMemo(() => createLogoParticleMaterial(particleTexture), [particleTexture]);
 
   useEffect(() => {
     return () => {
@@ -107,20 +109,30 @@ function LogoParticles({
     };
   }, [particleTexture]);
 
+  useEffect(() => {
+    return () => {
+      logoMaterial.dispose();
+    };
+  }, [logoMaterial]);
+
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.BufferAttribute(data.positions, 3));
-    geo.setAttribute("color", new THREE.BufferAttribute(data.colors, 3));
-    geo.setAttribute("random", new THREE.BufferAttribute(data.randoms, 1));
+    geo.setAttribute("particleColor", new THREE.BufferAttribute(data.colors, 3));
+    geo.setAttribute("particleSize", new THREE.BufferAttribute(logoMotionData.sizes, 1));
+    geo.setAttribute("particlePhase", new THREE.BufferAttribute(logoMotionData.phases, 1));
+    geo.setAttribute("particleSpeed", new THREE.BufferAttribute(logoMotionData.speeds, 1));
+    geo.setAttribute("driftVector", new THREE.BufferAttribute(logoMotionData.driftVectors, 3));
+    geo.setAttribute("driftRadius", new THREE.BufferAttribute(logoMotionData.driftRadii, 1));
 
     geo.computeBoundingSphere();
 
     return geo;
-  }, [data]);
+  }, [data, logoMotionData]);
 
   useFrame(({ clock }) => {
     const group = groupRef.current;
-    const points = pointsRef.current;
+    const elapsed = clock.getElapsedTime();
 
     if (group) {
       group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, rotationTargetRef.current.x, 0.16);
@@ -130,34 +142,15 @@ function LogoParticles({
       group.rotation.z = THREE.MathUtils.lerp(group.rotation.z, rotationTargetRef.current.z, 0.16);
     }
 
-    if (points) {
-      const elapsed = clock.getElapsedTime();
-      const pulse = Math.sin(elapsed * 1.2) * 0.5 + 0.5;
-
-      points.scale.setScalar(1 + pulse * 0.025);
-
-      const material = points.material as THREE.PointsMaterial;
-      material.size = 0.036 + pulse * 0.018;
-      material.opacity = 0.82 + pulse * 0.14;
-    }
+    const pulse = Math.sin(elapsed * 1.2) * 0.5 + 0.5;
+    logoMaterial.uniforms.time.value = elapsed;
+    logoMaterial.uniforms.opacity.value = 0.78 + pulse * 0.16;
   });
 
   return (
     <group ref={groupRef} rotation={[0.25, 0, -0.12]}>
       <SteamParticleStreams logoData={data} particleTexture={particleTexture} />
-      <points ref={pointsRef} geometry={geometry}>
-        <pointsMaterial
-          map={particleTexture}
-          size={0.04}
-          vertexColors
-          transparent
-          alphaTest={0.01}
-          opacity={1}
-          depthWrite={false}
-          blending={THREE.NormalBlending}
-          toneMapped={false}
-        />
-      </points>
+      <points ref={pointsRef} geometry={geometry} material={logoMaterial} />
     </group>
   );
 }
@@ -298,6 +291,14 @@ type LogoParticleData = {
   colors: Float32Array;
   randoms: Float32Array;
   count: number;
+};
+
+type LogoMotionData = {
+  sizes: Float32Array;
+  phases: Float32Array;
+  speeds: Float32Array;
+  driftVectors: Float32Array;
+  driftRadii: Float32Array;
 };
 
 type SteamParticleData = {
@@ -449,6 +450,108 @@ function createCircleParticleTexture() {
   texture.needsUpdate = true;
 
   return texture;
+}
+
+function createLogoMotionData(logoData: LogoParticleData): LogoMotionData {
+  const count = logoData.count;
+  const sizes = new Float32Array(count);
+  const phases = new Float32Array(count);
+  const speeds = new Float32Array(count);
+  const driftVectors = new Float32Array(count * 3);
+  const driftRadii = new Float32Array(count);
+
+  for (let i = 0; i < count; i++) {
+    const index = i * 3;
+    const random = logoData.randoms[i] ?? Math.random();
+    const angle = Math.random() * Math.PI * 2;
+    const zAngle = Math.random() * Math.PI * 2;
+
+    sizes[i] = 3.2 + random * 2.4;
+    phases[i] = Math.random();
+    speeds[i] = 0.08 + Math.random() * 0.18;
+    driftRadii[i] = 0.006 + Math.random() * 0.026;
+
+    driftVectors[index] = Math.cos(angle);
+    driftVectors[index + 1] = Math.sin(angle);
+    driftVectors[index + 2] = Math.sin(zAngle) * 0.55;
+  }
+
+  return {
+    sizes,
+    phases,
+    speeds,
+    driftVectors,
+    driftRadii,
+  };
+}
+
+function createLogoParticleMaterial(particleTexture: THREE.Texture) {
+  return new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.NormalBlending,
+    toneMapped: false,
+    uniforms: {
+      opacity: { value: 0.88 },
+      pointTexture: { value: particleTexture },
+      time: { value: 0 },
+    },
+    vertexShader: `
+      uniform float time;
+
+      attribute vec3 particleColor;
+      attribute float particleSize;
+      attribute float particlePhase;
+      attribute float particleSpeed;
+      attribute vec3 driftVector;
+      attribute float driftRadius;
+
+      varying vec3 vColor;
+      varying float vAlpha;
+
+      float smoothCycle(float value) {
+        float grow = smoothstep(0.0, 0.36, value);
+        float shrink = 1.0 - smoothstep(0.78, 1.0, value);
+
+        return grow * shrink;
+      }
+
+      void main() {
+        float cycle = fract(time * particleSpeed + particlePhase);
+        float sizePulse = smoothCycle(cycle);
+        float driftPulse = sin(time * (0.36 + particleSpeed * 2.8) + particlePhase * 6.28318);
+        float crossPulse = cos(time * (0.24 + particleSpeed * 1.9) + particlePhase * 9.42477);
+
+        vec3 crossDrift = vec3(-driftVector.y, driftVector.x, driftVector.z * 0.45);
+        vec3 animatedPosition = position + driftVector * driftRadius * driftPulse + crossDrift * driftRadius * 0.55 * crossPulse;
+
+        vColor = particleColor;
+        vAlpha = 0.18 + sizePulse * 0.82;
+
+        vec4 modelViewPosition = modelViewMatrix * vec4(animatedPosition, 1.0);
+        gl_Position = projectionMatrix * modelViewPosition;
+        gl_PointSize = particleSize * sizePulse * (6.0 / max(0.1, -modelViewPosition.z));
+      }
+    `,
+    fragmentShader: `
+      uniform float opacity;
+      uniform sampler2D pointTexture;
+
+      varying vec3 vColor;
+      varying float vAlpha;
+
+      void main() {
+        vec4 sprite = texture2D(pointTexture, gl_PointCoord);
+        float alpha = sprite.a * vAlpha * opacity;
+
+        if (alpha < 0.01) {
+          discard;
+        }
+
+        gl_FragColor = vec4(vColor, alpha);
+      }
+    `,
+  });
 }
 
 function createSteamParticleData(logoData: LogoParticleData): SteamParticleData {
