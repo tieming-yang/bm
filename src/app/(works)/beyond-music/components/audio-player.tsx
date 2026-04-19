@@ -218,7 +218,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           </div>
         </div>
 
-        <div className={`flex w-fit mx-auto gap-x-1 sm:gap-x-10 items-center justify-center h-16`}>
+        <div className={`flex w-fit mx-auto gap-x-3 sm:gap-x-10 items-center justify-center h-16`}>
           {/* Left Control */}
           <div className="flex gap-x-3 sm:gap-x-5">
             {/* <Button
