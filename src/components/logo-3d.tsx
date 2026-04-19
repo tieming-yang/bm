@@ -65,6 +65,13 @@ function LogoParticles({
   const pointsRef = useRef<THREE.Points>(null);
 
   const groupRef = useRef<THREE.Group>(null);
+  const particleTexture = useMemo(createCircleParticleTexture, []);
+
+  useEffect(() => {
+    return () => {
+      particleTexture.dispose();
+    };
+  }, [particleTexture]);
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
@@ -103,9 +110,11 @@ function LogoParticles({
     <group ref={groupRef} rotation={[0.25, 0, -0.12]}>
       <points ref={pointsRef} geometry={geometry}>
         <pointsMaterial
+          map={particleTexture}
           size={0.04}
           vertexColors
           transparent
+          alphaTest={0.01}
           opacity={1}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
@@ -254,4 +263,31 @@ function createPoppedParticleColor(r: number, g: number, b: number, a: number) {
   color.b = Math.min(color.b, 1);
 
   return color;
+}
+
+function createCircleParticleTexture() {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  const center = size / 2;
+
+  canvas.width = size;
+  canvas.height = size;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Could not create particle texture context");
+  }
+
+  const gradient = ctx.createRadialGradient(center, center, 0, center, center, center);
+  gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+  gradient.addColorStop(0.55, "rgba(255, 255, 255, 1)");
+  gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+
+  return texture;
 }

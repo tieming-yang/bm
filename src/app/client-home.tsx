@@ -3,6 +3,7 @@
 import useTranslation from "@/hooks/use-translation";
 import { motion } from "framer-motion";
 import BibleBooks from "../components/bible-books";
+import Logo3D from "@/components/logo-3d";
 
 type Props = {};
 
@@ -10,6 +11,7 @@ export default function ClientHome({}: Props) {
   const { t } = useTranslation();
   return (
     <div className="relative z-20 pb-50 md:pb-0">
+      <Logo3D />
       <motion.section
         initial={{ opacity: 0, y: 20, scale: 0.7 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
