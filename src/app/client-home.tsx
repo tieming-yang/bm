@@ -14,7 +14,8 @@ export default function ClientHome({}: Props) {
       <Logo3D />
       <motion.section
         initial={{ opacity: 0, y: 20, scale: 0.7 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.35 }}
         transition={{ duration: 1.5 }}
         className="flex flex-col items-center justify-center w-full px-3 mx-auto text-transparent gap-y-5 h-svh"
       >
