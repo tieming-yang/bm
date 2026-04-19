@@ -228,9 +228,9 @@ function SteamParticleStreams({
       positions[index + 2] = baseZ + Math.cos(swirl * 0.82) * spread * streamData.swirlScales[index + 2];
 
       const fadeIn = smoothStep(0, 0.12, progress);
-      const fadeOut = 1 - smoothStep(0.94, 1, progress);
+      const fadeOut = 1 - smoothStep(0.78, 0.94, progress);
       const sizeGrowth = smoothStep(0.02, 0.28, progress);
-      const sizeFade = 1 - smoothStep(0.92, 1, progress);
+      const sizeFade = 1 - smoothStep(0.76, 0.92, progress);
       const dustFlicker = 0.86 + Math.sin(elapsed * streamData.flickerRates[i] + streamData.phases[i]) * 0.14;
       const intensity = (0.1 + Math.pow(progress, 1.15) * 1.05) * fadeIn * fadeOut * dustFlicker;
 
@@ -626,7 +626,7 @@ function createSteamParticleData(logoData: LogoParticleData): SteamParticleData 
       radii[particleIndex] = 0.24 + Math.random() * 0.72;
       speeds[particleIndex] = 0.045 + Math.random() * 0.035;
       flickerRates[particleIndex] = 0.6 + Math.random() * 1.2;
-      targetSizes[particleIndex] = 12 + Math.random() * 24;
+      targetSizes[particleIndex] = 1.1 + Math.random() * 1.9;
 
       swirlScales[index] = 0.55 + Math.random() * 0.65;
       swirlScales[index + 1] = 0.55 + Math.random() * 0.65;
