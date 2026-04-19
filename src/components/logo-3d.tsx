@@ -323,7 +323,7 @@ type SteamParticleData = {
 async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
   const image = await loadImage(imageUrl);
 
-  const sampleSize = 220;
+  const sampleSize = 190;
   const logoScale = 4.4;
   const step = 2;
 
@@ -466,7 +466,7 @@ function createLogoMotionData(logoData: LogoParticleData): LogoMotionData {
     const angle = Math.random() * Math.PI * 2;
     const zAngle = Math.random() * Math.PI * 2;
 
-    sizes[i] = 3.2 + random * 2.4;
+    sizes[i] = 9 + random * 3.6;
     phases[i] = Math.random();
     speeds[i] = 0.08 + Math.random() * 0.18;
     driftRadii[i] = 0.006 + Math.random() * 0.026;
@@ -626,7 +626,7 @@ function createSteamParticleData(logoData: LogoParticleData): SteamParticleData 
       radii[particleIndex] = 0.24 + Math.random() * 0.72;
       speeds[particleIndex] = 0.045 + Math.random() * 0.035;
       flickerRates[particleIndex] = 0.6 + Math.random() * 1.2;
-      targetSizes[particleIndex] = 1.1 + Math.random() * 1.9;
+      targetSizes[particleIndex] = 1.65 + Math.random() * 2.85;
 
       swirlScales[index] = 0.55 + Math.random() * 0.65;
       swirlScales[index + 1] = 0.55 + Math.random() * 0.65;
