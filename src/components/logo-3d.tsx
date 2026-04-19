@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -65,9 +65,15 @@ function LogoParticles({
   rotationTargetRef: React.RefObject<{ x: number; y: number; z: number }>;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  const viewport = useThree((state) => state.viewport);
   const particleTexture = useMemo(createCircleParticleTexture, []);
   const logoMotionData = useMemo(() => createLogoMotionData(data), [data]);
   const logoMaterial = useMemo(() => createLogoParticleMaterial(particleTexture), [particleTexture]);
+  const responsiveScale = useMemo(() => {
+    const fitScale = Math.min(viewport.width / 5.6, viewport.height / 5.6);
+
+    return THREE.MathUtils.clamp(fitScale, 0.42, 1);
+  }, [viewport.height, viewport.width]);
 
   useEffect(() => {
     return () => {
@@ -106,6 +112,9 @@ function LogoParticles({
       group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, rotationTargetRef.current.y, 0.16);
 
       group.rotation.z = THREE.MathUtils.lerp(group.rotation.z, rotationTargetRef.current.z, 0.16);
+
+      const scale = THREE.MathUtils.lerp(group.scale.x, responsiveScale, 0.14);
+      group.scale.setScalar(scale);
     }
 
     const pulse = Math.sin(elapsed * 1.2) * 0.5 + 0.5;
