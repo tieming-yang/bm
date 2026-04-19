@@ -105,7 +105,7 @@ function LogoParticles({
 
       const material = points.material as THREE.PointsMaterial;
       material.size = 0.036 + pulse * 0.018;
-      material.opacity = 0.84 + pulse * 0.16;
+      material.opacity = 0.82 + pulse * 0.14;
     }
   });
 
@@ -120,7 +120,7 @@ function LogoParticles({
           alphaTest={0.01}
           opacity={1}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={THREE.NormalBlending}
           toneMapped={false}
         />
       </points>
@@ -245,25 +245,30 @@ async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
 }
 
 function createPoppedParticleColor(r: number, g: number, b: number, a: number) {
-  const color = new THREE.Color(r / 255, g / 255, b / 255);
-  const hsl = { h: 0, s: 0, l: 0 };
-
-  color.getHSL(hsl);
-
+  const red = r / 255;
+  const green = g / 255;
+  const blue = b / 255;
   const alpha = a / 255;
-  const brightness = (r + g + b) / 3 / 255;
+  const gray = (red + green + blue) / 3;
+  const vibrance = 1.75;
+  const contrast = 1.08;
+  const exposure = 1.18 + alpha * 0.08;
 
-  if (hsl.s < 0.12) {
-    color.setHSL(0.56, 0.9, Math.min(0.28 + brightness * 1.45, 1));
-  } else {
-    color.setHSL(hsl.h, Math.min(hsl.s * 2.2, 1), Math.min(hsl.l * 1.7, 1));
-  }
+  const color = new THREE.Color(
+    gray + (red - gray) * vibrance,
+    gray + (green - gray) * vibrance,
+    gray + (blue - gray) * vibrance
+  );
 
-  color.multiplyScalar(1.15 + alpha * 0.45);
+  color.r = (color.r - 0.5) * contrast + 0.5;
+  color.g = (color.g - 0.5) * contrast + 0.5;
+  color.b = (color.b - 0.5) * contrast + 0.5;
 
-  color.r = Math.min(color.r, 1);
-  color.g = Math.min(color.g, 1);
-  color.b = Math.min(color.b, 1);
+  color.multiplyScalar(exposure);
+
+  color.r = THREE.MathUtils.clamp(color.r, 0, 0.96);
+  color.g = THREE.MathUtils.clamp(color.g, 0, 0.96);
+  color.b = THREE.MathUtils.clamp(color.b, 0, 0.96);
 
   return color;
 }
