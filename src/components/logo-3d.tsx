@@ -1,6 +1,5 @@
 "use client";
 
-import { Points } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -61,13 +60,11 @@ function LogoParticles({
   rotationTargetRef,
 }: {
   data: LogoParticleData;
-  rotationTargetRef: React.MutableRefObject<{ x: number; z: number }>;
+  rotationTargetRef: React.RefObject<{ x: number; z: number }>;
 }) {
   const pointsRef = useRef<THREE.Points>(null);
 
   const groupRef = useRef<THREE.Group>(null);
-  const draggingRef = useRef(false);
-  const lastPointerRef = useRef({ x: 0, y: 0 });
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
@@ -92,13 +89,13 @@ function LogoParticles({
 
     if (points) {
       const elapsed = clock.getElapsedTime();
-      const pulse = Math.sin(elapsed * 2.2) * 0.5 + 0.5;
+      const pulse = Math.sin(elapsed * 1.2) * 0.5 + 0.5;
 
       points.scale.setScalar(1 + pulse * 0.025);
 
       const material = points.material as THREE.PointsMaterial;
-      material.size = 0.022 + pulse * 0.01;
-      material.opacity = 0.62 + pulse * 0.22;
+      material.size = 0.036 + pulse * 0.018;
+      material.opacity = 0.84 + pulse * 0.16;
     }
   });
 
@@ -106,12 +103,13 @@ function LogoParticles({
     <group ref={groupRef} rotation={[0.25, 0, -0.12]}>
       <points ref={pointsRef} geometry={geometry}>
         <pointsMaterial
-          size={0.6}
+          size={0.04}
           vertexColors
           transparent
-          opacity={0.78}
+          opacity={1}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
+          toneMapped={false}
         />
       </points>
     </group>
@@ -123,7 +121,7 @@ function LogoParticleObject({
   rotationTargetRef,
 }: {
   imageUrl: string;
-  rotationTargetRef: React.RefObject<{ x: number; z: number }>;
+  rotationTargetRef: React.MutableRefObject<{ x: number; z: number }>;
 }) {
   const [particleData, setParticleData] = useState<LogoParticleData | null>(null);
   useEffect(() => {
@@ -161,7 +159,10 @@ type LogoParticleData = {
 async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
   const image = await loadImage(imageUrl);
 
-  const sampleSize = 220;
+  const sampleSize = 300;
+  const logoScale = 4.4;
+  const step = 2;
+
   const canvas = document.createElement("canvas");
   canvas.height = sampleSize;
   canvas.width = sampleSize;
@@ -179,9 +180,6 @@ async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
   const colors: number[] = [];
   const randoms: number[] = [];
 
-  const logoScale = 4.4;
-  const step = 2;
-
   for (let y = 0; y < sampleSize; y += step) {
     for (let x = 0; x < sampleSize; x += step) {
       const index = (y * sampleSize + x) * 4;
@@ -191,7 +189,6 @@ async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
       const b = pixels[index + 2];
       const a = pixels[index + 3];
 
-      const brightness = (r + g + b) / 3;
       // Prefer alpha if available. Fall back to brightness if the image has no transparency.
       const belongsToLogo = a > 40;
 
@@ -204,14 +201,14 @@ async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
       const py = normalizedY * logoScale;
 
       const depthCopies = 3;
+      const particleColor = createPoppedParticleColor(r, g, b, a);
 
       for (let i = 0; i < depthCopies; i++) {
         const pz = (Math.random() - 0.5) * 0.75;
 
         positions.push(px, py, pz);
 
-        const metallic = 0.55 + Math.random() * 0.45;
-        colors.push(metallic, metallic, metallic);
+        colors.push(particleColor.r, particleColor.g, particleColor.b);
 
         randoms.push(Math.random());
       }
@@ -221,18 +218,40 @@ async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
 
       positions.push(px, py, pz);
 
-      const metallic = 0.55 + Math.random() * 0.45;
-      colors.push(metallic, metallic, metallic);
+      colors.push(particleColor.r, particleColor.g, particleColor.b);
 
       randoms.push(Math.random());
     }
   }
 
-  console.debug("🔎", { positions, colors, randoms });
   return {
     positions: new Float32Array(positions),
     colors: new Float32Array(colors),
     randoms: new Float32Array(randoms),
     count: positions.length / 3,
   };
+}
+
+function createPoppedParticleColor(r: number, g: number, b: number, a: number) {
+  const color = new THREE.Color(r / 255, g / 255, b / 255);
+  const hsl = { h: 0, s: 0, l: 0 };
+
+  color.getHSL(hsl);
+
+  const alpha = a / 255;
+  const brightness = (r + g + b) / 3 / 255;
+
+  if (hsl.s < 0.12) {
+    color.setHSL(0.56, 0.9, Math.min(0.28 + brightness * 1.45, 1));
+  } else {
+    color.setHSL(hsl.h, Math.min(hsl.s * 2.2, 1), Math.min(hsl.l * 1.7, 1));
+  }
+
+  color.multiplyScalar(1.15 + alpha * 0.45);
+
+  color.r = Math.min(color.r, 1);
+  color.g = Math.min(color.g, 1);
+  color.b = Math.min(color.b, 1);
+
+  return color;
 }
