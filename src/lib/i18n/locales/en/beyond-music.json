@@ -21,6 +21,15 @@
       "message": "Stay tuned right here as we share progress glimpses. When Beyond Music drops, Glory Share will receive it first—ready for your home, church, or studio.",
       "stayTuned": "Keep me updated",
       "joinButton": "Join Glory Share"
+    },
+    "player": {
+      "shareUrl": "Share URL",
+      "shareCopied": {
+        "title": "Link copied"
+      },
+      "shareFailed": {
+        "title": "Could not copy link"
+      }
     }
   }
 }

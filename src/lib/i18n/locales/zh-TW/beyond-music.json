@@ -21,6 +21,15 @@
       "message": "請鎖定此頁，我們會陸續釋出創作進度。超越音樂上線時，榮耀份額成員將搶先收到。",
       "stayTuned": "我會持續關注",
       "joinButton": "加入榮耀份額"
+    },
+    "player": {
+      "shareUrl": "分享連結",
+      "shareCopied": {
+        "title": "連結已複製"
+      },
+      "shareFailed": {
+        "title": "無法複製連結"
+      }
     }
   }
 }

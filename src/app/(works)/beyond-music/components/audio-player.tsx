@@ -12,6 +12,7 @@ import {
   PlayIcon,
   Repeat1Icon,
   RepeatIcon,
+  Share2Icon,
   ShuffleIcon,
 } from "lucide-react";
 import Loading from "@/app/loading";
@@ -22,6 +23,7 @@ import { QueryKey } from "@/utils/query-keys";
 import { useRouter, useSearchParams } from "next/navigation";
 import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 import { sendGAEvent } from "@next/third-parties/google";
+import useTranslation from "@/hooks/use-translation";
 
 type AudioPlayerProps = {
   song: SongType;
@@ -39,8 +41,32 @@ function validateLoopMode(maybeLoopMode: string | null): maybeLoopMode is LoopMo
   return maybeLoopMode === "none" || maybeLoopMode === "single" || maybeLoopMode === "all";
 }
 
+async function copyTextToClipboard(text: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "fixed";
+  textArea.style.opacity = "0";
+
+  document.body.appendChild(textArea);
+  textArea.select();
+
+  const didCopy = document.execCommand("copy");
+  document.body.removeChild(textArea);
+
+  if (!didCopy) {
+    throw new Error("Failed to copy text");
+  }
+}
+
 export default function AudioPlayer(props: AudioPlayerProps) {
   const { song } = props;
+  const { t } = useTranslation("beyond-music");
   const router = useRouter();
   const searchParams = useSearchParams();
   const maybeSelectedLoopMode = searchParams.get("lm");
@@ -110,6 +136,15 @@ export default function AudioPlayer(props: AudioPlayerProps) {
       setTimeout(() => (isProgrammaticScroll.current = false), 800);
     }
   }, [song, activeLineIndex]);
+
+  const handleShareCurrentUrl = async () => {
+    try {
+      await copyTextToClipboard(window.location.href);
+      toast.success(t("beyondMusic.player.shareCopied.title"), {});
+    } catch {
+      toast.error(t("beyondMusic.player.shareFailed.title"), {});
+    }
+  };
 
   const playerSettings = `?lm=${loopMode}&s=${isShuffled}`;
 
@@ -187,6 +222,18 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
       <div id="controls" className="fixed inset-x-0 z-50 bottom-20">
         <div className="flex flex-col max-w-3xl px-3 mx-auto gap-y-3 sm:px-13">
+          <div className="flex justify-end">
+            <Button
+              className="gap-2 rounded-full border-white/20 bg-black/30 text-white backdrop-blur-md hover:bg-black/45"
+              onClick={handleShareCurrentUrl}
+              type="button"
+              variant="outline"
+              size="icon"
+            >
+              <Share2Icon className="size-4" />
+            </Button>
+          </div>
+
           <Input
             className={[
               "appearance-none bg-gray-300 rounded-full h-1 p-0",
