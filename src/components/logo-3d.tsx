@@ -8,7 +8,7 @@ import * as THREE from "three";
 const LOGO_URL = "/logos/logo-metalic.webp";
 export default function Logo3D() {
   return (
-    <div className="h-520 w-full bg-background">
+    <div className="h-svh w-full bg-background">
       <Canvas camera={{ position: [0, 0, 7], fov: 45 }}>
         <LogoParticleObject imageUrl={LOGO_URL} />
       </Canvas>
@@ -25,9 +25,9 @@ function LogoParticles({ data }: { data: LogoParticleData }) {
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute("positions", new THREE.BufferAttribute(data.positions, 3));
-    geo.setAttribute("colors", new THREE.BufferAttribute(data.colors, 3));
-    geo.setAttribute("randoms", new THREE.BufferAttribute(data.randoms, 1));
+    geo.setAttribute("position", new THREE.BufferAttribute(data.positions, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(data.colors, 3));
+    geo.setAttribute("random", new THREE.BufferAttribute(data.randoms, 1));
 
     geo.computeBoundingSphere();
 
@@ -82,7 +82,7 @@ function LogoParticles({ data }: { data: LogoParticleData }) {
     >
       <points ref={pointsRef} geometry={geometry}>
         <pointsMaterial
-          size={0.025}
+          size={0.6}
           vertexColors
           transparent
           opacity={0.78}
@@ -112,7 +112,7 @@ function LogoParticleObject({ imageUrl }: { imageUrl: string }) {
 }
 
 function loadImage(imageUrl: string) {
-  return new Promise<HTMLElement>((resolve, reject) => {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
     image.crossOrigin = "anonymous";
     image.onload = () => resolve(image);
@@ -198,6 +198,7 @@ async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
     }
   }
 
+  console.debug("🔎", { positions, colors, randoms });
   return {
     positions: new Float32Array(positions),
     colors: new Float32Array(colors),
