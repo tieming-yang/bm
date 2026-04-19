@@ -7,8 +7,9 @@ import * as THREE from "three";
 const LOGO_URL = "/logos/logo-metalic.webp";
 export default function Logo3D() {
   const rotationTargetRef = useRef({
-    x: 0.25,
-    z: -0.12,
+    x: 0,
+    y: 0,
+    z: 0,
   });
 
   const draggingRef = useRef(false);
@@ -16,7 +17,7 @@ export default function Logo3D() {
 
   return (
     <div
-      className="h-svh w-full bg-background"
+      className="h-svh w-full touch-none bg-background"
       onPointerDown={(event) => {
         draggingRef.current = true;
         lastPointerRef.current = {
@@ -39,7 +40,7 @@ export default function Logo3D() {
         const dx = event.clientX - lastPointerRef.current.x;
         const dy = event.clientY - lastPointerRef.current.y;
 
-        rotationTargetRef.current.z += dx * 0.006;
+        rotationTargetRef.current.y += dx * 0.006;
         rotationTargetRef.current.x += dy * 0.006;
 
         lastPointerRef.current = {
@@ -60,7 +61,7 @@ function LogoParticles({
   rotationTargetRef,
 }: {
   data: LogoParticleData;
-  rotationTargetRef: React.RefObject<{ x: number; z: number }>;
+  rotationTargetRef: React.RefObject<{ x: number; y: number; z: number }>;
 }) {
   const pointsRef = useRef<THREE.Points>(null);
 
@@ -90,6 +91,8 @@ function LogoParticles({
 
     if (group) {
       group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, rotationTargetRef.current.x, 0.16);
+
+      group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, rotationTargetRef.current.y, 0.16);
 
       group.rotation.z = THREE.MathUtils.lerp(group.rotation.z, rotationTargetRef.current.z, 0.16);
     }
@@ -130,7 +133,7 @@ function LogoParticleObject({
   rotationTargetRef,
 }: {
   imageUrl: string;
-  rotationTargetRef: React.MutableRefObject<{ x: number; z: number }>;
+  rotationTargetRef: React.MutableRefObject<{ x: number; y: number; z: number }>;
 }) {
   const [particleData, setParticleData] = useState<LogoParticleData | null>(null);
   useEffect(() => {
