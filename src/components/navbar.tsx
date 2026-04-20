@@ -80,7 +80,7 @@ export default function Navbar() {
     <>
       <nav className="fixed bottom-0 w-full px-3 font-serif z-120 h-fit 2xl:px-0">
         <div className="container flex items-center gap-x-5 justify-end-safe h-16 px-4 my-2 lg:border lg:rounded-full lg:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] lg:backdrop-blur-xl lg:bg-primary-gradient-10 lg:border-black/10">
-          <div className="items-center hidden lg:flex gap-6">
+          <div className="items-center hidden gap-6 lg:flex">
             {navRoutes.map((route) => (
               <Link
                 key={route.href}
@@ -174,7 +174,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-110 font-serif lg:hidden bg-primary-gradient-50"
+            className="fixed inset-0 font-serif z-110 lg:hidden bg-primary-gradient-50"
           >
             <div className="flex flex-col h-full px-6 pt-20 pb-10">
               <div className="flex flex-col items-center justify-center gap-5 sm:gap-9">
@@ -207,7 +207,7 @@ export default function Navbar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.5 }}
-                className="flex flex-col mt-auto gap-4"
+                className="flex flex-col gap-4 mt-auto"
               >
                 {isMounted && (
                   <div className="flex justify-center">
