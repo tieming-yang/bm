@@ -79,7 +79,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="fixed bottom-0 w-full px-3 font-serif z-120 h-fit 2xl:px-0">
-        <div className="container flex items-center justify-between h-16 px-4 my-2 lg:border lg:rounded-full lg:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] lg:backdrop-blur-xl lg:bg-primary-gradient-10 lg:border-black/10">
+        <div className="container flex items-center gap-x-5 justify-end-safe h-16 px-4 my-2 lg:border lg:rounded-full lg:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] lg:backdrop-blur-xl lg:bg-primary-gradient-10 lg:border-black/10">
           <div className="items-center hidden lg:flex gap-6">
             {navRoutes.map((route) => (
               <Link
@@ -103,13 +103,20 @@ export default function Navbar() {
           <section className="z-50 flex gap-2">
             {isMounted && (
               <div className="flex gap-x-5">
+                {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
+                  <Link href="/sandbox">
+                    <Button variant={"outline"} size={"default"}>
+                      <Axe />
+                    </Button>
+                  </Link>
+                )}
                 <div className="hidden lg:block">
                   <LanguageSwitcher />
                 </div>
                 {authUser ? (
                   <Link
                     href={`/profile/${authUser.uid}`}
-                    className="text-sm font-medium text-primary-foreground"
+                    className="font-medium text-primary-foreground"
                   >
                     <Button size="icon">
                       <User />
@@ -123,13 +130,6 @@ export default function Navbar() {
                   </Link>
                 )}
 
-                {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
-                  <Link href="/sandbox">
-                    <Button variant={"outline"} size={"default"}>
-                      <Axe />
-                    </Button>
-                  </Link>
-                )}
                 {/* <Link href={"/cart"}>
                   <Button size={"icon"} variant={"secondary"} className="relative">
                     {cartItems > 0 && (
