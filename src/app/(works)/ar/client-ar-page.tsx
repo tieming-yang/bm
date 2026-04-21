@@ -27,7 +27,7 @@ export default function ClientARPage() {
   }
 
   return (
-    <main className="container relative z-50 px-4 py-16 mx-auto space-y-16">
+    <main className="container relative z-50 px-4 py-16 mx-auto space-y-16 min-h-svh">
       <Loading show={isARDataLoading} />
       <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
         Bible AR

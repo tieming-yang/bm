@@ -3,10 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Bounds, Center, useGLTF } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
-import type { Group } from "three";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -263,8 +262,54 @@ export default function ARViewer({
 }
 
 function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
+  const dragRef = useRef({
+    isDragging: false,
+    lastX: 0,
+    lastY: 0,
+  });
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragRef.current = {
+      isDragging: true,
+      lastX: event.clientX,
+      lastY: event.clientY,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current.isDragging) return;
+
+    const deltaX = event.clientX - dragRef.current.lastX;
+    const deltaY = event.clientY - dragRef.current.lastY;
+
+    dragRef.current.lastX = event.clientX;
+    dragRef.current.lastY = event.clientY;
+
+    setRotation((current) => ({
+      x: clamp(current.x + deltaY * 0.01, -0.8, 0.8),
+      y: current.y + deltaX * 0.01,
+    }));
+  };
+
+  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragRef.current.isDragging = false;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
   return (
-    <div className="pointer-events-none absolute inset-0 z-10">
+    <div
+      className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
+      style={{ touchAction: "none" }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
+    >
       <Canvas
         camera={{ position: [0, 0, 3.2], fov: 35 }}
         gl={{ alpha: true, antialias: true }}
@@ -277,7 +322,7 @@ function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
         <React.Suspense fallback={null}>
           <Bounds fit clip observe margin={1.15}>
             <Center>
-              <RotatingGLB modelURL={modelURL} />
+              <RotatingGLB modelURL={modelURL} rotation={rotation} />
             </Center>
           </Bounds>
         </React.Suspense>
@@ -286,24 +331,28 @@ function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
   );
 }
 
-function RotatingGLB({ modelURL }: { modelURL: string }) {
-  const groupRef = useRef<Group | null>(null);
+function RotatingGLB({
+  modelURL,
+  rotation,
+}: {
+  modelURL: string;
+  rotation: { x: number; y: number };
+}) {
   const { scene } = useGLTF(modelURL);
 
   useEffect(() => {
     console.debug("R3F AR model loaded", { modelURL });
   }, [modelURL]);
 
-  useFrame((_, delta) => {
-    if (!groupRef.current) return;
-    groupRef.current.rotation.y += delta * 0.5;
-  });
-
   return (
-    <group ref={groupRef}>
+    <group rotation={[rotation.x, rotation.y, 0]}>
       <primitive object={scene} />
     </group>
   );
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function revealMindArCamera(scene: HTMLElement) {
