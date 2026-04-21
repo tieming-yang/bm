@@ -26,7 +26,7 @@ const routeMap: Record<string, string> = {
   "beyond-art": "nav.beyond-art",
 };
 
-const UUID_LENGTH = 28;
+const UUID_LENGTH = 10;
 
 export function Breadcrumb() {
   const router = useRouter();
@@ -46,7 +46,7 @@ export function Breadcrumb() {
     router.push(path);
   };
 
-  const translateSegment = (segment: string | Book): string => {
+  const translateSegment = (segment: string | Book): string | null => {
     if (Books.order.includes(segment as Book)) {
       return tBooks(segment);
     }
