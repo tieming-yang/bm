@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Axe, Moon, ShoppingCartIcon, Sun, User } from "lucide-react";
+import { Axe, ChevronLeftIcon, Moon, ShoppingCartIcon, Sun, User } from "lucide-react";
 
 import { useTheme } from "next-themes";
 import LanguageSwitcher from "./language-switcher";
@@ -42,6 +42,7 @@ export const navRoutes = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
@@ -101,7 +102,12 @@ export default function Navbar() {
             ))}
           </div>
 
-          <section className="z-50 flex gap-2">
+          <section className="z-50 flex gap-2 justify-between w-full">
+            {pathname !== "/" && (
+              <Button variant={"outline"} size="icon" onClick={() => router.back()}>
+                <ChevronLeftIcon />
+              </Button>
+            )}
             {isMounted && (
               <div className="flex gap-x-5">
                 {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
