@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import React, { useEffect, useRef, useState } from "react";
+import Loading from "@/app/loading";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -68,6 +70,42 @@ export default function ARViewer({
   }, []);
 
   useEffect(() => {
+    const startAR = async () => {
+      if (!window.isSecureContext) {
+        setStatus(`Camera requires HTTPS or localhost. Current origin: ${window.location.origin}`);
+        toast.error(status);
+        return;
+      }
+
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setStatus(
+          "This browser does not expose camera access. Use Safari on iOS or Chrome on Android."
+        );
+        toast.error(status);
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } },
+          audio: false,
+        });
+
+        stream.getTracks().forEach((track) => track.stop());
+
+        setStatus("Starting camera...");
+        removeMindArUiOverlays();
+        setStarted(true);
+      } catch (error) {
+        console.error("Camera preflight failed", error);
+        setStatus("Camera not available. Check device and browser permission.");
+        toast.error(status);
+      }
+    };
+    startAR();
+  }, []);
+
+  useEffect(() => {
     if (!started || !sceneRef.current || !targetRef.current) return;
 
     const scene = sceneRef.current;
@@ -116,33 +154,15 @@ export default function ARViewer({
     setMindArScanningOverlay(scanUiEnabled);
   }, [started, scanUiEnabled]);
 
-  const startAr = () => {
-    if (!window.isSecureContext) {
-      setStatus(`Camera requires HTTPS or localhost. Current origin: ${window.location.origin}`);
-      return;
-    }
-
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setStatus(
-        "This browser does not expose camera access. Use Safari on iOS or Chrome on Android."
-      );
-      return;
-    }
-
-    setStatus("Starting camera...");
-    removeMindArUiOverlays();
-    setStarted(true);
-  };
+  const isLoading = !librariesReady;
 
   return (
     <main className="fixed inset-0 z-50 overflow-hidden bg-black text-white">
+      <Loading show={isLoading} />
       <div className="relative isolate h-dvh w-full overflow-hidden bg-transparent">
         {!started ? (
           <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
             <p className="max-w-sm text-sm text-white/80">{status}</p>
-            <Button type="button" disabled={!librariesReady} onClick={startAr}>
-              Start AR
-            </Button>
           </div>
         ) : (
           React.createElement(
@@ -159,7 +179,7 @@ export default function ARViewer({
               "vr-mode-ui": "enabled: false",
               "device-orientation-permission-ui": "enabled: false",
               "loading-screen": "enabled: true",
-              renderer: "colorManagement: true; physicallyCorrectLights: true; alpha: true",
+              renderer: "colorManagement: true; alpha: true",
               embedded: "true",
               style: {
                 position: "absolute",
@@ -244,11 +264,6 @@ export default function ARViewer({
             </Button>
           </div>
         ) : null}
-
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 bg-black/70 px-4 py-3 backdrop-blur">
-          <h1 className="text-base font-semibold text-white">AR Sandbox</h1>
-          <p className="mt-1 font-mono text-xs text-white/75">{status}</p>
-        </div>
       </div>
     </main>
   );

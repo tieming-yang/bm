@@ -1,8 +1,8 @@
 ## AR
 ### User visit flow
-Scan QR code -> /vr/[type]/[title]
+Scan QR code -> /vr/[id]
 
-*e.g. /vr/characters/adam*
+*e.g. /vr/adam*
 
 ### R2 Path
 /ar-assets/characters/[character]/[version]

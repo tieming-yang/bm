@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import ARViewer from "../../components/ar-viewer";
+import ARViewer from "../components/ar-viewer";
 
 export default function ClientARViewPage() {
   const searchParams = useSearchParams();

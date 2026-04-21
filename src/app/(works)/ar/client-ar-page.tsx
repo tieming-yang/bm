@@ -39,9 +39,7 @@ export default function ClientARPage() {
 
           return (
             <li key={data.title}>
-              <Link
-                href={`/ar/${data.contentType}/${data.title}?target=${targetURL}&model=${modelURL}`}
-              >
+              <Link href={`/ar/${data.id}?target=${targetURL}&model=${modelURL}`}>
                 <p>{data.title}</p>
               </Link>
             </li>
