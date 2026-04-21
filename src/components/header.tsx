@@ -4,13 +4,30 @@ import Logo from "./logo";
 import { Breadcrumb } from "./breadcrumb";
 import { usePathname } from "next/navigation";
 
-const EXCLUDE_ROUTE_PREFIXES = ["/sandbox"];
+type HeaderExcludeRule = {
+  base: string;
+  includeBase?: boolean;
+  includeChildren?: boolean;
+};
+
+const HEADER_EXCLUDE_RULES: HeaderExcludeRule[] = [
+  {
+    base: "/sandbox",
+    includeBase: true,
+    includeChildren: true,
+  },
+  {
+    base: "/ar",
+    includeBase: false,
+    includeChildren: true,
+  },
+];
 
 export default function Header() {
   const currentPathname = usePathname();
 
-  const isExcludedRoute = EXCLUDE_ROUTE_PREFIXES.some(
-    (route) => currentPathname === route || currentPathname.startsWith(`${route}/`)
+  const isExcludedRoute = HEADER_EXCLUDE_RULES.some((rule) =>
+    matchesExcludeRule(currentPathname, rule)
   );
 
   if (isExcludedRoute) return null;
@@ -23,4 +40,24 @@ export default function Header() {
       <Breadcrumb />
     </header>
   );
+}
+
+function matchesExcludeRule(pathname: string, rule: HeaderExcludeRule) {
+  const normalizedBase = normalizePathname(rule.base);
+  const normalizedPathname = normalizePathname(pathname);
+
+  if (rule.includeBase && normalizedPathname === normalizedBase) {
+    return true;
+  }
+
+  if (rule.includeChildren && normalizedPathname.startsWith(`${normalizedBase}/`)) {
+    return true;
+  }
+
+  return false;
+}
+
+function normalizePathname(pathname: string) {
+  if (pathname === "/") return pathname;
+  return pathname.replace(/\/+$/, "");
 }
