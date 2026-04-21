@@ -6,6 +6,7 @@ import { Bounds, Center, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
+import Config from "@/models/config";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -14,6 +15,11 @@ type MindArSceneElement = HTMLElement & {
     };
   };
 };
+
+function logger(value: unknown) {
+  if (Config.isProd) return;
+  return console.debug("🔎", value);
+}
 
 /**
  * @description
@@ -44,7 +50,7 @@ export default function ARViewer({
   const [scanUiEnabled, setScanUiEnabled] = useState(true);
   const scanUiEnabledRef = useRef(true);
   const [status, setStatus] = useState("Loading AR libraries...");
-  console.debug("🔎", { status });
+  logger({ status });
 
   const [targetUnlocked, setTargetUnlocked] = useState(false);
   const targetUnlockedRef = useRef(false);
@@ -111,15 +117,6 @@ export default function ARViewer({
     startAR();
   }, []);
 
-  const unlockTarget = React.useCallback(() => {
-    setTargetUnlocked(true);
-    targetUnlockedRef.current = true;
-    setScanUiEnabled(false);
-    scanUiEnabledRef.current = false;
-    setMindArScanningOverlay(false);
-    setStatus("Target unlocked. You can move away from the target image.");
-  }, []);
-
   useEffect(() => {
     if (!started || !sceneRef.current || !targetRef.current) return;
 
@@ -127,12 +124,18 @@ export default function ARViewer({
     const target = targetRef.current;
 
     const handleReady = () => {
-      revealMindArCamera(scene);
       setMindArScanningOverlay(scanUiEnabledRef.current);
       setStatus("Point the camera at the target image.");
     };
     const handleError = () => setStatus("Camera failed to start. Check browser permission.");
-    const handleFound = () => unlockTarget();
+    const handleFound = () => {
+      setTargetUnlocked(true);
+      targetUnlockedRef.current = true;
+      setScanUiEnabled(false);
+      scanUiEnabledRef.current = false;
+      setMindArScanningOverlay(false);
+      setStatus("Target unlocked. You can move away from the target image.");
+    };
     const handleLost = () => {
       if (targetUnlockedRef.current) {
         setStatus("Model unlocked.");
@@ -146,22 +149,17 @@ export default function ARViewer({
     scene.addEventListener("arError", handleError);
     target.addEventListener("targetFound", handleFound);
     target.addEventListener("targetLost", handleLost);
-
-    const revealTimer = window.setTimeout(() => {
-      revealMindArCamera(scene);
-      setMindArScanningOverlay(scanUiEnabledRef.current);
-    }, 500);
+    setMindArScanningOverlay(scanUiEnabledRef.current);
 
     return () => {
       scene.removeEventListener("arReady", handleReady);
       scene.removeEventListener("arError", handleError);
       target.removeEventListener("targetFound", handleFound);
       target.removeEventListener("targetLost", handleLost);
-      window.clearTimeout(revealTimer);
 
       try {
         scene.systems?.["mindar-image-system"]?.stop?.();
-        console.debug("🔎", "mindar-image-system stopped");
+        setStatus("mindar-image-system stopped");
       } catch (error) {
         console.warn("MindAR cleanup failed", error);
       }
@@ -169,7 +167,7 @@ export default function ARViewer({
       removeMindArUiOverlays();
       stopCameraVideos(scene.parentElement);
     };
-  }, [started, unlockTarget]);
+  }, [started]);
 
   useEffect(() => {
     scanUiEnabledRef.current = scanUiEnabled;
@@ -177,12 +175,12 @@ export default function ARViewer({
     setMindArScanningOverlay(scanUiEnabled);
   }, [started, scanUiEnabled]);
 
-  const isLoading = !librariesReady;
+  const isLoading = !librariesReady || !started;
 
   return (
     <main className="fixed inset-0 z-50 overflow-hidden bg-black text-white">
       <Loading show={isLoading} />
-      <div className="relative isolate h-dvh w-full overflow-hidden bg-transparent">
+      <div className="relative ar-camera-stage isolate h-dvh w-full overflow-hidden bg-transparent">
         {!started ? (
           <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
             <p className="max-w-sm text-sm text-white/80">{status}</p>
@@ -203,7 +201,7 @@ export default function ARViewer({
               "device-orientation-permission-ui": "enabled: false",
               "loading-screen": "enabled: true",
               renderer: "colorManagement: true; alpha: true",
-              embedded: "true",
+              // embedded: "true",
               style: {
                 position: "absolute",
                 inset: 0,
@@ -226,6 +224,31 @@ export default function ARViewer({
 
         {targetUnlocked ? <UnlockedModelOverlay modelURL={modelURL} /> : null}
       </div>
+      <style jsx global>{`
+        .ar-camera-stage video {
+          position: absolute !important;
+          inset: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          object-position: center center !important;
+          z-index: 0 !important;
+          pointer-events: none !important;
+        }
+
+        .ar-camera-stage a-scene,
+        .ar-camera-stage a-scene canvas {
+          position: absolute !important;
+          inset: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          background: transparent !important;
+        }
+
+        .ar-camera-stage a-scene canvas {
+          z-index: 1 !important;
+        }
+      `}</style>
     </main>
   );
 }
@@ -322,34 +345,6 @@ function RotatingGLB({
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
-}
-
-function revealMindArCamera(scene: HTMLElement) {
-  const container = scene.parentElement;
-  const video = container?.querySelector<HTMLVideoElement>("video");
-  const canvas = scene.querySelector<HTMLCanvasElement>("canvas");
-
-  if (video) {
-    video.style.setProperty("position", "absolute", "important");
-    video.style.setProperty("top", "50%", "important");
-    video.style.setProperty("left", "50%", "important");
-    video.style.setProperty("width", "100%", "important");
-    video.style.setProperty("height", "100%", "important");
-    video.style.setProperty("object-fit", "cover", "important");
-    video.style.setProperty("object-position", "center center", "important");
-    video.style.setProperty("transform", "translate(-50%, -50%)", "important");
-    video.style.setProperty("z-index", "0", "important");
-    video.style.setProperty("pointer-events", "none", "important");
-  }
-
-  if (canvas) {
-    canvas.style.setProperty("position", "absolute", "important");
-    canvas.style.setProperty("inset", "0", "important");
-    canvas.style.setProperty("width", "100%", "important");
-    canvas.style.setProperty("height", "100%", "important");
-    canvas.style.setProperty("background", "transparent", "important");
-    canvas.style.setProperty("z-index", "1", "important");
-  }
 }
 
 function setMindArScanningOverlay(enabled: boolean) {
