@@ -37,5 +37,10 @@ service cloud.firestore {
       allow get: if isAdmin();
       allow write: if isAdmin();
     }
+
+    match /ar/{arId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }
