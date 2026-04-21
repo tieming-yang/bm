@@ -104,7 +104,12 @@ export default function Navbar() {
 
           <section className="z-50 flex gap-2 justify-between w-full">
             {pathname !== "/" && (
-              <Button variant={"outline"} size="icon" onClick={() => router.back()}>
+              <Button
+                className="md:hidden"
+                variant={"outline"}
+                size="icon"
+                onClick={() => router.back()}
+              >
                 <ChevronLeftIcon />
               </Button>
             )}
