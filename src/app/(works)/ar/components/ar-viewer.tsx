@@ -120,16 +120,6 @@ export default function ARViewer({
     setStatus("Target unlocked. You can move away from the target image.");
   }, []);
 
-  const resetScan = () => {
-    setTargetUnlocked(false);
-    targetUnlockedRef.current = false;
-
-    setScanUiEnabled(true);
-    scanUiEnabledRef.current = true;
-    setMindArScanningOverlay(true);
-    setStatus("Point the camera at the target image.");
-  };
-
   useEffect(() => {
     if (!started || !sceneRef.current || !targetRef.current) return;
 
@@ -235,27 +225,6 @@ export default function ARViewer({
         )}
 
         {targetUnlocked ? <UnlockedModelOverlay modelURL={modelURL} /> : null}
-
-        <div className="absolute bottom-17 right-5 z-20">
-          <div className="flex gap-x-5">
-            {started ? (
-              <div className="">
-                <Button
-                  type="button"
-                  aria-pressed={!scanUiEnabled}
-                  onClick={() => setScanUiEnabled((enabled) => !enabled)}
-                >
-                  {scanUiEnabled ? "Hide Scan UI" : "Show Scan UI"}
-                </Button>
-              </div>
-            ) : null}
-            {targetUnlocked ? (
-              <Button type="button" onClick={resetScan}>
-                Scan Again
-              </Button>
-            ) : null}
-          </div>
-        </div>
       </div>
     </main>
   );
