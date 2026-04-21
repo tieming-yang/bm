@@ -103,5 +103,14 @@
     "postcss": "^8.5.5",
     "tailwindcss": "^4.1.16",
     "typescript": "^5.8.3"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "printWidth": 100,
+    "bracketSpacing": true,
+    "arrowParens": "always"
   }
 }
