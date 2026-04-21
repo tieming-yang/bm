@@ -2,7 +2,7 @@
   "rules": [
     {
       "allowed": {
-        "origins": ["http://https://beyond-media.art/", "https://yourdomain.com"],
+        "origins": ["https://beyond-media.art", "http://localhost:3000", "https://10.0.0.239:3000"],
         "methods": ["GET", "HEAD"],
         "headers": ["*"]
       },

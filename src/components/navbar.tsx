@@ -22,6 +22,7 @@ export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
   { href: "/about", label: (t: TFunction<string, undefined>) => t("nav.about") },
   { href: "/glory-share", label: (t: TFunction<string, undefined>) => t("nav.gloryShare") },
+  { href: "/ar", label: (t: TFunction<string, undefined>) => t("nav.ar") },
   { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
   { href: "/bible-gallery", label: (t: TFunction<string, undefined>) => t("nav.bibleGallery") },
   {
@@ -177,7 +178,7 @@ export default function Navbar() {
             className="fixed inset-0 font-serif z-110 lg:hidden bg-primary-gradient-50"
           >
             <div className="flex flex-col h-full px-6 pt-20 pb-10">
-              <div className="flex flex-col items-center justify-center gap-5 sm:gap-9">
+              <div className="flex flex-col items-center justify-center gap-5 sm:gap-y-5">
                 {navRoutes.map((route, index) => (
                   <motion.div
                     key={route.href}

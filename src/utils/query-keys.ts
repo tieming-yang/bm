@@ -4,6 +4,7 @@ export const QueryKey = {
   songs: ["songs"] as const,
   products: ["products"] as const,
   coupon: (uid: string) => ["coupon", uid] as const,
+  arData: ["arData"] as const,
   // auth/session & profile
   signUp: ["auth", "signup"] as const,
   authUser: ["auth", "user"] as const,

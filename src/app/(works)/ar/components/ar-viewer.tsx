@@ -11,70 +11,6 @@ type MindArSceneElement = HTMLElement & {
   };
 };
 
-const targetSrc = "/characters/ar/adam/adam-targets.mind";
-const logoModelSrc = "/3d/adam.glb";
-
-function revealMindArCamera(scene: HTMLElement) {
-  const container = scene.parentElement;
-  const video = container?.querySelector<HTMLVideoElement>("video");
-  const canvas = scene.querySelector<HTMLCanvasElement>("canvas");
-
-  if (video) {
-    video.style.setProperty("position", "absolute", "important");
-    video.style.setProperty("top", "50%", "important");
-    video.style.setProperty("left", "50%", "important");
-    video.style.setProperty("width", "100%", "important");
-    video.style.setProperty("height", "100%", "important");
-    video.style.setProperty("object-fit", "cover", "important");
-    video.style.setProperty("object-position", "center center", "important");
-    video.style.setProperty("transform", "translate(-50%, -50%)", "important");
-    video.style.setProperty("z-index", "0", "important");
-    video.style.setProperty("pointer-events", "none", "important");
-  }
-
-  if (canvas) {
-    canvas.style.setProperty("position", "absolute", "important");
-    canvas.style.setProperty("inset", "0", "important");
-    canvas.style.setProperty("width", "100%", "important");
-    canvas.style.setProperty("height", "100%", "important");
-    canvas.style.setProperty("background", "transparent", "important");
-    canvas.style.setProperty("z-index", "1", "important");
-  }
-}
-
-function setMindArScanningOverlay(enabled: boolean) {
-  document.querySelectorAll<HTMLElement>(".mindar-ui-scanning").forEach((overlay) => {
-    overlay.style.setProperty("position", "fixed", "important");
-    overlay.style.setProperty("inset", "0", "important");
-    overlay.style.setProperty("z-index", "60", "important");
-    overlay.style.setProperty("pointer-events", "none", "important");
-
-    if (enabled) {
-      overlay.style.removeProperty("display");
-    } else {
-      overlay.style.setProperty("display", "none", "important");
-    }
-  });
-}
-
-function removeMindArUiOverlays() {
-  document
-    .querySelectorAll<HTMLElement>(".mindar-ui-overlay")
-    .forEach((overlay) => overlay.remove());
-}
-
-function stopCameraVideos(container?: HTMLElement | null) {
-  container?.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
-    const stream = video.srcObject;
-
-    if (stream instanceof MediaStream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
-
-    video.remove();
-  });
-}
-
 /**
  * @description
 camera <video> z-0
@@ -90,7 +26,13 @@ React controls z-50
 MindAR scan UI z-60
   scan-frame overlay
  */
-export default function ARViewer() {
+export default function ARViewer({
+  targetURL = "/ar/targets/adam.mind",
+  modelURL = "/ar/models/adam.glb",
+}: {
+  targetURL?: string;
+  modelURL?: string;
+}) {
   const sceneRef = useRef<MindArSceneElement | null>(null);
   const targetRef = useRef<HTMLElement | null>(null);
   const [librariesReady, setLibrariesReady] = useState(false);
@@ -208,7 +150,7 @@ export default function ARViewer() {
             {
               ref: sceneRef,
               "mindar-image": [
-                `imageTargetSrc: ${targetSrc}`,
+                `imageTargetSrc: ${targetURL}`,
                 "maxTrack: 1",
                 "warmupTolerance: 3",
                 "missTolerance: 5",
@@ -236,8 +178,8 @@ export default function ARViewer() {
               "a-assets",
               null,
               React.createElement("a-asset-item", {
-                id: "logo-3d-model",
-                src: logoModelSrc,
+                id: "3d-model",
+                src: modelURL,
               })
             ),
             React.createElement(
@@ -281,7 +223,7 @@ export default function ARViewer() {
                 })
               ),
               React.createElement("a-gltf-model", {
-                src: "#logo-3d-model",
+                src: "#3d-model",
                 position: "0 0 0.16",
                 rotation: "0 0 0",
                 scale: "1 1 1",
@@ -310,4 +252,65 @@ export default function ARViewer() {
       </div>
     </main>
   );
+}
+
+function revealMindArCamera(scene: HTMLElement) {
+  const container = scene.parentElement;
+  const video = container?.querySelector<HTMLVideoElement>("video");
+  const canvas = scene.querySelector<HTMLCanvasElement>("canvas");
+
+  if (video) {
+    video.style.setProperty("position", "absolute", "important");
+    video.style.setProperty("top", "50%", "important");
+    video.style.setProperty("left", "50%", "important");
+    video.style.setProperty("width", "100%", "important");
+    video.style.setProperty("height", "100%", "important");
+    video.style.setProperty("object-fit", "cover", "important");
+    video.style.setProperty("object-position", "center center", "important");
+    video.style.setProperty("transform", "translate(-50%, -50%)", "important");
+    video.style.setProperty("z-index", "0", "important");
+    video.style.setProperty("pointer-events", "none", "important");
+  }
+
+  if (canvas) {
+    canvas.style.setProperty("position", "absolute", "important");
+    canvas.style.setProperty("inset", "0", "important");
+    canvas.style.setProperty("width", "100%", "important");
+    canvas.style.setProperty("height", "100%", "important");
+    canvas.style.setProperty("background", "transparent", "important");
+    canvas.style.setProperty("z-index", "1", "important");
+  }
+}
+
+function setMindArScanningOverlay(enabled: boolean) {
+  document.querySelectorAll<HTMLElement>(".mindar-ui-scanning").forEach((overlay) => {
+    overlay.style.setProperty("position", "fixed", "important");
+    overlay.style.setProperty("inset", "0", "important");
+    overlay.style.setProperty("z-index", "60", "important");
+    overlay.style.setProperty("pointer-events", "none", "important");
+
+    if (enabled) {
+      overlay.style.removeProperty("display");
+    } else {
+      overlay.style.setProperty("display", "none", "important");
+    }
+  });
+}
+
+function removeMindArUiOverlays() {
+  document
+    .querySelectorAll<HTMLElement>(".mindar-ui-overlay")
+    .forEach((overlay) => overlay.remove());
+}
+
+function stopCameraVideos(container?: HTMLElement | null) {
+  container?.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+    const stream = video.srcObject;
+
+    if (stream instanceof MediaStream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+
+    video.remove();
+  });
 }
