@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
 import Config from "@/models/config";
 import logger from "@/utils/logger";
+import { Button } from "@/components/ui/button";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -50,6 +51,8 @@ export default function ARViewer({
   const [targetUnlocked, setTargetUnlocked] = useState(false);
   const targetUnlockedRef = useRef(false);
 
+  const [cameraError, setCameraError] = useState(false);
+
   useEffect(() => {
     let mounted = true;
 
@@ -76,41 +79,45 @@ export default function ARViewer({
     };
   }, []);
 
-  useEffect(() => {
-    const startAR = async () => {
-      if (!window.isSecureContext) {
-        setStatus(`Camera requires HTTPS or localhost. Current origin: ${window.location.origin}`);
-        toast.error(status);
-        return;
-      }
+  const startAR = React.useCallback(async () => {
+    setCameraError(false);
 
-      if (!navigator.mediaDevices?.getUserMedia) {
-        setStatus(
-          "This browser does not expose camera access. Use Safari on iOS or Chrome on Android."
-        );
-        toast.error(status);
-        return;
-      }
+    if (!window.isSecureContext) {
+      setStatus(`Camera requires HTTPS or localhost. Current origin: ${window.location.origin}`);
+      setCameraError(true);
+      return;
+    }
 
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: "environment" } },
-          audio: false,
-        });
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setStatus(
+        "This browser does not expose camera access. Use Safari on iOS or Chrome on Android."
+      );
+      setCameraError(true);
+      return;
+    }
 
-        stream.getTracks().forEach((track) => track.stop());
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
+        audio: false,
+      });
 
-        setStatus("Starting camera...");
-        removeMindArUiOverlays();
-        setStarted(true);
-      } catch (error) {
-        console.error("Camera preflight failed", error);
-        setStatus("Camera not available. Check device and browser permission.");
-        toast.error(status);
-      }
-    };
-    startAR();
+      stream.getTracks().forEach((track) => track.stop());
+
+      setStatus("Starting camera...");
+      removeMindArUiOverlays();
+      setStarted(true);
+    } catch (error) {
+      const message = "Camera not available. Allow camera access and try again.";
+      setStatus(message);
+      toast.error(message);
+
+      setCameraError(true);
+    }
   }, []);
+  useEffect(() => {
+    startAR();
+  }, [startAR]);
 
   useEffect(() => {
     if (!started || !sceneRef.current || !targetRef.current) return;
@@ -170,7 +177,7 @@ export default function ARViewer({
     setMindArScanningOverlay(scanUiEnabled);
   }, [started, scanUiEnabled]);
 
-  const isLoading = !librariesReady || !started;
+  const isLoading = !librariesReady;
 
   return (
     <main className="fixed inset-0 z-50 overflow-hidden bg-black text-white">
@@ -244,6 +251,16 @@ export default function ARViewer({
           z-index: 1 !important;
         }
       `}</style>
+
+      <div className="absolute bottom-20 right-5">
+        <div>
+          {cameraError && (
+            <Button type="button" onClick={startAR}>
+              Try Again
+            </Button>
+          )}
+        </div>
+      </div>
     </main>
   );
 }
