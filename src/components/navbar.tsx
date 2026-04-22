@@ -188,8 +188,8 @@ export default function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 font-serif z-110 lg:hidden bg-primary-gradient-50"
           >
-            <div className="flex flex-col h-full px-6 pt-20 pb-10">
-              <div className="flex flex-col items-center justify-center gap-5 sm:gap-y-5">
+            <div className="flex flex-col h-full px-6 pt-5 pb-10">
+              <div className="flex flex-col items-center justify-center gap-4 sm:gap-y-7">
                 {navRoutes.map((route, index) => (
                   <motion.div
                     key={route.href}
