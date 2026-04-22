@@ -1,3 +1,9 @@
+## Domains
+beyond-media.art              -> Vercel site
+www.beyond-media.art          -> Vercel site / redirect
+ar-assets.beyond-media.art    -> Cloudflare R2 bucket
+shop.beyond-media.art         -> Shopify, unchanged
+
 ## AR
 ### User visit flow
 Scan QR code -> /vr/[id]
