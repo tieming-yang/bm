@@ -224,7 +224,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         <div className="flex flex-col max-w-3xl px-3 mx-auto gap-y-3 sm:px-13">
           <div className="flex justify-end">
             <Button
-              className="gap-2 rounded-full border-white/20 bg-black/30 text-white backdrop-blur-md hover:bg-black/45"
+              className="text-white rounded-full gap-2 border-white/20 bg-black/30 backdrop-blur-md hover:bg-black/45"
               onClick={handleShareCurrentUrl}
               type="button"
               variant="outline"

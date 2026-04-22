@@ -58,7 +58,7 @@ export default function ClientARPage() {
 
             return (
               <li key={data.title}>
-                <Card className="py-5 rounded-full text-center">
+                <Card className="py-5 text-center rounded-full">
                   <CardTitle>
                     <Link href={`/ar/${data.id}?target=${targetURL}&model=${modelURL}`}>
                       <p className="font-mono text-2xl">{characterTitle}</p>

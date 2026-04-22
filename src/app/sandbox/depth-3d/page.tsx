@@ -176,7 +176,7 @@ export default function Depth3D() {
   const depthUrl = "/depth-3d/test/genesis_1_1-31-depth.png";
 
   return (
-    <div className="h-dvh flex items-center-safe justify-center-safe flex-col">
+    <div className="flex flex-col h-dvh items-center-safe justify-center-safe">
       <h1>This is the sand box</h1>
 
       <div className="w-full h-96">

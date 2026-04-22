@@ -11,7 +11,7 @@ const sandboxes = [
 ];
 export default function SandBox() {
   return (
-    <main className="container min-h-svh flex justify-center items-center-safe">
+    <main className="container flex justify-center min-h-svh items-center-safe">
       <ul className="space-y-5">
         {sandboxes.map((s) => {
           return (

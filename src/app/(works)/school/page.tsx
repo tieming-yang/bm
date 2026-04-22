@@ -139,10 +139,10 @@ export default function SchoolPage() {
   const watchLink = buildYouTubeLink(selectedLesson?.videoId);
 
   return (
-    <div className="relative pb-16 space-y-7 w-full no-scrollbar">
+    <div className="relative w-full pb-16 space-y-7 no-scrollbar">
       <div
         ref={playerContainerRef}
-        className="sticky lg:hidden space-y-5 top-0 right-0 left-0 w-dvw z-100 rounded-b-3xl pb-3 backdrop-blur-xl border shadow-xl border-primary/20 bg-background/10 shadow-primary/20"
+        className="sticky top-0 left-0 right-0 pb-3 border shadow-xl lg:hidden space-y-5 w-dvw z-100 rounded-b-3xl backdrop-blur-xl border-primary/20 bg-background/10 shadow-primary/20"
       >
         {/* https://www.npmjs.com/package/react-player?activeTab=readme */}
         <ReactPlayer
@@ -170,7 +170,7 @@ export default function SchoolPage() {
         />
 
         <div className="relative">
-          <div className="flex flex-row gap-x-5 max-w-32 mx-auto">
+          <div className="flex flex-row mx-auto gap-x-5 max-w-32">
             <Button
               disabled={selectedLessons.length === 1}
               onClick={() => {
@@ -208,7 +208,7 @@ export default function SchoolPage() {
         </div>
       </div>
 
-      <div className="px-5 flex gap-y-7 flex-col">
+      <div className="flex flex-col px-5 gap-y-7">
         <section className="grid gap-10 lg:grid-cols-2">
           <div className="space-y-6">
             <div className="flex flex-row justify-between">
@@ -227,7 +227,7 @@ export default function SchoolPage() {
               </Button>
             </div>
           </div>
-          <div className="overflow-hidden h-fit hidden lg:block border shadow-xl rounded-3xl border-primary/20 bg-background/10 shadow-primary/20">
+          <div className="hidden overflow-hidden border shadow-xl h-fit lg:block rounded-3xl border-primary/20 bg-background/10 shadow-primary/20">
             <div className="w-full aspect-video">
               <iframe
                 className="w-full h-full"
@@ -265,7 +265,7 @@ export default function SchoolPage() {
               );
             }}
           >
-            <TabsList className="flex w-fit mx-auto">
+            <TabsList className="flex mx-auto w-fit">
               {courses.map((course) => {
                 return (
                   <TabsTrigger value={course} key={course}>
@@ -337,7 +337,7 @@ export default function SchoolPage() {
           <p className="max-w-3xl mx-auto mt-3 text-muted-foreground">
             {t("school.ctaSection.description")}
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
+          <div className="flex flex-wrap justify-center mt-6 gap-4">
             <Button size="lg" className="border-primary/40" asChild>
               <a href="/glory-share">{t("school.ctaSection.supportMinistry")}</a>
             </Button>

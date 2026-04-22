@@ -186,11 +186,11 @@ export default function ARViewer({
   const isLoading = !librariesReady;
 
   return (
-    <main className="fixed inset-0 z-50 overflow-hidden bg-black text-white">
+    <main className="fixed inset-0 z-50 overflow-hidden text-white bg-black">
       <Loading show={isLoading} />
-      <div className="relative ar-camera-stage isolate h-dvh w-full overflow-hidden bg-transparent">
+      <div className="relative w-full overflow-hidden bg-transparent ar-camera-stage isolate h-dvh">
         {!started ? (
-          <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
+          <div className="flex flex-col items-center justify-center h-full px-6 text-center gap-4">
             <p className="max-w-sm text-sm text-white/80">{status}</p>
           </div>
         ) : (

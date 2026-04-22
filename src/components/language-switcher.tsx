@@ -26,7 +26,7 @@ export default function LanguageSwitcher() {
   return (
     <div
       aria-label="Switch language"
-      className="relative isolate inline-flex overflow-hidden rounded-full border border-border/70 bg-background/60 p-1 shadow-sm backdrop-blur-md"
+      className="relative inline-flex p-1 overflow-hidden border rounded-full isolate border-border/70 bg-background/60 shadow-sm backdrop-blur-md"
       role="group"
     >
       <span

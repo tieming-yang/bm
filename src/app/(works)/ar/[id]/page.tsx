@@ -15,7 +15,7 @@ export default function ClientARViewPage() {
     console.error("❌", message);
 
     return (
-      <main className="fixed inset-0 z-50 flex items-center justify-center bg-black px-6 text-center text-white">
+      <main className="fixed inset-0 z-50 flex items-center justify-center px-6 text-center text-white bg-black">
         <p className="max-w-sm text-sm text-white/80">{message}</p>
       </main>
     );

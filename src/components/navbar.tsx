@@ -102,7 +102,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <section className="z-50 flex gap-2 justify-between w-full">
+          <section className="z-50 flex justify-between w-full gap-2">
             {pathname !== "/" && (
               <Button
                 className="md:hidden"
@@ -219,7 +219,7 @@ export default function Navbar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.5 }}
-                className="flex flex-col gap-4 mt-auto"
+                className="flex flex-col mt-auto gap-4"
               >
                 {isMounted && (
                   <div className="flex justify-center">
