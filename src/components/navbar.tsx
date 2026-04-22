@@ -22,7 +22,7 @@ export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
   { href: "/about", label: (t: TFunction<string, undefined>) => t("nav.about") },
   { href: "/glory-share", label: (t: TFunction<string, undefined>) => t("nav.gloryShare") },
-  { href: "/ar", label: (t: TFunction<string, undefined>) => t("nav.vr") },
+  { href: "/ar", label: (t: TFunction<string, undefined>) => t("nav.ar") },
   { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
   { href: "/bible-gallery", label: (t: TFunction<string, undefined>) => t("nav.bibleGallery") },
   {
@@ -82,12 +82,12 @@ export default function Navbar() {
     <>
       <nav className="fixed px-5 font-serif bottom-3 min-w-svw z-120 h-fit">
         <div className="flex items-center min-w-full gap-x-5">
-          <div className="hidden h-14 flex-1 items-center max-w-fit gap-6 px-4 lg:flex lg:border lg:rounded-full lg:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] lg:backdrop-blur-xl lg:bg-primary-gradient-10 lg:border-black/10">
+          <div className="hidden py-3 flex-1 items-center max-w-fit gap-6 px-4 xl:flex xl:border xl:rounded-full xl:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] xl:backdrop-blur-xl xl:bg-primary-gradient-10 xl:border-black/10">
             {navRoutes.map((route) => (
               <Link
                 key={route.href}
                 href={route.href}
-                className={`text-lg font-medium transition-colors hover:text-primary ${
+                className={`xl:text-sm font-medium transition-colors hover:text-primary ${
                   pathname?.includes(route.href) && route.href !== "/"
                     ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
                     : ""
@@ -105,7 +105,7 @@ export default function Navbar() {
           <section className="z-50 flex self-end justify-end gap-5 ml-auto shrink-0">
             {pathname !== "/" && (
               <Button
-                className="md:hidden"
+                className="xl:hidden"
                 variant={"outline"}
                 size="icon"
                 onClick={() => router.back()}
@@ -122,7 +122,7 @@ export default function Navbar() {
                     </Button>
                   </Link>
                 )} */}
-                <div className="hidden lg:block">
+                <div className="hidden xl:block">
                   <LanguageSwitcher />
                 </div>
                 {authUser ? (
@@ -160,7 +160,7 @@ export default function Navbar() {
             type="button"
             variant={"outline"}
             size="icon"
-            className="relative flex flex-col items-center justify-center z-60 lg:hidden focus:outline-hidden"
+            className="relative flex flex-col items-center justify-center z-60 xl:hidden focus:outline-hidden"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
           >
@@ -186,7 +186,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 font-serif z-110 lg:hidden bg-primary-gradient-50"
+            className="fixed inset-0 font-serif z-110 xl:hidden bg-primary-gradient-50"
           >
             <div className="flex flex-col h-full px-6 pt-5 pb-10">
               <div className="flex flex-col items-center justify-center gap-4 sm:gap-y-7">
