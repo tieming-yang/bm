@@ -1,4 +1,4 @@
-import { Currency } from "@/constants";
+import { Currency } from "@/utils/constants";
 import firebase from "@/lib/firebase/firebase";
 import {
   collection,
@@ -44,7 +44,7 @@ type Profile = ProfileInput & {
   subscriptions?: Subscription[];
   organizationEmail?: string;
   organizationEmailUpdateCount?: number;
-}
+};
 
 export interface MemberDetails {
   name: string;
@@ -71,9 +71,9 @@ export type MemberType = (typeof MemberType)[keyof typeof MemberType];
 
 export const AccountType = {
   Personal: "personal",
-  Organization: "organization"
+  Organization: "organization",
 } as const;
-export type AccountType = (typeof AccountType)[keyof typeof AccountType]
+export type AccountType = (typeof AccountType)[keyof typeof AccountType];
 
 type Subscription = {
   id: string;
@@ -101,7 +101,7 @@ const Profile = {
     const profileRef = Profile.getRef(uid);
     const subsRef = collection(profileRef, "subscriptions");
     const snap = await getDocs(subsRef);
-    return snap.docs.map((doc) => (doc.data() as Subscription))
+    return snap.docs.map((doc) => doc.data() as Subscription);
   },
 
   async create(values: ProfileInput) {
@@ -139,26 +139,27 @@ const Profile = {
     return snap.exists();
   },
 
-  async updateOrgEmail(values: { uid: string, organizationEmail: string, currentOrganizationEmailUpdateCount: number }) {
-    const { uid, organizationEmail, currentOrganizationEmailUpdateCount } = values
+  async updateOrgEmail(values: {
+    uid: string;
+    organizationEmail: string;
+    currentOrganizationEmailUpdateCount: number;
+  }) {
+    const { uid, organizationEmail, currentOrganizationEmailUpdateCount } = values;
     if (!(await Profile.isExits(uid))) throw new Error("Profile existed");
 
     const profileRef = Profile.getRef(uid);
 
-    const data = await updateDoc(
-      profileRef,
-      {
-        organizationEmail,
-        organizationEmailUpdateCount: currentOrganizationEmailUpdateCount + 1,
-        updatedAt: serverTimestamp(),
-      },
-    );
+    const data = await updateDoc(profileRef, {
+      organizationEmail,
+      organizationEmailUpdateCount: currentOrganizationEmailUpdateCount + 1,
+      updatedAt: serverTimestamp(),
+    });
 
     return data;
   },
 
   /**
-   * 
+   *
    * @since get profile will be a Promise which can't use directly inside a component,
    * I think pass a profile will be the easiest way to do it.
    */

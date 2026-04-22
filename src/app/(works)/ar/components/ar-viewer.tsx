@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Bounds, Center, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
 import Config from "@/models/config";
+import logger from "@/utils/logger";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -15,11 +15,6 @@ type MindArSceneElement = HTMLElement & {
     };
   };
 };
-
-function logger(value: unknown) {
-  if (Config.isProd) return;
-  return console.debug("🔎", value);
-}
 
 /**
  * @description

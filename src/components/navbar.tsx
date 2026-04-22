@@ -16,7 +16,7 @@ import { TFunction } from "i18next";
 import { useShoppingCart } from "@/providers/shopping-cart-provider";
 import Cart from "@/models/cart";
 import Config from "@/models/config";
-import { ADMIN_UID } from "@/constants";
+import { ADMIN_UID } from "@/utils/constants";
 
 export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
