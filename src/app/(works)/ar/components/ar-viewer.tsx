@@ -253,13 +253,14 @@ export default function ARViewer({
   );
 }
 
+const MODEL_FACE_USER_Y_ROTATION = -Math.PI / 2;
 function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
   const dragRef = useRef({
     isDragging: false,
     lastX: 0,
     lastY: 0,
   });
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState({ x: 0, y: MODEL_FACE_USER_Y_ROTATION });
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     dragRef.current = {
