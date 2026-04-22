@@ -27,7 +27,7 @@ const routeMap: Record<string, string> = {
   "beyond-art": "nav.beyond-art",
 };
 
-const UUID_LENGTH = 10;
+const UUID_LENGTH = 20;
 
 export function Breadcrumb() {
   const router = useRouter();
