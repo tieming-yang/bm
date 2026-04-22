@@ -5,9 +5,9 @@ import { Bounds, Center, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
-import Config from "@/models/config";
 import logger from "@/utils/logger";
 import { Button } from "@/components/ui/button";
+import { useStableTranslation } from "@/hooks/use-translation";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -41,11 +41,13 @@ export default function ARViewer({
 }) {
   const sceneRef = useRef<MindArSceneElement | null>(null);
   const targetRef = useRef<HTMLElement | null>(null);
+  const { t, stableT } = useStableTranslation("ar");
+  const hasAutoStartedRef = useRef(false);
   const [librariesReady, setLibrariesReady] = useState(false);
   const [started, setStarted] = useState(false);
   const [scanUiEnabled, setScanUiEnabled] = useState(true);
   const scanUiEnabledRef = useRef(true);
-  const [status, setStatus] = useState("Loading AR libraries...");
+  const [status, setStatus] = useState(() => stableT("ar.viewer.status.loadingLibraries"));
   logger({ status });
 
   const [targetUnlocked, setTargetUnlocked] = useState(false);
@@ -63,10 +65,10 @@ export default function ARViewer({
 
         if (!mounted) return;
         setLibrariesReady(true);
-        setStatus("Ready. Tap Start AR to request camera access.");
+        setStatus(stableT("ar.viewer.status.ready"));
       } catch (error) {
         console.error("Failed to load MindAR", error);
-        if (mounted) setStatus("Failed to load AR libraries.");
+        if (mounted) setStatus(stableT("ar.viewer.status.failedToLoadLibraries"));
       }
     }
 
@@ -77,21 +79,23 @@ export default function ARViewer({
       removeMindArUiOverlays();
       stopCameraVideos(sceneRef.current?.parentElement);
     };
-  }, []);
+  }, [stableT]);
 
   const startAR = React.useCallback(async () => {
     setCameraError(false);
 
     if (!window.isSecureContext) {
-      setStatus(`Camera requires HTTPS or localhost. Current origin: ${window.location.origin}`);
+      setStatus(
+        stableT("ar.viewer.status.cameraRequiresSecureOrigin", {
+          origin: window.location.origin,
+        })
+      );
       setCameraError(true);
       return;
     }
 
     if (!navigator.mediaDevices?.getUserMedia) {
-      setStatus(
-        "This browser does not expose camera access. Use Safari on iOS or Chrome on Android."
-      );
+      setStatus(stableT("ar.viewer.status.browserUnsupported"));
       setCameraError(true);
       return;
     }
@@ -104,18 +108,20 @@ export default function ARViewer({
 
       stream.getTracks().forEach((track) => track.stop());
 
-      setStatus("Starting camera...");
+      setStatus(stableT("ar.viewer.status.startingCamera"));
       removeMindArUiOverlays();
       setStarted(true);
     } catch (error) {
-      const message = "Camera not available. Allow camera access and try again.";
+      const message = stableT("ar.viewer.status.cameraUnavailable");
       setStatus(message);
       toast.error(message);
 
       setCameraError(true);
     }
-  }, []);
+  }, [stableT]);
   useEffect(() => {
+    if (hasAutoStartedRef.current) return;
+    hasAutoStartedRef.current = true;
     startAR();
   }, [startAR]);
 
@@ -127,24 +133,24 @@ export default function ARViewer({
 
     const handleReady = () => {
       setMindArScanningOverlay(scanUiEnabledRef.current);
-      setStatus("Point the camera at the target image.");
+      setStatus(stableT("ar.viewer.status.pointAtTarget"));
     };
-    const handleError = () => setStatus("Camera failed to start. Check browser permission.");
+    const handleError = () => setStatus(stableT("ar.viewer.status.cameraFailed"));
     const handleFound = () => {
       setTargetUnlocked(true);
       targetUnlockedRef.current = true;
       setScanUiEnabled(false);
       scanUiEnabledRef.current = false;
       setMindArScanningOverlay(false);
-      setStatus("Target unlocked. You can move away from the target image.");
+      setStatus(stableT("ar.viewer.status.targetUnlocked"));
     };
     const handleLost = () => {
       if (targetUnlockedRef.current) {
-        setStatus("Model unlocked.");
+        setStatus(stableT("ar.viewer.status.modelUnlocked"));
         return;
       }
 
-      setStatus("Target lost. Keep scanning.");
+      setStatus(stableT("ar.viewer.status.targetLost"));
     };
 
     scene.addEventListener("arReady", handleReady);
@@ -161,7 +167,7 @@ export default function ARViewer({
 
       try {
         scene.systems?.["mindar-image-system"]?.stop?.();
-        setStatus("mindar-image-system stopped");
+        setStatus(stableT("ar.viewer.status.mindARStopped"));
       } catch (error) {
         console.warn("MindAR cleanup failed", error);
       }
@@ -169,7 +175,7 @@ export default function ARViewer({
       removeMindArUiOverlays();
       stopCameraVideos(scene.parentElement);
     };
-  }, [started]);
+  }, [started, stableT]);
 
   useEffect(() => {
     scanUiEnabledRef.current = scanUiEnabled;
@@ -256,7 +262,7 @@ export default function ARViewer({
         <div>
           {cameraError && (
             <Button type="button" onClick={startAR}>
-              Try Again
+              {t("ar.viewer.actions.tryAgain")}
             </Button>
           )}
         </div>

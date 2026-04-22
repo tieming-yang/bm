@@ -6,8 +6,10 @@ import Link from "next/link";
 import { QueryKey } from "@/utils/query-keys";
 import Loading from "../../loading";
 import Config from "@/models/config";
+import useTranslation from "@/hooks/use-translation";
 
 export default function ClientARPage() {
+  const { t } = useTranslation("ar");
   const {
     data: arData,
     isLoading: isARDataLoading,
@@ -29,23 +31,35 @@ export default function ClientARPage() {
   return (
     <main className="container relative z-50 px-4 py-16 mx-auto space-y-16 min-h-svh">
       <Loading show={isARDataLoading} />
-      <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
-        Bible AR
-      </h1>
-      <ul>
-        {arData.map((data) => {
-          const targetURL = getR2URL(data.targetsPath);
-          const modelURL = getR2URL(data.modelPath);
+      <section>
+        <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
+          {t("ar.page.title")}
+        </h1>
+        <div className="py-10 text-center">
+          <p className="italic text-md md:text-2xl font-chinese text-primary-foreground-gradient">
+            {t("ar.page.intro")}
+          </p>
+        </div>
+      </section>
 
-          return (
-            <li key={data.title}>
-              <Link href={`/ar/${data.id}?target=${targetURL}&model=${modelURL}`}>
-                <p>{data.title}</p>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {arData.length > 0 ? (
+        <ul>
+          {arData.map((data) => {
+            const targetURL = getR2URL(data.targetsPath);
+            const modelURL = getR2URL(data.modelPath);
+
+            return (
+              <li key={data.title}>
+                <Link href={`/ar/${data.id}?target=${targetURL}&model=${modelURL}`}>
+                  <p>{data.title}</p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="text-center text-muted-foreground">{t("ar.page.empty")}</p>
+      )}
     </main>
   );
 }

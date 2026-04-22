@@ -19,6 +19,7 @@ import enSignUp from "./locales/en/sign-up.json";
 import enSignIn from "./locales/en/sign-in.json";
 import enServices from "./locales/en/services.json";
 import enSchool from "./locales/en/school.json";
+import enAr from "./locales/en/ar.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
@@ -36,6 +37,7 @@ import zhSignUp from "./locales/zh-TW/sign-up.json";
 import zhSignIn from "./locales/zh-TW/sign-in.json";
 import zhServices from "./locales/zh-TW/services.json";
 import zhSchool from "./locales/zh-TW/school.json";
+import zhAr from "./locales/zh-TW/ar.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -57,6 +59,7 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhSignIn, "zh-TW/sign-in.json");
   verifyTranslationEncoding(zhServices, "zh-TW/services.json");
   verifyTranslationEncoding(zhSchool, "zh-TW/school.json");
+  verifyTranslationEncoding(zhAr, "zh-TW/ar.json");
 }
 
 // Initialize i18n instance
@@ -81,6 +84,7 @@ i18n
         "sign-in": enSignIn,
         services: enServices,
         school: enSchool,
+        ar: enAr,
       },
       "zh-TW": {
         common: zhCommon,
@@ -98,6 +102,7 @@ i18n
         "sign-in": zhSignIn,
         services: zhServices,
         school: zhSchool,
+        ar: zhAr,
       },
     },
     fallbackLng: "zh-TW",

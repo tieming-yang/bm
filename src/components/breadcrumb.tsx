@@ -17,6 +17,7 @@ const routeMap: Record<string, string> = {
   "terms-of-service": "footer.termsOfService",
   "privacy-policy": "footer.privacyPolicy",
   "glory-share": "nav.gloryShare",
+  ar: "nav.vr",
   join: "nav.join",
   "daily-grace-snacks": "nav.dailyGraceSnacks",
   "beyond-music": "nav.beyondMusic",

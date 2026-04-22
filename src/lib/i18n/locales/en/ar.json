@@ -1,0 +1,32 @@
+{
+  "ar": {
+    "page": {
+      "title": "Bible AR",
+      "intro": "Step into Scripture through image recognition and 3D interaction, meeting Bible characters in the space before you.",
+      "empty": "No AR experiences are available yet."
+    },
+    "viewer": {
+      "actions": {
+        "tryAgain": "Try Again"
+      },
+      "errors": {
+        "missingAssetUrls": "Missing target or model URL."
+      },
+      "status": {
+        "loadingLibraries": "Loading AR libraries...",
+        "ready": "Ready. Tap Start AR to request camera access.",
+        "failedToLoadLibraries": "Failed to load AR libraries.",
+        "cameraRequiresSecureOrigin": "Camera requires HTTPS or localhost. Current origin: {{origin}}",
+        "browserUnsupported": "This browser does not expose camera access. Use Safari on iOS or Chrome on Android.",
+        "startingCamera": "Starting camera...",
+        "cameraUnavailable": "Camera not available. Allow camera access and try again.",
+        "pointAtTarget": "Point the camera at the target image.",
+        "cameraFailed": "Camera failed to start. Check browser permission.",
+        "targetUnlocked": "Target unlocked. You can move away from the target image.",
+        "modelUnlocked": "Model unlocked.",
+        "targetLost": "Target lost. Keep scanning.",
+        "mindARStopped": "MindAR image system stopped."
+      }
+    }
+  }
+}

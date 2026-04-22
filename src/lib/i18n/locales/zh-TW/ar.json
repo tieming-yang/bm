@@ -1,0 +1,32 @@
+{
+  "ar": {
+    "page": {
+      "title": "聖經 AR",
+      "intro": "透過影像辨識與 3D 互動走進聖經，讓經文人物在你眼前立體呈現，陪你在光影中遇見神的故事。",
+      "empty": "目前尚未開放 AR 體驗。"
+    },
+    "viewer": {
+      "actions": {
+        "tryAgain": "再試一次"
+      },
+      "errors": {
+        "missingAssetUrls": "缺少辨識圖或模型網址。"
+      },
+      "status": {
+        "loadingLibraries": "AR 資源載入中...",
+        "ready": "準備好了。請允許相機權限以開始 AR。",
+        "failedToLoadLibraries": "AR 資源載入失敗。",
+        "cameraRequiresSecureOrigin": "相機需要 HTTPS 或 localhost。當前來源：{{origin}}",
+        "browserUnsupported": "此瀏覽器未提供相機存取。請使用 iOS Safari 或 Android Chrome。",
+        "startingCamera": "相機啟動中...",
+        "cameraUnavailable": "無法使用相機。請允許相機權限後再試一次。",
+        "pointAtTarget": "請將相機對準辨識圖。",
+        "cameraFailed": "相機啟動失敗。請檢查瀏覽器權限。",
+        "targetUnlocked": "辨識完成。現在可以離開辨識圖。",
+        "modelUnlocked": "模型已解鎖。",
+        "targetLost": "目標遺失，請繼續掃描。",
+        "mindARStopped": "MindAR 影像系統已停止。"
+      }
+    }
+  }
+}

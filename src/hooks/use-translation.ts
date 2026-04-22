@@ -1,15 +1,19 @@
 "use client";
 
-import { useTranslation as useI18nTranslation, UseTranslationResponse } from "react-i18next";
+import { useTranslation as useI18nTranslation } from "react-i18next";
+import type { TOptions } from "i18next";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
+
+type TranslationOptions = { lng?: string };
+type StableT = (key: string, options?: TOptions) => string;
 
 /**
  * @note We use the `option` from `useI18nTranslation`'s `UseTranslationOptions<KPrefix>` but I don't want to figure out what `KPrefix` is, so I just hand picked `lng` for the use to get translation that is not the current langauge.
  * @param namespace
  * @param option
  */
-export const useTranslation = (namespace = "common", option: { lng?: string } = {}) => {
+export const useTranslation = (namespace = "common", option: TranslationOptions = {}) => {
   const { t, i18n } = useI18nTranslation(namespace, option);
 
   // Preload fonts when language changes
@@ -36,6 +40,24 @@ export const useTranslation = (namespace = "common", option: { lng?: string } = 
     i18n,
     currentLanguage: i18n.language,
     changeLanguage,
+  };
+};
+
+export const useStableTranslation = (namespace = "common", option: TranslationOptions = {}) => {
+  const translation = useTranslation(namespace, option);
+  const tRef = useRef(translation.t);
+
+  useEffect(() => {
+    tRef.current = translation.t;
+  }, [translation.t]);
+
+  const stableT = useCallback<StableT>((key, options) => {
+    return tRef.current(key, options) as string;
+  }, []);
+
+  return {
+    ...translation,
+    stableT,
   };
 };
 

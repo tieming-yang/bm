@@ -22,7 +22,7 @@ export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
   { href: "/about", label: (t: TFunction<string, undefined>) => t("nav.about") },
   { href: "/glory-share", label: (t: TFunction<string, undefined>) => t("nav.gloryShare") },
-  { href: "/ar", label: (t: TFunction<string, undefined>) => t("nav.ar") },
+  { href: "/ar", label: (t: TFunction<string, undefined>) => t("nav.vr") },
   { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
   { href: "/bible-gallery", label: (t: TFunction<string, undefined>) => t("nav.bibleGallery") },
   {
