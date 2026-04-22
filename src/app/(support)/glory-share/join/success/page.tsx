@@ -1,7 +1,10 @@
 import { redirect } from "next/navigation";
 
+import { createPageMetadata, pageMetadata } from "@/app/metadata";
 import { stripe } from "@/lib/stripe";
 import { GloryShareSuccessContent } from "@/app/(support)/glory-share/join/success/glory-share-success-content";
+
+export const metadata = createPageMetadata(pageMetadata.gloryShareSuccess);
 
 //TODO: Block Other user or guest access it
 export default async function JoinSuccessPage({

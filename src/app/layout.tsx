@@ -9,8 +9,8 @@ import { Suspense } from "react";
 import Loading from "@/app/loading";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import ClientRoot from "./client-layout";
-import { Metadata } from "next";
-import _metadata from "./metadata";
+import type { Metadata, Viewport } from "next";
+import rootMetadata from "./metadata";
 import Header from "@/components/header";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -42,7 +42,11 @@ const yujiMai = Yuji_Mai({
 //   display: "swap",
 // });
 
-export const metadata: Metadata = _metadata;
+export const metadata: Metadata = rootMetadata;
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -55,23 +59,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         scrollBehavior: "smooth",
       }}
     >
-      <head>
-        <meta charSet="UTF-8" />
-        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="apple-mobile-web-app-title" content="Beyond" />
-        <link
-          rel="apple-touch-startup-image"
-          href="/web-app-manifest-192x192.png"
-          media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
-        />
-        <link
-          rel="apple-touch-startup-image"
-          href="/web-app-manifest-192x192.png.png"
-          media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
-        />
-      </head>
-
       <GoogleAnalytics gaId="G-R13X1H6G19" />
 
       <body>

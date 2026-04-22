@@ -1,7 +1,7 @@
-import Config from "@/models/config";
 import ClientPlayerPage from "./client-page";
 import Song from "@/models/song";
-import { Metadata } from "next";
+import { createDynamicMetadata } from "@/app/metadata";
+import type { Metadata } from "next";
 
 async function fetchSongByTitle(decodedTitle: string) {
   try {
@@ -33,46 +33,24 @@ function buildDescription(title: string, song: Awaited<ReturnType<typeof fetchSo
 export async function generateMetadata({
   params,
 }: {
-  params: { title: string };
+  params: Promise<{ title: string }>;
 }): Promise<Metadata> {
   const { title } = await params;
   const decodedTitle = decodeURIComponent(title);
   const song = await fetchSongByTitle(decodedTitle);
   const description = buildDescription(decodedTitle, song);
-  const canonicalUrl = new URL(`/beyond-music/${encodeURIComponent(decodedTitle)}`, Config.baseUrl)
-    .href;
   const pageTitle = song ? `${song.title} | Beyond Music` : `${decodedTitle} | Beyond Music`;
 
-  return {
+  return createDynamicMetadata({
+    path: `/beyond-music/${encodeURIComponent(decodedTitle)}`,
     title: pageTitle,
     description,
     keywords: [decodedTitle, "Beyond Music", song?.genre ?? ""].filter(Boolean) as string[],
+    openGraphType: "music.song",
     openGraph: {
-      title: pageTitle,
-      description,
-      url: canonicalUrl,
-      type: "music.song",
-      siteName: "Beyond Digital Media",
-      images: [
-        {
-          url: Config.OGImage,
-          width: 1200,
-          height: 630,
-          alt: pageTitle,
-        },
-      ],
       audio: song?.fileUrl ? [{ url: song.fileUrl }] : undefined,
     },
-    twitter: {
-      card: "summary_large_image",
-      title: pageTitle,
-      description,
-      images: [Config.OGImage],
-    },
-    alternates: {
-      canonical: canonicalUrl,
-    },
-  };
+  });
 }
 
 export default async function PlayerPage({ params }: { params: Promise<{ title: string }> }) {
