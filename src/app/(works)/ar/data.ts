@@ -1,5 +1,5 @@
-import firebase from "@/lib/firebase/firebase";
-import { collection, FieldValue, getDocs, Timestamp } from "firebase/firestore";
+import firebase from "../../../lib/firebase/firebase.ts";
+import { collection, FieldValue, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
 import { z } from "zod";
 
 export const ARContentTypeScheme = z.enum(["character"]);
@@ -29,7 +29,7 @@ export const ARDataItemWriteScheme = ARDataItemScheme.omit({
 export type ARDataItemWrite = z.infer<typeof ARDataItemWriteScheme>;
 
 export async function readARData(): Promise<ARDataItem[]> {
-  const snap = await getDocs(collection(firebase.db, "ar"));
+  const snap = await getDocs(query(collection(firebase.db, "ar"), orderBy("title", "asc")));
 
   return snap.docs.map((doc) =>
     ARDataItemScheme.parse({

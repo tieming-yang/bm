@@ -8,15 +8,15 @@ import {
 } from "../../app/(works)/ar/data.ts";
 
 dotenv.config({ path: ".env.local" });
-
+const NAME = "sarah";
 const input = {
   collectionPath: "ar",
   data: {
     contentType: ARContentTypeScheme.Enum.character,
-    title: "adam",
+    title: NAME[0].toUpperCase() + NAME.slice(1),
     //TODO: custom domain url
-    targetsPath: "/characters/adam/v0/adam.mind",
-    modelPath: "/characters/adam/v0/adam-lowpoly.glb",
+    targetsPath: `/characters/${NAME}/v0/${NAME}.mind`,
+    modelPath: `/characters/${NAME}/v0/${NAME}-lowpoly.glb`,
   } satisfies ARDataItemWrite,
 };
 
@@ -31,7 +31,7 @@ async function main() {
 
   await firebaseAdmin.db.collection(input.collectionPath).doc().set(document, { merge: true });
 
-  console.log(`Uploaded AR document: ${input.collectionPath}}`);
+  console.log(`Uploaded AR document: ${input.collectionPath}, ${NAME}`);
 }
 
 main().catch((error) => {
