@@ -4,6 +4,8 @@ declare module "*.json" {
   export default value;
 }
 
+declare module "*.css";
+
 declare module "aframe";
 
 declare module "mind-ar/dist/mindar-image-aframe.prod.js";
