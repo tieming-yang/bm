@@ -80,9 +80,9 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed bottom-0 w-full px-3 font-serif z-120 h-fit 2xl:px-0">
-        <div className="container flex items-center gap-x-5 justify-end-safe h-16 px-4 my-2 lg:border lg:rounded-full lg:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] lg:backdrop-blur-xl lg:bg-primary-gradient-10 lg:border-black/10">
-          <div className="items-center hidden gap-6 lg:flex">
+      <nav className="fixed px-5 font-serif bottom-3 min-w-svw z-120 h-fit">
+        <div className="flex items-center min-w-full gap-x-5">
+          <div className="hidden h-14 flex-1 items-center max-w-fit gap-6 px-4 lg:flex lg:border lg:rounded-full lg:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] lg:backdrop-blur-xl lg:bg-primary-gradient-10 lg:border-black/10">
             {navRoutes.map((route) => (
               <Link
                 key={route.href}
@@ -102,7 +102,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <section className="z-50 flex justify-between w-full gap-2">
+          <section className="z-50 flex self-end justify-end gap-5 ml-auto shrink-0">
             {pathname !== "/" && (
               <Button
                 className="md:hidden"
@@ -115,13 +115,13 @@ export default function Navbar() {
             )}
             {isMounted && (
               <div className="flex gap-x-5">
-                {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
+                {/* {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
                   <Link href="/sandbox">
                     <Button variant={"outline"} size={"default"}>
                       <Axe />
                     </Button>
                   </Link>
-                )}
+                )} */}
                 <div className="hidden lg:block">
                   <LanguageSwitcher />
                 </div>
@@ -219,7 +219,7 @@ export default function Navbar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.5 }}
-                className="flex flex-col mt-auto gap-4"
+                className="flex flex-col gap-4 mt-auto"
               >
                 {isMounted && (
                   <div className="flex justify-center">
