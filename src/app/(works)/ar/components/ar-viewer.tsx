@@ -49,6 +49,7 @@ export default function ARViewer({
   const scanUiEnabledRef = useRef(true);
   const [status, setStatus] = useState(() => stableT("ar.viewer.status.loadingLibraries"));
   logger({ status });
+  console.debug("🔎", { status });
 
   const [targetUnlocked, setTargetUnlocked] = useState(false);
   const targetUnlockedRef = useRef(false);
