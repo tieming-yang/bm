@@ -6,12 +6,12 @@ import Link from "next/link";
 import { QueryKey } from "@/utils/query-keys";
 import Loading from "../../loading";
 import Config from "@/models/config";
-import useTranslation from "@/hooks/use-translation";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { useMultiTranslation } from "@/hooks/use-translation";
+import { Card, CardTitle } from "@/components/ui/card";
 import toTitle from "../../../utils/to-title";
 
 export default function ClientARPage() {
-  const { t } = useTranslation("ar");
+  const { t } = useMultiTranslation(["ar", "bible-character"]);
   const {
     data: arData,
     isLoading: isARDataLoading,
@@ -45,17 +45,23 @@ export default function ClientARPage() {
       </section>
 
       {arData.length > 0 ? (
-        <ul className="grid gap-5 lg:grid-cols-2">
+        <ul className="grid gap-5 lg:grid-cols-3">
           {arData.map((data) => {
             const targetURL = getR2URL(data.targetsPath);
             const modelURL = getR2URL(data.modelPath);
+            const characterTitle = t(
+              `bible-character:bibleCharacter.${toCharacterKey(data.title)}`,
+              {
+                defaultValue: toTitle(data.title),
+              }
+            );
 
             return (
               <li key={data.title}>
                 <Card className="py-5 rounded-full text-center">
                   <CardTitle>
                     <Link href={`/ar/${data.id}?target=${targetURL}&model=${modelURL}`}>
-                      <p className="font-mono text-2xl">{toTitle(data.title)}</p>
+                      <p className="font-mono text-2xl">{characterTitle}</p>
                     </Link>
                   </CardTitle>
                 </Card>
@@ -72,4 +78,8 @@ export default function ClientARPage() {
 
 function getR2URL(path: string) {
   return Config.r2ARAssetsBaseURL + path;
+}
+
+function toCharacterKey(title: string) {
+  return title.trim().toLowerCase().replace(/\s+/g, "-");
 }
