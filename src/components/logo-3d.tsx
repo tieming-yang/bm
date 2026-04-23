@@ -91,53 +91,6 @@ export default function Logo3D() {
         };
       }}
     >
-      <style>
-        {`
-          .logo-3d-wave {
-            position: absolute;
-            inset: -35%;
-            opacity: 1;
-            filter: blur(100px);
-            mix-blend-mode: screen;
-            pointer-events: none;
-            will-change: transform, opacity;
-            background:
-              radial-gradient(ellipse at 16% 82%, rgba(168, 85, 247, 0.42), transparent 28%),
-              radial-gradient(ellipse at 42% 62%, rgba(59, 130, 246, 0.34), transparent 30%),
-              radial-gradient(ellipse at 70% 46%, rgba(14, 165, 233, 0.4), transparent 28%),
-              linear-gradient(38deg, transparent 26%, rgba(168, 85, 247, 0.3) 39%, rgba(59, 130, 246, 0.28) 52%, rgba(14, 165, 233, 0.3) 64%, transparent 76%);
-            animation: logo-3d-wave-flow 12s linear infinite;
-          }
-
-          .logo-3d-wave-secondary {
-            filter: blur(90px);
-            opacity: 1;
-            animation-duration: 18s;
-            animation-delay: -6s;
-            transform: scale(0.82);
-          }
-
-          @keyframes logo-3d-wave-flow {
-            0% {
-              opacity: 0;
-              transform: translate3d(-18%, 18%, 0) rotate(-9deg) scale(0.98);
-            }
-
-            16% {
-              opacity: 0.64;
-            }
-
-            55% {
-              opacity: 0.52;
-            }
-
-            100% {
-              opacity: 0;
-              transform: translate3d(18%, -18%, 0) rotate(-9deg) scale(1.08);
-            }
-          }
-        `}
-      </style>
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-[linear-gradient(135deg,#08070c_0%,#241142_34%,#172554_68%,#075985_100%)]"
@@ -146,12 +99,7 @@ export default function Logo3D() {
         aria-hidden="true"
         className="absolute inset-0 opacity-55 mix-blend-screen bg-[linear-gradient(115deg,transparent_0%,rgba(168,85,247,0.38)_24%,transparent_43%,rgba(59,130,246,0.34)_62%,rgba(14,165,233,0.3)_84%,transparent_100%)]"
       />
-      <div aria-hidden="true" className="logo-3d-wave" />
-      <div aria-hidden="true" className="logo-3d-wave logo-3d-wave-secondary" />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-black/20 backdrop-blur-3xl"
-      />
+      <div aria-hidden="true" className="absolute inset-0 bg-black/20 backdrop-blur-3xl" />
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,7,12,0.18)_0%,transparent_35%,rgba(8,7,12,0.48)_100%)]"
@@ -175,7 +123,10 @@ function LogoParticles({
   const canvasSize = useThree((state) => state.size);
   const particleTexture = useMemo(createCircleParticleTexture, []);
   const logoMotionData = useMemo(() => createLogoMotionData(data), [data]);
-  const logoMaterial = useMemo(() => createLogoParticleMaterial(particleTexture), [particleTexture]);
+  const logoMaterial = useMemo(
+    () => createLogoParticleMaterial(particleTexture),
+    [particleTexture]
+  );
   const responsiveScale = useMemo(() => {
     const fitScale = Math.min(viewport.width / 5.6, viewport.height / 5.6);
 
@@ -230,9 +181,9 @@ function LogoParticles({
       group.scale.setScalar(scale);
     }
 
-    const pulse = Math.sin(elapsed * 1.2) * 0.5 + 0.5;
+    // const pulse = Math.sin(elapsed * 1.2) * 1.5 + 0.5;
     logoMaterial.uniforms.time.value = elapsed;
-    logoMaterial.uniforms.opacity.value = 0.78 + pulse * 0.16;
+    // logoMaterial.uniforms.opacity.value = 0.78 + pulse * 0.16;
     logoMaterial.uniforms.sizeScale.value = particleSizeScale;
   });
 
@@ -248,7 +199,7 @@ function LogoParticleObject({
   rotationTargetRef,
 }: {
   imageUrl: string;
-  rotationTargetRef: React.MutableRefObject<{ x: number; y: number; z: number }>;
+  rotationTargetRef: React.RefObject<{ x: number; y: number; z: number }>;
 }) {
   const [particleData, setParticleData] = useState<LogoParticleData | null>(null);
   useEffect(() => {
@@ -294,7 +245,7 @@ type LogoMotionData = {
 async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
   const image = await loadImage(imageUrl);
 
-  const sampleSize = 190;
+  const sampleSize = 100;
   const logoScale = 4.4;
   const step = 2;
 
@@ -437,9 +388,9 @@ function createLogoMotionData(logoData: LogoParticleData): LogoMotionData {
     const angle = Math.random() * Math.PI * 2;
     const zAngle = Math.random() * Math.PI * 2;
 
-    sizes[i] = 9 + random * 3.6;
+    sizes[i] = 9 + random * 20;
     phases[i] = Math.random();
-    speeds[i] = 0.08 + Math.random() * 0.18;
+    speeds[i] = 0.08 + Math.random() * 0.3;
     driftRadii[i] = 0.006 + Math.random() * 0.026;
 
     driftVectors[index] = Math.cos(angle);
