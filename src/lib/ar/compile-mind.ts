@@ -4,7 +4,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 
-const CLI_VERSION = "1.0.0";
+const CLI_VERSION = "1.1.0";
 const SUPPORTED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".bmp"]);
 
 type CollisionMode = "error" | "rename";
@@ -13,6 +13,7 @@ type CliOptions = {
   inputs: string[];
   outputDir: string | null;
   recursive: boolean;
+  bundleDirectories: boolean;
   overwrite: boolean;
   verbose: boolean;
   failFast: boolean;
@@ -27,8 +28,18 @@ type InputFile = {
   stem: string;
 };
 
+type InputBatch = {
+  kind: "file" | "directory";
+  absolutePath: string;
+  displayPath: string;
+  stem: string;
+  files: InputFile[];
+};
+
 type PlannedOutput = {
-  input: InputFile;
+  inputs: InputFile[];
+  sourceDisplayPath: string;
+  label: string;
   outputPath: string;
 };
 
@@ -56,7 +67,7 @@ type CompileFailure = {
 function printHelp() {
   console.log(`MindAR target compiler
 
-Generate one .mind file per source image using MindAR's offline compiler.
+Generate .mind files from source images using MindAR's offline compiler.
 
 Usage:
   node src/lib/ar/compile-mind.ts [options] <image-or-directory>...
@@ -67,6 +78,7 @@ Required:
 Input options:
   -i, --input <path>         Repeatable input file or directory
   -r, --recursive            Recurse into input directories
+      --bundle-directories   Compile each input directory into one .mind file
 
 Output options:
       --collision <mode>     Collision strategy: error | rename (default: error)
@@ -85,11 +97,13 @@ Examples:
   node src/lib/ar/compile-mind.ts -o public/ar/targets public/targets/adam.png
   node src/lib/ar/compile-mind.ts -o public/ar/targets -i public/targets/adam.png -i public/targets/eve.png
   node src/lib/ar/compile-mind.ts -o public/ar/targets -r public/targets
+  node src/lib/ar/compile-mind.ts -o public/ar/targets --bundle-directories public/targets/team
   node src/lib/ar/compile-mind.ts -o public/ar/targets --collision rename --overwrite public/targets
 
 Notes:
-  - Each input image becomes its own .mind file.
-  - Output filenames default to <image-stem>.mind.
+  - By default, each input image becomes its own .mind file.
+  - With --bundle-directories, each input directory becomes one .mind file that contains one target per image.
+  - Output filenames default to <image-stem>.mind for files and <directory-name>.mind for bundled directories.
   - If MindAR's native canvas binding is missing on this machine, rebuild it first:
       pnpm rebuild canvas
     or:
@@ -102,6 +116,7 @@ function parseArgs(argv: string[]): CliOptions {
     inputs: [],
     outputDir: null,
     recursive: false,
+    bundleDirectories: false,
     overwrite: false,
     verbose: false,
     failFast: false,
@@ -125,6 +140,11 @@ function parseArgs(argv: string[]): CliOptions {
 
     if (arg === "-r" || arg === "--recursive") {
       options.recursive = true;
+      continue;
+    }
+
+    if (arg === "--bundle-directories") {
+      options.bundleDirectories = true;
       continue;
     }
 
@@ -183,9 +203,7 @@ function parseArgs(argv: string[]): CliOptions {
   return options;
 }
 
-function getImportMetaResolve():
-  | ((specifier: string) => string)
-  | undefined {
+function getImportMetaResolve(): ((specifier: string) => string) | undefined {
   const meta = import.meta as ImportMeta & {
     resolve?: (specifier: string) => string;
   };
@@ -193,8 +211,7 @@ function getImportMetaResolve():
 }
 
 function createCanvasBindingError(originalError: unknown): Error {
-  const details =
-    originalError instanceof Error ? originalError.message : String(originalError);
+  const details = originalError instanceof Error ? originalError.message : String(originalError);
 
   return new Error(
     [
@@ -279,9 +296,17 @@ async function collectDirectoryImages(
   return collected;
 }
 
-async function collectInputs(options: CliOptions): Promise<InputFile[]> {
+function createInputFile(absolutePath: string): InputFile {
+  return {
+    absolutePath,
+    displayPath: path.relative(process.cwd(), absolutePath) || path.basename(absolutePath),
+    stem: path.parse(absolutePath).name,
+  };
+}
+
+async function collectInputs(options: CliOptions): Promise<InputBatch[]> {
   const absoluteInputs = options.inputs.map((inputPath) => path.resolve(process.cwd(), inputPath));
-  const files = new Map<string, InputFile>();
+  const batches = new Map<string, InputBatch>();
 
   for (const absoluteInput of absoluteInputs) {
     let stats;
@@ -297,14 +322,17 @@ async function collectInputs(options: CliOptions): Promise<InputFile[]> {
         throw new Error(`No supported image files found in directory: ${absoluteInput}`);
       }
 
-      for (const imagePath of images) {
-        const resolvedPath = path.resolve(imagePath);
-        files.set(resolvedPath, {
-          absolutePath: resolvedPath,
-          displayPath: path.relative(process.cwd(), resolvedPath) || path.basename(resolvedPath),
-          stem: path.parse(resolvedPath).name,
-        });
-      }
+      const files = images
+        .map((imagePath) => createInputFile(path.resolve(imagePath)))
+        .sort((left, right) => left.displayPath.localeCompare(right.displayPath));
+      console.debug("🔎", { files });
+      batches.set(absoluteInput, {
+        kind: "directory",
+        absolutePath: absoluteInput,
+        displayPath: path.relative(process.cwd(), absoluteInput) || path.basename(absoluteInput),
+        stem: path.basename(absoluteInput),
+        files,
+      });
       continue;
     }
 
@@ -320,54 +348,91 @@ async function collectInputs(options: CliOptions): Promise<InputFile[]> {
       );
     }
 
-    files.set(absoluteInput, {
+    batches.set(absoluteInput, {
+      kind: "file",
       absolutePath: absoluteInput,
       displayPath: path.relative(process.cwd(), absoluteInput) || path.basename(absoluteInput),
       stem: path.parse(absoluteInput).name,
+      files: [createInputFile(absoluteInput)],
     });
   }
 
-  return [...files.values()].sort((left, right) =>
+  return [...batches.values()].sort((left, right) =>
     left.displayPath.localeCompare(right.displayPath)
   );
 }
 
-function planOutputs(inputs: InputFile[], options: CliOptions): PlannedOutput[] {
+function planOutputs(inputs: InputBatch[], options: CliOptions): PlannedOutput[] {
   const outputDir = path.resolve(process.cwd(), options.outputDir ?? "");
   const usedPaths = new Map<string, string>();
   const nextSuffixByStem = new Map<string, number>();
+  const compileJobs: Array<{
+    inputs: InputFile[];
+    sourceDisplayPath: string;
+    label: string;
+    stem: string;
+  }> = [];
   const planned: PlannedOutput[] = [];
 
   for (const input of inputs) {
-    let candidateName = `${input.stem}.mind`;
+    if (input.kind === "directory" && !options.bundleDirectories) {
+      for (const file of input.files) {
+        compileJobs.push({
+          inputs: [file],
+          sourceDisplayPath: file.displayPath,
+          label: file.displayPath,
+          stem: file.stem,
+        });
+      }
+      continue;
+    }
+
+    const imageCount = input.files.length;
+    const label =
+      input.kind === "directory"
+        ? `${input.displayPath} (${imageCount} image${imageCount === 1 ? "" : "s"})`
+        : input.displayPath;
+
+    compileJobs.push({
+      inputs: input.files,
+      sourceDisplayPath: input.displayPath,
+      label,
+      stem: input.stem,
+    });
+  }
+
+  for (const compileJob of compileJobs) {
+    let candidateName = `${compileJob.stem}.mind`;
     let candidatePath = path.join(outputDir, candidateName);
 
     if (options.collision === "rename") {
-      const seen = nextSuffixByStem.get(input.stem) ?? 0;
+      const seen = nextSuffixByStem.get(compileJob.stem) ?? 0;
       let nextIndex = seen;
       while (usedPaths.has(candidatePath)) {
         nextIndex += 1;
-        candidateName = `${input.stem}-${nextIndex + 1}.mind`;
+        candidateName = `${compileJob.stem}-${nextIndex + 1}.mind`;
         candidatePath = path.join(outputDir, candidateName);
       }
-      nextSuffixByStem.set(input.stem, nextIndex);
+      nextSuffixByStem.set(compileJob.stem, nextIndex);
     } else {
       const existingSource = usedPaths.get(candidatePath);
-      if (existingSource && existingSource !== input.absolutePath) {
+      if (existingSource && existingSource !== compileJob.sourceDisplayPath) {
         throw new Error(
           [
             `Output filename collision for ${candidateName}.`,
-            `  ${path.relative(process.cwd(), existingSource)}`,
-            `  ${input.displayPath}`,
+            `  ${existingSource}`,
+            `  ${compileJob.sourceDisplayPath}`,
             `Use --collision rename to auto-rename colliding outputs.`,
           ].join("\n")
         );
       }
     }
 
-    usedPaths.set(candidatePath, input.absolutePath);
+    usedPaths.set(candidatePath, compileJob.sourceDisplayPath);
     planned.push({
-      input,
+      inputs: compileJob.inputs,
+      sourceDisplayPath: compileJob.sourceDisplayPath,
+      label: compileJob.label,
       outputPath: candidatePath,
     });
   }
@@ -434,17 +499,20 @@ async function compileOneTarget(
   options: CliOptions
 ): Promise<void> {
   const compiler = new runtime.OfflineCompiler();
-  const image = await runtime.loadImage(plannedOutput.input.absolutePath);
+  const images = [];
+  for (const input of plannedOutput.inputs) {
+    images.push(await runtime.loadImage(input.absolutePath));
+  }
 
   if (options.verbose && typeof runtime.tf.getBackend === "function") {
     console.log(
-      `[${itemIndex}/${totalItems}] backend=${runtime.tf.getBackend()} source=${plannedOutput.input.displayPath}`
+      `[${itemIndex}/${totalItems}] backend=${runtime.tf.getBackend()} source=${plannedOutput.sourceDisplayPath} images=${plannedOutput.inputs.length}`
     );
   }
 
-  await compiler.compileImageTargets([image], (percent) => {
+  await compiler.compileImageTargets(images, (percent) => {
     if (options.verbose) {
-      renderProgress(itemIndex, totalItems, plannedOutput.input.displayPath, percent);
+      renderProgress(itemIndex, totalItems, plannedOutput.label, percent);
     }
   });
 
@@ -456,12 +524,22 @@ async function compileOneTarget(
   await fs.mkdir(path.dirname(plannedOutput.outputPath), { recursive: true });
   await fs.writeFile(plannedOutput.outputPath, Buffer.from(outputBuffer));
 
+  const outputDisplayPath =
+    path.relative(process.cwd(), plannedOutput.outputPath) ||
+    path.basename(plannedOutput.outputPath);
+  const targetCount = plannedOutput.inputs.length;
+
   console.log(
-    `[${itemIndex}/${totalItems}] wrote ${path.relative(
-      process.cwd(),
-      plannedOutput.outputPath
-    )}`
+    `[${itemIndex}/${totalItems}] wrote ${outputDisplayPath} (${targetCount} target${
+      targetCount === 1 ? "" : "s"
+    })`
   );
+
+  if (targetCount > 1) {
+    for (const [targetIndex, input] of plannedOutput.inputs.entries()) {
+      console.log(`  [${targetIndex}] ${input.displayPath}`);
+    }
+  }
 }
 
 async function run(): Promise<void> {
@@ -485,8 +563,9 @@ async function run(): Promise<void> {
     throw new Error(`At least one image or directory input is required`);
   }
 
-  const inputFiles = await collectInputs(options);
-  const plannedOutputs = planOutputs(inputFiles, options);
+  const inputBatches = await collectInputs(options);
+  console.debug("🔎", { inputBatches });
+  const plannedOutputs = planOutputs(inputBatches, options);
   await fs.mkdir(path.resolve(process.cwd(), options.outputDir), { recursive: true });
   await ensureWritableOutputs(plannedOutputs, options);
 
@@ -500,11 +579,11 @@ async function run(): Promise<void> {
     } catch (error) {
       const reason = error instanceof Error ? error.message : String(error);
       failures.push({
-        input: plannedOutput.input.displayPath,
+        input: plannedOutput.label,
         reason,
       });
 
-      console.error(`[${index + 1}/${plannedOutputs.length}] failed ${plannedOutput.input.displayPath}`);
+      console.error(`[${index + 1}/${plannedOutputs.length}] failed ${plannedOutput.label}`);
       console.error(reason);
 
       if (options.failFast) {
@@ -516,14 +595,14 @@ async function run(): Promise<void> {
   if (failures.length > 0) {
     const summary = failures.map((failure) => `  ${failure.input}: ${failure.reason}`).join("\n");
     throw new Error(
-      [
-        `Compilation finished with ${failures.length} failure(s).`,
-        summary,
-      ].join("\n")
+      [`Compilation finished with ${failures.length} failure(s).`, summary].join("\n")
     );
   }
 
-  console.log(`Done. Generated ${plannedOutputs.length} .mind file(s).`);
+  const totalTargets = plannedOutputs.reduce((count, output) => count + output.inputs.length, 0);
+  console.log(
+    `Done. Generated ${plannedOutputs.length} .mind file(s) from ${totalTargets} image(s).`
+  );
 }
 
 run().catch((error) => {

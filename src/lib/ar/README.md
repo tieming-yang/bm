@@ -7,7 +7,7 @@ This directory contains a local CLI for compiling MindAR image targets into `.mi
 - accepts one or more image files
 - accepts directories of images
 - can recurse through directories
-- generates one `.mind` file per input image
+- can bundle one directory into one `.mind` file
 - writes all outputs into a target directory
 
 The CLI uses MindAR's offline compiler under the hood, so the generated files are compatible with the `.mind` targets your AR viewer already loads.
@@ -58,10 +58,16 @@ node src/lib/ar/compile-mind.ts \
   -i public/targets/noah.webp
 ```
 
-Directory input:
+Directory input, one `.mind` file per image:
 
 ```sh
 node src/lib/ar/compile-mind.ts -o public/ar/targets public/targets
+```
+
+Directory input, one bundled `.mind` file for the whole folder:
+
+```sh
+node src/lib/ar/compile-mind.ts -o public/ar/targets --bundle-directories public/targets/team
 ```
 
 Recursive directory input:
@@ -104,6 +110,7 @@ node src/lib/ar/compile-mind.ts -o public/ar/targets -r public/targets --verbose
 -i, --input <path>       Repeatable input file or directory
 -o, --output <dir>       Output directory for generated .mind files
 -r, --recursive          Recurse into input directories
+    --bundle-directories Compile each input directory into one .mind file
     --collision <mode>   Output collision strategy: error | rename
     --overwrite          Replace existing .mind files
     --fail-fast          Stop after the first compile failure
@@ -132,6 +139,14 @@ If two different inputs would produce the same output filename, the CLI will:
 
 - fail by default
 - or rename them to `name.mind`, `name-2.mind`, `name-3.mind`, etc. when you pass `--collision rename`
+
+When you pass `--bundle-directories`, each directory input becomes:
+
+```txt
+<directory-name>.mind
+```
+
+That bundled file contains one MindAR target entry per image in the directory. The CLI prints the `targetIndex` to image mapping after each bundled compile, and the order is stable because the images are sorted by relative path before compilation.
 
 ## Recommended workflow
 
