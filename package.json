@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "ar:compile-mind": "node src/lib/ar/compile-mind.ts",
     "stripe:local:webhook": "stripe listen --forward-to localhost:3000/api/webhook/stripe",
     "stripe:trigger:webhook:checkout.session.completed": "stripe trigger checkout.session.completed --add checkout_session:metadata.uid=1OQnurJ4zEfDN2HGG1VU4DsEgkk1",
     "stripe:trigger:webhook:invoice.paid": "stripe trigger invoice.paid --add invoice:customer=cus_123 --add invoice:metadata.uid=1OQnurJ4zEfDN2HGG1VU4DsEgkk1",
