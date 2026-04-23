@@ -181,9 +181,7 @@ function LogoParticles({
       group.scale.setScalar(scale);
     }
 
-    // const pulse = Math.sin(elapsed * 1.2) * 1.5 + 0.5;
     logoMaterial.uniforms.time.value = elapsed;
-    // logoMaterial.uniforms.opacity.value = 0.78 + pulse * 0.16;
     logoMaterial.uniforms.sizeScale.value = particleSizeScale;
   });
 
@@ -245,7 +243,7 @@ type LogoMotionData = {
 async function createLogoParticle(imageUrl: string): Promise<LogoParticleData> {
   const image = await loadImage(imageUrl);
 
-  const sampleSize = 100;
+  const sampleSize = 99;
   const logoScale = 4.4;
   const step = 2;
 
