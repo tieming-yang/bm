@@ -229,9 +229,19 @@ export default function ARViewer({
             })
           )
         )}
-
         {targetUnlocked ? <UnlockedModelOverlay modelURL={modelURL} /> : null}
       </div>
+
+      <div className="absolute bottom-20 right-5">
+        <div>
+          {cameraError && (
+            <Button type="button" onClick={startAR}>
+              {t("ar.viewer.actions.tryAgain")}
+            </Button>
+          )}
+        </div>
+      </div>
+
       <style jsx global>{`
         .ar-camera-stage video {
           position: absolute !important;
@@ -257,16 +267,6 @@ export default function ARViewer({
           z-index: 1 !important;
         }
       `}</style>
-
-      <div className="absolute bottom-20 right-5">
-        <div>
-          {cameraError && (
-            <Button type="button" onClick={startAR}>
-              {t("ar.viewer.actions.tryAgain")}
-            </Button>
-          )}
-        </div>
-      </div>
     </main>
   );
 }
