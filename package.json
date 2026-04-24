@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "pnpm": {
-    "onlyBuiltDependencies": [
+    "onlyBuiltDependencies": [],
+    "ignoredBuiltDependencies": [
       "canvas"
     ]
   },
