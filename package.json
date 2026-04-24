@@ -90,6 +90,7 @@
     "react-player": "^3.4.0",
     "react-resizable-panels": "^2.1.9",
     "recharts": "2.15.0",
+    "shimmer-from-structure": "^2.5.0",
     "sonner": "^1.7.4",
     "stripe": "^19.3.0",
     "tailwind-merge": "^2.6.0",
