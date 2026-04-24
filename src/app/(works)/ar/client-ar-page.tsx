@@ -1,25 +1,26 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { readARData } from "./data";
-import Link from "next/link";
+import { readAR } from "./data";
 import { QueryKey } from "@/utils/query-keys";
 import Loading from "../../loading";
-import Config from "@/models/config";
 import { useMultiTranslation } from "@/hooks/use-translation";
-import { Card, CardTitle } from "@/components/ui/card";
-import toTitle from "../../../utils/to-title";
+import ARViewer from "./components/ar-viewer";
+import { getR2URL } from "../../../utils/get-r2-path";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function ClientARPage() {
   const { t } = useMultiTranslation(["ar", "bible-character"]);
+  const [viewStatus, setViewStatus] = useState<"idle" | "arViewer">("idle");
   const {
     data: arData,
     isLoading: isARDataLoading,
     error,
     isError,
   } = useQuery({
-    queryKey: QueryKey.arData,
-    queryFn: readARData,
+    queryKey: QueryKey.ar,
+    queryFn: readAR,
   });
 
   if (isError) {
@@ -31,7 +32,7 @@ export default function ClientARPage() {
   }
 
   return (
-    <main className="container relative z-50 px-4 py-16 mx-auto space-y-7 min-h-svh">
+    <main className="container relative z-50 mx-auto flex min-h-svh flex-col px-4 py-16 gap-7">
       <Loading show={isARDataLoading} />
       <section>
         <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
@@ -44,40 +45,27 @@ export default function ClientARPage() {
         </div>
       </section>
 
-      {arData.length > 0 ? (
-        <ul className="grid gap-5 lg:grid-cols-3">
-          {arData.map((data) => {
-            const targetURL = getR2URL(data.targetsPath);
-            const modelURL = getR2URL(data.modelPath);
-            const characterTitle = t(
-              `bible-character:bibleCharacter.${toCharacterKey(data.title)}`,
-              {
-                defaultValue: toTitle(data.title),
-              }
-            );
+      {viewStatus === "arViewer" && (
+        <div>
+          <ARViewer arData={arData[0]} targetURL={getR2URL(arData[0].targetsPath)} />
 
-            return (
-              <li key={data.title}>
-                <Card className="py-5 text-center rounded-full">
-                  <CardTitle>
-                    <Link href={`/ar/${data.id}?target=${targetURL}&model=${modelURL}`}>
-                      <p className="font-mono text-2xl">{characterTitle}</p>
-                    </Link>
-                  </CardTitle>
-                </Card>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p className="text-center text-muted-foreground">{t("ar.page.empty")}</p>
+          <div className="fixed bottom-30 right-5 z-70">
+            <Button variant={"destructive"} onClick={() => setViewStatus("idle")}>
+              Stop AR
+            </Button>
+          </div>
+        </div>
       )}
+
+      <div className="flex justify-center-safe mt-auto">
+        {viewStatus === "idle" && (
+          <Button type="button" onClick={() => setViewStatus("arViewer")}>
+            Start AR
+          </Button>
+        )}
+      </div>
     </main>
   );
-}
-
-function getR2URL(path: string) {
-  return Config.r2ARAssetsBaseURL + path;
 }
 
 function toCharacterKey(title: string) {

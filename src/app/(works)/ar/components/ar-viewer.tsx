@@ -8,6 +8,9 @@ import Loading from "@/app/loading";
 import logger from "@/utils/logger";
 import { Button } from "@/components/ui/button";
 import { useStableTranslation } from "@/hooks/use-translation";
+import { AR, Model } from "../data";
+import Config from "@/models/config";
+import { getR2URL } from "@/utils/get-r2-path";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -33,10 +36,12 @@ MindAR scan UI z-60
   scan-frame overlay
  */
 export default function ARViewer({
-  targetURL = "/ar/targets/adam.mind",
-  modelURL = "/ar/models/adam.glb",
+  arData,
+  targetURL,
+  modelURL,
 }: {
-  targetURL?: string;
+  arData: AR;
+  targetURL: string;
   modelURL?: string;
 }) {
   const sceneRef = useRef<MindArSceneElement | null>(null);
@@ -54,6 +59,18 @@ export default function ARViewer({
   const targetUnlockedRef = useRef(false);
 
   const [cameraError, setCameraError] = useState(false);
+
+  const [activeTargetIndex, setActiveTargetIndex] = useState<number | null>(null);
+  const targetRefs = useRef<(HTMLElement | null)[]>([]);
+  const targetEntries = arData.items.map((item, index) => {
+    return React.createElement("a-entity", {
+      key: item.modelId,
+      ref: (el: HTMLElement | null) => {
+        targetRefs.current[index] = el;
+      },
+      "mindar-image-target": `targetIndex: ${index}`,
+    });
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -126,10 +143,9 @@ export default function ARViewer({
   }, [startAR]);
 
   useEffect(() => {
-    if (!started || !sceneRef.current || !targetRef.current) return;
+    if (!started || !sceneRef.current) return;
 
     const scene = sceneRef.current;
-    const target = targetRef.current;
 
     const handleReady = () => {
       setMindArScanningOverlay(scanUiEnabledRef.current);
@@ -155,15 +171,11 @@ export default function ARViewer({
 
     scene.addEventListener("arReady", handleReady);
     scene.addEventListener("arError", handleError);
-    target.addEventListener("targetFound", handleFound);
-    target.addEventListener("targetLost", handleLost);
     setMindArScanningOverlay(scanUiEnabledRef.current);
 
     return () => {
       scene.removeEventListener("arReady", handleReady);
       scene.removeEventListener("arError", handleError);
-      target.removeEventListener("targetFound", handleFound);
-      target.removeEventListener("targetLost", handleLost);
 
       try {
         scene.systems?.["mindar-image-system"]?.stop?.();
@@ -182,6 +194,51 @@ export default function ARViewer({
     if (!started) return;
     setMindArScanningOverlay(scanUiEnabled);
   }, [started, scanUiEnabled]);
+
+  useEffect(() => {
+    if (!started) return;
+
+    const cleanups = arData.items.map((item, index) => {
+      const el = targetRefs.current[index];
+      if (!el) return () => {};
+
+      const handleFound = () => {
+        setActiveTargetIndex(index);
+        setTargetUnlocked(true);
+        targetUnlockedRef.current = true;
+        setScanUiEnabled(false);
+        scanUiEnabledRef.current = false;
+        setMindArScanningOverlay(false);
+        setStatus(stableT("ar.viewer.status.targetUnlocked"));
+      };
+
+      const handleLost = () => {
+        if (targetUnlockedRef.current) {
+          setStatus(stableT("ar.viewer.status.modelUnlocked"));
+          return;
+        }
+
+        setStatus(stableT("ar.viewer.status.targetLost"));
+      };
+
+      el.addEventListener("targetFound", handleFound);
+      el.addEventListener("targetLost", handleLost);
+
+      return () => {
+        el.removeEventListener("targetFound", handleFound);
+        el.removeEventListener("targetLost", handleLost);
+      };
+    });
+
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+    };
+  }, [started, arData]);
+
+  const activeDataItem = activeTargetIndex !== null ? arData.items[activeTargetIndex] : null;
+  const activeModelURL = activeDataItem ? getR2URL(activeDataItem.modelPath) : null;
+
+  console.debug("🔎", { activeDataItem });
 
   const isLoading = !librariesReady;
 
@@ -223,13 +280,12 @@ export default function ARViewer({
               position: "0 0 0",
               "look-controls": "enabled: false",
             }),
-            React.createElement("a-entity", {
-              ref: targetRef,
-              "mindar-image-target": "targetIndex: 0",
-            })
+            ...targetEntries
           )
         )}
-        {targetUnlocked ? <UnlockedModelOverlay modelURL={modelURL} /> : null}
+        {targetUnlocked && activeModelURL ? (
+          <UnlockedModelOverlay modelURL={activeModelURL} />
+        ) : null}
       </div>
 
       <div className="absolute bottom-20 right-5">

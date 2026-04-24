@@ -5,16 +5,14 @@ import useTranslation from "@/hooks/use-translation";
 import { ImageGallery } from "./image-gallery";
 import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../app/loading";
 import { toast } from "sonner";
 import useProfile from "@/hooks/use-profile";
-import { useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BibleArtwork } from "@/types/bible-artwork";
 import Profile from "@/models/profiles";
 import Intro from "./intro";
 import { QueryKey } from "@/utils/query-keys";
+import { Shimmer } from "shimmer-from-structure";
 
 export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
   const { t, currentLanguage } = useTranslation("gallery");
@@ -26,7 +24,7 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
   //TODO: fetch depends on if user is memenber
   const {
     data: artworks,
-    isLoading,
+    isLoading: isArtworksLoading,
     error,
   } = useQuery({
     queryKey: [QueryKey.artworks],
@@ -41,48 +39,45 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
   }
 
   const isGloryShareMember = Profile.isGloryShareMember(profile);
+  const isLoading = isProfileLoading || isArtworksLoading;
 
   return (
-    <div className="relative z-50">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="mb-16 text-center space-y-10"
-      >
-        <div>
-          <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
-            {t("bibleGallery.title")}
-          </h1>
-          <Intro i18nKey="bibleGallery.intro" />
-        </div>
+    <Shimmer loading={isLoading}>
+      <div className="relative z-50">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-16 text-center space-y-10"
+        >
+          <div>
+            <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
+              {t("bibleGallery.title")}
+            </h1>
+            <Intro i18nKey="bibleGallery.intro" />
+          </div>
 
-        {!isGloryShareMember && (
-          <Link href={"/glory-share"}>
-            <Button
-              variant={"outline"}
-              className="py-10 font-serif rounded-full md:px-5 text-secondary"
-            >
-              <h2 className="text-md md:text-xl text-wrap">
-                {tGloryShare("gallary.joinToEnjoyArtwork")}
-              </h2>
-            </Button>
-          </Link>
-        )}
-      </motion.div>
+          {!isGloryShareMember && (
+            <Link href={"/glory-share"}>
+              <Button
+                variant={"outline"}
+                className="py-10 font-serif rounded-full md:px-5 text-secondary"
+              >
+                <h2 className="text-md md:text-xl text-wrap">
+                  {tGloryShare("gallary.joinToEnjoyArtwork")}
+                </h2>
+              </Button>
+            </Link>
+          )}
+        </motion.div>
 
-      {isLoading ? (
-        <Loading />
-      ) : (
-        artworks && (
-          <ImageGallery
-            artworks={artworks}
-            infiniteScroll={false}
-            book={book}
-            isGloryShareMember={isGloryShareMember}
-          />
-        )
-      )}
-    </div>
+        <ImageGallery
+          artworks={artworks ?? []}
+          infiniteScroll={false}
+          book={book}
+          isGloryShareMember={isGloryShareMember}
+        />
+      </div>
+    </Shimmer>
   );
 }
