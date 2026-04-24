@@ -18,7 +18,8 @@
     "stripe:local:webhook": "stripe listen --forward-to localhost:3000/api/webhook/stripe",
     "stripe:trigger:webhook:checkout.session.completed": "stripe trigger checkout.session.completed --add checkout_session:metadata.uid=1OQnurJ4zEfDN2HGG1VU4DsEgkk1",
     "stripe:trigger:webhook:invoice.paid": "stripe trigger invoice.paid --add invoice:customer=cus_123 --add invoice:metadata.uid=1OQnurJ4zEfDN2HGG1VU4DsEgkk1",
-    "delete:glory-share": "ADMIN_KEY=$ADMIN_KEY TARGET_UID=$TARGET_UID curl -s -X POST http://localhost:3000/api/admin/deleteGloryShare -H 'Content-Type: application/json' -d '{\"adminId\":\"'$ADMIN_KEY'\",\"uid\":\"'$TARGET_UID'\"}'"
+    "delete:glory-share": "ADMIN_KEY=$ADMIN_KEY TARGET_UID=$TARGET_UID curl -s -X POST http://localhost:3000/api/admin/deleteGloryShare -H 'Content-Type: application/json' -d '{\"adminId\":\"'$ADMIN_KEY'\",\"uid\":\"'$TARGET_UID'\"}'",
+    "firebase:deploy.store.rules": "cd ./src/lib/firebase && firebase deploy --only firestore:rules"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
