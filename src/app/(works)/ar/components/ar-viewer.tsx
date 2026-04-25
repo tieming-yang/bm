@@ -441,6 +441,7 @@ function UnlockedModelOverlay({ modelURL, title }: { modelURL: string; title: st
             <group rotation={[rotation.x, rotation.y, 0]} scale={scale}>
               <Center position={[0, 0.7, 0]} rotation={[0, -MODEL_FACE_USER_Y_ROTATION, 0]}>
                 <Text3D
+                  // https://github.com/mrdoob/three.js/blob/dev/examples/fonts/gentilis_regular.typeface.json
                   font="/fonts/gentilis_regular.typeface.json"
                   size={0.1}
                   height={0.025}
