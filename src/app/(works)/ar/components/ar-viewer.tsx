@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { Bounds, Center, useGLTF } from "@react-three/drei";
+import { Bounds, Center, Text3D, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
@@ -11,6 +11,7 @@ import { useStableTranslation } from "@/hooks/use-translation";
 import { AR, Model } from "../data";
 import Config from "@/models/config";
 import { getR2URL } from "@/utils/get-r2-path";
+import toTitle from "@/utils/to-title";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -222,8 +223,6 @@ export default function ARViewer({
   const activeDataItem = activeTargetIndex !== null ? arData.items[activeTargetIndex] : null;
   const activeModelURL = activeDataItem ? getR2URL(activeDataItem.modelPath) : null;
 
-  console.debug("🔎", { activeDataItem });
-
   const isLoading = !librariesReady;
 
   return (
@@ -267,8 +266,8 @@ export default function ARViewer({
             ...targetEntries
           )
         )}
-        {targetUnlocked && activeModelURL ? (
-          <UnlockedModelOverlay modelURL={activeModelURL} />
+        {targetUnlocked && activeDataItem && activeModelURL ? (
+          <UnlockedModelOverlay modelURL={activeModelURL} title={activeDataItem?.title} />
         ) : null}
       </div>
 
@@ -329,7 +328,7 @@ export default function ARViewer({
 }
 
 const MODEL_FACE_USER_Y_ROTATION = -Math.PI / 2;
-function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
+function UnlockedModelOverlay({ modelURL, title }: { modelURL: string; title: string }) {
   const interactionRef = useRef({
     activePointers: new Map<number, { x: number; y: number }>(),
     lastX: 0,
@@ -439,7 +438,24 @@ function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
         <directionalLight position={[2, 3, 4]} intensity={2.2} />
         <React.Suspense fallback={null}>
           <Center>
-            <RotatingGLB modelURL={modelURL} rotation={rotation} scale={scale} />
+            <group rotation={[rotation.x, rotation.y, 0]} scale={scale}>
+              <Center position={[0, 0.7, 0]} rotation={[0, -MODEL_FACE_USER_Y_ROTATION, 0]}>
+                <Text3D
+                  font="/fonts/gentilis_regular.typeface.json"
+                  size={0.1}
+                  height={0.025}
+                  curveSegments={8}
+                  bevelEnabled
+                  bevelThickness={0.003}
+                  bevelSize={0.002}
+                  bevelSegments={2}
+                >
+                  {toTitle(title)}
+                  <meshStandardMaterial color="white" />
+                </Text3D>
+              </Center>
+              <RotatingGLB modelURL={modelURL} />
+            </group>
           </Center>
         </React.Suspense>
       </Canvas>
@@ -447,26 +463,14 @@ function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
   );
 }
 
-function RotatingGLB({
-  modelURL,
-  rotation,
-  scale,
-}: {
-  modelURL: string;
-  rotation: { x: number; y: number };
-  scale: number;
-}) {
+function RotatingGLB({ modelURL }: { modelURL: string }) {
   const { scene } = useGLTF(modelURL);
 
   useEffect(() => {
     console.debug("R3F AR model loaded", { modelURL });
   }, [modelURL]);
 
-  return (
-    <group rotation={[rotation.x, rotation.y, 0]} scale={scale}>
-      <primitive object={scene} />
-    </group>
-  );
+  return <primitive object={scene} />;
 }
 
 function clamp(value: number, min: number, max: number) {
