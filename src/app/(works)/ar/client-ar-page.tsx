@@ -51,7 +51,7 @@ export default function ClientARPage() {
 
           <div className="fixed bottom-30 right-5 z-70">
             <Button variant={"destructive"} onClick={() => setViewStatus("idle")}>
-              Stop AR
+              {t("ar.page.rescan")}
             </Button>
           </div>
         </div>
@@ -60,7 +60,7 @@ export default function ClientARPage() {
       <div className="flex justify-center-safe mt-auto">
         {viewStatus === "idle" && (
           <Button type="button" onClick={() => setViewStatus("arViewer")}>
-            Start AR
+            {t("ar.page.start")}
           </Button>
         )}
       </div>
