@@ -4,12 +4,12 @@
       "title": "聖經 AR",
       "intro": "透過影像辨識與 3D 互動走進聖經，讓經文人物在你眼前立體呈現，陪你在光影中遇見神的故事。",
       "empty": "目前尚未開放 AR 體驗。",
-      "start": "啟動AR體驗",
-      "rescan": "重新掃描"
+      "start": "啟動AR體驗"
     },
     "viewer": {
       "actions": {
-        "tryAgain": "再試一次"
+        "tryAgain": "再試一次",
+        "rescan": "重新掃描"
       },
       "errors": {
         "missingAssetUrls": "缺少辨識圖或模型網址。"

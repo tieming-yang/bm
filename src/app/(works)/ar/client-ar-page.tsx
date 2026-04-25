@@ -48,12 +48,12 @@ export default function ClientARPage() {
       {viewStatus === "arViewer" && (
         <div>
           <ARViewer arData={arData[0]} targetURL={getR2URL(arData[0].targetsPath)} />
-
+          {/* 
           <div className="fixed bottom-30 right-5 z-70">
             <Button variant={"destructive"} onClick={() => setViewStatus("idle")}>
               {t("ar.page.rescan")}
             </Button>
-          </div>
+          </div> */}
         </div>
       )}
 

@@ -4,12 +4,12 @@
       "title": "Bible AR",
       "intro": "Step into Scripture through image recognition and 3D interaction, meeting Bible characters in the space before you.",
       "empty": "No AR experiences are available yet.",
-      "start": "Start AR",
-      "rescan": "Rescan"
+      "start": "Start AR"
     },
     "viewer": {
       "actions": {
-        "tryAgain": "Try Again"
+        "tryAgain": "Try Again",
+        "rescan": "Rescan"
       },
       "errors": {
         "missingAssetUrls": "Missing target or model URL."

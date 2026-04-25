@@ -152,22 +152,6 @@ export default function ARViewer({
       setStatus(stableT("ar.viewer.status.pointAtTarget"));
     };
     const handleError = () => setStatus(stableT("ar.viewer.status.cameraFailed"));
-    const handleFound = () => {
-      setTargetUnlocked(true);
-      targetUnlockedRef.current = true;
-      setScanUiEnabled(false);
-      scanUiEnabledRef.current = false;
-      setMindArScanningOverlay(false);
-      setStatus(stableT("ar.viewer.status.targetUnlocked"));
-    };
-    const handleLost = () => {
-      if (targetUnlockedRef.current) {
-        setStatus(stableT("ar.viewer.status.modelUnlocked"));
-        return;
-      }
-
-      setStatus(stableT("ar.viewer.status.targetLost"));
-    };
 
     scene.addEventListener("arReady", handleReady);
     scene.addEventListener("arError", handleError);
@@ -288,11 +272,28 @@ export default function ARViewer({
         ) : null}
       </div>
 
+      {/* Controls */}
       <div className="absolute bottom-20 right-5">
         <div>
           {cameraError && (
             <Button type="button" onClick={startAR}>
               {t("ar.viewer.actions.tryAgain")}
+            </Button>
+          )}
+          {activeTargetIndex && (
+            <Button
+              type="button"
+              onClick={() => {
+                setActiveTargetIndex(null);
+                setTargetUnlocked(false);
+                targetUnlockedRef.current = false;
+                setScanUiEnabled(true);
+                scanUiEnabledRef.current = true;
+                setMindArScanningOverlay(true);
+                setStatus("reopen scanner");
+              }}
+            >
+              {t("ar.viewer.actions.rescan")}
             </Button>
           )}
         </div>
