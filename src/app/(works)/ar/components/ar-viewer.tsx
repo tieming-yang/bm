@@ -280,7 +280,7 @@ export default function ARViewer({
               {t("ar.viewer.actions.tryAgain")}
             </Button>
           )}
-          {activeTargetIndex && (
+          {activeTargetIndex !== null && (
             <Button
               type="button"
               onClick={() => {
@@ -330,30 +330,67 @@ export default function ARViewer({
 
 const MODEL_FACE_USER_Y_ROTATION = -Math.PI / 2;
 function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
-  const dragRef = useRef({
-    isDragging: false,
+  const interactionRef = useRef({
+    activePointers: new Map<number, { x: number; y: number }>(),
     lastX: 0,
     lastY: 0,
+    pinchStartDistance: 0,
+    pinchStartScale: 1,
   });
   const [rotation, setRotation] = useState({ x: 0, y: MODEL_FACE_USER_Y_ROTATION });
+  const [scale, setScale] = useState(1);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    dragRef.current = {
-      isDragging: true,
-      lastX: event.clientX,
-      lastY: event.clientY,
-    };
+    const pointers = interactionRef.current.activePointers;
+
+    pointers.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    if (pointers.size === 1) {
+      interactionRef.current.lastX = event.clientX;
+      interactionRef.current.lastY = event.clientY;
+    }
+
+    if (pointers.size === 2) {
+      interactionRef.current.pinchStartDistance = getPointerDistance(pointers);
+      interactionRef.current.pinchStartScale = scale;
+    }
+
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragRef.current.isDragging) return;
+    const pointers = interactionRef.current.activePointers;
 
-    const deltaX = event.clientX - dragRef.current.lastX;
-    const deltaY = event.clientY - dragRef.current.lastY;
+    if (!pointers.has(event.pointerId)) return;
 
-    dragRef.current.lastX = event.clientX;
-    dragRef.current.lastY = event.clientY;
+    pointers.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    if (pointers.size === 2) {
+      const currentDistance = getPointerDistance(pointers);
+      const startDistance = interactionRef.current.pinchStartDistance;
+
+      if (startDistance > 0) {
+        const nextScale =
+          interactionRef.current.pinchStartScale * (currentDistance / startDistance);
+        setScale(clamp(nextScale, 0.5, 3));
+      }
+
+      return;
+    }
+
+    if (pointers.size !== 1) return;
+
+    const deltaX = event.clientX - interactionRef.current.lastX;
+    const deltaY = event.clientY - interactionRef.current.lastY;
+
+    interactionRef.current.lastX = event.clientX;
+    interactionRef.current.lastY = event.clientY;
 
     setRotation((current) => ({
       x: clamp(current.x + deltaY * 0.01, -0.8, 0.8),
@@ -362,10 +399,23 @@ function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
   };
 
   const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
-    dragRef.current.isDragging = false;
+    const pointers = interactionRef.current.activePointers;
+
+    pointers.delete(event.pointerId);
 
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    if (pointers.size === 1) {
+      const [remainingPointer] = Array.from(pointers.values());
+      interactionRef.current.lastX = remainingPointer.x;
+      interactionRef.current.lastY = remainingPointer.y;
+    }
+
+    if (pointers.size < 2) {
+      interactionRef.current.pinchStartDistance = 0;
+      interactionRef.current.pinchStartScale = scale;
     }
   };
 
@@ -388,11 +438,9 @@ function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
         <ambientLight intensity={1.6} />
         <directionalLight position={[2, 3, 4]} intensity={2.2} />
         <React.Suspense fallback={null}>
-          <Bounds fit clip observe margin={1.15}>
-            <Center>
-              <RotatingGLB modelURL={modelURL} rotation={rotation} />
-            </Center>
-          </Bounds>
+          <Center>
+            <RotatingGLB modelURL={modelURL} rotation={rotation} scale={scale} />
+          </Center>
         </React.Suspense>
       </Canvas>
     </div>
@@ -402,9 +450,11 @@ function UnlockedModelOverlay({ modelURL }: { modelURL: string }) {
 function RotatingGLB({
   modelURL,
   rotation,
+  scale,
 }: {
   modelURL: string;
   rotation: { x: number; y: number };
+  scale: number;
 }) {
   const { scene } = useGLTF(modelURL);
 
@@ -413,7 +463,7 @@ function RotatingGLB({
   }, [modelURL]);
 
   return (
-    <group rotation={[rotation.x, rotation.y, 0]}>
+    <group rotation={[rotation.x, rotation.y, 0]} scale={scale}>
       <primitive object={scene} />
     </group>
   );
@@ -421,6 +471,14 @@ function RotatingGLB({
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
+}
+
+function getPointerDistance(pointers: Map<number, { x: number; y: number }>) {
+  const [firstPointer, secondPointer] = Array.from(pointers.values());
+
+  if (!firstPointer || !secondPointer) return 0;
+
+  return Math.hypot(firstPointer.x - secondPointer.x, firstPointer.y - secondPointer.y);
 }
 
 function setMindArScanningOverlay(enabled: boolean) {
