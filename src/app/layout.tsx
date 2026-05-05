@@ -74,10 +74,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Suspense fallback={<Loading />}>
               <ClientRoot>
                 <Header />
-                <main className="relative flex flex-col">
-                  {/* <Breadcrumb /> */}
-                  {children}
-                </main>
+                <main className="relative flex flex-col">{children}</main>
                 <Navbar />
                 <Footer />
               </ClientRoot>
