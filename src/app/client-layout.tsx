@@ -30,7 +30,7 @@ function ClientRoot({ children }: React.PropsWithChildren) {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
       <motion.div
         key={pathname}
-        className="fixed inset-0 z-50 pointer-events-none"
+        className="fixed inset-0 z-50 pointer-events-none bg-primary-gradient-50"
         initial={{ opacity: 1, backdropFilter: "blur(20px)" }}
         animate={{ opacity: 0, backdropFilter: "blur(0px)" }}
         transition={{ duration: 1.5, ease: "easeOut" }}
