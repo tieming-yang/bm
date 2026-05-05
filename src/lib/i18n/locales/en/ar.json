@@ -4,7 +4,39 @@
       "title": "Bible AR",
       "intro": "Step into Scripture through image recognition and 3D interaction, meeting Bible characters in the space before you.",
       "empty": "No AR experiences are available yet.",
-      "start": "Start AR"
+      "start": "Start AR",
+      "experience": {
+        "badge": "AR Guide",
+        "title": "How It Works",
+        "description": "Follow these steps to launch the AR experience and watch Bible characters appear from the card in front of you.",
+        "steps": [
+          {
+            "number": "01",
+            "title": "Prepare the card",
+            "description": "Have your Bible character card ready and make sure the printed image is clear and unobstructed."
+          },
+          {
+            "number": "02",
+            "title": "Start AR",
+            "description": "Tap the start button to enter AR scanning mode."
+          },
+          {
+            "number": "03",
+            "title": "Allow camera access",
+            "description": "Grant camera permission when prompted so the experience can recognize the card."
+          },
+          {
+            "number": "04",
+            "title": "Point at the card",
+            "description": "Hold your camera steadily over the card and wait for the image to be recognized."
+          },
+          {
+            "number": "05",
+            "title": "Explore the story",
+            "description": "Once the 3D Bible character appears, interact and continue exploring the story."
+          }
+        ]
+      }
     },
     "viewer": {
       "actions": {

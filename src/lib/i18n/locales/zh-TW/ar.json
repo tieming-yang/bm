@@ -4,7 +4,39 @@
       "title": "聖經 AR",
       "intro": "透過影像辨識與 3D 互動走進聖經，讓經文人物在你眼前立體呈現，陪你在光影中遇見神的故事。",
       "empty": "目前尚未開放 AR 體驗。",
-      "start": "啟動AR體驗"
+      "start": "啟動AR體驗",
+      "experience": {
+        "badge": "AR 指南",
+        "title": "體驗方式",
+        "description": "跟著以下步驟開啟 AR 體驗，讓聖經人物從卡片中立體現身。",
+        "steps": [
+          {
+            "number": "01",
+            "title": "準備人物卡",
+            "description": "先拿好你的聖經人物卡片，並保持卡面完整清晰。"
+          },
+          {
+            "number": "02",
+            "title": "啟動 AR 體驗",
+            "description": "按下啟動按鈕，進入 AR 掃描模式。"
+          },
+          {
+            "number": "03",
+            "title": "允許相機權限",
+            "description": "依照裝置提示開啟相機權限，讓系統可以辨識卡片。"
+          },
+          {
+            "number": "04",
+            "title": "對準卡片掃描",
+            "description": "將鏡頭穩定對準人物卡片，等待畫面成功辨識。"
+          },
+          {
+            "number": "05",
+            "title": "互動探索故事",
+            "description": "看見立體聖經人物後，即可開始互動並探索故事內容。"
+          }
+        ]
+      }
     },
     "viewer": {
       "actions": {
