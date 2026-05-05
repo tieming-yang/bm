@@ -8,6 +8,10 @@ const sandboxes = [
     title: "AR",
     path: "/sandbox/ar",
   },
+  {
+    title: "3D",
+    path: "/sandbox/3d",
+  },
 ];
 export default function SandBox() {
   return (
