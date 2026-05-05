@@ -1,17 +1,14 @@
 "use client";
 
 import { toast } from "sonner";
-import { Bounds, Center, Text3D, useGLTF } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
 import logger from "@/utils/logger";
 import { Button } from "@/components/ui/button";
 import { useStableTranslation } from "@/hooks/use-translation";
-import { AR, Model } from "../data";
-import Config from "@/models/config";
+import { AR } from "../data";
 import { getR2URL } from "@/utils/get-r2-path";
-import toTitle from "@/utils/to-title";
+import ModelOverlay from "./model-overlay";
 
 type MindArSceneElement = HTMLElement & {
   systems?: {
@@ -46,7 +43,6 @@ export default function ARViewer({
   modelURL?: string;
 }) {
   const sceneRef = useRef<MindArSceneElement | null>(null);
-  const targetRef = useRef<HTMLElement | null>(null);
   const { t, stableT } = useStableTranslation("ar");
   const hasAutoStartedRef = useRef(false);
   const [librariesReady, setLibrariesReady] = useState(false);
@@ -267,7 +263,11 @@ export default function ARViewer({
           )
         )}
         {targetUnlocked && activeDataItem && activeModelURL ? (
-          <UnlockedModelOverlay modelURL={activeModelURL} title={activeDataItem?.title} />
+          <ModelOverlay
+            modelURL={activeModelURL}
+            title={activeDataItem.title}
+            zhTitle={activeDataItem.zhTitle}
+          />
         ) : null}
       </div>
 
@@ -325,165 +325,6 @@ export default function ARViewer({
       `}</style>
     </main>
   );
-}
-
-const MODEL_FACE_USER_Y_ROTATION = -Math.PI / 2;
-function UnlockedModelOverlay({ modelURL, title }: { modelURL: string; title: string }) {
-  const interactionRef = useRef({
-    activePointers: new Map<number, { x: number; y: number }>(),
-    lastX: 0,
-    lastY: 0,
-    pinchStartDistance: 0,
-    pinchStartScale: 1,
-  });
-  const [rotation, setRotation] = useState({ x: 0, y: MODEL_FACE_USER_Y_ROTATION });
-  const [scale, setScale] = useState(1);
-
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    const pointers = interactionRef.current.activePointers;
-
-    pointers.set(event.pointerId, {
-      x: event.clientX,
-      y: event.clientY,
-    });
-
-    if (pointers.size === 1) {
-      interactionRef.current.lastX = event.clientX;
-      interactionRef.current.lastY = event.clientY;
-    }
-
-    if (pointers.size === 2) {
-      interactionRef.current.pinchStartDistance = getPointerDistance(pointers);
-      interactionRef.current.pinchStartScale = scale;
-    }
-
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    const pointers = interactionRef.current.activePointers;
-
-    if (!pointers.has(event.pointerId)) return;
-
-    pointers.set(event.pointerId, {
-      x: event.clientX,
-      y: event.clientY,
-    });
-
-    if (pointers.size === 2) {
-      const currentDistance = getPointerDistance(pointers);
-      const startDistance = interactionRef.current.pinchStartDistance;
-
-      if (startDistance > 0) {
-        const nextScale =
-          interactionRef.current.pinchStartScale * (currentDistance / startDistance);
-        setScale(clamp(nextScale, 0.5, 3));
-      }
-
-      return;
-    }
-
-    if (pointers.size !== 1) return;
-
-    const deltaX = event.clientX - interactionRef.current.lastX;
-    const deltaY = event.clientY - interactionRef.current.lastY;
-
-    interactionRef.current.lastX = event.clientX;
-    interactionRef.current.lastY = event.clientY;
-
-    setRotation((current) => ({
-      x: clamp(current.x + deltaY * 0.01, -0.8, 0.8),
-      y: current.y + deltaX * 0.01,
-    }));
-  };
-
-  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
-    const pointers = interactionRef.current.activePointers;
-
-    pointers.delete(event.pointerId);
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-
-    if (pointers.size === 1) {
-      const [remainingPointer] = Array.from(pointers.values());
-      interactionRef.current.lastX = remainingPointer.x;
-      interactionRef.current.lastY = remainingPointer.y;
-    }
-
-    if (pointers.size < 2) {
-      interactionRef.current.pinchStartDistance = 0;
-      interactionRef.current.pinchStartScale = scale;
-    }
-  };
-
-  return (
-    <div
-      className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
-      style={{ touchAction: "none" }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerEnd}
-      onPointerCancel={handlePointerEnd}
-    >
-      <Canvas
-        camera={{ position: [0, 0, 3.2], fov: 35 }}
-        gl={{ alpha: true, antialias: true }}
-        onCreated={({ gl }) => {
-          gl.setClearAlpha(0);
-        }}
-      >
-        <ambientLight intensity={1.6} />
-        <directionalLight position={[2, 3, 4]} intensity={2.2} />
-        <React.Suspense fallback={null}>
-          <Center>
-            <group rotation={[rotation.x, rotation.y, 0]} scale={scale}>
-              <Center position={[0, 0.7, 0]} rotation={[0, -MODEL_FACE_USER_Y_ROTATION, 0]}>
-                <Text3D
-                  // https://github.com/mrdoob/three.js/blob/dev/examples/fonts/gentilis_regular.typeface.json
-                  font="/fonts/gentilis_regular.typeface.json"
-                  size={0.1}
-                  height={0.025}
-                  curveSegments={8}
-                  bevelEnabled
-                  bevelThickness={0.003}
-                  bevelSize={0.002}
-                  bevelSegments={2}
-                >
-                  {toTitle(title)}
-                  <meshStandardMaterial color="white" />
-                </Text3D>
-              </Center>
-              <RotatingGLB modelURL={modelURL} />
-            </group>
-          </Center>
-        </React.Suspense>
-      </Canvas>
-    </div>
-  );
-}
-
-function RotatingGLB({ modelURL }: { modelURL: string }) {
-  const { scene } = useGLTF(modelURL);
-
-  useEffect(() => {
-    console.debug("R3F AR model loaded", { modelURL });
-  }, [modelURL]);
-
-  return <primitive object={scene} />;
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
-
-function getPointerDistance(pointers: Map<number, { x: number; y: number }>) {
-  const [firstPointer, secondPointer] = Array.from(pointers.values());
-
-  if (!firstPointer || !secondPointer) return 0;
-
-  return Math.hypot(firstPointer.x - secondPointer.x, firstPointer.y - secondPointer.y);
 }
 
 function setMindArScanningOverlay(enabled: boolean) {

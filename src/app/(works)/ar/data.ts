@@ -40,6 +40,7 @@ const ARScheme = z.object({
     z.object({
       modelId: z.string(),
       title: z.string(),
+      zhTitle: z.string().optional(),
       modelPath: z.string(),
     })
   ),
