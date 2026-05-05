@@ -115,13 +115,13 @@ export default function Navbar() {
             )}
             {isMounted && (
               <div className="flex gap-x-5">
-                {/* {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
+                {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
                   <Link href="/sandbox">
                     <Button variant={"outline"} size={"default"}>
                       <Axe />
                     </Button>
                   </Link>
-                )} */}
+                )}
                 <div className="hidden xl:block">
                   <LanguageSwitcher />
                 </div>
