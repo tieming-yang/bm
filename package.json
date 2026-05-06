@@ -1,5 +1,5 @@
 {
-  "name": "my-v0-project",
+  "name": "Beyond Digital Media",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,6 @@
       "canvas"
     ]
   },
-  "packageManager": "pnpm@11.0.6",
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:https": "next dev --turbopack --experimental-https -H 0.0.0.0",
