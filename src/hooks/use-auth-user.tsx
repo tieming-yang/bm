@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
@@ -6,10 +6,12 @@ import Auth from "@/models/auth";
 
 export default function useAuthUser() {
   const query = useQueryClient();
+  const [hasResolvedAuthState, setHasResolvedAuthState] = useState(() => !!Auth.user);
 
   useEffect(() => {
     const unsubscribe = Auth.onAuthStateChanged((user) => {
       query.setQueryData<User | null>(QueryKey.authUser, user ?? null);
+      setHasResolvedAuthState(true);
     });
     return unsubscribe;
     // query client instance is stable for the lifetime of the provider
@@ -18,7 +20,6 @@ export default function useAuthUser() {
 
   const {
     data: authUser,
-    isLoading: isAuthUserLoading,
     error: authUserError,
   } = useQuery<User | null>({
     queryKey: QueryKey.authUser,
@@ -27,6 +28,8 @@ export default function useAuthUser() {
     staleTime: 0,
     refetchOnMount: "always",
   });
+
+  const isAuthUserLoading = !hasResolvedAuthState;
 
   return { authUser, isAuthUserLoading, authUserError };
 }
