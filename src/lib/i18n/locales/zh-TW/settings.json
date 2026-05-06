@@ -7,7 +7,8 @@
     "accessDeniedDescription": "找不到此頁面",
     "notFoundTitle": "找不到帳戶資料",
     "notFoundDescription": "無法載入所要求的帳戶資料。",
-    "backToOwnProfile": "回到我的帳戶"
+    "backToOwnProfile": "回到我的帳戶",
+    "goToDashboard": "前往儀表板"
   },
   "donator": {
     "title": "個人資訊",

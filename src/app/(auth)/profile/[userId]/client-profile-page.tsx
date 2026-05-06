@@ -445,6 +445,17 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 {tGloryShare("gloryShare.hero.primaryCta")}
               </Button>
             )}
+            {Profile.isPrivilegedRole(profile.role) && (
+              <Button
+                variant={"outline"}
+                className="px-8 rounded-full"
+                onClick={() => {
+                  router.push("/dashboard");
+                }}
+              >
+                {t("profile.goToDashboard")}
+              </Button>
+            )}
             <SignOutButton />
           </CardFooter>
         )}

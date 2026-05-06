@@ -7,7 +7,8 @@
     "accessDeniedDescription": "Not found",
     "notFoundTitle": "Profile not found",
     "notFoundDescription": "The requested profile could not be loaded.",
-    "backToOwnProfile": "Back to my profile"
+    "backToOwnProfile": "Back to my profile",
+    "goToDashboard": "Go to dashboard"
   },
   "donator": {
     "title": "Personal Information",
