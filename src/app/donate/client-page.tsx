@@ -1,13 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart } from "lucide-react";
 import useTranslation from "@/hooks/use-translation";
 
@@ -15,7 +9,7 @@ export default function ClientDonatePage() {
   const { t } = useTranslation("donate");
 
   return (
-    <div className="container relative z-50 px-4 py-12 mx-auto">
+    <div className="container relative z-50 px-4 py-12 mx-auto min-h-svh">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
