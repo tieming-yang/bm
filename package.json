@@ -7,10 +7,7 @@
     "onlyBuiltDependencies": [],
     "ignoredBuiltDependencies": [
       "canvas"
-    ],
-    "overrides": {
-      "three-bmfont-text": "npm:three-bmfont-text@^2.0.0"
-    }
+    ]
   },
   "packageManager": "pnpm@11.0.6",
   "scripts": {
