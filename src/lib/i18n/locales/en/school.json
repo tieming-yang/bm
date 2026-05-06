@@ -245,6 +245,7 @@
       "signatureDescription": "Type your full legal name to confirm this registration.",
       "syncFamilyProfileLabel": "Update my saved family profile with these changes",
       "syncFamilyProfileDescription": "We will update your EB volunteer status and save the submitted children to your profile without deleting existing children.",
+      "confirmProfileDetailsUpdate": "Your saved profile information is different from this registration. Do you want to update your profile with these new details?",
       "submitDescriptionAuthed": "Submitting will create a read-only registration record for staff review.",
       "submitDescriptionGuest": "Submit will send you to signup first, then bring you back to finish the registration.",
       "submit": "Submit Registration",
@@ -254,7 +255,8 @@
       "closeCalendar": "Close",
       "toast": {
         "success": "Registration submitted successfully.",
-        "error": "Unable to submit the registration. Please try again."
+        "error": "Unable to submit the registration. Please try again.",
+        "mustAgreeLiability": "You must agree to the liability and medical release to continue."
       },
       "fields": {
         "firstName": "First Name",

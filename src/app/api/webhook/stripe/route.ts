@@ -45,7 +45,12 @@ export async function POST(req: NextRequest) {
             line2: session.customer_details?.address?.line2 ?? null,
             postalCode: session.customer_details?.address?.postal_code ?? null,
             state: session.customer_details?.address?.state ?? null,
-          }
+          },
+          emergencyContact: {
+            firstName: null,
+            lastName: null,
+            phoneNumber: null,
+          },
         }
         const transactionData = {
           sessionId: session.id,

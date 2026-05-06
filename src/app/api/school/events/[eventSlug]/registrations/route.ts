@@ -1,7 +1,6 @@
 import API from "@/app/api/api";
 import {
   FORM_ID,
-  FamilyProfileUpdateSchema,
   ProfileSavedChild,
   SummerCampDashboardStudentRow,
   SummerCampRegistrationDocumentSchema,
@@ -97,8 +96,25 @@ export async function POST(
       const currentProfile = profileSnap.data() as {
         email?: string | null;
         savedChildren?: ProfileSavedChild[];
+        memberDetails?: {
+          name?: string | null;
+          phone?: string | null;
+          address?: {
+            line1?: string | null;
+            line2?: string | null;
+            city?: string | null;
+            state?: string | null;
+            country?: string | null;
+            postalCode?: string | null;
+          };
+          emergencyContact?: {
+            firstName?: string | null;
+            lastName?: string | null;
+            phoneNumber?: string | null;
+          };
+        };
       };
-      const { syncFamilyProfile, ...registrationData } = parsed.data;
+      const { syncFamilyProfile, syncProfileDetails, ...registrationData } = parsed.data;
 
       tx.set(registrationRef, {
         ...registrationData,
@@ -110,20 +126,42 @@ export async function POST(
         updatedAt: FieldValue.serverTimestamp(),
       });
 
-      if (!syncFamilyProfile) return;
+      if (syncFamilyProfile) {
+        const savedChildren = upsertSavedChildren(currentProfile.savedChildren ?? [], parsed.data.children);
 
-      const savedChildren = upsertSavedChildren(currentProfile.savedChildren ?? [], parsed.data.children);
-      const familyPatch = FamilyProfileUpdateSchema.parse({
-        section: "family",
-        isEbVolunteer: parsed.data.parent.isEbVolunteer,
-        savedChildren,
-      });
+        tx.set(
+          profileRef,
+          {
+            savedChildren,
+            updatedAt: FieldValue.serverTimestamp(),
+          },
+          { merge: true }
+        );
+      }
+
+      if (!syncProfileDetails) return;
 
       tx.set(
         profileRef,
         {
-          isEbVolunteer: familyPatch.isEbVolunteer,
-          savedChildren: familyPatch.savedChildren,
+          isEbVolunteer: parsed.data.parent.isEbVolunteer,
+          memberDetails: {
+            name: `${parsed.data.parent.firstName} ${parsed.data.parent.lastName}`.trim(),
+            phone: parsed.data.parent.cellPhone,
+            address: {
+              line1: parsed.data.address.line1,
+              line2: parsed.data.address.line2 || null,
+              city: parsed.data.address.city,
+              state: parsed.data.address.state,
+              country: parsed.data.address.country,
+              postalCode: parsed.data.address.zipCode,
+            },
+            emergencyContact: {
+              firstName: parsed.data.emergencyContact.firstName,
+              lastName: parsed.data.emergencyContact.lastName,
+              phoneNumber: parsed.data.emergencyContact.phoneNumber,
+            },
+          },
           updatedAt: FieldValue.serverTimestamp(),
         },
         { merge: true }

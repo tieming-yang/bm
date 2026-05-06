@@ -212,12 +212,14 @@ export const SummerCampRegistrationFormSchema = z.object({
   consents: RegistrationConsentSchema,
   signatureFullName: TrimmedRequiredStringSchema,
   syncFamilyProfile: z.boolean(),
+  syncProfileDetails: z.boolean(),
 });
 
 export const SummerCampRegistrationDraftSchema = SummerCampRegistrationFormSchema.deepPartial();
 
 export const SummerCampRegistrationDocumentSchema = SummerCampRegistrationFormSchema.omit({
   syncFamilyProfile: true,
+  syncProfileDetails: true,
 }).extend({
   formId: z.literal(FORM_ID),
   eventSlug: SupportedEventSlugSchema,
@@ -330,6 +332,7 @@ export function createDefaultRegistrationFormValues(options?: {
     },
     signatureFullName: "",
     syncFamilyProfile: false,
+    syncProfileDetails: false,
   };
 }
 

@@ -51,18 +51,25 @@ type Profile = ProfileInput & {
 };
 
 export interface MemberDetails {
-  name: string;
-  phone: null;
+  name: string | null;
+  phone: string | null;
   address: Address;
+  emergencyContact?: EmergencyContact;
+}
+
+export interface EmergencyContact {
+  firstName: string | null;
+  lastName: string | null;
+  phoneNumber: string | null;
 }
 
 export interface Address {
-  state: string;
-  city: string;
-  line2: null;
-  country: string;
-  postalCode: string;
-  line1: string;
+  state: string | null;
+  city: string | null;
+  line2: string | null;
+  country: string | null;
+  postalCode: string | null;
+  line1: string | null;
 }
 
 export const MemberType = {
@@ -134,6 +141,23 @@ const Profile = {
 
     return {
       ...snap.data(),
+      memberDetails: {
+        name: snap.data()?.memberDetails?.name ?? null,
+        phone: snap.data()?.memberDetails?.phone ?? null,
+        address: {
+          state: snap.data()?.memberDetails?.address?.state ?? null,
+          city: snap.data()?.memberDetails?.address?.city ?? null,
+          line2: snap.data()?.memberDetails?.address?.line2 ?? null,
+          country: snap.data()?.memberDetails?.address?.country ?? null,
+          postalCode: snap.data()?.memberDetails?.address?.postalCode ?? null,
+          line1: snap.data()?.memberDetails?.address?.line1 ?? null,
+        },
+        emergencyContact: {
+          firstName: snap.data()?.memberDetails?.emergencyContact?.firstName ?? null,
+          lastName: snap.data()?.memberDetails?.emergencyContact?.lastName ?? null,
+          phoneNumber: snap.data()?.memberDetails?.emergencyContact?.phoneNumber ?? null,
+        },
+      },
       isEbVolunteer: snap.data()?.isEbVolunteer ?? null,
       savedChildren: snap.data()?.savedChildren ?? [],
       subscriptions,

@@ -20,7 +20,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogClose,
@@ -46,6 +45,7 @@ import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import Auth from "@/models/auth";
 import Profile from "@/models/profiles";
+import type ProfileModel from "@/models/profiles";
 import {
   DEFAULT_COUNTRY,
   EVENT_LOCATION_ADDRESS,
@@ -114,6 +114,10 @@ function clearRegistrationDraft() {
   window.sessionStorage.removeItem(REGISTRATION_DRAFT_STORAGE_KEY);
 }
 
+function preferDraftString(draftValue: string | undefined, defaultValue: string) {
+  return draftValue && draftValue.trim() ? draftValue : defaultValue;
+}
+
 function mergeRegistrationDraft(
   defaults: SummerCampRegistrationFormInput,
   draft: SummerCampRegistrationDraft | null,
@@ -131,16 +135,40 @@ function mergeRegistrationDraft(
         : defaults.children,
     parent: {
       ...defaults.parent,
-      ...(draft?.parent ?? {}),
+      firstName: preferDraftString(draft?.parent?.firstName, defaults.parent.firstName),
+      lastName: preferDraftString(draft?.parent?.lastName, defaults.parent.lastName),
+      email: preferDraftString(draft?.parent?.email, defaults.parent.email),
+      cellPhone: preferDraftString(draft?.parent?.cellPhone, defaults.parent.cellPhone),
+      isChurchMember: draft?.parent?.isChurchMember ?? defaults.parent.isChurchMember,
+      isEbVolunteer: draft?.parent?.isEbVolunteer ?? defaults.parent.isEbVolunteer,
     },
     address: {
       ...defaults.address,
-      ...(draft?.address ?? {}),
+      line1: preferDraftString(draft?.address?.line1, defaults.address.line1),
+      line2: draft?.address?.line2?.trim() ? draft.address.line2 : defaults.address.line2,
+      city: preferDraftString(draft?.address?.city, defaults.address.city),
+      state:
+        draft?.address?.state &&
+        US_STATE_OPTIONS.some((option) => option.value === draft.address?.state)
+          ? draft.address.state
+          : defaults.address.state,
       country: DEFAULT_COUNTRY,
+      zipCode: preferDraftString(draft?.address?.zipCode, defaults.address.zipCode),
     },
     emergencyContact: {
       ...defaults.emergencyContact,
-      ...(draft?.emergencyContact ?? {}),
+      firstName: preferDraftString(
+        draft?.emergencyContact?.firstName,
+        defaults.emergencyContact.firstName
+      ),
+      lastName: preferDraftString(
+        draft?.emergencyContact?.lastName,
+        defaults.emergencyContact.lastName
+      ),
+      phoneNumber: preferDraftString(
+        draft?.emergencyContact?.phoneNumber,
+        defaults.emergencyContact.phoneNumber
+      ),
     },
     consents: {
       ...defaults.consents,
@@ -148,6 +176,7 @@ function mergeRegistrationDraft(
     },
     signatureFullName: draft?.signatureFullName ?? defaults.signatureFullName,
     syncFamilyProfile: draft?.syncFamilyProfile ?? defaults.syncFamilyProfile,
+    syncProfileDetails: draft?.syncProfileDetails ?? defaults.syncProfileDetails,
   };
 
   if (!merged.parent.email && parentEmail) {
@@ -159,6 +188,164 @@ function mergeRegistrationDraft(
   }
 
   return merged;
+}
+
+function splitMemberName(fullName?: string | null) {
+  const normalized = fullName?.trim() ?? "";
+  if (!normalized) {
+    return {
+      firstName: "",
+      lastName: "",
+    };
+  }
+
+  const parts = normalized.split(/\s+/);
+  if (parts.length === 1) {
+    return {
+      firstName: normalized,
+      lastName: "",
+    };
+  }
+
+  return {
+    firstName: parts[0] ?? "",
+    lastName: parts.slice(1).join(" "),
+  };
+}
+
+function createProfilePrefilledDefaults(profile?: ProfileModel, parentEmail?: string | null) {
+  const defaults = createDefaultRegistrationFormValues({
+    parentEmail,
+    isEbVolunteer: profile?.isEbVolunteer ?? null,
+  });
+  const { firstName, lastName } = splitMemberName(profile?.memberDetails?.name);
+  const profileAddress = profile?.memberDetails?.address;
+  const emergencyContact = profile?.memberDetails?.emergencyContact;
+  const stateValue =
+    profileAddress?.state &&
+    US_STATE_OPTIONS.some((option) => option.value === profileAddress.state)
+      ? profileAddress.state
+      : defaults.address.state;
+
+  return {
+    ...defaults,
+    parent: {
+      ...defaults.parent,
+      firstName,
+      lastName,
+      cellPhone: profile?.memberDetails?.phone ?? "",
+    },
+    address: {
+      ...defaults.address,
+      line1: profileAddress?.line1 ?? "",
+      line2: profileAddress?.line2 ?? "",
+      city: profileAddress?.city ?? "",
+      state: stateValue,
+      country: DEFAULT_COUNTRY,
+      zipCode: profileAddress?.postalCode ?? "",
+    },
+    emergencyContact: {
+      ...defaults.emergencyContact,
+      firstName: emergencyContact?.firstName ?? "",
+      lastName: emergencyContact?.lastName ?? "",
+      phoneNumber: emergencyContact?.phoneNumber ?? "",
+    },
+  } satisfies SummerCampRegistrationFormInput;
+}
+
+type ProfileDetailsSnapshot = {
+  name: string;
+  phone: string;
+  address: {
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+  };
+  emergencyContact: {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+  };
+  isEbVolunteer: boolean | null;
+};
+
+function normalizeText(value?: string | null) {
+  return value?.trim() ?? "";
+}
+
+function createProfileDetailsSnapshotFromProfile(profile?: ProfileModel): ProfileDetailsSnapshot {
+  return {
+    name: normalizeText(profile?.memberDetails?.name),
+    phone: normalizeText(profile?.memberDetails?.phone),
+    address: {
+      line1: normalizeText(profile?.memberDetails?.address?.line1),
+      line2: normalizeText(profile?.memberDetails?.address?.line2),
+      city: normalizeText(profile?.memberDetails?.address?.city),
+      state: normalizeText(profile?.memberDetails?.address?.state),
+      country: normalizeText(profile?.memberDetails?.address?.country),
+      postalCode: normalizeText(profile?.memberDetails?.address?.postalCode),
+    },
+    emergencyContact: {
+      firstName: normalizeText(profile?.memberDetails?.emergencyContact?.firstName),
+      lastName: normalizeText(profile?.memberDetails?.emergencyContact?.lastName),
+      phoneNumber: normalizeText(profile?.memberDetails?.emergencyContact?.phoneNumber),
+    },
+    isEbVolunteer: profile?.isEbVolunteer ?? null,
+  };
+}
+
+function createProfileDetailsSnapshotFromRegistration(
+  value: SummerCampRegistrationFormInput
+): ProfileDetailsSnapshot {
+  return {
+    name: `${value.parent.firstName} ${value.parent.lastName}`.trim(),
+    phone: normalizeText(value.parent.cellPhone),
+    address: {
+      line1: normalizeText(value.address.line1),
+      line2: normalizeText(value.address.line2),
+      city: normalizeText(value.address.city),
+      state: normalizeText(value.address.state),
+      country: normalizeText(value.address.country),
+      postalCode: normalizeText(value.address.zipCode),
+    },
+    emergencyContact: {
+      firstName: normalizeText(value.emergencyContact.firstName),
+      lastName: normalizeText(value.emergencyContact.lastName),
+      phoneNumber: normalizeText(value.emergencyContact.phoneNumber),
+    },
+    isEbVolunteer: value.parent.isEbVolunteer,
+  };
+}
+
+function hasExistingProfileDetailsConflict(
+  current: ProfileDetailsSnapshot,
+  next: ProfileDetailsSnapshot
+) {
+  const currentValues = [
+    [current.name, next.name],
+    [current.phone, next.phone],
+    [current.address.line1, next.address.line1],
+    [current.address.line2, next.address.line2],
+    [current.address.city, next.address.city],
+    [current.address.state, next.address.state],
+    [current.address.country, next.address.country],
+    [current.address.postalCode, next.address.postalCode],
+    [current.emergencyContact.firstName, next.emergencyContact.firstName],
+    [current.emergencyContact.lastName, next.emergencyContact.lastName],
+    [current.emergencyContact.phoneNumber, next.emergencyContact.phoneNumber],
+  ] as const;
+
+  const hasTextConflict = currentValues.some(
+    ([currentValue, nextValue]) => currentValue !== "" && currentValue !== nextValue
+  );
+
+  const hasVolunteerConflict =
+    current.isEbVolunteer !== null && current.isEbVolunteer !== next.isEbVolunteer;
+
+  return hasTextConflict || hasVolunteerConflict;
 }
 
 function buildSignUpHref(email: string) {
@@ -342,7 +529,26 @@ export default function RegistrationClientPage() {
         return;
       }
 
-      submitMutation.mutate(value);
+      if (value.consents.liabilityMedicalRelease !== true) {
+        toast.error(t("school.registration.toast.mustAgreeLiability"));
+        return;
+      }
+
+      const currentProfileDetails = createProfileDetailsSnapshotFromProfile(profile);
+      const submittedProfileDetails = createProfileDetailsSnapshotFromRegistration(value);
+      const hasConflict = hasExistingProfileDetailsConflict(
+        currentProfileDetails,
+        submittedProfileDetails
+      );
+      const shouldSyncProfileDetails = hasConflict
+        ? window.confirm(t("school.registration.confirmProfileDetailsUpdate"))
+        : true;
+
+      submitMutation.mutate({
+        ...value,
+        syncFamilyProfile: true,
+        syncProfileDetails: shouldSyncProfileDetails,
+      });
     },
   });
 
@@ -350,12 +556,19 @@ export default function RegistrationClientPage() {
     if (hasHydratedInitialValues.current || isAuthUserLoading) return;
     if (authUser && isProfileLoading) return;
 
-    const defaults = createDefaultRegistrationFormValues({
-      parentEmail: authUser?.email ?? "",
-      isEbVolunteer: profile?.isEbVolunteer ?? null,
-    });
+    const defaults = createProfilePrefilledDefaults(
+      profile,
+      authUser?.email ?? profile?.email ?? ""
+    );
     const draft = readRegistrationDraft();
-    form.reset(mergeRegistrationDraft(defaults, draft, authUser?.email, profile?.isEbVolunteer));
+    form.reset(
+      mergeRegistrationDraft(
+        defaults,
+        draft,
+        authUser?.email ?? profile?.email ?? "",
+        profile?.isEbVolunteer
+      )
+    );
     hasHydratedInitialValues.current = true;
   }, [authUser, form, isAuthUserLoading, isProfileLoading, profile?.isEbVolunteer]);
 
@@ -1193,34 +1406,6 @@ export default function RegistrationClientPage() {
                         </div>
                       );
                     }}
-                  />
-                </section>
-
-                <Separator />
-
-                <section className="flex flex-col gap-4">
-                  <form.Field
-                    name="syncFamilyProfile"
-                    children={(field) => (
-                      <div className="flex items-start gap-3 rounded-3xl border border-border px-5 py-4">
-                        <Checkbox
-                          id="sync-family-profile"
-                          checked={field.state.value}
-                          onCheckedChange={(checked) => {
-                            field.handleChange(checked === true);
-                            field.handleBlur();
-                          }}
-                        />
-                        <div className="space-y-1">
-                          <Label htmlFor="sync-family-profile">
-                            {t("school.registration.syncFamilyProfileLabel")}
-                          </Label>
-                          <p className="text-sm text-muted-foreground">
-                            {t("school.registration.syncFamilyProfileDescription")}
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   />
                 </section>
               </div>

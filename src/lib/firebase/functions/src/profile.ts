@@ -20,6 +20,25 @@ export const onProfileCreated = onDocumentCreated("profiles/{uid}", async (event
   if (!current.role) updates.role = "user";
   if (!("savedChildren" in current)) updates.savedChildren = [];
   if (!("isEbVolunteer" in current)) updates.isEbVolunteer = null;
+  if (!("memberDetails" in current)) {
+    updates.memberDetails = {
+      name: null,
+      phone: null,
+      address: {
+        city: null,
+        country: null,
+        line1: null,
+        line2: null,
+        postalCode: null,
+        state: null,
+      },
+      emergencyContact: {
+        firstName: null,
+        lastName: null,
+        phoneNumber: null,
+      },
+    };
+  }
   if (!current.createdAt) updates.createdAt = Timestamp.now();
   updates.updatedAt = FieldValue.serverTimestamp();
 

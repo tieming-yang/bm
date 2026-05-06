@@ -247,6 +247,7 @@
       "signatureDescription": "請輸入法定全名以確認本次報名。",
       "syncFamilyProfileLabel": "用本次資料更新我的家庭檔案",
       "syncFamilyProfileDescription": "我們會更新您的 EB 志工狀態，並把送出的兒童資料存回個人檔案，不會刪除原有兒童資料。",
+      "confirmProfileDetailsUpdate": "您已儲存的個人資料與這次報名內容不同。您要用這次填寫的新資料更新個人檔案嗎？",
       "submitDescriptionAuthed": "送出後會建立一筆唯讀報名資料供同工查看。",
       "submitDescriptionGuest": "送出後會先帶您去註冊，完成後再回來完成報名。",
       "submit": "送出報名",
@@ -256,7 +257,8 @@
       "closeCalendar": "關閉",
       "toast": {
         "success": "報名送出成功。",
-        "error": "報名送出失敗，請稍後再試。"
+        "error": "報名送出失敗，請稍後再試。",
+        "mustAgreeLiability": "您必須同意責任與醫療同意後才能繼續。"
       },
       "fields": {
         "firstName": "名字",
