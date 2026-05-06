@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { useForm } from "@tanstack/react-form-nextjs";
@@ -66,6 +66,7 @@ import { QueryKey } from "@/utils/query-keys";
 
 const CHILD_BIRTHDAY_MIN_DATE = new Date(2010, 0, 1);
 const REGISTRATION_DRAFT_RESTORE_FLAG_KEY = `${REGISTRATION_DRAFT_STORAGE_KEY}:restore-once`;
+type RegistrationAuthFlow = "signup" | "signin";
 
 function getFieldErrorMessage(errorMap: Record<string, unknown>) {
   const candidates = [errorMap.onBlur, errorMap.onSubmit, errorMap.onChange];
@@ -125,11 +126,23 @@ function preferDraftString(draftValue: string | undefined, defaultValue: string)
   return draftValue && draftValue.trim() ? draftValue : defaultValue;
 }
 
+function getRegistrationAuthFlow(value: string | null): RegistrationAuthFlow | null {
+  if (value === "signup" || value === "signin") {
+    return value;
+  }
+
+  return null;
+}
+
 function mergeRegistrationDraft(
   defaults: SummerCampRegistrationFormInput,
   draft: SummerCampRegistrationDraft | null,
-  parentEmail?: string | null,
-  isEbVolunteer?: boolean | null
+  options?: {
+    authFlow?: RegistrationAuthFlow | null;
+    parentEmail?: string | null;
+    isEbVolunteer?: boolean | null;
+    profile?: ProfileModel;
+  }
 ): SummerCampRegistrationFormInput {
   const merged: SummerCampRegistrationFormInput = {
     ...defaults,
@@ -186,12 +199,20 @@ function mergeRegistrationDraft(
     syncProfileDetails: draft?.syncProfileDetails ?? defaults.syncProfileDetails,
   };
 
-  if (!merged.parent.email && parentEmail) {
-    merged.parent.email = parentEmail;
+  if (!merged.parent.email && options?.parentEmail) {
+    merged.parent.email = options.parentEmail;
   }
 
   if (merged.parent.isEbVolunteer === null) {
-    merged.parent.isEbVolunteer = isEbVolunteer ?? null;
+    merged.parent.isEbVolunteer = options?.isEbVolunteer ?? null;
+  }
+
+  if (options?.authFlow === "signup" && options.parentEmail?.trim()) {
+    merged.parent.email = options.parentEmail;
+  }
+
+  if (options?.authFlow === "signin") {
+    return applySignInProfileOverrides(merged, options.profile, options.parentEmail);
   }
 
   return merged;
@@ -218,6 +239,85 @@ function splitMemberName(fullName?: string | null) {
     firstName: parts[0] ?? "",
     lastName: parts.slice(1).join(" "),
   };
+}
+
+function applySignInProfileOverrides(
+  value: SummerCampRegistrationFormInput,
+  profile?: ProfileModel,
+  parentEmail?: string | null
+) {
+  const nextValue: SummerCampRegistrationFormInput = {
+    ...value,
+    parent: {
+      ...value.parent,
+    },
+    address: {
+      ...value.address,
+    },
+    emergencyContact: {
+      ...value.emergencyContact,
+    },
+  };
+  const { firstName, lastName } = splitMemberName(profile?.memberDetails?.name);
+  const profileAddress = profile?.memberDetails?.address;
+  const emergencyContact = profile?.memberDetails?.emergencyContact;
+
+  if (parentEmail?.trim()) {
+    nextValue.parent.email = parentEmail;
+  }
+
+  if (firstName) {
+    nextValue.parent.firstName = firstName;
+  }
+
+  if (lastName) {
+    nextValue.parent.lastName = lastName;
+  }
+
+  if (profile?.memberDetails?.phone?.trim()) {
+    nextValue.parent.cellPhone = profile.memberDetails.phone;
+  }
+
+  if (profile?.isEbVolunteer !== null && profile?.isEbVolunteer !== undefined) {
+    nextValue.parent.isEbVolunteer = profile.isEbVolunteer;
+  }
+
+  if (profileAddress?.line1?.trim()) {
+    nextValue.address.line1 = profileAddress.line1;
+  }
+
+  if (profileAddress?.line2?.trim()) {
+    nextValue.address.line2 = profileAddress.line2;
+  }
+
+  if (profileAddress?.city?.trim()) {
+    nextValue.address.city = profileAddress.city;
+  }
+
+  if (
+    profileAddress?.state &&
+    US_STATE_OPTIONS.some((option) => option.value === profileAddress.state)
+  ) {
+    nextValue.address.state = profileAddress.state;
+  }
+
+  if (profileAddress?.postalCode?.trim()) {
+    nextValue.address.zipCode = profileAddress.postalCode;
+  }
+
+  if (emergencyContact?.firstName?.trim()) {
+    nextValue.emergencyContact.firstName = emergencyContact.firstName;
+  }
+
+  if (emergencyContact?.lastName?.trim()) {
+    nextValue.emergencyContact.lastName = emergencyContact.lastName;
+  }
+
+  if (emergencyContact?.phoneNumber?.trim()) {
+    nextValue.emergencyContact.phoneNumber = emergencyContact.phoneNumber;
+  }
+
+  return nextValue;
 }
 
 function createProfilePrefilledDefaults(profile?: ProfileModel, parentEmail?: string | null) {
@@ -480,13 +580,16 @@ function BooleanChoiceField({
 }
 
 export default function RegistrationClientPage() {
+  const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { authUser, isAuthUserLoading } = useAuthUser();
   const { t } = useTranslation("school");
   const { t: tCommon } = useTranslation("common");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const hasHydratedInitialValues = useRef(false);
   const event = SUMMER_CAMP_FORM_DEFINITION.event;
+  const authFlow = getRegistrationAuthFlow(searchParams.get("authFlow"));
 
   const { data: profile, isLoading: isProfileLoading } = useQuery({
     queryKey: QueryKey.profile(authUser?.uid ?? "school-registration"),
@@ -573,12 +676,33 @@ export default function RegistrationClientPage() {
       mergeRegistrationDraft(
         defaults,
         draft,
-        authUser?.email ?? profile?.email ?? "",
-        profile?.isEbVolunteer
+        {
+          authFlow,
+          parentEmail: authUser?.email ?? profile?.email ?? "",
+          isEbVolunteer: profile?.isEbVolunteer,
+          profile,
+        }
       )
     );
     hasHydratedInitialValues.current = true;
-  }, [authUser, form, isAuthUserLoading, isProfileLoading, profile?.isEbVolunteer]);
+
+    if (authFlow) {
+      const nextParams = new URLSearchParams(searchParams.toString());
+      nextParams.delete("authFlow");
+      const nextQuery = nextParams.toString();
+      router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname);
+    }
+  }, [
+    authFlow,
+    authUser,
+    form,
+    isAuthUserLoading,
+    isProfileLoading,
+    pathname,
+    profile,
+    router,
+    searchParams,
+  ]);
 
   if (isAuthUserLoading || (authUser && isProfileLoading && !hasHydratedInitialValues.current)) {
     return <Loading />;

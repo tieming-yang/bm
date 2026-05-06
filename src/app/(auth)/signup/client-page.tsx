@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -18,6 +18,17 @@ import { assertIsDefined } from "@/lib/utils";
 import { useAppForm } from "@/hooks/use-app-form";
 
 type Props = {};
+const REGISTRATION_ROUTE_PREFIX = "/school/summer/2026/registration";
+
+function appendRegistrationAuthFlow(redirectTo: string, authFlow: "signup" | "signin") {
+  if (!redirectTo.startsWith(REGISTRATION_ROUTE_PREFIX)) return redirectTo;
+
+  const url = new URL(redirectTo, window.location.origin);
+  url.searchParams.set("authFlow", authFlow);
+
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 export default function SignUpClientPage({}: Props) {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
@@ -27,12 +38,13 @@ export default function SignUpClientPage({}: Props) {
   const redirectTo = params.get("redirectTo") ?? `/`;
   const prefillEmail = params.get("prefillEmail") ?? "";
   const query = useQueryClient();
+  const [hasStartedAuthAttempt, setHasStartedAuthAttempt] = useState(false);
 
   useEffect(() => {
-    if (!isAuthUserLoading && authUser) {
+    if (!hasStartedAuthAttempt && !isAuthUserLoading && authUser) {
       router.push(redirectTo);
     }
-  }, [authUser, isAuthUserLoading, redirectTo, router]);
+  }, [authUser, hasStartedAuthAttempt, isAuthUserLoading, redirectTo, router]);
 
   const signInParams = new URLSearchParams({
     redirectTo,
@@ -54,6 +66,7 @@ export default function SignUpClientPage({}: Props) {
       onBlur: EmailSignUpSchema,
     },
     onSubmit: ({ value }) => {
+      setHasStartedAuthAttempt(true);
       signUpMutation.mutate({ method: "email", payload: value });
     },
   });
@@ -71,9 +84,11 @@ export default function SignUpClientPage({}: Props) {
       throw new Error(`Unsupported method: ${method}`);
     },
     retry: 0,
-    onSuccess: async (user) => {
+    onSuccess: async ({ user, profileExisted }) => {
       query.setQueryData(QueryKey.authUser, user);
-      router.replace(redirectTo);
+      router.replace(
+        appendRegistrationAuthFlow(redirectTo, profileExisted ? "signin" : "signup")
+      );
     },
     onError: (err: unknown) => {
       toast.error(tCommon("toast.signUpError"));
@@ -88,6 +103,7 @@ export default function SignUpClientPage({}: Props) {
         variant="default"
         className="flex items-center shadow-lg gap-3"
         onClick={() => {
+          setHasStartedAuthAttempt(true);
           signUpMutation.mutate({ method: AuthMethod.Google });
         }}
       >
