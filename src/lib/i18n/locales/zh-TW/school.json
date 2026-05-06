@@ -220,7 +220,6 @@
       "eventTitleLabel": "活動",
       "scheduleLabel": "時間",
       "locationLabel": "地點",
-      "guestTitle": "您可以先填表，再建立帳號",
       "guestDescription": "我們只會在送出時請您註冊。註冊完成後，草稿與電子郵件會一起帶回此頁。",
       "savedChildrenTitle": "已儲存的兒童資料",
       "savedChildrenDescription": "您可以把個人檔案中的兒童資料匯入這次報名。",
@@ -258,7 +257,8 @@
       "toast": {
         "success": "報名送出成功。",
         "error": "報名送出失敗，請稍後再試。",
-        "mustAgreeLiability": "您必須同意責任與醫療同意後才能繼續。"
+        "mustAgreeLiability": "您必須同意責任與醫療同意後才能繼續。",
+        "mustSignIn": "請先登入後再報名，感謝。"
       },
       "fields": {
         "firstName": "名字",

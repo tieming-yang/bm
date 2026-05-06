@@ -531,6 +531,7 @@ export default function RegistrationClientPage() {
     },
     onSubmit: async ({ value }) => {
       if (!authUser) {
+        toast.warning(t("school.registration.toast.mustSignIn"));
         writeRegistrationDraft(value);
         router.push(buildSignUpHref(value.parent.email));
         return;
@@ -585,7 +586,7 @@ export default function RegistrationClientPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 font-serif">
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden bg-primary-gradient-30">
         <CardHeader className="gap-4">
           <div className="inline-flex w-fit items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-xs uppercase tracking-[0.3em] text-primary">
             {t("school.registration.badge")}
@@ -618,15 +619,6 @@ export default function RegistrationClientPage() {
           </div>
         </CardContent>
       </Card>
-
-      {!authUser ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("school.registration.guestTitle")}</CardTitle>
-            <CardDescription>{t("school.registration.guestDescription")}</CardDescription>
-          </CardHeader>
-        </Card>
-      ) : null}
 
       {isSubmitted ? (
         <Card>

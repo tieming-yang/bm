@@ -218,7 +218,6 @@
       "eventTitleLabel": "Event",
       "scheduleLabel": "Schedule",
       "locationLabel": "Location",
-      "guestTitle": "You can fill this out before creating an account",
       "guestDescription": "We will only ask you to sign up when you submit. Your draft and email will come back with you after signup.",
       "savedChildrenTitle": "Saved Children",
       "savedChildrenDescription": "Import any saved child from your profile into this registration.",
@@ -256,7 +255,8 @@
       "toast": {
         "success": "Registration submitted successfully.",
         "error": "Unable to submit the registration. Please try again.",
-        "mustAgreeLiability": "You must agree to the liability and medical release to continue."
+        "mustAgreeLiability": "You must agree to the liability and medical release to continue.",
+        "mustSignIn": "Please Sign In first. Thank you!"
       },
       "fields": {
         "firstName": "First Name",
