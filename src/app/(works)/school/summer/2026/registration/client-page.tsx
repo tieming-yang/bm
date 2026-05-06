@@ -65,6 +65,7 @@ import {
 import { QueryKey } from "@/utils/query-keys";
 
 const CHILD_BIRTHDAY_MIN_DATE = new Date(2010, 0, 1);
+const REGISTRATION_DRAFT_RESTORE_FLAG_KEY = `${REGISTRATION_DRAFT_STORAGE_KEY}:restore-once`;
 
 function getFieldErrorMessage(errorMap: Record<string, unknown>) {
   const candidates = [errorMap.onBlur, errorMap.onSubmit, errorMap.onChange];
@@ -91,6 +92,9 @@ function getFieldErrorMessage(errorMap: Record<string, unknown>) {
 
 function readRegistrationDraft() {
   if (typeof window === "undefined") return null;
+  if (window.sessionStorage.getItem(REGISTRATION_DRAFT_RESTORE_FLAG_KEY) !== "1") return null;
+
+  window.sessionStorage.removeItem(REGISTRATION_DRAFT_RESTORE_FLAG_KEY);
 
   const rawDraft = window.sessionStorage.getItem(REGISTRATION_DRAFT_STORAGE_KEY);
   if (!rawDraft) return null;
@@ -100,6 +104,7 @@ function readRegistrationDraft() {
     return parsed.success ? parsed.data : null;
   } catch (error) {
     console.error("Failed to parse registration draft", error);
+    window.sessionStorage.removeItem(REGISTRATION_DRAFT_STORAGE_KEY);
     return null;
   }
 }
@@ -107,11 +112,13 @@ function readRegistrationDraft() {
 function writeRegistrationDraft(value: SummerCampRegistrationFormInput) {
   if (typeof window === "undefined") return;
   window.sessionStorage.setItem(REGISTRATION_DRAFT_STORAGE_KEY, JSON.stringify(value));
+  window.sessionStorage.setItem(REGISTRATION_DRAFT_RESTORE_FLAG_KEY, "1");
 }
 
 function clearRegistrationDraft() {
   if (typeof window === "undefined") return;
   window.sessionStorage.removeItem(REGISTRATION_DRAFT_STORAGE_KEY);
+  window.sessionStorage.removeItem(REGISTRATION_DRAFT_RESTORE_FLAG_KEY);
 }
 
 function preferDraftString(draftValue: string | undefined, defaultValue: string) {
