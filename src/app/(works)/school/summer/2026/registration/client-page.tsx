@@ -497,7 +497,7 @@ function DatePickerDialogField({
       <DialogTrigger asChild>
         <Button type="button" variant="outline" className="justify-between">
           <span>{value ? format(parseISO(value), "PPP") : label}</span>
-          <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+          <CalendarIcon className="w-4 h-4 text-muted-foreground" />
         </Button>
       </DialogTrigger>
       <DialogContent className="w-fit">
@@ -566,11 +566,11 @@ function BooleanChoiceField({
         }}
         className="grid gap-3 sm:grid-cols-2"
       >
-        <Label className="flex items-center gap-3 rounded-3xl border border-input px-4 py-3">
+        <Label className="flex items-center px-4 py-3 border gap-3 rounded-3xl border-input">
           <RadioGroupItem value="yes" />
           <span>{yesLabel}</span>
         </Label>
-        <Label className="flex items-center gap-3 rounded-3xl border border-input px-4 py-3">
+        <Label className="flex items-center px-4 py-3 border gap-3 rounded-3xl border-input">
           <RadioGroupItem value="no" />
           <span>{noLabel}</span>
         </Label>
@@ -709,7 +709,7 @@ export default function RegistrationClientPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 font-serif">
+    <div className="flex flex-col w-full max-w-5xl px-4 py-10 mx-auto font-serif gap-8">
       <Card className="overflow-hidden bg-primary-gradient-30">
         <CardHeader className="gap-4">
           <div className="inline-flex w-fit items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-xs uppercase tracking-[0.3em] text-primary">
@@ -723,19 +723,19 @@ export default function RegistrationClientPage() {
           </div>
         </CardHeader>
         <CardContent className="grid gap-5 md:grid-cols-3">
-          <div className="rounded-3xl border border-border px-5 py-5">
+          <div className="px-5 py-5 border rounded-3xl border-border">
             <p className="text-sm text-muted-foreground">
               {t("school.registration.eventTitleLabel")}
             </p>
             <p className="mt-2 text-lg font-semibold">{event.title}</p>
           </div>
-          <div className="rounded-3xl border border-border px-5 py-5">
+          <div className="px-5 py-5 border rounded-3xl border-border">
             <p className="text-sm text-muted-foreground">
               {t("school.registration.scheduleLabel")}
             </p>
             <p className="mt-2 text-lg font-semibold">{EVENT_SCHEDULE_DISPLAY}</p>
           </div>
-          <div className="rounded-3xl border border-border px-5 py-5">
+          <div className="px-5 py-5 border rounded-3xl border-border">
             <p className="text-sm text-muted-foreground">
               {t("school.registration.locationLabel")}
             </p>
@@ -748,7 +748,7 @@ export default function RegistrationClientPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-3">
-              <CheckCircle2Icon className="h-6 w-6 text-primary" />
+              <CheckCircle2Icon className="w-6 h-6 text-primary" />
               <CardTitle>{t("school.registration.successTitle")}</CardTitle>
             </div>
             <CardDescription>{t("school.registration.successDescription")}</CardDescription>
@@ -784,7 +784,7 @@ export default function RegistrationClientPage() {
                         return (
                           <div
                             key={child.id}
-                            className="rounded-3xl border border-border px-5 py-5"
+                            className="px-5 py-5 border rounded-3xl border-border"
                           >
                             <div className="flex items-start justify-between gap-4">
                               <div className="space-y-1">
@@ -820,7 +820,7 @@ export default function RegistrationClientPage() {
                                   form.pushFieldValue("children", importedChild);
                                 }}
                               >
-                                <UserPlusIcon className="mr-2 h-4 w-4" />
+                                <UserPlusIcon className="w-4 h-4 mr-2" />
                                 {alreadyAdded
                                   ? t("school.registration.savedChildAdded")
                                   : t("school.registration.importSavedChild")}
@@ -868,7 +868,7 @@ export default function RegistrationClientPage() {
                             form.pushFieldValue("children", createEmptyRegistrationChild());
                           }}
                         >
-                          <PlusIcon className="mr-2 h-4 w-4" />
+                          <PlusIcon className="w-4 h-4 mr-2" />
                           {t("school.registration.addChild")}
                         </Button>
                       </div>
@@ -877,9 +877,9 @@ export default function RegistrationClientPage() {
                         {children.map((child, index) => (
                           <div
                             key={`${child.savedChildId ?? "child"}-${index}`}
-                            className="rounded-3xl border border-border px-5 py-5"
+                            className="px-5 py-5 border rounded-3xl border-border"
                           >
-                            <div className="mb-4 flex items-center justify-between gap-4">
+                            <div className="flex items-center justify-between mb-4 gap-4">
                               <h3 className="text-lg font-semibold">
                                 {t("school.registration.childCardTitle", { index: index + 1 })}
                               </h3>
@@ -898,7 +898,7 @@ export default function RegistrationClientPage() {
                                   void form.removeFieldValue("children", index);
                                 }}
                               >
-                                <Trash2Icon className="h-4 w-4" />
+                                <Trash2Icon className="w-4 h-4" />
                               </Button>
                             </div>
 

@@ -160,7 +160,7 @@ function FigureModel({ modelURL }: { modelURL: string }) {
 
 function OverlayVideo({ videoURL }: { videoURL: string }) {
   return (
-    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
       <video
         key={videoURL}
         src={videoURL}
@@ -168,7 +168,7 @@ function OverlayVideo({ videoURL }: { videoURL: string }) {
         muted
         loop
         playsInline
-        className="h-full w-full object-contain"
+        className="object-contain w-full h-full"
       />
     </div>
   );
@@ -184,13 +184,13 @@ function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
   }, [title, zhTitle]);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-6 z-20 flex justify-center px-4">
-      <div className="flex max-w-md flex-col items-center text-center">
+    <div className="absolute inset-x-0 z-20 flex justify-center px-4 pointer-events-none top-6">
+      <div className="flex flex-col items-center max-w-md text-center">
         {canToggleLanguage ? (
           <button
             type="button"
             aria-pressed={showZhTitle}
-            className="pointer-events-auto relative min-h-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:min-h-24"
+            className="relative pointer-events-auto min-h-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:min-h-24"
             style={{ perspective: 1200 }}
             onClick={() => setShowZhTitle((current) => !current)}
           >
@@ -218,7 +218,7 @@ function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
             </AnimatePresence>
           </button>
         ) : (
-          <div className="relative flex min-h-16 items-center justify-center md:min-h-24">
+          <div className="relative flex items-center justify-center min-h-16 md:min-h-24">
             <span
               className="block text-4xl font-semibold tracking-[0.12em] uppercase text-white md:text-6xl"
               style={{
@@ -243,7 +243,7 @@ function VideoToggleButton({
   onClick: () => void;
 }) {
   return (
-    <div className="absolute bottom-20 right-5 z-30">
+    <div className="absolute z-30 bottom-20 right-5">
       <button
         type="button"
         aria-label={showVideo ? "Show 3D model" : "Show video"}

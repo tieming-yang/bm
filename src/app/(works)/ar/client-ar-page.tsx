@@ -42,7 +42,7 @@ export default function ClientARPage() {
   }
 
   return (
-    <main className="container relative z-50 mx-auto flex min-h-svh flex-col px-4 py-16 gap-7">
+    <main className="container relative z-50 flex flex-col px-4 py-16 mx-auto min-h-svh gap-7">
       <Loading show={isARDataLoading} />
       <section>
         <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
@@ -54,7 +54,7 @@ export default function ClientARPage() {
           </p>
         </div>
 
-        <section className="rounded-3xl border border-primary/15 bg-linear-to-r from-background/90 via-primary/5 to-background/70 p-8 shadow-xl shadow-primary/10 backdrop-blur">
+        <section className="p-8 border shadow-xl rounded-3xl border-primary/15 bg-linear-to-r from-background/90 via-primary/5 to-background/70 shadow-primary/10 backdrop-blur">
           <div className="space-y-8">
             <div className="space-y-3">
               <p className="text-sm uppercase tracking-[0.4em] text-primary/70">
@@ -72,8 +72,8 @@ export default function ClientARPage() {
               {experienceSteps.map((step) => (
                 <li key={step.number} className="list-none">
                   <Card className="h-full border-primary/15 bg-background/90 shadow-sm shadow-primary/10">
-                    <CardContent className="flex h-full flex-col gap-4 p-5">
-                      <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-sm font-semibold text-primary">
+                    <CardContent className="flex flex-col h-full p-5 gap-4">
+                      <div className="inline-flex items-center justify-center text-sm font-semibold h-11 w-11 rounded-2xl bg-primary/10 text-primary">
                         {step.number}
                       </div>
                       <div className="space-y-2">
@@ -103,7 +103,7 @@ export default function ClientARPage() {
         </div>
       )}
 
-      <div className="flex justify-center-safe mt-auto">
+      <div className="flex mt-auto justify-center-safe">
         {viewStatus === "idle" && (
           <Button type="button" onClick={() => setViewStatus("arViewer")}>
             {t("ar.page.start")}

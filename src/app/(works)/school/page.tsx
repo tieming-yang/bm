@@ -140,7 +140,7 @@ export default function SchoolPage() {
   const watchLink = buildYouTubeLink(selectedLesson?.videoId);
 
   return (
-    <div className="relative w-full pb-16 space-y-7 no-scrollbar sm:py-16 py-0">
+    <div className="relative w-full py-0 pb-16 space-y-7 no-scrollbar sm:py-16">
       <div
         ref={playerContainerRef}
         className="sticky top-0 left-0 right-0 pb-3 border shadow-xl lg:hidden space-y-5 w-dvw z-100 rounded-b-3xl backdrop-blur-xl border-primary/20 bg-background/10 shadow-primary/20"

@@ -98,7 +98,7 @@ function DatePickerDialogField({
       <DialogTrigger asChild>
         <Button type="button" variant="outline" className="justify-between">
           <span>{value ? format(parseISO(value), "PPP") : label}</span>
-          <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+          <CalendarIcon className="w-4 h-4 text-muted-foreground" />
         </Button>
       </DialogTrigger>
       <DialogContent className="w-fit">
@@ -159,11 +159,11 @@ function BooleanChoiceField({
         }}
         className="grid gap-3 sm:grid-cols-2"
       >
-        <Label className="flex items-center gap-3 rounded-3xl border border-input px-4 py-3">
+        <Label className="flex items-center px-4 py-3 border gap-3 rounded-3xl border-input">
           <RadioGroupItem value="yes" />
           <span>{yesLabel}</span>
         </Label>
-        <Label className="flex items-center gap-3 rounded-3xl border border-input px-4 py-3">
+        <Label className="flex items-center px-4 py-3 border gap-3 rounded-3xl border-input">
           <RadioGroupItem value="no" />
           <span>{noLabel}</span>
         </Label>
@@ -273,20 +273,20 @@ export default function FamilySettingsCard({
                     form.pushFieldValue("savedChildren", createSavedChildFormValue());
                   }}
                 >
-                  <PlusIcon className="mr-2 h-4 w-4" />
+                  <PlusIcon className="w-4 h-4 mr-2" />
                   {t("family.addChild")}
                 </Button>
               </div>
 
               {savedChildren.length === 0 ? (
-                <div className="rounded-3xl border border-dashed border-input px-5 py-6 text-sm text-muted-foreground">
+                <div className="px-5 py-6 text-sm border border-dashed rounded-3xl border-input text-muted-foreground">
                   {t("family.empty")}
                 </div>
               ) : (
                 <div className="space-y-5">
                   {savedChildren.map((child, index) => (
-                    <div key={child.id} className="rounded-3xl border border-border px-5 py-5">
-                      <div className="mb-4 flex items-center justify-between gap-4">
+                    <div key={child.id} className="px-5 py-5 border rounded-3xl border-border">
+                      <div className="flex items-center justify-between mb-4 gap-4">
                         <h4 className="text-lg font-semibold">
                           {t("family.childCardTitle", { index: index + 1 })}
                         </h4>
@@ -298,7 +298,7 @@ export default function FamilySettingsCard({
                             void form.removeFieldValue("savedChildren", index);
                           }}
                         >
-                          <Trash2Icon className="h-4 w-4" />
+                          <Trash2Icon className="w-4 h-4" />
                         </Button>
                       </div>
 

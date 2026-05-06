@@ -75,11 +75,11 @@ function SortableHeader({ title, onClick }: { title: string; onClick: () => void
     <Button
       type="button"
       variant="ghost"
-      className="h-auto text-left font-medium"
+      className="h-auto font-medium text-left"
       onClick={onClick}
     >
       <span>{title}</span>
-      <ArrowUpDownIcon className="ml-2 h-4 w-4" />
+      <ArrowUpDownIcon className="w-4 h-4 ml-2" />
     </Button>
   );
 }
@@ -167,7 +167,7 @@ function getColumns(
         />
       ),
       cell: ({ row }) => (
-        <span className="min-w-72 whitespace-normal">{row.original.parentAddress}</span>
+        <span className="whitespace-normal min-w-72">{row.original.parentAddress}</span>
       ),
     },
     {
@@ -334,7 +334,7 @@ export default function DashboardClientPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full min-h-svh flex-col gap-8 px-4 py-10 font-serif">
+    <div className="flex flex-col w-full px-4 py-10 mx-auto font-serif min-h-svh gap-8">
       <Card>
         <CardHeader>
           <CardTitle>{t("school.dashboard.title")}</CardTitle>
