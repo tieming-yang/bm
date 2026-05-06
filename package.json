@@ -7,7 +7,10 @@
     "onlyBuiltDependencies": [],
     "ignoredBuiltDependencies": [
       "canvas"
-    ]
+    ],
+    "overrides": {
+      "three-bmfont-text": "npm:three-bmfont-text@^2.0.0"
+    }
   },
   "scripts": {
     "dev": "next dev --turbopack",
@@ -62,6 +65,7 @@
     "@tanstack/react-form-nextjs": "^1.27.7",
     "@tanstack/react-query": "^5.80.7",
     "@tanstack/react-query-devtools": "^5.90.2",
+    "@tanstack/react-table": "^8.21.3",
     "@types/three": "^0.176.0",
     "@vercel/analytics": "^1.5.0",
     "aframe": "^1.7.1",
