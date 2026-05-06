@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -38,7 +38,6 @@ export default function SignInClientPage({}: Props) {
   const redirectTo = params.get("redirectTo");
   const prefillEmail = params.get("prefillEmail") ?? "";
   const query = useQueryClient();
-  const [hasStartedAuthAttempt, setHasStartedAuthAttempt] = useState(false);
 
   const signUpParams = new URLSearchParams();
   if (redirectTo) {
@@ -60,7 +59,6 @@ export default function SignInClientPage({}: Props) {
       onBlur: EmailSignInSchema,
     },
     onSubmit: ({ value }) => {
-      setHasStartedAuthAttempt(true);
       signInMutation.mutate({ method: "email", payload: value });
     },
   });
@@ -100,10 +98,10 @@ export default function SignInClientPage({}: Props) {
   });
 
   useEffect(() => {
-    if (!hasStartedAuthAttempt && !isAuthUserLoading && authUser) {
+    if (!signInMutation.isPending && !isAuthUserLoading && authUser) {
       router.replace("/");
     }
-  }, [authUser, hasStartedAuthAttempt, isAuthUserLoading, router]);
+  }, [authUser, isAuthUserLoading, router, signInMutation.isPending]);
 
   if (isAuthUserLoading) return <Loading />;
 
@@ -113,7 +111,6 @@ export default function SignInClientPage({}: Props) {
         variant="default"
         className="flex items-center shadow-lg gap-3"
         onClick={() => {
-          setHasStartedAuthAttempt(true);
           signInMutation.mutate({ method: AuthMethod.Google });
         }}
       >
