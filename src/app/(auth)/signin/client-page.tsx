@@ -100,10 +100,10 @@ export default function SignInClientPage({}: Props) {
   });
 
   useEffect(() => {
-    if (!hasStartedAuthAttempt && redirectTo && !isAuthUserLoading && authUser) {
-      router.replace(appendRegistrationAuthFlow(redirectTo, "signin"));
+    if (!hasStartedAuthAttempt && !isAuthUserLoading && authUser) {
+      router.replace("/");
     }
-  }, [authUser, hasStartedAuthAttempt, isAuthUserLoading, redirectTo, router]);
+  }, [authUser, hasStartedAuthAttempt, isAuthUserLoading, router]);
 
   if (isAuthUserLoading) return <Loading />;
 

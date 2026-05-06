@@ -42,9 +42,9 @@ export default function SignUpClientPage({}: Props) {
 
   useEffect(() => {
     if (!hasStartedAuthAttempt && !isAuthUserLoading && authUser) {
-      router.push(redirectTo);
+      router.replace("/");
     }
-  }, [authUser, hasStartedAuthAttempt, isAuthUserLoading, redirectTo, router]);
+  }, [authUser, hasStartedAuthAttempt, isAuthUserLoading, router]);
 
   const signInParams = new URLSearchParams({
     redirectTo,
