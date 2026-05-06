@@ -12,6 +12,7 @@
       "three-bmfont-text": "npm:three-bmfont-text@^2.0.0"
     }
   },
+  "packageManager": "pnpm@11.0.6",
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:https": "next dev --turbopack --experimental-https -H 0.0.0.0",
