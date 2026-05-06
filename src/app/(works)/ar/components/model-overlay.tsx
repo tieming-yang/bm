@@ -4,21 +4,36 @@ import toTitle from "@/utils/to-title";
 import { Center, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { AnimatePresence, motion } from "framer-motion";
+import { BoxIcon, PlayIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 type ModelOverlayProps = {
   modelURL: string;
   title: string;
   zhTitle?: string;
+  videoURL?: string;
 };
 
 const MODEL_FACE_USER_Y_ROTATION = -Math.PI / 2;
 
-export default function ModelOverlay({ modelURL, title, zhTitle }: ModelOverlayProps) {
+export default function ModelOverlay({ modelURL, title, zhTitle, videoURL }: ModelOverlayProps) {
+  const [showVideo, setShowVideo] = useState(false);
+  const hasVideo = typeof videoURL === "string" && videoURL.trim().length > 0;
+
+  useEffect(() => {
+    setShowVideo(false);
+  }, [modelURL, videoURL]);
+
   return (
     <>
-      <FigureModel modelURL={modelURL} />
+      {showVideo && videoURL ? <OverlayVideo videoURL={videoURL} /> : <FigureModel modelURL={modelURL} />}
       <TitleOverlay title={title} zhTitle={zhTitle} />
+      {hasVideo ? (
+        <VideoToggleButton
+          showVideo={showVideo}
+          onClick={() => setShowVideo((current) => !current)}
+        />
+      ) : null}
     </>
   );
 }
@@ -143,6 +158,22 @@ function FigureModel({ modelURL }: { modelURL: string }) {
   );
 }
 
+function OverlayVideo({ videoURL }: { videoURL: string }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+      <video
+        key={videoURL}
+        src={videoURL}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="h-full w-full object-contain"
+      />
+    </div>
+  );
+}
+
 function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
   const [showZhTitle, setShowZhTitle] = useState(false);
   const canToggleLanguage = typeof zhTitle === "string" && zhTitle.trim().length > 0;
@@ -200,6 +231,27 @@ function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function VideoToggleButton({
+  showVideo,
+  onClick,
+}: {
+  showVideo: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div className="absolute bottom-20 right-5 z-30">
+      <button
+        type="button"
+        aria-label={showVideo ? "Show 3D model" : "Show video"}
+        className="pointer-events-auto inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/45 text-white shadow-[0_12px_28px_rgba(0,0,0,0.35)] backdrop-blur-sm transition hover:bg-black/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        onClick={onClick}
+      >
+        {showVideo ? <BoxIcon size={20} /> : <PlayIcon size={20} />}
+      </button>
     </div>
   );
 }
