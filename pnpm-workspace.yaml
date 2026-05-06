@@ -1,0 +1,10 @@
+blockExoticSubdeps: false
+
+allowBuilds:
+  '@firebase/util': true
+  canvas: true
+  core-js: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  workerd: true
