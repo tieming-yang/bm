@@ -2,6 +2,13 @@
   "settings": {
     "title": "Settings"
   },
+  "profile": {
+    "accessDeniedTitle": "You cannot view this profile",
+    "accessDeniedDescription": "Not found",
+    "notFoundTitle": "Profile not found",
+    "notFoundDescription": "The requested profile could not be loaded.",
+    "backToOwnProfile": "Back to my profile"
+  },
   "donator": {
     "title": "Personal Information",
     "name": "Name",
@@ -58,6 +65,29 @@
     "toast": {
       "success": "Organization email updated successfully",
       "error": "Failed to update organization email. Please try again later."
+    }
+  },
+  "family": {
+    "title": "Family Profile",
+    "volunteerLabel": "Are you an Ekklesia Beyond volunteer?",
+    "yes": "Yes",
+    "no": "No",
+    "childrenTitle": "Saved Children",
+    "childrenDescription": "Manage the children you want to reuse in future school registrations.",
+    "addChild": "Add Child",
+    "empty": "No saved children yet.",
+    "childCardTitle": "Child {{index}}",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "grade": "Grade",
+    "gradePlaceholder": "Select a grade",
+    "birthday": "Birthday",
+    "birthdayPlaceholder": "Select a birthday",
+    "allergies": "Allergies",
+    "save": "Save Family Profile",
+    "toast": {
+      "success": "Family profile updated successfully.",
+      "error": "Unable to update your family profile."
     }
   }
 } 

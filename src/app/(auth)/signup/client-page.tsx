@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -25,9 +25,8 @@ export default function SignUpClientPage({}: Props) {
   const { t: tCommon } = useTranslation("common");
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo") ?? `/`;
+  const prefillEmail = params.get("prefillEmail") ?? "";
   const query = useQueryClient();
-
-  const [acceptTerms, setAcceptTerms] = useState(false);
 
   useEffect(() => {
     if (!isAuthUserLoading && authUser) {
@@ -35,8 +34,16 @@ export default function SignUpClientPage({}: Props) {
     }
   }, [authUser, isAuthUserLoading, redirectTo, router]);
 
+  const signInParams = new URLSearchParams({
+    redirectTo,
+  });
+  if (prefillEmail) {
+    signInParams.set("prefillEmail", prefillEmail);
+  }
+  const signInHref = `/signin?${signInParams.toString()}`;
+
   const defaultEmailSignUpInputs: EmailSignUpInput = {
-    email: "",
+    email: prefillEmail,
     password: "",
     displayName: "",
   };
@@ -66,8 +73,7 @@ export default function SignUpClientPage({}: Props) {
     retry: 0,
     onSuccess: async (user) => {
       query.setQueryData(QueryKey.authUser, user);
-      const { uid } = user;
-      router.replace(`/profile/${uid}`);
+      router.replace(redirectTo);
     },
     onError: (err: unknown) => {
       toast.error(tCommon("toast.signUpError"));
@@ -183,6 +189,13 @@ export default function SignUpClientPage({}: Props) {
         </div>
       </form>
 
+      <p className="text-sm text-muted-foreground">
+        {tCommon("auth.haveAccount")}{" "}
+        <Link href={signInHref} className="text-xl underline text-primary underline-offset-5">
+          {tCommon("auth.goToSignin")}
+        </Link>
+      </p>
+
       {/* Consents */}
       <div className="flex flex-row items-center gap-1">
         {/* <Checkbox
@@ -195,7 +208,7 @@ export default function SignUpClientPage({}: Props) {
 
         <span>
           {tCommon("auth.consentPrefix")}{" "}
-          <Link href="/terms" className="underline text-primary">
+          <Link href="/terms-of-service" className="underline text-primary">
             {tCommon("auth.consentLink")}
           </Link>{" "}
           {tCommon("auth.consentSuffix")}

@@ -5,15 +5,26 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null && request.auth.token.admin == true;
     }
+
+    function hasPrivilegedProfileRole() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/profiles/$(request.auth.uid)) &&
+        (
+          get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role == "admin" ||
+          get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role == "staff"
+        );
+    }
+
     function isSelf(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
+
     function allowedProfileFields() {
       return ['displayName', 'newsletterOptIn', 'photoURL', 'email', 'createdAt', 'updatedAt', "organizationEmail", "organizationEmailUpdateCount", "uid"];
     }
 
     match /profiles/{uid} {
-      allow read: if true;
+      allow read: if isSelf(uid) || isAdmin() || hasPrivilegedProfileRole();
 
       allow create: if isAdmin() ||
         (isSelf(uid) && request.resource.data.keys().hasOnly(allowedProfileFields()));
@@ -22,15 +33,22 @@ service cloud.firestore {
         (isSelf(uid) &&
          request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowedProfileFields()));
       
-      allow delete: if isAdmin()
+      allow delete: if isAdmin();
 
       // Block user writes to subcollections like transactions/subscriptions
       match /{sub=**} {
-        allow read: if isSelf(uid) || isAdmin();
+        allow read: if isSelf(uid) || isAdmin() || hasPrivilegedProfileRole();
         allow write: if isAdmin();
         allow update: if isAdmin();
         allow delete: if isAdmin();
       }
+    }
+
+    match /school_registrations/{registrationId} {
+      allow read: if false;
+      allow write: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     match /coupons/{accountType} {

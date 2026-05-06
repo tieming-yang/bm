@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -222,6 +223,11 @@ export default function SchoolPage() {
 
             <p className="text-lg text-muted-foreground">{t("school.hero.description")}</p>
             <div className="flex flex-wrap gap-4 justify-center-safe">
+              <Button size="lg" variant="secondary" className="px-8 rounded-full" asChild>
+                <Link href="/school/summer/2026/registration">
+                  {t("school.hero.registerSummerCamp")}
+                </Link>
+              </Button>
               <Button size="lg" className="px-8 rounded-full border-primary/40" asChild>
                 <a href="/glory-share">{t("school.hero.joinGloryShare")}</a>
               </Button>

@@ -2,8 +2,8 @@
   "dailyGraceSnacks": {
     "badge": "每日恩典",
     "hero": {
-      "title": "一口大小的福音故事，點亮孩子的每一天。",
-      "description": "《每日恩典》是為孩子與家庭打造的動畫聖經系列。第一季走過救贖的故事，從創造到信心英雄，配上音樂、禱告提示與生活應用。您可以直接播放完整清單，或依照主題挑選每一集。",
+      "title": "一口大小的福音故事，點亮兒童的每一天。",
+      "description": "《每日恩典》是為兒童與家庭打造的動畫聖經系列。第一季走過救贖的故事，從創造到信心英雄，配上音樂、禱告提示與生活應用。您可以直接播放完整清單，或依照主題挑選每一集。",
       "watchNow": "觀看播放清單",
       "supportLink": "透過榮耀份額同行"
     },
@@ -11,7 +11,7 @@
     "playlistLink": "https://www.youtube.com/playlist?list=PLuGaH2J5MmWVkBhdhYuCBOOR7h2prWXAW",
     "season1": {
       "title": "第一季 · 信仰基礎",
-      "description": "15 集短篇動畫，帶孩子認識神的性情、應許與拯救之愛。",
+      "description": "15 集短篇動畫，帶兒童認識神的性情、應許與拯救之愛。",
       "episodes": [
         {
           "number": "01",
@@ -80,7 +80,7 @@
           "number": "10",
           "title": "十誡",
           "theme": "神慈愛的律法",
-          "summary": "孩子學習律法如何保護我們，也彰顯神聖潔的心。",
+          "summary": "兒童學習律法如何保護我們，也彰顯神聖潔的心。",
           "matchKey": "The Ten Commandments"
         },
         {

@@ -18,6 +18,8 @@ export const onProfileCreated = onDocumentCreated("profiles/{uid}", async (event
   if (!current.memberType) updates.memberType = "free";
   if (!current.accountType) updates.accountType = "personal";
   if (!current.role) updates.role = "user";
+  if (!("savedChildren" in current)) updates.savedChildren = [];
+  if (!("isEbVolunteer" in current)) updates.isEbVolunteer = null;
   if (!current.createdAt) updates.createdAt = Timestamp.now();
   updates.updatedAt = FieldValue.serverTimestamp();
 

@@ -2,6 +2,13 @@
   "settings": {
     "title": "設定"
   },
+  "profile": {
+    "accessDeniedTitle": "您無法查看此帳戶",
+    "accessDeniedDescription": "找不到此頁面",
+    "notFoundTitle": "找不到帳戶資料",
+    "notFoundDescription": "無法載入所要求的帳戶資料。",
+    "backToOwnProfile": "回到我的帳戶"
+  },
   "donator": {
     "title": "個人資訊",
     "name": "姓名",
@@ -58,6 +65,29 @@
     "toast": {
       "success": "組織郵箱更改成功",
       "error": "組織郵箱更改失敗，請稍後再試！"
+    }
+  },
+  "family": {
+    "title": "家庭檔案",
+    "volunteerLabel": "您是 Ekklesia Beyond 的志工嗎？",
+    "yes": "是",
+    "no": "否",
+    "childrenTitle": "已儲存的兒童資料",
+    "childrenDescription": "管理您未來要重複使用於 school 報名的兒童資料。",
+    "addChild": "新增兒童",
+    "empty": "目前還沒有已儲存的兒童資料。",
+    "childCardTitle": "兒童 {{index}}",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "grade": "年級",
+    "gradePlaceholder": "請選擇年級",
+    "birthday": "生日",
+    "birthdayPlaceholder": "請選擇生日",
+    "allergies": "過敏資訊",
+    "save": "儲存家庭檔案",
+    "toast": {
+      "success": "家庭檔案更新成功。",
+      "error": "家庭檔案更新失敗。"
     }
   }
 }

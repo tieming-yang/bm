@@ -34,16 +34,19 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Auth from "@/models/auth";
 import Coupon from "@/models/coupons";
+import FamilySettingsCard from "./family-settings-card";
 
 type Modal = "none" | "cancel" | "save";
 type ErrorValues = { isError: boolean; message: string | null };
 type Errors = Record<string, ErrorValues>;
 export default function ClientProfilePage({ userId }: { userId: string }) {
   const router = useRouter();
-  const { authUser } = useAuthUser();
+  const { authUser, isAuthUserLoading } = useAuthUser();
   const { t, currentLanguage } = useTranslation("settings");
   const { t: tGloryShare } = useTranslation("glory-share");
   const { t: tCommon } = useTranslation("common");
+  const viewerUid = authUser?.uid ?? null;
+  const redirectTo = `/profile/${userId}`;
 
   const [modal, setModal] = useState<Modal>("none");
   const [errors, setErrors] = useState<Errors>({
@@ -57,11 +60,27 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   });
 
   const query = useQueryClient();
-  const { data: profile, isLoading } = useQuery({
+  const {
+    data: viewerProfile,
+    isLoading: isViewerProfileLoading,
+    isFetched: isViewerProfileFetched,
+  } = useQuery({
+    queryKey: QueryKey.profile(viewerUid ?? "viewer"),
+    queryFn: () => Profile.get(viewerUid!),
+    enabled: !!viewerUid,
+  });
+  const canViewRequestedProfile =
+    !!viewerProfile && (viewerProfile.uid === userId || Profile.isPrivilegedRole(viewerProfile.role));
+  const {
+    data: requestedProfile,
+    isLoading: isRequestedProfileLoading,
+  } = useQuery({
     queryKey: QueryKey.profile(userId),
     queryFn: () => Profile.get(userId),
-    enabled: !!userId,
+    enabled: !!viewerProfile && canViewRequestedProfile && viewerProfile.uid !== userId,
   });
+  const profile = viewerProfile?.uid === userId ? viewerProfile : requestedProfile;
+  const isLoading = !!authUser && (isViewerProfileLoading || isRequestedProfileLoading);
 
   useEffect(() => {
     if (!profile || !profile.email) return;
@@ -70,6 +89,12 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
       organizationEmail: profile.organizationEmail ? profile.organizationEmail : profile.email,
     });
   }, [profile]);
+
+  useEffect(() => {
+    if (!isAuthUserLoading && !authUser) {
+      router.replace(`/signin?redirectTo=${encodeURIComponent(redirectTo)}`);
+    }
+  }, [authUser, isAuthUserLoading, redirectTo, router]);
 
   const isOwnProfile = profile && authUser?.uid === profile.uid;
   const isGloryShareMember = Profile.isGloryShareMember(profile);
@@ -182,17 +207,83 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   } = useQuery({
     queryKey: [QueryKey.coupon(userId)],
     queryFn: () => Coupon.get(userId),
-    enabled: isGloryShareMember,
+    enabled: isOwnProfile && isGloryShareMember,
     staleTime: Infinity,
   });
 
-  if (isLoading) {
+  if (isAuthUserLoading || isLoading) {
     return <Loading />;
   }
 
+  if (!authUser) {
+    return <Loading />;
+  }
+
+  if (!viewerProfile && !isViewerProfileFetched) {
+    return <Loading />;
+  }
+
+  if (!viewerProfile) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-xl">
+          <CardHeader>
+            <CardTitle>{t("profile.notFoundTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">{t("profile.notFoundDescription")}</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!canViewRequestedProfile) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-xl">
+          <CardHeader>
+            <CardTitle>{t("profile.accessDeniedTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">{t("profile.accessDeniedDescription")}</p>
+          </CardContent>
+          <CardFooter>
+            <Button
+              onClick={() => {
+                router.replace(`/profile/${viewerProfile.uid}`);
+              }}
+            >
+              {t("profile.backToOwnProfile")}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
   if (!profile) {
-    router.replace("/signin");
-    return;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-xl">
+          <CardHeader>
+            <CardTitle>{t("profile.notFoundTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">{t("profile.notFoundDescription")}</p>
+          </CardContent>
+          <CardFooter>
+            <Button
+              onClick={() => {
+                router.replace(`/profile/${viewerProfile.uid}`);
+              }}
+            >
+              {t("profile.backToOwnProfile")}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -485,6 +576,8 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
           </CardFooter>
         </Card>
       )}
+
+      {isOwnProfile && <FamilySettingsCard profile={profile} userId={userId} />}
     </motion.div>
   );
 }

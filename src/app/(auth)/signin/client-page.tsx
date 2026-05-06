@@ -24,10 +24,20 @@ export default function SignInClientPage({}: Props) {
   const { t: tCommon } = useTranslation("common");
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
+  const prefillEmail = params.get("prefillEmail") ?? "";
   const query = useQueryClient();
 
+  const signUpParams = new URLSearchParams();
+  if (redirectTo) {
+    signUpParams.set("redirectTo", redirectTo);
+  }
+  if (prefillEmail) {
+    signUpParams.set("prefillEmail", prefillEmail);
+  }
+  const signUpHref = signUpParams.toString() ? `/signup?${signUpParams.toString()}` : "/signup";
+
   const defaultEmailSignInInputs: EmailSignInInput = {
-    email: "",
+    email: prefillEmail,
     password: "",
   };
 
@@ -169,7 +179,7 @@ export default function SignInClientPage({}: Props) {
 
       <p className="text-sm text-muted-foreground">
         {tCommon("auth.noAccount")}{" "}
-        <Link href="/signup" className="text-xl underline text-primary underline-offset-5">
+        <Link href={signUpHref} className="text-xl underline text-primary underline-offset-5">
           {tCommon("auth.goToSignup")}{" "}
         </Link>
       </p>

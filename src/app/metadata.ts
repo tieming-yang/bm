@@ -161,8 +161,7 @@ export const pageMetadata = {
   gloryShareSuccess: {
     path: "/glory-share/join/success",
     title: "Glory Share Confirmation | Beyond Digital Media",
-    description:
-      "Confirm your Glory Share support and next steps with Beyond Digital Media.",
+    description: "Confirm your Glory Share support and next steps with Beyond Digital Media.",
     robots: noIndexRobots,
   },
   beyondArt: {
@@ -199,13 +198,25 @@ export const pageMetadata = {
     path: "/daily-grace-snacks",
     title: "Daily Grace Snacks | Beyond Digital Media 每日恩典小點心",
     description:
-      "Watch bite-sized gospel stories and Bible animations for children and families. 觀看為孩子與家庭製作的福音故事與聖經動畫短片。",
+      "Watch bite-sized gospel stories and Bible animations for children and families. 觀看為兒童與家庭製作的福音故事與聖經動畫短片。",
   },
   school: {
     path: "/school",
     title: "Bible School | Beyond Digital Media 聖經學校",
     description:
       "Study Bible stories, characters, and gospel lessons through Beyond Digital Media's learning resources. 透過彼岸的學習資源認識聖經故事、人物與福音課程。",
+  },
+  schoolSummer2026Registration: {
+    path: "/school/summer/2026/registration",
+    title: "2026 Ekklesia Beyond Summer Camp Registration | Beyond Digital Media",
+    description:
+      "Register children for the 2026 Ekklesia Beyond Summer Camp and manage family details for this year's event.",
+  },
+  dashboard: {
+    path: "/dashboard",
+    title: "Dashboard | Beyond Digital Media",
+    description: "Staff dashboard for reviewing 2026 Ekklesia Beyond Summer Camp registrations.",
+    robots: noIndexRobots,
   },
   ar: {
     path: "/ar",
@@ -245,6 +256,7 @@ export const publicSitemapRoutes = [
   { path: "/bible-gallery", changeFrequency: "weekly", priority: 0.8 },
   { path: "/daily-grace-snacks", changeFrequency: "weekly", priority: 0.8 },
   { path: "/school", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/school/summer/2026/registration", changeFrequency: "weekly", priority: 0.6 },
   { path: "/ar", changeFrequency: "weekly", priority: 0.7 },
   { path: "/bible-products", changeFrequency: "weekly", priority: 0.7 },
   { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.2 },
@@ -261,6 +273,7 @@ export const noIndexRoutes = [
   "/cart",
   "/orders",
   "/orders/*",
+  "/dashboard",
   "/sandbox",
   "/sandbox/*",
 ] as const;

@@ -1,5 +1,6 @@
 import { Currency } from "@/utils/constants";
 import firebase from "@/lib/firebase/firebase";
+import type { ProfileSavedChild } from "@/app/(works)/school/summer/2026/domain";
 import {
   collection,
   doc,
@@ -27,6 +28,7 @@ type ProfileInput = {
 
 export const Role = {
   Admin: "admin",
+  Staff: "staff",
   User: "user",
 } as const;
 export type Role = (typeof Role)[keyof typeof Role];
@@ -44,6 +46,8 @@ type Profile = ProfileInput & {
   subscriptions?: Subscription[];
   organizationEmail?: string;
   organizationEmailUpdateCount?: number;
+  isEbVolunteer?: boolean | null;
+  savedChildren?: ProfileSavedChild[];
 };
 
 export interface MemberDetails {
@@ -130,6 +134,8 @@ const Profile = {
 
     return {
       ...snap.data(),
+      isEbVolunteer: snap.data()?.isEbVolunteer ?? null,
+      savedChildren: snap.data()?.savedChildren ?? [],
       subscriptions,
     } as Profile;
   },
@@ -168,6 +174,10 @@ const Profile = {
     if (!profile.memberType) return false;
 
     return profile.memberType !== "free";
+  },
+
+  isPrivilegedRole(role: Role | undefined): boolean {
+    return role === Role.Admin || role === Role.Staff;
   },
 };
 

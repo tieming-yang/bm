@@ -4,6 +4,8 @@
   "auth": {
     "noAccount": "New here?",
     "goToSignup": "Create an account",
+    "haveAccount": "Already have an account?",
+    "goToSignin": "Sign in",
     "signupSuffix": "Become part of the art ministry",
     "consentPrefix": "By creating an account and sign in you agree to our",
     "consentLink": "Terms & Privacy Policy",
