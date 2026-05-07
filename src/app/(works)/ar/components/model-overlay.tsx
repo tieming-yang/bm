@@ -187,7 +187,7 @@ function OverlayVideo({ videoURL }: { videoURL: string }) {
         muted
         loop
         playsInline
-        className="w-full h-full object-contain"
+        className="w-full h-full object-contain scale-140"
       />
     </div>
   );

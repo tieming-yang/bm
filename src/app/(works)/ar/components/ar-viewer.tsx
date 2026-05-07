@@ -308,7 +308,7 @@ export default function ARViewer({
       </div>
 
       <style jsx global>{`
-        .ar-camera-stage video {
+        .ar-camera-stage > video {
           position: absolute !important;
           inset: 0 !important;
           width: 100% !important;
@@ -358,7 +358,10 @@ function removeMindArUiOverlays() {
 }
 
 function stopCameraVideos(container?: HTMLElement | null) {
-  container?.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+  Array.from(container?.children ?? []).forEach((child) => {
+    if (!(child instanceof HTMLVideoElement)) return;
+
+    const video = child;
     const stream = video.srcObject;
 
     if (stream instanceof MediaStream) {
