@@ -187,7 +187,7 @@ function OverlayVideo({ videoURL }: { videoURL: string }) {
         muted
         loop
         playsInline
-        className="object-contain w-full h-full"
+        className="scale-150 md:scale-90 w-full h-full"
       />
     </div>
   );
@@ -364,7 +364,7 @@ function TitleOverlay({
 
 function VideoToggleButton({ showVideo, onClick }: { showVideo: boolean; onClick: () => void }) {
   return (
-    <div className="absolute z-30 bottom-20 right-5">
+    <div className="absolute z-30 bottom-20 left-5">
       <button
         type="button"
         aria-label={showVideo ? "Show 3D model" : "Show video"}
