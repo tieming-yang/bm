@@ -184,7 +184,7 @@ function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
   }, [title, zhTitle]);
 
   return (
-    <div className="absolute inset-x-0 z-20 flex justify-center px-4 pointer-events-none top-6">
+    <div className="absolute inset-x-0 z-20 flex justify-center px-4 pointer-events-none top-20">
       <div className="flex flex-col items-center max-w-md text-center">
         {canToggleLanguage ? (
           <button
