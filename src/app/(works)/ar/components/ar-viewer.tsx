@@ -218,6 +218,12 @@ export default function ARViewer({
 
   const activeDataItem = activeTargetIndex !== null ? arData.items[activeTargetIndex] : null;
   const activeModelURL = activeDataItem ? getR2URL(activeDataItem.modelPath) : null;
+  const activeVideoURL =
+    activeDataItem?.videoPath ? getR2URL(activeDataItem.videoPath) : undefined;
+  const activeAudioURL =
+    activeDataItem?.audioPath ? getR2URL(activeDataItem.audioPath) : undefined;
+  const activeAudioZhURL =
+    activeDataItem?.audioPathZh ? getR2URL(activeDataItem.audioPathZh) : undefined;
 
   const isLoading = !librariesReady;
 
@@ -267,6 +273,9 @@ export default function ARViewer({
             modelURL={activeModelURL}
             title={activeDataItem.title}
             titleZh={activeDataItem.titleZh}
+            videoURL={activeVideoURL}
+            audioURL={activeAudioURL}
+            audioZhURL={activeAudioZhURL}
           />
         ) : null}
       </div>
