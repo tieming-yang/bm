@@ -10,13 +10,22 @@ import React, { useEffect, useRef, useState } from "react";
 type ModelOverlayProps = {
   modelURL: string;
   title: string;
-  zhTitle?: string;
+  titleZh?: string;
   videoURL?: string;
+  audioURL?: string;
+  audioZhURL?: string;
 };
 
 const MODEL_FACE_USER_Y_ROTATION = -Math.PI / 2;
 
-export default function ModelOverlay({ modelURL, title, zhTitle, videoURL }: ModelOverlayProps) {
+export default function ModelOverlay({
+  modelURL,
+  title,
+  titleZh,
+  videoURL,
+  audioURL,
+  audioZhURL,
+}: ModelOverlayProps) {
   const [showVideo, setShowVideo] = useState(false);
   const hasVideo = typeof videoURL === "string" && videoURL.trim().length > 0;
 
@@ -26,8 +35,18 @@ export default function ModelOverlay({ modelURL, title, zhTitle, videoURL }: Mod
 
   return (
     <>
-      {showVideo && videoURL ? <OverlayVideo videoURL={videoURL} /> : <FigureModel modelURL={modelURL} />}
-      <TitleOverlay title={title} zhTitle={zhTitle} />
+      {showVideo && videoURL ? (
+        <OverlayVideo videoURL={videoURL} />
+      ) : (
+        <FigureModel modelURL={modelURL} />
+      )}
+      <TitleOverlay
+        modelURL={modelURL}
+        title={title}
+        titleZh={titleZh}
+        audioURL={audioURL}
+        audioZhURL={audioZhURL}
+      />
       {hasVideo ? (
         <VideoToggleButton
           showVideo={showVideo}
@@ -174,14 +193,109 @@ function OverlayVideo({ videoURL }: { videoURL: string }) {
   );
 }
 
-function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
-  const [showZhTitle, setShowZhTitle] = useState(false);
-  const canToggleLanguage = typeof zhTitle === "string" && zhTitle.trim().length > 0;
+function TitleOverlay({
+  modelURL,
+  title,
+  titleZh,
+  audioURL,
+  audioZhURL,
+}: {
+  modelURL: string;
+  title: string;
+  titleZh?: string;
+  audioURL?: string;
+  audioZhURL?: string;
+}) {
+  const [showTitleZh, setShowTitleZh] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [shouldBounce, setShouldBounce] = useState(true);
+  const [audioRequest, setAudioRequest] = useState<{ token: number; url: string } | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const playbackTokenRef = useRef(0);
+  const canToggleLanguage = typeof titleZh === "string" && titleZh.trim().length > 0;
   const englishTitle = toTitle(title);
 
   useEffect(() => {
-    setShowZhTitle(false);
-  }, [title, zhTitle]);
+    setShowTitleZh(false);
+    setShouldBounce(true);
+    playbackTokenRef.current += 1;
+
+    if (audioURL) {
+      setAudioRequest({ token: playbackTokenRef.current, url: audioURL });
+      return;
+    }
+
+    setAudioRequest(null);
+    setIsAudioPlaying(false);
+  }, [audioURL, audioZhURL, modelURL, title, titleZh]);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+
+    if (!audioElement || !audioRequest) {
+      return;
+    }
+
+    setIsAudioPlaying(true);
+    audioElement.pause();
+    audioElement.currentTime = 0;
+    audioElement.load();
+
+    // `HTMLMediaElement.play()` is async and may reject later, even after a newer
+    // playback request has already started.
+    //
+    // Why this matters:
+    // 1. We may start English audio.
+    // 2. Before that `play()` promise settles, the component may request a different
+    //    audio clip (for example after a language toggle or a model reset).
+    // 3. Starting the newer clip can cause the older `play()` promise to reject
+    //    asynchronously because that earlier playback attempt was interrupted.
+    //
+    // `playbackTokenRef` is a monotonically increasing "request version".
+    // Every new playback request gets a new token and becomes the current one.
+    //
+    // When a `play()` promise rejects, we only clear `isAudioPlaying` if the failed
+    // promise belongs to the latest request. This prevents an outdated rejection
+    // from an older clip from unlocking the toggle while a newer clip is currently
+    // playing or still starting.
+    //
+    // In short:
+    // - current request fails -> unlock the toggle
+    // - old request fails -> ignore it
+    const playPromise = audioElement.play();
+
+    if (playPromise) {
+      void playPromise.catch(() => {
+        if (playbackTokenRef.current === audioRequest.token) {
+          setIsAudioPlaying(false);
+        }
+      });
+    }
+
+    return () => {
+      audioElement.pause();
+      audioElement.currentTime = 0;
+    };
+  }, [audioRequest]);
+
+  const handleToggle = () => {
+    if (isAudioPlaying) return;
+
+    const nextShowTitleZh = !showTitleZh;
+    const nextAudioURL = nextShowTitleZh ? audioZhURL : audioURL;
+
+    setShowTitleZh(nextShowTitleZh);
+    setShouldBounce(false);
+    playbackTokenRef.current += 1;
+
+    if (nextAudioURL) {
+      setAudioRequest({ token: playbackTokenRef.current, url: nextAudioURL });
+      return;
+    }
+
+    setAudioRequest(null);
+    setIsAudioPlaying(false);
+  };
 
   return (
     <div className="absolute inset-x-0 z-20 flex justify-center px-4 pointer-events-none top-20">
@@ -189,31 +303,35 @@ function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
         {canToggleLanguage ? (
           <button
             type="button"
-            aria-pressed={showZhTitle}
-            className="relative pointer-events-auto min-h-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:min-h-24"
+            aria-pressed={showTitleZh}
+            aria-busy={isAudioPlaying}
+            disabled={isAudioPlaying}
+            className={`relative pointer-events-auto min-h-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-70 md:min-h-24 ${
+              shouldBounce ? "animate-bounce" : ""
+            }`}
             style={{ perspective: 1200 }}
-            onClick={() => setShowZhTitle((current) => !current)}
+            onClick={handleToggle}
           >
             <AnimatePresence initial={false} mode="wait">
               <motion.span
-                key={showZhTitle ? `zh-title-${zhTitle}` : `en-title-${englishTitle}`}
+                key={showTitleZh ? `zh-title-${titleZh}` : `en-title-${englishTitle}`}
                 initial={{ opacity: 0, y: 16, rotateX: -18, filter: "blur(8px)" }}
                 animate={{ opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -16, rotateX: 18, filter: "blur(6px)" }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className={
-                  showZhTitle
+                  showTitleZh
                     ? "block text-4xl text-secondary font-chinese md:text-6xl"
                     : "block text-4xl font-semibold tracking-[0.12em] uppercase text-white md:text-6xl"
                 }
                 style={{
                   transformOrigin: "50% 50%",
-                  textShadow: showZhTitle
+                  textShadow: showTitleZh
                     ? "0 1px 0 rgba(255,255,255,0.35), 0 2px 0 rgba(152,166,138,0.5), 0 8px 18px rgba(0,0,0,0.38)"
                     : "0 1px 0 rgba(241,215,164,0.85), 0 2px 0 rgba(152,166,138,0.72), 0 3px 0 rgba(19,19,19,0.9), 0 14px 28px rgba(0,0,0,0.45)",
                 }}
               >
-                {showZhTitle ? zhTitle : englishTitle}
+                {showTitleZh ? titleZh : englishTitle}
               </motion.span>
             </AnimatePresence>
           </button>
@@ -230,18 +348,21 @@ function TitleOverlay({ title, zhTitle }: { title: string; zhTitle?: string }) {
             </span>
           </div>
         )}
+        <audio
+          ref={audioRef}
+          key={audioRequest?.url ?? "overlay-audio"}
+          src={audioRequest?.url ?? undefined}
+          className="hidden"
+          preload="auto"
+          onEnded={() => setIsAudioPlaying(false)}
+          onError={() => setIsAudioPlaying(false)}
+        />
       </div>
     </div>
   );
 }
 
-function VideoToggleButton({
-  showVideo,
-  onClick,
-}: {
-  showVideo: boolean;
-  onClick: () => void;
-}) {
+function VideoToggleButton({ showVideo, onClick }: { showVideo: boolean; onClick: () => void }) {
   return (
     <div className="absolute z-30 bottom-20 right-5">
       <button
