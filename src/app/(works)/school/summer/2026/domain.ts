@@ -8,7 +8,8 @@ export const EVENT_TYPE = "Summer Camp" as const;
 export const ORGANIZATION_NAME = "Ekklesia Beyond" as const;
 export const ORGANIZATION_WEBSITE = null;
 export const EVENT_LOCATION_ADDRESS = "3535 Briarpark Dr #135, Houston, TX 77042" as const;
-export const EVENT_SCHEDULE_DISPLAY = "TBD" as const;
+export const EVENT_SCHEDULE_DISPLAY =
+  "From June 15, Monday through Friday for five days, from 9:30 a.m. to 11:30 a.m., three hours." as const;
 export const DEFAULT_COUNTRY = "United States" as const;
 export const REGISTRATION_DRAFT_STORAGE_KEY = `school-registration-draft:${EVENT_SLUG}`;
 
@@ -84,8 +85,7 @@ export const US_STATE_OPTIONS = [
 export const SUMMER_CAMP_FORM_DEFINITION = {
   id: FORM_ID,
   title: EVENT_TITLE,
-  description:
-    "Use this form to register a child for the 2026 Ekklesia Beyond Summer Camp.",
+  description: "Use this form to register a child for the 2026 Ekklesia Beyond Summer Camp.",
   organization: {
     name: ORGANIZATION_NAME,
     website: ORGANIZATION_WEBSITE,
