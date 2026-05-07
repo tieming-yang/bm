@@ -266,7 +266,7 @@ export default function ARViewer({
           <ModelOverlay
             modelURL={activeModelURL}
             title={activeDataItem.title}
-            zhTitle={activeDataItem.zhTitle}
+            zhTitle={activeDataItem.titleZh}
           />
         ) : null}
       </div>

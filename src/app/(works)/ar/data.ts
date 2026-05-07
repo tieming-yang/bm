@@ -40,8 +40,11 @@ const ARScheme = z.object({
     z.object({
       modelId: z.string(),
       title: z.string(),
-      zhTitle: z.string().optional(),
+      titleZh: z.string().optional(),
       modelPath: z.string(),
+      videoPath: z.string().optional(),
+      audioPath: z.string().optional(),
+      audioPathZh: z.string().optional(),
     })
   ),
   createdAt: z.instanceof(Timestamp),
