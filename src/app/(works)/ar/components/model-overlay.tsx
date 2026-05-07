@@ -179,7 +179,7 @@ function FigureModel({ modelURL }: { modelURL: string }) {
 
 function OverlayVideo({ videoURL }: { videoURL: string }) {
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+    <div className="absolute bg-transparent inset-0 z-10 flex items-center justify-center pointer-events-none">
       <video
         key={videoURL}
         src={videoURL}
@@ -187,7 +187,7 @@ function OverlayVideo({ videoURL }: { videoURL: string }) {
         muted
         loop
         playsInline
-        className="scale-150 md:scale-90 w-full h-full"
+        className="w-full h-full object-contain"
       />
     </div>
   );
