@@ -35,3 +35,18 @@ Currently we use Firestore directly as CMS, we have a script for create:
 node src/scripts/admin/create-ar.ts
 node src/scripts/admin/create-model.ts
 ```
+
+## Commands
+
+### Minimize MOV
+```zsh
+ffmpeg -i .mov \
+  -an \
+  -vf "fps=24,scale=-2:720:flags=lanczos,format=bgra" \
+  -c:v hevc_videotoolbox \
+  -alpha_quality 0.5 \
+  -b:v 2500k \
+  -vtag hvc1 \
+  -small.mov
+
+```
