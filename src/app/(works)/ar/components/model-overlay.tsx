@@ -321,7 +321,7 @@ function TitleOverlay({
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className={
                   showTitleZh
-                    ? "block text-4xl text-secondary font-chinese md:text-6xl"
+                    ? "block text-4xl text-black font-chinese md:text-6xl"
                     : "block text-4xl font-semibold tracking-[0.12em] uppercase text-white md:text-6xl"
                 }
                 style={{
