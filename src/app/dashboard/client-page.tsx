@@ -38,7 +38,7 @@ import {
 import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import Auth from "@/models/auth";
-import Profile from "@/models/profiles";
+
 import {
   EVENT_SLUG,
   GRADE_OPTIONS,
@@ -269,15 +269,11 @@ export default function DashboardClientPage() {
     }
   }, [authUser, isAuthUserLoading, router]);
 
-  const { data: profile, isLoading: isProfileLoading } = useQuery({
-    queryKey: QueryKey.profile(authUser?.uid ?? "dashboard"),
-    queryFn: () => Profile.get(authUser!.uid),
-    enabled: !!authUser?.uid,
-  });
-
-  const canViewDashboard = Profile.isPrivilegedRole(profile?.role);
-
-  const { data: rows = [], isLoading: isRowsLoading } = useQuery({
+  const {
+    data: rows = [],
+    isLoading: isRowsLoading,
+    error: rowsError,
+  } = useQuery({
     queryKey: ["school", EVENT_SLUG, "dashboard-rows"],
     queryFn: async () => {
       const token = await Auth.user?.getIdToken();
@@ -294,8 +290,11 @@ export default function DashboardClientPage() {
 
       return (result.rows ?? []) as SummerCampDashboardStudentRow[];
     },
-    enabled: !!authUser && canViewDashboard,
+    enabled: !!authUser,
+    retry: false,
   });
+
+  const isForbidden = rowsError instanceof Error && rowsError.message === "Forbidden";
 
   const table = useReactTable({
     data: rows,
@@ -312,7 +311,7 @@ export default function DashboardClientPage() {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (isAuthUserLoading || (authUser && isProfileLoading) || (canViewDashboard && isRowsLoading)) {
+  if (isAuthUserLoading || (authUser && isRowsLoading && !rowsError)) {
     return <Loading />;
   }
 
@@ -320,7 +319,7 @@ export default function DashboardClientPage() {
     return <Loading />;
   }
 
-  if (!canViewDashboard) {
+  if (isForbidden) {
     return (
       <div className="mx-auto flex min-h-[60vh] w-full max-w-3xl items-center justify-center px-4 py-12">
         <Card className="w-full">
