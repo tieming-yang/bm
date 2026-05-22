@@ -295,7 +295,15 @@ export default function SummerSchoolDashboardPage() {
     retry: false,
   });
 
-  const isForbidden = rowsError instanceof Error && rowsError.message === "Forbidden";
+  const isForbidden =
+    rowsError instanceof Error &&
+    (rowsError.message === "Forbidden" || rowsError.message === "Not Found");
+
+  useEffect(() => {
+    if (isForbidden) {
+      router.replace("/not-found");
+    }
+  }, [isForbidden, router]);
 
   const table = useReactTable({
     data: rows,
@@ -312,25 +320,12 @@ export default function SummerSchoolDashboardPage() {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (isAuthUserLoading || (authUser && isRowsLoading && !rowsError)) {
+  if (isAuthUserLoading || (authUser && isRowsLoading && !rowsError) || isForbidden) {
     return <Loading />;
   }
 
   if (!authUser) {
     return <Loading />;
-  }
-
-  if (isForbidden) {
-    return (
-      <div className="mx-auto flex min-h-[60vh] w-full max-w-3xl items-center justify-center px-4 py-12">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>無法存取</CardTitle>
-            <CardDescription>您沒有權限查看此頁面。</CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
   }
 
   return (

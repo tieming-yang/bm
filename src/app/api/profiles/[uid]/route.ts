@@ -69,7 +69,7 @@ export async function GET(request: NextRequest, ctx: PatchProfileRouteContext) {
     const decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
 
     if (decodedToken.uid !== uid) {
-      API.throwAPIError(403, "Forbidden");
+      API.throwAPIError(404, "Not Found");
     }
 
     const profileRef = firebaseAdmin.db.doc(`profiles/${uid}`);

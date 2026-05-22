@@ -45,25 +45,14 @@ export default function ArDashboardPage() {
   const role = profileData?.role;
   const isAuthorized = Policy.canViewAR(role);
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (!isLoading && authUser && !isAuthorized) {
+      router.replace("/not-found");
+    }
+  }, [authUser, isLoading, isAuthorized, router]);
 
-  if (!authUser) {
+  if (isLoading || !authUser || !isAuthorized) {
     return <Loading />;
-  }
-
-  if (!isAuthorized) {
-    return (
-      <div className="mx-auto flex min-h-[60vh] w-full max-w-3xl items-center justify-center px-4 py-12">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>無法存取</CardTitle>
-            <CardDescription>您沒有權限查看此頁面。</CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
   }
 
   return (

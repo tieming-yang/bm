@@ -194,7 +194,7 @@ export async function GET(
 
     const callerRole = callerProfileSnap.data()?.role;
     if (!Policy.canViewSummerSchool(callerRole)) {
-      API.throwAPIError(403, "Forbidden");
+      API.throwAPIError(404, "Not Found");
     }
 
     const registrationsSnap = await firebaseAdmin.db
