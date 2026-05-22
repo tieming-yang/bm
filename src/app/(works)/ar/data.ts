@@ -1,13 +1,18 @@
 import firebase from "../../../lib/firebase/firebase.ts";
-import { collection, FieldValue, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
+import { collection, getDocs, Timestamp } from "firebase/firestore";
 import { z } from "zod";
 
 export const ModelContentTypeScheme = z.enum(["character"]);
 export type ModelContentType = z.infer<typeof ModelContentTypeScheme>;
 
-const FirestoreFieldValueScheme = z.custom<FieldValue>((value) => value instanceof FieldValue, {
-  message: "Expected Firestore FieldValue",
-});
+export const UploadTypeScheme = z.enum(["model", "audio", "video", "target"]);
+export type UploadType = z.infer<typeof UploadTypeScheme>;
+
+// Cross-compatible Firestore Timestamp checker that types as Timestamp
+const FirestoreTimestampScheme = z.custom<Timestamp>(
+  (val) => val && typeof val === "object" && "seconds" in val && "nanoseconds" in val,
+  { message: "Expected Firestore Timestamp" }
+);
 
 export const ModelScheme = z.object({
   id: z.string(),
@@ -17,8 +22,8 @@ export const ModelScheme = z.object({
   modelPath: z.string(),
   targetIndex: z.number().optional(), // for mapping to target
   targetsPath: z.string().optional(),
-  createdAt: z.instanceof(Timestamp),
-  updatedAt: z.instanceof(Timestamp),
+  createdAt: FirestoreTimestampScheme,
+  updatedAt: FirestoreTimestampScheme,
 });
 export type Model = z.infer<typeof ModelScheme>;
 
@@ -30,7 +35,7 @@ export const ModelWriteScheme = ModelScheme.omit({
 
 export type ModelWrite = z.infer<typeof ModelWriteScheme>;
 
-const ARScheme = z.object({
+export const ARScheme = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
@@ -47,8 +52,8 @@ const ARScheme = z.object({
       audioPathZh: z.string().optional(),
     })
   ),
-  createdAt: z.instanceof(Timestamp),
-  updatedAt: z.instanceof(Timestamp),
+  createdAt: FirestoreTimestampScheme,
+  updatedAt: FirestoreTimestampScheme,
 });
 export type AR = z.infer<typeof ARScheme>;
 export const ARWriteScheme = ARScheme.omit({
