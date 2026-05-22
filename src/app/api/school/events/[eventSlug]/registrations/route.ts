@@ -13,14 +13,11 @@ import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { Policy } from "@/lib/policy";
 
 type EventRegistrationsRouteContext = {
   params: Promise<{ eventSlug: string }>;
 };
-
-function isPrivilegedRole(role: unknown) {
-  return role === "admin" || role === "staff";
-}
 
 function upsertSavedChildren(
   currentSavedChildren: ProfileSavedChild[],
@@ -196,7 +193,7 @@ export async function GET(
     }
 
     const callerRole = callerProfileSnap.data()?.role;
-    if (!isPrivilegedRole(callerRole)) {
+    if (!Policy.canViewSummerSchool(callerRole)) {
       API.throwAPIError(403, "Forbidden");
     }
 

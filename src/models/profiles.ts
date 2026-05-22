@@ -1,6 +1,7 @@
 import { Currency } from "@/utils/constants";
 import firebase from "@/lib/firebase/firebase";
 import type { ProfileSavedChild } from "@/app/(works)/school/summer/2026/domain";
+import { Role, Policy } from "@/lib/policy";
 import {
   collection,
   doc,
@@ -26,12 +27,7 @@ type ProfileInput = {
   favoriteArtworks?: string[];
 };
 
-export const Role = {
-  Admin: "admin",
-  Staff: "staff",
-  User: "user",
-} as const;
-export type Role = (typeof Role)[keyof typeof Role];
+export { Role };
 
 type Profile = ProfileInput & {
   accountType: AccountType;
@@ -201,7 +197,7 @@ const Profile = {
   },
 
   isPrivilegedRole(role: Role | undefined): boolean {
-    return role === Role.Admin || role === Role.Staff;
+    return Policy.isPrivileged(role);
   },
 };
 

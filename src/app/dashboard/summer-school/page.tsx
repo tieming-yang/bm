@@ -14,7 +14,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDownIcon } from "lucide-react";
+import { ArrowUpDownIcon, ArrowLeftIcon } from "lucide-react";
+import Link from "next/link";
 
 import Loading from "@/app/loading";
 import { Button } from "@/components/ui/button";
@@ -253,7 +254,7 @@ function getColumns(
   return columns;
 }
 
-export default function DashboardClientPage() {
+export default function SummerSchoolDashboardPage() {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
   const { t } = useTranslation("school");
@@ -265,7 +266,7 @@ export default function DashboardClientPage() {
 
   useEffect(() => {
     if (!isAuthUserLoading && !authUser) {
-      router.replace("/signin?redirectTo=%2Fdashboard");
+      router.replace("/signin?redirectTo=%2Fdashboard%2Fsummer-school");
     }
   }, [authUser, isAuthUserLoading, router]);
 
@@ -324,8 +325,8 @@ export default function DashboardClientPage() {
       <div className="mx-auto flex min-h-[60vh] w-full max-w-3xl items-center justify-center px-4 py-12">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>{t("school.dashboard.accessDeniedTitle")}</CardTitle>
-            <CardDescription>{t("school.dashboard.accessDeniedDescription")}</CardDescription>
+            <CardTitle>無法存取</CardTitle>
+            <CardDescription>您沒有權限查看此頁面。</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -334,6 +335,14 @@ export default function DashboardClientPage() {
 
   return (
     <div className="flex flex-col w-full px-4 py-10 mx-auto font-serif min-h-svh gap-8">
+      <div className="flex items-center justify-between">
+        <Link href="/dashboard">
+          <Button variant="outline" className="flex items-center gap-2">
+            <ArrowLeftIcon className="w-4 h-4" />
+            返回管理首頁
+          </Button>
+        </Link>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>{t("school.dashboard.title")}</CardTitle>

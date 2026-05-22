@@ -60,3 +60,31 @@ export async function PATCH(request: NextRequest, ctx: PatchProfileRouteContext)
 
   return NextResponse.json({ status: 200 });
 }
+
+export async function GET(request: NextRequest, ctx: PatchProfileRouteContext) {
+  const { uid } = await ctx.params;
+
+  try {
+    const token = API.getBearerToken(request);
+    const decodedToken = await firebaseAdmin.auth.verifyIdToken(token);
+
+    if (decodedToken.uid !== uid) {
+      API.throwAPIError(403, "Forbidden");
+    }
+
+    const profileRef = firebaseAdmin.db.doc(`profiles/${uid}`);
+    const profileSnap = await profileRef.get();
+
+    if (!profileSnap.exists) {
+      API.throwAPIError(404, "Profile not found");
+    }
+
+    const role = profileSnap.data()?.role ?? "user";
+    return NextResponse.json({ role });
+  } catch (error) {
+    const { status, message } = API.getErrorInfo(error);
+
+    return NextResponse.json({ error: message }, { status });
+  }
+}
+
