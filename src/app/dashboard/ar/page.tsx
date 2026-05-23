@@ -283,7 +283,11 @@ export default function ArDashboardPage() {
   });
 
   const addedModelIds = new Set(collectionFormData.items.map((item) => item.modelId));
-  const availableModels = models?.filter((model) => !addedModelIds.has(model.id)) || [];
+  const addedModelPaths = new Set(collectionFormData.items.map((item) => item.modelPath));
+  const availableModels =
+    models?.filter(
+      (model) => !addedModelIds.has(model.id) && !addedModelPaths.has(model.modelPath)
+    ) || [];
 
   // Sync Form when Editing Collection Changes
   useEffect(() => {
@@ -479,6 +483,14 @@ export default function ArDashboardPage() {
     if (!selectedModelId) return;
     const model = models?.find((m) => m.id === selectedModelId);
     if (!model) return;
+
+    const isDuplicate = collectionFormData.items.some(
+      (item) => item.modelId === model.id || item.modelPath === model.modelPath
+    );
+    if (isDuplicate) {
+      toast.error("此模型已存在於專案中！");
+      return;
+    }
 
     setCollectionFormData((prev) => ({
       ...prev,
