@@ -618,7 +618,7 @@ export default function ArDashboardPage() {
   }
 
   return (
-    <div className="flex flex-col w-full px-4 py-10 mx-auto font-serif min-h-svh max-w-7xl gap-8">
+    <div className="flex flex-col w-full px-4 py-10 mx-auto font-mono min-h-svh max-w-7xl gap-8">
       <div className="flex items-center justify-between">
         <Link href="/dashboard">
           <Button variant="outline" className="flex items-center gap-2 rounded-full">
@@ -820,7 +820,7 @@ export default function ArDashboardPage() {
 
       {/* Collection Form Dialog */}
       <Dialog open={isCollectionDialogOpen} onOpenChange={setIsCollectionDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-6xl font-mono max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingCollection ? "編輯 AR 專案" : "建立新 AR 專案"}</DialogTitle>
             <DialogDescription>
@@ -1105,7 +1105,7 @@ export default function ArDashboardPage() {
 
       {/* Model Form Dialog */}
       <Dialog open={isModelDialogOpen} onOpenChange={setIsModelDialogOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-6xl font-mono">
           <DialogHeader>
             <DialogTitle>{editingModel ? "編輯 3D 模型" : "新增 3D 模型"}</DialogTitle>
             <DialogDescription>
