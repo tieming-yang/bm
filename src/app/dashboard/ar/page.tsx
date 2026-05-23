@@ -470,6 +470,7 @@ export default function ArDashboardPage() {
     },
   });
 
+
   // Collection Items actions
   const handleAddItem = () => {
     if (!selectedModelId) return;
@@ -577,12 +578,13 @@ export default function ArDashboardPage() {
   const handleDeleteModel = (id: string, name: string) => {
     if (
       window.confirm(
-        `確定要刪除模型「${name}」嗎？此動作不會刪除已套用此模型之專案，但模型將無法再次被新增。`
+        `確定要刪除模型「${name}」嗎？此動作將會從 R2 檔案庫中清除對應的所有檔案。`
       )
     ) {
       deleteModelMutation.mutate(id);
     }
   };
+
 
   const formatTimestamp = (ts: any) => {
     if (!ts) return "—";

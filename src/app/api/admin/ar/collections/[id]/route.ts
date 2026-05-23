@@ -4,6 +4,38 @@ import { FieldValue } from "firebase-admin/firestore";
 import { verifyAdmin } from "../../auth";
 import API from "@/app/api/api";
 import { ARWriteScheme } from "@/app/(works)/ar/data";
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
+
+const R2_ACCESS_KEY_ID = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
+const R2_SECRET_ACCESS_KEY = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
+const R2_ENDPOINT = process.env.CLOUDFLARE_R2_ENDPOINT;
+const R2_BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET_NAME;
+const R2_TOKEN = process.env.CLOUDFLARE_R2_TOKEN;
+
+if (!R2_ACCESS_KEY_ID) {
+  throw new Error("Missing environment variable: CLOUDFLARE_R2_ACCESS_KEY_ID");
+}
+if (!R2_SECRET_ACCESS_KEY) {
+  throw new Error("Missing environment variable: CLOUDFLARE_R2_SECRET_ACCESS_KEY");
+}
+if (!R2_ENDPOINT) {
+  throw new Error("Missing environment variable: CLOUDFLARE_R2_ENDPOINT");
+}
+if (!R2_BUCKET_NAME) {
+  throw new Error("Missing environment variable: CLOUDFLARE_R2_BUCKET_NAME");
+}
+if (!R2_TOKEN) {
+  throw new Error("Missing environment variable: CLOUDFLARE_R2_TOKEN");
+}
+
+const s3Client = new S3Client({
+  region: "auto",
+  endpoint: R2_ENDPOINT,
+  credentials: {
+    accessKeyId: R2_ACCESS_KEY_ID,
+    secretAccessKey: R2_SECRET_ACCESS_KEY,
+  },
+});
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -64,6 +96,19 @@ export async function DELETE(request: NextRequest, ctx: RouteContext) {
     const snap = await docRef.get();
     if (!snap.exists) {
       return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+    }
+
+    const data = snap.data();
+    const targetsPath = data?.targetsPath;
+
+    // Delete the target .mind file from R2 if present
+    if (targetsPath && typeof targetsPath === "string") {
+      const key = targetsPath.startsWith("/") ? targetsPath.slice(1) : targetsPath;
+      const command = new DeleteObjectCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key,
+      });
+      await s3Client.send(command);
     }
 
     await docRef.delete();
