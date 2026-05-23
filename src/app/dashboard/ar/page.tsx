@@ -260,18 +260,6 @@ export default function ArDashboardPage() {
   const [activeUploads, setActiveUploads] = useState<number>(0);
   const isUploading = activeUploads > 0;
 
-  // Collection states
-  const [isCollectionDialogOpen, setIsCollectionDialogOpen] = useState(false);
-  const [editingCollection, setEditingCollection] = useState<AR | null>(null);
-  const [collectionFormData, setCollectionFormData] = useState<ARWrite>({
-    title: "",
-    description: "",
-    version: "1.0",
-    targetsPath: "",
-    items: [],
-  });
-  const [selectedModelId, setSelectedModelId] = useState<string>("");
-
   // Model states
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false);
   const [editingModel, setEditingModel] = useState<Model | null>(null);
@@ -281,43 +269,6 @@ export default function ArDashboardPage() {
     titleZh: "",
     modelPath: "",
   });
-
-  const addedModelIds = new Set(collectionFormData.items.map((item) => item.modelId));
-  const addedModelPaths = new Set(collectionFormData.items.map((item) => item.modelPath));
-  const availableModels =
-    models?.filter(
-      (model) => !addedModelIds.has(model.id) && !addedModelPaths.has(model.modelPath)
-    ) || [];
-
-  // Sync Form when Editing Collection Changes
-  useEffect(() => {
-    if (editingCollection) {
-      setCollectionFormData({
-        title: editingCollection.title,
-        description: editingCollection.description,
-        version: editingCollection.version,
-        targetsPath: editingCollection.targetsPath,
-        items: editingCollection.items.map((it) => ({
-          modelId: it.modelId,
-          title: it.title,
-          titleZh: it.titleZh || "",
-          modelPath: it.modelPath,
-          videoPath: it.videoPath || "",
-          audioPath: it.audioPath || "",
-          audioPathZh: it.audioPathZh || "",
-        })),
-      });
-    } else {
-      setCollectionFormData({
-        title: "",
-        description: "",
-        version: "1.0",
-        targetsPath: "",
-        items: [],
-      });
-    }
-    setSelectedModelId("");
-  }, [editingCollection, isCollectionDialogOpen]);
 
   // Sync Form when Editing Model Changes
   useEffect(() => {
@@ -338,54 +289,7 @@ export default function ArDashboardPage() {
     }
   }, [editingModel, isModelDialogOpen]);
 
-  // Mutations
-  const createCollectionMutation = useMutation({
-    mutationFn: async (data: ARWrite) => {
-      const token = await Auth.user?.getIdToken();
-      const res = await fetch("/api/admin/ar/collections", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error(await res.text());
-      return res.json();
-    },
-    onSuccess: () => {
-      refetchCollections();
-      setIsCollectionDialogOpen(false);
-      toast.success("專案已成功建立！");
-    },
-    onError: (err: any) => {
-      toast.error(`建立專案失敗: ${err.message || String(err)}`);
-    },
-  });
 
-  const updateCollectionMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: ARWrite }) => {
-      const token = await Auth.user?.getIdToken();
-      const res = await fetch(`/api/admin/ar/collections/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error(await res.text());
-      return res.json();
-    },
-    onSuccess: () => {
-      refetchCollections();
-      setIsCollectionDialogOpen(false);
-      toast.success("專案已成功更新！");
-    },
-    onError: (err: any) => {
-      toast.error(`更新專案失敗: ${err.message || String(err)}`);
-    },
-  });
 
   const deleteCollectionMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -478,88 +382,7 @@ export default function ArDashboardPage() {
   });
 
 
-  // Collection Items actions
-  const handleAddItem = () => {
-    if (!selectedModelId) return;
-    const model = models?.find((m) => m.id === selectedModelId);
-    if (!model) return;
 
-    const isDuplicate = collectionFormData.items.some(
-      (item) => item.modelId === model.id || item.modelPath === model.modelPath
-    );
-    if (isDuplicate) {
-      toast.error("此模型已存在於專案中！");
-      return;
-    }
-
-    setCollectionFormData((prev) => ({
-      ...prev,
-      items: [
-        ...prev.items,
-        {
-          modelId: model.id,
-          title: model.title,
-          titleZh: model.titleZh || "",
-          modelPath: model.modelPath,
-          videoPath: "",
-          audioPath: "",
-          audioPathZh: "",
-        },
-      ],
-    }));
-    setSelectedModelId("");
-  };
-
-  const handleUpdateItemField = (index: number, field: keyof typeof collectionFormData.items[0], value: string) => {
-    setCollectionFormData((prev) => {
-      const newItems = [...prev.items];
-      newItems[index] = { ...newItems[index], [field]: value };
-      return { ...prev, items: newItems };
-    });
-  };
-
-  const handleMoveItem = (index: number, direction: "up" | "down") => {
-    const newItems = [...collectionFormData.items];
-    const targetIndex = direction === "up" ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= newItems.length) return;
-
-    const temp = newItems[index];
-    newItems[index] = newItems[targetIndex];
-    newItems[targetIndex] = temp;
-
-    setCollectionFormData((prev) => ({ ...prev, items: newItems }));
-  };
-
-  const handleRemoveItem = (index: number) => {
-    setCollectionFormData((prev) => ({
-      ...prev,
-      items: prev.items.filter((_, idx) => idx !== index),
-    }));
-  };
-
-  // Submit handlers
-  const handleSaveCollection = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isUploading) return;
-
-    if (!collectionFormData.title.trim()) {
-      toast.error("請輸入專案名稱");
-      return;
-    }
-    if (!collectionFormData.targetsPath) {
-      toast.error("請上傳專案對應的 .mind 識別圖點陣描述檔");
-      return;
-    }
-
-    if (editingCollection) {
-      updateCollectionMutation.mutate({
-        id: editingCollection.id,
-        data: collectionFormData,
-      });
-    } else {
-      createCollectionMutation.mutate(collectionFormData);
-    }
-  };
 
   const handleSaveModel = (e: React.FormEvent) => {
     e.preventDefault();
@@ -667,16 +490,12 @@ export default function ArDashboardPage() {
                 <CardTitle>AR 專案列表</CardTitle>
                 <CardDescription>配置並管理各個獨立的 AR 場景展示專案。</CardDescription>
               </div>
-              <Button
-                onClick={() => {
-                  setEditingCollection(null);
-                  setIsCollectionDialogOpen(true);
-                }}
-                className="flex items-center gap-2 rounded-full"
-              >
-                <PlusIcon className="w-4 h-4" />
-                建立新專案
-              </Button>
+              <Link href="/dashboard/ar/edit">
+                <Button className="flex items-center gap-2 rounded-full">
+                  <PlusIcon className="w-4 h-4" />
+                  建立新專案
+                </Button>
+              </Link>
             </CardHeader>
             <CardContent>
               {isCollectionsLoading ? (
@@ -712,18 +531,16 @@ export default function ArDashboardPage() {
                         <TableCell>{formatTimestamp(col.updatedAt)}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setEditingCollection(col);
-                                setIsCollectionDialogOpen(true);
-                              }}
-                              className="flex items-center gap-1.5"
-                            >
-                              <EditIcon className="w-3.5 h-3.5" />
-                              編輯
-                            </Button>
+                            <Link href={`/dashboard/ar/edit?id=${col.id}`}>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex items-center gap-1.5"
+                              >
+                                <EditIcon className="w-3.5 h-3.5" />
+                                編輯
+                              </Button>
+                            </Link>
                             <Button
                               variant="outline"
                               size="sm"
@@ -832,295 +649,6 @@ export default function ArDashboardPage() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Collection Form Dialog */}
-      <Dialog open={isCollectionDialogOpen} onOpenChange={setIsCollectionDialogOpen}>
-        <DialogContent className="max-w-6xl font-mono max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editingCollection ? "編輯 AR 專案" : "建立新 AR 專案"}</DialogTitle>
-            <DialogDescription>
-              請填寫專案詳情、上傳 MindAR 識別圖點陣描述檔，並配置專案內所包含的 3D 模型與其多媒體內容。
-            </DialogDescription>
-          </DialogHeader>
-
-          <form onSubmit={handleSaveCollection} className="space-y-6 my-4">
-            <div className={editingCollection ? "space-y-2" : "grid gap-4 md:grid-cols-2"}>
-              <div className="space-y-2">
-                <Label htmlFor="col-title">專案名稱 *</Label>
-                <Input
-                  id="col-title"
-                  placeholder="例如: collection-00 (僅限小寫英數字及底線/連字號)"
-                  value={collectionFormData.title}
-                  onChange={(e) =>
-                    setCollectionFormData((prev) => ({ ...prev, title: e.target.value }))
-                  }
-                  required
-                />
-              </div>
-              {!editingCollection && (
-                <div className="space-y-2">
-                  <Label htmlFor="col-version">專案版本 *</Label>
-                  <Input
-                    id="col-version"
-                    placeholder="例如: 1.0"
-                    value={collectionFormData.version}
-                    onChange={(e) =>
-                      setCollectionFormData((prev) => ({ ...prev, version: e.target.value }))
-                    }
-                    required
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="col-description">專案描述</Label>
-              <Textarea
-                id="col-description"
-                placeholder="關於此專案的簡短介紹..."
-                value={collectionFormData.description}
-                onChange={(e) =>
-                  setCollectionFormData((prev) => ({ ...prev, description: e.target.value }))
-                }
-                rows={3}
-              />
-            </div>
-
-            <div className="space-y-2 p-4 border rounded-lg bg-muted/10">
-              <Label className="font-semibold block mb-1">識別圖描述檔 (.mind) *</Label>
-              <p className="text-xs text-muted-foreground mb-3">
-                上傳編譯好的 MindAR 圖像特徵描述檔。專案中的模型順序應與編譯此檔案時的圖片順序一致。
-              </p>
-              <FileUploader
-                accept=".mind"
-                type="target"
-                label="選擇上傳 .mind 檔案"
-                value={collectionFormData.targetsPath}
-                onChange={(path) =>
-                  setCollectionFormData((prev) => ({ ...prev, targetsPath: path }))
-                }
-                onUploadStateChange={handleUploadStateChange}
-                disabled={
-                  createCollectionMutation.isPending || updateCollectionMutation.isPending
-                }
-                folder={collectionFormData.title}
-                onBeforeUpload={() => {
-                  if (!collectionFormData.title.trim()) {
-                    toast.error("請先輸入專案名稱以建立儲存路徑");
-                    return false;
-                  }
-                  return true;
-                }}
-              />
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b pb-2">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  專案角色項目 ({collectionFormData.items.length})
-                </h3>
-                <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-                  模型排序必須對應其在 .mind 檔案中的 Target Index
-                </span>
-              </div>
-
-              {/* Items List */}
-              <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
-                {collectionFormData.items.length === 0 ? (
-                  <div className="p-8 text-center text-muted-foreground/60 text-sm border border-dashed rounded-lg bg-muted/5 italic">
-                    尚未加入任何角色項目。請在下方選擇模型並加入。
-                  </div>
-                ) : (
-                  collectionFormData.items.map((item, index) => (
-                    <div key={index} className="p-4 border rounded-lg bg-background shadow-sm space-y-4">
-                      <div className="flex items-center justify-between border-b pb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="bg-amber-500 text-amber-950 font-bold px-2 py-0.5 rounded text-xs">
-                            順序 {index + 1} (目標索引: {index})
-                          </span>
-                          <span className="font-semibold text-sm">
-                            {item.titleZh || item.title}
-                            <span className="text-muted-foreground font-normal ml-1">
-                              ({item.title})
-                            </span>
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            disabled={index === 0}
-                            onClick={() => handleMoveItem(index, "up")}
-                            title="上移"
-                            className="h-8 w-8"
-                          >
-                            <ArrowUpIcon className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            disabled={index === collectionFormData.items.length - 1}
-                            onClick={() => handleMoveItem(index, "down")}
-                            title="下移"
-                            className="h-8 w-8"
-                          >
-                            <ArrowDownIcon className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleRemoveItem(index)}
-                            title="移除"
-                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/5"
-                          >
-                            <Trash2Icon className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-3">
-                        <div className="space-y-1">
-                          <Label className="text-xs font-semibold flex items-center gap-1 text-muted-foreground">
-                            <MusicIcon className="w-3.5 h-3.5 text-muted-foreground" />
-                            語音介紹 (預設/英文)
-                          </Label>
-                          <FileUploader
-                            accept=".mp3,audio/*"
-                            type="audio"
-                            label="上傳音檔"
-                            value={item.audioPath || ""}
-                            onChange={(path) => handleUpdateItemField(index, "audioPath", path)}
-                            onUploadStateChange={handleUploadStateChange}
-                            disabled={
-                              createCollectionMutation.isPending ||
-                              updateCollectionMutation.isPending
-                            }
-                            folder={item.title}
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <Label className="text-xs font-semibold flex items-center gap-1 text-muted-foreground">
-                            <MusicIcon className="w-3.5 h-3.5 text-muted-foreground" />
-                            語音介紹 (中文)
-                          </Label>
-                          <FileUploader
-                            accept=".mp3,audio/*"
-                            type="audio"
-                            label="上傳音檔"
-                            value={item.audioPathZh || ""}
-                            onChange={(path) => handleUpdateItemField(index, "audioPathZh", path)}
-                            onUploadStateChange={handleUploadStateChange}
-                            disabled={
-                              createCollectionMutation.isPending ||
-                              updateCollectionMutation.isPending
-                            }
-                            folder={item.title}
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <Label className="text-xs font-semibold flex items-center gap-1 text-muted-foreground">
-                            <VideoIcon className="w-3.5 h-3.5 text-muted-foreground" />
-                            介紹影片
-                          </Label>
-                          <FileUploader
-                            accept=".mp4,.mov,video/*"
-                            type="video"
-                            label="上傳影片"
-                            value={item.videoPath || ""}
-                            onChange={(path) => handleUpdateItemField(index, "videoPath", path)}
-                            onUploadStateChange={handleUploadStateChange}
-                            disabled={
-                              createCollectionMutation.isPending ||
-                              updateCollectionMutation.isPending
-                            }
-                            folder={item.title}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Add Item Trigger */}
-              <div className="flex items-end gap-3 p-4 border rounded-lg bg-muted/10">
-                <div className="space-y-2 flex-1">
-                  <Label htmlFor="add-model-selector" className="text-xs font-semibold">
-                    選擇要加入的角色 3D 模型
-                  </Label>
-                  <Select value={selectedModelId} onValueChange={setSelectedModelId}>
-                    <SelectTrigger id="add-model-selector" className="bg-background">
-                      <SelectValue placeholder="從模型庫中選擇..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableModels.length > 0 ? (
-                        availableModels.map((model) => (
-                          <SelectItem key={model.id} value={model.id}>
-                            {model.titleZh || model.title} ({model.title})
-                          </SelectItem>
-                        ))
-                      ) : (
-                        <SelectItem value="none" disabled>
-                          {models && models.length > 0
-                            ? "所有模型已新增至專案"
-                            : "模型庫中無可用模型，請先建立模型"}
-                        </SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button
-                  type="button"
-                  onClick={handleAddItem}
-                  disabled={
-                    !selectedModelId ||
-                    selectedModelId === "none" ||
-                    createCollectionMutation.isPending ||
-                    updateCollectionMutation.isPending
-                  }
-                  className="rounded-full flex items-center gap-1.5"
-                >
-                  <PlusIcon className="w-4 h-4" />
-                  加入項目
-                </Button>
-              </div>
-            </div>
-
-            <DialogFooter className="border-t pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsCollectionDialogOpen(false)}
-                disabled={
-                  isUploading ||
-                  createCollectionMutation.isPending ||
-                  updateCollectionMutation.isPending
-                }
-                className="rounded-full"
-              >
-                取消
-              </Button>
-              <Button
-                type="submit"
-                disabled={
-                  isUploading ||
-                  createCollectionMutation.isPending ||
-                  updateCollectionMutation.isPending
-                }
-                className="rounded-full"
-              >
-                {createCollectionMutation.isPending || updateCollectionMutation.isPending ? (
-                  <span className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
-                ) : null}
-                儲存專案
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
 
       {/* Model Form Dialog */}
       <Dialog open={isModelDialogOpen} onOpenChange={setIsModelDialogOpen}>

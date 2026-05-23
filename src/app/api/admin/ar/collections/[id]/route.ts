@@ -54,9 +54,56 @@ function bumpMajorVersion(versionStr: string): string {
   return `${prefix}${nextMajor}${rest}`;
 }
 
+function serializeTimestamps(data: any) {
+  if (!data) return data;
+  const result = { ...data };
+  for (const key of Object.keys(result)) {
+    const val = result[key];
+    if (val && typeof val === "object") {
+      if (
+        typeof val.toDate === "function" ||
+        ("_seconds" in val && "_nanoseconds" in val) ||
+        ("seconds" in val && "nanoseconds" in val)
+      ) {
+        result[key] = {
+          seconds: val.seconds ?? val._seconds,
+          nanoseconds: val.nanoseconds ?? val._nanoseconds,
+        };
+      }
+    }
+  }
+  return result;
+}
+
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
+
+export async function GET(request: NextRequest, ctx: RouteContext) {
+  const { id } = await ctx.params;
+
+  try {
+    await verifyAdmin(request);
+
+    const docRef = firebaseAdmin.db.collection("ar").doc(id);
+    const snap = await docRef.get();
+    if (!snap.exists) {
+      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+    }
+
+    const data = snap.data();
+    return NextResponse.json({
+      id: snap.id,
+      ...serializeTimestamps(data),
+    });
+  } catch (error: any) {
+    if (error.message === "Not Found") {
+      return NextResponse.json({ error: "Not Found" }, { status: 404 });
+    }
+    const { status, message } = API.getErrorInfo(error);
+    return NextResponse.json({ error: error.message || message }, { status });
+  }
+}
 
 export async function PUT(request: NextRequest, ctx: RouteContext) {
   const { id } = await ctx.params;
