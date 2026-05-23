@@ -12,6 +12,7 @@ import ClientRoot from "./client-layout";
 import type { Metadata, Viewport } from "next";
 import rootMetadata from "./metadata";
 import Header from "@/components/header";
+import ChineseOnlyGuard from "@/components/chinese-only-guard";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 
@@ -74,7 +75,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Suspense fallback={<Loading />}>
               <ClientRoot>
                 <Header />
-                <main className="relative flex flex-col">{children}</main>
+                <main className="relative flex flex-col">
+                  <ChineseOnlyGuard>{children}</ChineseOnlyGuard>
+                </main>
                 <Navbar />
                 <Footer />
               </ClientRoot>
