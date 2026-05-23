@@ -27,7 +27,7 @@ export async function GET() {
     const entries = results.map((page: PageObjectResponse) => {
       const id = page.properties.title?.title?.[0]?.plain_text ?? "";
       const title = page.properties.title?.title?.[0]?.plain_text ?? "";
-      const genre = page.properties.genre?.select?.name ?? "";
+      const genre = page.properties.genre?.multi_select?.map((select) => select.name).join(", ") ?? "";
       const isPublic = page.properties.isPublic?.checkbox ?? false;
 
       const lyricsText =
