@@ -829,7 +829,7 @@ export default function ArDashboardPage() {
           </DialogHeader>
 
           <form onSubmit={handleSaveCollection} className="space-y-6 my-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className={editingCollection ? "space-y-2" : "grid gap-4 md:grid-cols-2"}>
               <div className="space-y-2">
                 <Label htmlFor="col-title">專案名稱 *</Label>
                 <Input
@@ -842,18 +842,20 @@ export default function ArDashboardPage() {
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="col-version">專案版本 *</Label>
-                <Input
-                  id="col-version"
-                  placeholder="例如: 1.0"
-                  value={collectionFormData.version}
-                  onChange={(e) =>
-                    setCollectionFormData((prev) => ({ ...prev, version: e.target.value }))
-                  }
-                  required
-                />
-              </div>
+              {!editingCollection && (
+                <div className="space-y-2">
+                  <Label htmlFor="col-version">專案版本 *</Label>
+                  <Input
+                    id="col-version"
+                    placeholder="例如: 1.0"
+                    value={collectionFormData.version}
+                    onChange={(e) =>
+                      setCollectionFormData((prev) => ({ ...prev, version: e.target.value }))
+                    }
+                    required
+                  />
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">

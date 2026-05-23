@@ -37,6 +37,23 @@ const s3Client = new S3Client({
   },
 });
 
+function bumpMajorVersion(versionStr: string): string {
+  const clean = (versionStr || "1.0").trim();
+  const match = clean.match(/^([^\d]*)(\d+)(.*)$/);
+  if (!match) {
+    return "1.0";
+  }
+  const prefix = match[1];
+  const major = parseInt(match[2], 10);
+  const rest = match[3];
+
+  const nextMajor = major + 1;
+  if (/^\.\d+/.test(rest)) {
+    return `${prefix}${nextMajor}.0`;
+  }
+  return `${prefix}${nextMajor}${rest}`;
+}
+
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
@@ -71,8 +88,12 @@ export async function PUT(request: NextRequest, ctx: RouteContext) {
       return NextResponse.json({ error: "Collection not found" }, { status: 404 });
     }
 
+    const currentVersion = snap.data()?.version || "1.0";
+    const nextVersion = bumpMajorVersion(currentVersion);
+
     await docRef.update({
       ...parsed.data,
+      version: nextVersion,
       updatedAt: FieldValue.serverTimestamp(),
     });
 
