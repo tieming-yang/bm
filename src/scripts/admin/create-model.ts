@@ -14,6 +14,7 @@ const input = {
   data: {
     contentType: ModelContentTypeScheme.Enum.character,
     title: NAME[0].toUpperCase() + NAME.slice(1),
+    titleZh: "撒拉",
     // TODO: pump targetsIndex
     targetIndex: 0,
     targetsPath: `/characters/${NAME}/v0/${NAME}.mind`,

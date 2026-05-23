@@ -18,7 +18,7 @@ export const ModelScheme = z.object({
   id: z.string(),
   contentType: ModelContentTypeScheme,
   title: z.string(),
-  titleZh: z.string().optional(),
+  titleZh: z.string(),
   modelPath: z.string(),
   targetIndex: z.number().optional(), // for mapping to target
   targetsPath: z.string().optional(),

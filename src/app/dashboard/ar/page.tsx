@@ -1142,7 +1142,7 @@ export default function ArDashboardPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="mod-title-zh">中文名稱 (選填)</Label>
+              <Label htmlFor="mod-title-zh">中文名稱 *</Label>
               <Input
                 id="mod-title-zh"
                 placeholder="例如: 亞當"
@@ -1150,6 +1150,7 @@ export default function ArDashboardPage() {
                 onChange={(e) =>
                   setModelFormData((prev) => ({ ...prev, titleZh: e.target.value }))
                 }
+                required
               />
             </div>
 
