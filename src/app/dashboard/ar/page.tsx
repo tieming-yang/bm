@@ -282,6 +282,9 @@ export default function ArDashboardPage() {
     modelPath: "",
   });
 
+  const addedModelIds = new Set(collectionFormData.items.map((item) => item.modelId));
+  const availableModels = models?.filter((model) => !addedModelIds.has(model.id)) || [];
+
   // Sync Form when Editing Collection Changes
   useEffect(() => {
     if (editingCollection) {
@@ -1041,15 +1044,17 @@ export default function ArDashboardPage() {
                       <SelectValue placeholder="從模型庫中選擇..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {models && models.length > 0 ? (
-                        models.map((model) => (
+                      {availableModels.length > 0 ? (
+                        availableModels.map((model) => (
                           <SelectItem key={model.id} value={model.id}>
                             {model.titleZh || model.title} ({model.title})
                           </SelectItem>
                         ))
                       ) : (
                         <SelectItem value="none" disabled>
-                          模型庫中無可用模型，請先建立模型
+                          {models && models.length > 0
+                            ? "所有模型已新增至專案"
+                            : "模型庫中無可用模型，請先建立模型"}
                         </SelectItem>
                       )}
                     </SelectContent>
