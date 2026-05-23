@@ -2,10 +2,11 @@
 
 import toTitle from "@/utils/to-title";
 import { Center, useGLTF } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { AnimatePresence, motion } from "framer-motion";
 import { BoxIcon, PlayIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import type { Group } from "three";
 
 type ModelOverlayProps = {
   modelURL: string;
@@ -321,7 +322,7 @@ function TitleOverlay({
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className={
                   showTitleZh
-                    ? "block text-4xl text-black font-chinese md:text-6xl"
+                    ? "block text-4xl font-chinese md:text-6xl"
                     : "block text-4xl font-semibold tracking-[0.12em] uppercase text-white md:text-6xl"
                 }
                 style={{
@@ -379,12 +380,44 @@ function VideoToggleButton({ showVideo, onClick }: { showVideo: boolean; onClick
 
 function RotatingGLB({ modelURL }: { modelURL: string }) {
   const { scene } = useGLTF(modelURL);
+  const groupRef = useRef<Group>(null);
+  const animTimeRef = useRef(0);
+  const duration = 2; // 1.2 seconds entry animation
+  const rotatoinOffset = -Math.PI * 6;
+
+  // Reset animation whenever the model changes
+  useEffect(() => {
+    animTimeRef.current = 0;
+    if (groupRef.current) {
+      groupRef.current.scale.set(0, 0, 0);
+      groupRef.current.rotation.y = rotatoinOffset;
+    }
+  }, [modelURL]);
+
+  useFrame((state, delta) => {
+    if (animTimeRef.current < duration) {
+      animTimeRef.current = Math.min(animTimeRef.current + delta, duration);
+      const t = animTimeRef.current / duration;
+
+      // Cubic ease-out: 1 - (1 - t)^3
+      const easeT = 1 - Math.pow(1 - t, 3);
+
+      if (groupRef.current) {
+        groupRef.current.scale.set(easeT, easeT, easeT);
+        groupRef.current.rotation.y = (1 - easeT) * rotatoinOffset;
+      }
+    }
+  });
 
   useEffect(() => {
     console.debug("R3F AR model loaded", { modelURL });
   }, [modelURL]);
 
-  return <primitive object={scene} />;
+  return (
+    <group ref={groupRef}>
+      <primitive object={scene} />
+    </group>
+  );
 }
 
 function clamp(value: number, min: number, max: number) {
