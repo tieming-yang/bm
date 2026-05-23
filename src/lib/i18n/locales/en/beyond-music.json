@@ -30,6 +30,9 @@
       "shareFailed": {
         "title": "Could not copy link"
       }
+    },
+    "genres": {
+      "others": "Others"
     }
   }
 }

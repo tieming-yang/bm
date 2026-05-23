@@ -30,6 +30,9 @@
       "shareFailed": {
         "title": "無法複製連結"
       }
+    },
+    "genres": {
+      "others": "其他"
     }
   }
 }
