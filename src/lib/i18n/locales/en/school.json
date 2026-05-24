@@ -215,6 +215,7 @@
     "registration": {
       "badge": "Summer Camp Registration",
       "description": "Use this form to register children for the 2026 Ekklesia Beyond Summer Camp.",
+      "price": "Material fee (per child): $",
       "eventTitleLabel": "Event",
       "scheduleLabel": "Schedule",
       "locationLabel": "Location",

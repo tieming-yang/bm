@@ -6,7 +6,7 @@ import { Globe } from "lucide-react";
 import useTranslation from "@/hooks/use-translation";
 import { Button } from "@/components/ui/button";
 
-const CHINESE_ONLY_ROUTES = ["/beyond-music", "/school/summer/2026/registration"];
+const CHINESE_ONLY_ROUTES = ["/beyond-music"];
 
 export default function ChineseOnlyGuard({ children }: React.PropsWithChildren) {
   const pathname = usePathname();
