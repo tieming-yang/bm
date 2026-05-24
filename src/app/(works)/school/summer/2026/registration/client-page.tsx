@@ -579,6 +579,8 @@ function BooleanChoiceField({
   );
 }
 
+const PRICE = 27;
+
 export default function RegistrationClientPage() {
   const pathname = usePathname();
   const router = useRouter();
@@ -673,16 +675,12 @@ export default function RegistrationClientPage() {
     );
     const draft = readRegistrationDraft();
     form.reset(
-      mergeRegistrationDraft(
-        defaults,
-        draft,
-        {
-          authFlow,
-          parentEmail: authUser?.email ?? profile?.email ?? "",
-          isEbVolunteer: profile?.isEbVolunteer,
-          profile,
-        }
-      )
+      mergeRegistrationDraft(defaults, draft, {
+        authFlow,
+        parentEmail: authUser?.email ?? profile?.email ?? "",
+        isEbVolunteer: profile?.isEbVolunteer,
+        profile,
+      })
     );
     hasHydratedInitialValues.current = true;
 
@@ -717,8 +715,11 @@ export default function RegistrationClientPage() {
           </div>
           <div className="space-y-3">
             <CardTitle className="text-3xl">{event.title}</CardTitle>
-            <CardDescription className="max-w-3xl text-base">
-              {t("school.registration.description")}
+            <CardDescription className="max-w-3xl text-base space-y-1">
+              <p>{t("school.registration.description")}</p>
+              <p className="text-primary">
+                {t("school.registration.price")} {PRICE}
+              </p>
             </CardDescription>
           </div>
         </CardHeader>

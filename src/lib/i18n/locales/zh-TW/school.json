@@ -217,6 +217,7 @@
     "registration": {
       "badge": "夏令營報名",
       "description": "請使用此表單為兒童報名 2026 Ekklesia Beyond Summer Camp。",
+      "price": "材料費（每孩童）：$",
       "eventTitleLabel": "活動",
       "scheduleLabel": "時間",
       "locationLabel": "地點",
