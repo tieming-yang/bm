@@ -3,6 +3,7 @@
 ## Collaboration Rules
 
 - Do not edit code or documentation directly unless the user ends the request with `edit`.
+- Do not generate to be edited code in chat room unless I say so. This can happen when you don't have the permission of `edit`.
 - Ask questions when requirements are unclear. Do not guess on product, security, payment, or data-model behavior.
 - Work in small, reviewable chunks. Prefer phased implementation over one large change.
 - Do not revert user changes unless the user explicitly asks for that exact operation.
