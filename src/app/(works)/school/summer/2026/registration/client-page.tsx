@@ -579,7 +579,7 @@ function BooleanChoiceField({
   );
 }
 
-const PRICE = 27;
+const PRICE = 50;
 
 export default function RegistrationClientPage() {
   const pathname = usePathname();
@@ -597,6 +597,18 @@ export default function RegistrationClientPage() {
     queryKey: QueryKey.profile(authUser?.uid ?? "school-registration"),
     queryFn: () => Profile.get(authUser!.uid),
     enabled: !!authUser?.uid,
+  });
+
+  const { data: capacity, refetch: refetchCapacity } = useQuery({
+    queryKey: ["school", event.slug, "capacity"],
+    queryFn: async () => {
+      const response = await fetch(`/api/school/events/${event.slug}/capacity`);
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.error ?? "Failed to fetch capacity");
+      }
+      return result as { registeredCount: number; maxCapacity: number; remainingSlots: number };
+    },
   });
 
   const submitMutation = useMutation({
@@ -621,10 +633,16 @@ export default function RegistrationClientPage() {
       clearRegistrationDraft();
       setIsSubmitted(true);
       toast.success(t("school.registration.toast.success"));
+      refetchCapacity();
     },
     onError: (error) => {
       console.error(error);
-      toast.error(t("school.registration.toast.error"));
+      if (error instanceof Error && error.message === "REGISTRATION_FULL") {
+        toast.error(t("school.registration.toast.justFull"));
+      } else {
+        toast.error(t("school.registration.toast.error"));
+      }
+      refetchCapacity();
     },
   });
 
@@ -715,32 +733,60 @@ export default function RegistrationClientPage() {
           </div>
           <div className="space-y-3">
             <CardTitle className="text-3xl">{event.title}</CardTitle>
-            <CardDescription className="max-w-3xl text-base space-y-1">
+            <div className="text-muted-foreground max-w-3xl text-base space-y-1">
               <p>{t("school.registration.description")}</p>
-              <p className="text-primary">
-                {t("school.registration.price")} {PRICE}
-              </p>
-            </CardDescription>
+              <div className="flex flex-col gap-1">
+                <p className="text-primary font-semibold">
+                  {t("school.registration.price")} {PRICE}
+                </p>
+                {capacity && (
+                  <p className="text-muted-foreground text-sm">
+                    {capacity.remainingSlots > 0
+                      ? t("school.registration.remainingSlots", { count: capacity.remainingSlots })
+                      : <span className="text-destructive font-semibold">{t("school.registration.full")}</span>
+                    }
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="grid gap-5 md:grid-cols-3">
-          <div className="px-5 py-5 border rounded-3xl border-border">
+        <CardContent className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="bg-background px-5 py-5 border rounded-3xl border-border">
             <p className="text-sm text-muted-foreground">
               {t("school.registration.eventTitleLabel")}
             </p>
             <p className="mt-2 text-lg font-semibold">{event.title}</p>
           </div>
-          <div className="px-5 py-5 border rounded-3xl border-border">
+          <div className="bg-background px-5 py-5 border rounded-3xl border-border">
             <p className="text-sm text-muted-foreground">
-              {t("school.registration.scheduleLabel")}
+              {t("school.registration.dateLabel")}
             </p>
-            <p className="mt-2 text-lg font-semibold">{EVENT_SCHEDULE_DISPLAY}</p>
+            <p className="mt-2 text-lg font-semibold">
+              {t("school.registration.dateValue")}
+            </p>
           </div>
-          <div className="px-5 py-5 border rounded-3xl border-border">
+          <div className="bg-background px-5 py-5 border rounded-3xl border-border">
+            <p className="text-sm text-muted-foreground">
+              {t("school.registration.timeLabel")}
+            </p>
+            <p className="mt-2 text-lg font-semibold">
+              {t("school.registration.timeValue")}
+            </p>
+          </div>
+          <div className="bg-background px-5 py-5 border rounded-3xl border-border">
             <p className="text-sm text-muted-foreground">
               {t("school.registration.locationLabel")}
             </p>
             <p className="mt-2 text-lg font-semibold">{EVENT_LOCATION_ADDRESS}</p>
+          </div>
+          <div className="bg-background px-5 py-5 border rounded-3xl border-border">
+            <p className="text-sm text-muted-foreground">
+              {t("school.registration.snacksLabel")}
+            </p>
+            <p className="mt-2 text-lg font-semibold">
+              {t("school.registration.snacksValue")}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -753,6 +799,22 @@ export default function RegistrationClientPage() {
               <CardTitle>{t("school.registration.successTitle")}</CardTitle>
             </div>
             <CardDescription>{t("school.registration.successDescription")}</CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button asChild>
+              <Link href="/school">{t("school.registration.backToSchool")}</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      ) : capacity && capacity.remainingSlots <= 0 ? (
+        <Card>
+          <CardHeader className="gap-4">
+            <CardTitle className="text-3xl text-destructive">
+              {t("school.registration.fullTitle")}
+            </CardTitle>
+            <CardDescription className="max-w-3xl text-base">
+              {t("school.registration.fullDescription")}
+            </CardDescription>
           </CardHeader>
           <CardFooter>
             <Button asChild>

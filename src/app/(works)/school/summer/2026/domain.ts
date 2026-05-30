@@ -9,7 +9,7 @@ export const ORGANIZATION_NAME = "Ekklesia Beyond" as const;
 export const ORGANIZATION_WEBSITE = null;
 export const EVENT_LOCATION_ADDRESS = "3535 Briarpark Dr #135, Houston, TX 77042" as const;
 export const EVENT_SCHEDULE_DISPLAY =
-  "From June 15, Monday through Friday for five days, from 9:30 a.m. to 11:30 a.m., three hours." as const;
+  "From June 15, Monday through Friday for 5 days, from 9:30 a.m. to 12:30 p.m., with prepared snacks." as const;
 export const DEFAULT_COUNTRY = "United States" as const;
 export const REGISTRATION_DRAFT_STORAGE_KEY = `school-registration-draft:${EVENT_SLUG}`;
 

@@ -216,6 +216,17 @@
       "badge": "Summer Camp Registration",
       "description": "Use this form to register children for the 2026 Ekklesia Beyond Summer Camp.",
       "price": "Material fee (per child): $",
+      "remainingSlots": "{{count}} spots remaining",
+      "full": "Registration full",
+      "fullTitle": "Registration Full",
+      "fullDescription": "Thank you for your interest. The 2026 Ekklesia Beyond Summer Camp (limited to 20 children) is now fully registered. Please stay tuned for our future events!",
+      "scheduleValue": "From June 15\nMonday through Friday for 5 days\n9:30 a.m. to 12:30 p.m.\nWith prepared snacks.",
+      "dateLabel": "Date",
+      "dateValue": "From June 15, Monday through Friday (5 days)",
+      "timeLabel": "Time",
+      "timeValue": "9:30 a.m. to 12:30 p.m.",
+      "snacksLabel": "Snacks",
+      "snacksValue": "With prepared snacks.",
       "eventTitleLabel": "Event",
       "scheduleLabel": "Schedule",
       "locationLabel": "Location",
@@ -257,7 +268,8 @@
         "success": "Registration submitted successfully.",
         "error": "Unable to submit the registration. Please try again.",
         "mustAgreeLiability": "You must agree to the liability and medical release to continue.",
-        "mustSignIn": "Please Sign In first. Thank you!"
+        "mustSignIn": "Please Sign In first. Thank you!",
+        "justFull": "Sorry, the summer camp just reached its capacity. We could not process your registration."
       },
       "fields": {
         "firstName": "First Name",

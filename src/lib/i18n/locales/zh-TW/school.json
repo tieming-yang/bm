@@ -218,6 +218,17 @@
       "badge": "夏令營報名",
       "description": "請使用此表單為兒童報名 2026 Ekklesia Beyond Summer Camp。",
       "price": "材料費（每孩童）：$",
+      "remainingSlots": "剩餘名額：{{count}} 位",
+      "full": "報名已額滿",
+      "fullTitle": "報名已額滿",
+      "fullDescription": "感謝您的支持，2026 Ekklesia Beyond 夏令營名額（限額 20 名）已全數額滿。歡迎關注我們未來的活動！",
+      "scheduleValue": "6月15日起\n週一至週五共五天\n上午9:30至下午12:30\n含預備點心。",
+      "dateLabel": "日期",
+      "dateValue": "6月15日起，週一至週五共五天",
+      "timeLabel": "時間",
+      "timeValue": "上午9:30至下午12:30",
+      "snacksLabel": "點心",
+      "snacksValue": "含預備點心",
       "eventTitleLabel": "活動",
       "scheduleLabel": "時間",
       "locationLabel": "地點",
@@ -259,7 +270,8 @@
         "success": "報名送出成功。",
         "error": "報名送出失敗，請稍後再試。",
         "mustAgreeLiability": "您必須同意責任與醫療同意後才能繼續。",
-        "mustSignIn": "請先登入後再報名，感謝。"
+        "mustSignIn": "請先登入後再報名，感謝。",
+        "justFull": "抱歉，夏令營名額剛剛已額滿，未能完成報名。"
       },
       "fields": {
         "firstName": "名字",

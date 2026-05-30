@@ -90,6 +90,24 @@ export async function POST(
         API.throwAPIError(404, "Profile not found");
       }
 
+      const registrationsQuery = firebaseAdmin.db
+        .collection("school_registrations")
+        .where("eventSlug", "==", eventSlug);
+      const registrationsSnap = await tx.get(registrationsQuery);
+
+      let registeredCount = 0;
+      registrationsSnap.docs.forEach((doc) => {
+        const data = doc.data();
+        if (Array.isArray(data.children)) {
+          registeredCount += data.children.length;
+        }
+      });
+
+      const newChildrenCount = parsed.data.children.length;
+      if (registeredCount + newChildrenCount > 20) {
+        API.throwAPIError(400, "REGISTRATION_FULL");
+      }
+
       const currentProfile = profileSnap.data() as {
         email?: string | null;
         savedChildren?: ProfileSavedChild[];
