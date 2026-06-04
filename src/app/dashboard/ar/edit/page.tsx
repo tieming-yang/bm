@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeftIcon,
   PlusIcon,
@@ -170,6 +170,7 @@ function FileUploader({
 
 function ArEditPageContent() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const isEditing = !!id;
@@ -299,6 +300,7 @@ function ArEditPageContent() {
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-ar-collections"] });
       toast.success("專案已成功建立！");
       router.push("/dashboard/ar");
     },
@@ -322,6 +324,7 @@ function ArEditPageContent() {
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-ar-collections"] });
       toast.success("專案已成功更新！");
       router.push("/dashboard/ar");
     },
