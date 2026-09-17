@@ -53,6 +53,7 @@ import useAuthUser from "@/hooks/use-auth-user";
 import Auth from "@/models/auth";
 import { Policy } from "@/lib/policy";
 import { AR, ARWrite, Model, ModelWrite } from "@/app/(works)/ar/data";
+import type { ModelUploadPersistence } from "@/app/api/admin/ar/upload/schema";
 
 function FileUploader({
   accept,
@@ -64,6 +65,7 @@ function FileUploader({
   disabled,
   folder,
   onBeforeUpload,
+  uploadPersistence,
 }: {
   accept: string;
   type: "model" | "audio" | "video" | "target";
@@ -74,6 +76,7 @@ function FileUploader({
   disabled?: boolean;
   folder: string;
   onBeforeUpload?: () => boolean;
+  uploadPersistence?: ModelUploadPersistence;
 }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -88,8 +91,7 @@ function FileUploader({
     }
 
     // Standard limits: 100MB for GLB/videos, 20MB for audio/targets
-    const limit =
-      type === "model" || type === "video" ? 100 * 1024 * 1024 : 20 * 1024 * 1024;
+    const limit = type === "model" || type === "video" ? 100 * 1024 * 1024 : 20 * 1024 * 1024;
     if (file.size > limit) {
       toast.error(`檔案過大！該檔案類型限制為 ${limit / (1024 * 1024)}MB`);
       return;
@@ -104,6 +106,10 @@ function FileUploader({
       formData.append("file", file);
       formData.append("type", type);
       formData.append("folder", folder);
+      if (uploadPersistence) {
+        formData.append("modelId", uploadPersistence.modelId);
+        formData.append("field", uploadPersistence.field);
+      }
 
       const res = await fetch("/api/admin/ar/upload", {
         method: "POST",
@@ -230,7 +236,11 @@ export default function ArDashboardPage() {
   }, [authUser, isLoading, isAuthorized, router]);
 
   // Data fetching
-  const { data: collections, refetch: refetchCollections, isLoading: isCollectionsLoading } = useQuery({
+  const {
+    data: collections,
+    refetch: refetchCollections,
+    isLoading: isCollectionsLoading,
+  } = useQuery({
     queryKey: ["admin-ar-collections"],
     queryFn: async () => {
       const token = await Auth.user?.getIdToken();
@@ -243,7 +253,11 @@ export default function ArDashboardPage() {
     enabled: isAuthorized && !!authUser,
   });
 
-  const { data: models, refetch: refetchModels, isLoading: isModelsLoading } = useQuery({
+  const {
+    data: models,
+    refetch: refetchModels,
+    isLoading: isModelsLoading,
+  } = useQuery({
     queryKey: ["admin-ar-models"],
     queryFn: async () => {
       const token = await Auth.user?.getIdToken();
@@ -288,8 +302,6 @@ export default function ArDashboardPage() {
       });
     }
   }, [editingModel, isModelDialogOpen]);
-
-
 
   const deleteCollectionMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -381,9 +393,6 @@ export default function ArDashboardPage() {
     },
   });
 
-
-
-
   const handleSaveModel = (e: React.FormEvent) => {
     e.preventDefault();
     if (isUploading) return;
@@ -415,14 +424,11 @@ export default function ArDashboardPage() {
 
   const handleDeleteModel = (id: string, name: string) => {
     if (
-      window.confirm(
-        `確定要刪除模型「${name}」嗎？此動作將會從 R2 檔案庫中清除對應的所有檔案。`
-      )
+      window.confirm(`確定要刪除模型「${name}」嗎？此動作將會從 R2 檔案庫中清除對應的所有檔案。`)
     ) {
       deleteModelMutation.mutate(id);
     }
   };
-
 
   const formatTimestamp = (ts: any) => {
     if (!ts) return "—";
@@ -525,7 +531,10 @@ export default function ArDashboardPage() {
                         <TableCell className="font-medium">{col.title}</TableCell>
                         <TableCell>v{col.version}</TableCell>
                         <TableCell>{col.items?.length ?? 0} 個項目</TableCell>
-                        <TableCell className="max-w-[200px] truncate font-sans text-xs" title={col.targetsPath}>
+                        <TableCell
+                          className="max-w-[200px] truncate font-sans text-xs"
+                          title={col.targetsPath}
+                        >
                           {col.targetsPath}
                         </TableCell>
                         <TableCell>{formatTimestamp(col.updatedAt)}</TableCell>
@@ -611,7 +620,10 @@ export default function ArDashboardPage() {
                             {mod.contentType}
                           </span>
                         </TableCell>
-                        <TableCell className="max-w-[250px] truncate font-sans text-xs" title={mod.modelPath}>
+                        <TableCell
+                          className="max-w-[250px] truncate font-sans text-xs"
+                          title={mod.modelPath}
+                        >
                           {mod.modelPath}
                         </TableCell>
                         <TableCell>{formatTimestamp(mod.updatedAt)}</TableCell>
@@ -679,9 +691,7 @@ export default function ArDashboardPage() {
                 id="mod-title"
                 placeholder="例如: adam (此欄位將作為檔案庫儲存目錄名)"
                 value={modelFormData.title}
-                onChange={(e) =>
-                  setModelFormData((prev) => ({ ...prev, title: e.target.value }))
-                }
+                onChange={(e) => setModelFormData((prev) => ({ ...prev, title: e.target.value }))}
                 required
               />
             </div>
@@ -692,25 +702,38 @@ export default function ArDashboardPage() {
                 id="mod-title-zh"
                 placeholder="例如: 亞當"
                 value={modelFormData.titleZh}
-                onChange={(e) =>
-                  setModelFormData((prev) => ({ ...prev, titleZh: e.target.value }))
-                }
+                onChange={(e) => setModelFormData((prev) => ({ ...prev, titleZh: e.target.value }))}
                 required
               />
             </div>
 
             <div className="space-y-2 p-4 border rounded-lg bg-muted/10">
               <Label className="font-semibold block mb-1">GLB 模型檔案 (.glb) *</Label>
-              <p className="text-xs text-muted-foreground mb-3">上傳可用於行動裝置載入的 3D 立體模型檔案。</p>
+              <p className="text-xs text-muted-foreground mb-3">
+                上傳可用於行動裝置載入的 3D 立體模型檔案。
+              </p>
               <FileUploader
                 accept=".glb"
                 type="model"
                 label="選擇上傳 .glb 檔案"
                 value={modelFormData.modelPath}
-                onChange={(path) => setModelFormData((prev) => ({ ...prev, modelPath: path }))}
+                onChange={(path) => {
+                  setModelFormData((prev) => ({ ...prev, modelPath: path }));
+                  if (editingModel) {
+                    refetchModels();
+                  }
+                }}
                 onUploadStateChange={handleUploadStateChange}
                 disabled={createModelMutation.isPending || updateModelMutation.isPending}
                 folder={modelFormData.title}
+                uploadPersistence={
+                  editingModel
+                    ? {
+                        modelId: editingModel.id,
+                        field: "modelPath",
+                      }
+                    : undefined
+                }
                 onBeforeUpload={() => {
                   if (!modelFormData.title.trim()) {
                     toast.error("請先輸入英文名稱以建立儲存路徑");
