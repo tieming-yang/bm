@@ -8,6 +8,7 @@
 - Work in small, reviewable chunks. Prefer phased implementation over one large change.
 - Do not revert user changes unless the user explicitly asks for that exact operation.
 - Use English for non-user-facing errors. User-facing copy may follow the product language requirements.
+- Atomic commits for me
 
 ## Defensive Implementation Style
 
