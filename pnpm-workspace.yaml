@@ -2,7 +2,7 @@ blockExoticSubdeps: false
 
 allowBuilds:
   '@firebase/util': true
-  canvas: true
+  canvas: false
   core-js: true
   esbuild: true
   protobufjs: true
