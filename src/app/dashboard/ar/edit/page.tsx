@@ -33,6 +33,7 @@ import useAuthUser from "@/hooks/use-auth-user";
 import Auth from "@/models/auth";
 import { Policy } from "@/lib/policy";
 import { AR, ARWrite, Model } from "@/app/(works)/ar/data";
+import type { CollectionUploadPersistence } from "@/app/api/admin/ar/upload/schema";
 
 function FileUploader({
   accept,
@@ -44,6 +45,7 @@ function FileUploader({
   disabled,
   folder,
   onBeforeUpload,
+  uploadPersistence,
 }: {
   accept: string;
   type: "model" | "audio" | "video" | "target";
@@ -54,6 +56,7 @@ function FileUploader({
   disabled?: boolean;
   folder: string;
   onBeforeUpload?: () => boolean;
+  uploadPersistence?: CollectionUploadPersistence;
 }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -82,6 +85,13 @@ function FileUploader({
       formData.append("file", file);
       formData.append("type", type);
       formData.append("folder", folder);
+      if (uploadPersistence) {
+        formData.append("collectionId", uploadPersistence.collectionId);
+        formData.append("field", uploadPersistence.field);
+        if ("modelId" in uploadPersistence) {
+          formData.append("modelId", uploadPersistence.modelId);
+        }
+      }
 
       const res = await fetch("/api/admin/ar/upload", {
         method: "POST",
@@ -240,6 +250,8 @@ function ArEditPageContent() {
       return res.json() as Promise<AR>;
     },
     enabled: isAuthorized && !!authUser && isEditing,
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   const { data: models } = useQuery({
@@ -325,6 +337,9 @@ function ArEditPageContent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-ar-collections"] });
+      if (id) {
+        queryClient.invalidateQueries({ queryKey: ["admin-ar-collection", id] });
+      }
       toast.success("專案已成功更新！");
       router.push("/dashboard/ar");
     },
@@ -442,6 +457,10 @@ function ArEditPageContent() {
         </Link>
       </div>
 
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+        已建立的專案中，重新上傳識別檔、音檔或影片會立即寫入資料庫；若資料庫寫入失敗，系統會移除剛上傳的檔案。新專案仍需按下儲存後才會建立資料。
+      </div>
+
       <form onSubmit={handleSaveCollection} className="space-y-6">
         {/* Split Screen Columns: Left (Metadata) / Right (Characters List) */}
         <div className="grid gap-6 md:grid-cols-12 items-start">
@@ -512,6 +531,14 @@ function ArEditPageContent() {
                       createCollectionMutation.isPending || updateCollectionMutation.isPending
                     }
                     folder={collectionFormData.title}
+                    uploadPersistence={
+                      id
+                        ? {
+                            collectionId: id,
+                            field: "targetsPath",
+                          }
+                        : undefined
+                    }
                     onBeforeUpload={() => {
                       if (!collectionFormData.title.trim()) {
                         toast.error("請先輸入專案名稱以建立儲存路徑");
@@ -651,6 +678,15 @@ function ArEditPageContent() {
                                 updateCollectionMutation.isPending
                               }
                               folder={item.title}
+                              uploadPersistence={
+                                id
+                                  ? {
+                                      collectionId: id,
+                                      modelId: item.modelId,
+                                      field: "audioPath",
+                                    }
+                                  : undefined
+                              }
                             />
                           </div>
                           <div className="space-y-1">
@@ -670,6 +706,15 @@ function ArEditPageContent() {
                                 updateCollectionMutation.isPending
                               }
                               folder={item.title}
+                              uploadPersistence={
+                                id
+                                  ? {
+                                      collectionId: id,
+                                      modelId: item.modelId,
+                                      field: "audioPathZh",
+                                    }
+                                  : undefined
+                              }
                             />
                           </div>
                           <div className="space-y-1">
@@ -689,6 +734,15 @@ function ArEditPageContent() {
                                 updateCollectionMutation.isPending
                               }
                               folder={item.title}
+                              uploadPersistence={
+                                id
+                                  ? {
+                                      collectionId: id,
+                                      modelId: item.modelId,
+                                      field: "videoPath",
+                                    }
+                                  : undefined
+                              }
                             />
                           </div>
                         </div>
