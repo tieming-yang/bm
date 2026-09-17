@@ -76,7 +76,7 @@ function SortableHeader({ title, onClick }: { title: string; onClick: () => void
     <Button
       type="button"
       variant="ghost"
-      className="h-auto font-medium text-left"
+      className="h-auto font-medium text-left w-fit shrink-0"
       onClick={onClick}
     >
       <span>{title}</span>
@@ -329,10 +329,10 @@ export default function SummerSchoolDashboardPage() {
   }
 
   return (
-    <div className="flex flex-col w-full px-4 py-10 mx-auto font-serif min-h-svh gap-8">
+    <div className="flex flex-col w-full px-4 py-10 mx-auto font-mono min-h-svh max-w-7xl gap-8 overflow-x-hidden">
       <div className="flex items-center justify-between">
-        <Link href="/dashboard">
-          <Button variant="outline" className="flex items-center gap-2">
+        <Link href="/dashboard" className="w-fit">
+          <Button variant="outline" className="w-fit shrink-0 flex items-center gap-2 rounded-full">
             <ArrowLeftIcon className="w-4 h-4" />
             返回管理首頁
           </Button>

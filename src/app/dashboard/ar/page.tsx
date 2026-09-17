@@ -148,7 +148,7 @@ function FileUploader({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
         <Input
           type="file"
           accept={accept}
@@ -164,7 +164,7 @@ function FileUploader({
           size="sm"
           disabled={disabled || uploading}
           onClick={handleButtonClick}
-          className="flex items-center gap-2 h-9"
+          className="w-fit shrink-0 flex items-center gap-2 h-9"
         >
           {uploading ? (
             <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -174,7 +174,7 @@ function FileUploader({
           {label}
         </Button>
         {value ? (
-          <span className="text-xs text-muted-foreground truncate max-w-[200px]" title={value}>
+          <span className="text-xs text-muted-foreground truncate max-w-full min-w-0 flex-1" title={value}>
             已上傳: {value.substring(value.lastIndexOf("/") + 1)}
           </span>
         ) : (
@@ -186,7 +186,7 @@ function FileUploader({
             variant="ghost"
             size="sm"
             onClick={() => onChange("")}
-            className="h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/5"
+            className="w-fit shrink-0 h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/5"
           >
             清除
           </Button>
@@ -462,10 +462,10 @@ export default function ArDashboardPage() {
   }
 
   return (
-    <div className="flex flex-col w-full px-4 py-10 mx-auto font-mono min-h-svh max-w-7xl gap-8">
+    <div className="flex flex-col w-full px-4 py-10 mx-auto font-mono min-h-svh max-w-7xl gap-8 overflow-x-hidden">
       <div className="flex items-center justify-between">
-        <Link href="/dashboard">
-          <Button variant="outline" className="flex items-center gap-2 rounded-full">
+        <Link href="/dashboard" className="w-fit">
+          <Button variant="outline" className="w-fit shrink-0 flex items-center gap-2 rounded-full">
             <ArrowLeftIcon className="w-4 h-4" />
             返回管理首頁
           </Button>
@@ -496,8 +496,8 @@ export default function ArDashboardPage() {
                 <CardTitle>AR 專案列表</CardTitle>
                 <CardDescription>配置並管理各個獨立的 AR 場景展示專案。</CardDescription>
               </div>
-              <Link href="/dashboard/ar/edit">
-                <Button className="flex items-center gap-2 rounded-full">
+              <Link href="/dashboard/ar/edit" className="w-fit">
+                <Button className="w-fit shrink-0 flex items-center gap-2 rounded-full">
                   <PlusIcon className="w-4 h-4" />
                   建立新專案
                 </Button>
@@ -532,19 +532,19 @@ export default function ArDashboardPage() {
                         <TableCell>v{col.version}</TableCell>
                         <TableCell>{col.items?.length ?? 0} 個項目</TableCell>
                         <TableCell
-                          className="max-w-[200px] truncate font-sans text-xs"
+                          className="max-w-[200px] truncate text-xs"
                           title={col.targetsPath}
                         >
                           {col.targetsPath}
                         </TableCell>
                         <TableCell>{formatTimestamp(col.updatedAt)}</TableCell>
                         <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Link href={`/dashboard/ar/edit?id=${col.id}`}>
+                          <div className="flex justify-end gap-2 shrink-0 w-fit ml-auto">
+                            <Link href={`/dashboard/ar/edit?id=${col.id}`} className="w-fit">
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="flex items-center gap-1.5"
+                                className="w-fit shrink-0 flex items-center gap-1.5"
                               >
                                 <EditIcon className="w-3.5 h-3.5" />
                                 編輯
@@ -554,7 +554,7 @@ export default function ArDashboardPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleDeleteCollection(col.id, col.title)}
-                              className="flex items-center gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/5"
+                              className="w-fit shrink-0 flex items-center gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/5"
                             >
                               <Trash2Icon className="w-3.5 h-3.5" />
                               刪除
@@ -582,7 +582,7 @@ export default function ArDashboardPage() {
                   setEditingModel(null);
                   setIsModelDialogOpen(true);
                 }}
-                className="flex items-center gap-2 rounded-full"
+                className="w-fit shrink-0 flex items-center gap-2 rounded-full"
               >
                 <PlusIcon className="w-4 h-4" />
                 新增模型
@@ -616,19 +616,19 @@ export default function ArDashboardPage() {
                         <TableCell className="font-medium">{mod.titleZh || "—"}</TableCell>
                         <TableCell>{mod.title}</TableCell>
                         <TableCell>
-                          <span className="bg-muted px-2.5 py-0.5 rounded-full text-xs font-sans">
+                          <span className="bg-muted px-2.5 py-0.5 rounded-full text-xs">
                             {mod.contentType}
                           </span>
                         </TableCell>
                         <TableCell
-                          className="max-w-[250px] truncate font-sans text-xs"
+                          className="max-w-[250px] truncate text-xs"
                           title={mod.modelPath}
                         >
                           {mod.modelPath}
                         </TableCell>
                         <TableCell>{formatTimestamp(mod.updatedAt)}</TableCell>
                         <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
+                          <div className="flex justify-end gap-2 shrink-0 w-fit ml-auto">
                             <Button
                               variant="outline"
                               size="sm"
@@ -636,7 +636,7 @@ export default function ArDashboardPage() {
                                 setEditingModel(mod);
                                 setIsModelDialogOpen(true);
                               }}
-                              className="flex items-center gap-1.5"
+                              className="w-fit shrink-0 flex items-center gap-1.5"
                             >
                               <EditIcon className="w-3.5 h-3.5" />
                               編輯
@@ -645,7 +645,7 @@ export default function ArDashboardPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleDeleteModel(mod.id, mod.titleZh || mod.title)}
-                              className="flex items-center gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/5"
+                              className="w-fit shrink-0 flex items-center gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/5"
                             >
                               <Trash2Icon className="w-3.5 h-3.5" />
                               刪除
@@ -744,7 +744,7 @@ export default function ArDashboardPage() {
               />
             </div>
 
-            <DialogFooter className="border-t pt-4">
+            <DialogFooter className="border-t pt-4 flex flex-row justify-end gap-2">
               <Button
                 type="button"
                 variant="outline"
@@ -752,7 +752,7 @@ export default function ArDashboardPage() {
                 disabled={
                   isUploading || createModelMutation.isPending || updateModelMutation.isPending
                 }
-                className="rounded-full"
+                className="w-fit shrink-0 rounded-full"
               >
                 取消
               </Button>
@@ -761,7 +761,7 @@ export default function ArDashboardPage() {
                 disabled={
                   isUploading || createModelMutation.isPending || updateModelMutation.isPending
                 }
-                className="rounded-full"
+                className="w-fit shrink-0 rounded-full"
               >
                 {createModelMutation.isPending || updateModelMutation.isPending ? (
                   <span className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />

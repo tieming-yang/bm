@@ -133,7 +133,7 @@ function FileUploader({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
         <Input
           type="file"
           accept={accept}
@@ -149,7 +149,7 @@ function FileUploader({
           size="sm"
           disabled={disabled || uploading}
           onClick={handleButtonClick}
-          className="flex items-center gap-2 h-9"
+          className="w-fit shrink-0 flex items-center gap-2 h-9"
         >
           {uploading ? (
             <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -159,7 +159,7 @@ function FileUploader({
           {label}
         </Button>
         {value ? (
-          <span className="text-xs text-muted-foreground truncate max-w-[280px]" title={value}>
+          <span className="text-xs text-muted-foreground truncate max-w-full min-w-0 flex-1" title={value}>
             已上傳: {value.substring(value.lastIndexOf("/") + 1)}
           </span>
         ) : (
@@ -171,7 +171,7 @@ function FileUploader({
             variant="ghost"
             size="sm"
             onClick={() => onChange("")}
-            className="h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/5"
+            className="w-fit shrink-0 h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/5"
           >
             清除
           </Button>
@@ -511,11 +511,11 @@ function ArEditPageContent() {
   }
 
   return (
-    <div className="flex flex-col w-full px-4 py-8 mx-auto font-mono min-h-svh max-w-7xl gap-6">
+    <div className="flex flex-col w-full px-4 py-8 mx-auto font-mono min-h-svh max-w-7xl gap-6 overflow-x-hidden">
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b">
         <div>
-          <nav className="text-xs text-muted-foreground flex items-center gap-1.5 mb-1 font-sans">
+          <nav className="text-xs text-muted-foreground flex items-center gap-1.5 mb-1">
             <span>首頁</span>
             <span>/</span>
             <span>dashboard</span>
@@ -527,7 +527,7 @@ function ArEditPageContent() {
             </span>
           </nav>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold font-sans tracking-tight">
+            <h1 className="text-2xl font-bold tracking-tight">
               {isEditing ? "編輯 AR 專案" : "建立新 AR 專案"}
             </h1>
             {isEditing && (
@@ -535,15 +535,15 @@ function ArEditPageContent() {
                 v{collectionFormData.version}
               </span>
             )}
-            <span className="px-2.5 py-0.5 rounded-full text-xs bg-primary/10 text-primary border border-primary/20 font-sans font-medium">
+            <span className="px-2.5 py-0.5 rounded-full text-xs bg-primary/10 text-primary border border-primary/20 font-medium">
               {collectionFormData.items.length} 個角色項目
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard/ar">
-            <Button variant="outline" className="flex items-center gap-2 rounded-full h-9">
+        <div className="flex items-center gap-3 shrink-0 w-fit">
+          <Link href="/dashboard/ar" className="w-fit">
+            <Button variant="outline" className="w-fit shrink-0 flex items-center gap-2 rounded-full h-9">
               <ArrowLeftIcon className="w-4 h-4" />
               返回列表
             </Button>
@@ -556,7 +556,7 @@ function ArEditPageContent() {
               createCollectionMutation.isPending ||
               updateCollectionMutation.isPending
             }
-            className="rounded-full h-9 px-5 font-semibold"
+            className="w-fit shrink-0 rounded-full h-9 px-5 font-semibold"
           >
             {createCollectionMutation.isPending || updateCollectionMutation.isPending ? (
               <span className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
@@ -567,7 +567,7 @@ function ArEditPageContent() {
       </div>
 
       {/* Persistence Notice Alert */}
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 font-sans">
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
         已建立的專案中，重新上傳識別檔、音檔或影片會立即寫入資料庫；若資料庫寫入失敗，系統會移除剛上傳的檔案。新專案仍需按下儲存後才會建立資料。
       </div>
 
@@ -578,25 +578,25 @@ function ArEditPageContent() {
             className="p-4 flex items-center justify-between cursor-pointer select-none hover:bg-muted/30 transition-colors"
             onClick={() => setIsMetaCollapsed((prev) => !prev)}
           >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-sm font-sans font-bold">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-sm font-bold shrink-0">
                 ⚙
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-semibold font-sans">專案基本配置與追蹤檔</h2>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-sm font-semibold">專案基本配置與追蹤檔</h2>
                   {collectionFormData.title && (
                     <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground font-mono">
                       {collectionFormData.title}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground font-sans mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">
                   識別描述檔 (.mind):{" "}
                   {collectionFormData.targetsPath ? (
                     <span className="text-primary font-mono">{collectionFormData.targetsPath}</span>
                   ) : (
-                    <span className="text-destructive font-sans">尚未上傳</span>
+                    <span className="text-destructive">尚未上傳</span>
                   )}
                   <span className="mx-2 text-muted-foreground/40">•</span>
                   <span>{isMetaCollapsed ? "點擊展開詳細設定" : "點擊收合"}</span>
@@ -608,7 +608,7 @@ function ArEditPageContent() {
               type="button"
               variant="ghost"
               size="sm"
-              className="flex items-center gap-1 text-xs text-muted-foreground"
+              className="w-fit shrink-0 flex items-center gap-1 text-xs text-muted-foreground"
             >
               <span>{isMetaCollapsed ? "展開設定" : "收合設定"}</span>
               {isMetaCollapsed ? (
@@ -671,12 +671,12 @@ function ArEditPageContent() {
                       識別圖描述檔 (.mind) *
                     </Label>
                     {collectionFormData.targetsPath && (
-                      <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 font-sans">
+                      <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                         已就緒
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground mb-3 font-sans">
+                  <p className="text-xs text-muted-foreground mb-3">
                     上傳 MindAR 圖像特徵描述檔。角色順序應與編譯 Mind 檔時的圖片順序完全一致。
                   </p>
                 </div>
@@ -719,19 +719,19 @@ function ArEditPageContent() {
           <CardHeader className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <CardTitle className="text-lg font-sans font-bold">
+                <CardTitle className="text-lg font-bold">
                   專案角色項目 ({collectionFormData.items.length})
                 </CardTitle>
               </div>
-              <CardDescription className="mt-1 font-sans">
+              <CardDescription className="mt-1">
                 排序必須精確對應識別圖 .mind 檔編譯時的 Target Index (索引)。
               </CardDescription>
             </div>
 
             {/* Quick Add and Search Toolbar in the header */}
-            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto min-w-0">
               {/* Search box */}
-              <div className="relative flex-1 sm:w-48">
+              <div className="relative flex-1 sm:w-48 min-w-[140px]">
                 <SearchIcon className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-muted-foreground" />
                 <Input
                   type="text"
@@ -743,7 +743,7 @@ function ArEditPageContent() {
               </div>
 
               {/* Add Model Selector */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0">
                 <Select value={selectedModelId} onValueChange={setSelectedModelId}>
                   <SelectTrigger className="w-[180px] sm:w-[220px] h-9 text-xs">
                     <SelectValue placeholder="從模型庫中選擇角色..." />
@@ -774,7 +774,7 @@ function ArEditPageContent() {
                     updateCollectionMutation.isPending
                   }
                   size="sm"
-                  className="rounded-full h-9 px-3.5 flex items-center gap-1 shrink-0 font-semibold"
+                  className="w-fit shrink-0 rounded-full h-9 px-3.5 flex items-center gap-1 font-semibold"
                 >
                   <PlusIcon className="w-4 h-4" />
                   加入項目
@@ -795,28 +795,28 @@ function ArEditPageContent() {
                   key={item.modelId || originalIndex}
                   className="p-4 border rounded-xl bg-card shadow-sm space-y-4 hover:border-border/80 transition-colors"
                 >
-                  <div className="flex items-center justify-between border-b pb-3">
+                  <div className="flex items-center justify-between border-b pb-3 min-w-0 gap-2">
                     {/* Left: Index badge & Name */}
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center px-2.5 py-1 rounded-lg bg-muted border font-mono text-xs">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="flex items-center justify-center px-2.5 py-1 rounded-lg bg-muted border font-mono text-xs shrink-0">
                         <span className="text-muted-foreground mr-1">IDX</span>
                         <span className="font-bold text-primary">#{originalIndex}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm font-sans">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <span className="font-bold text-sm truncate">
                           {item.titleZh || item.title}
                         </span>
-                        <span className="text-muted-foreground text-xs font-mono">
+                        <span className="text-muted-foreground text-xs font-mono shrink-0">
                           ({item.title})
                         </span>
-                        <span className="text-[11px] text-muted-foreground/80 font-mono hidden sm:inline-block bg-muted/50 px-2 py-0.5 rounded">
+                        <span className="text-[11px] text-muted-foreground/80 font-mono hidden sm:inline-block bg-muted/50 px-2 py-0.5 rounded truncate">
                           📦 {item.modelPath.substring(item.modelPath.lastIndexOf("/") + 1)}
                         </span>
                       </div>
                     </div>
 
                     {/* Right: Reorder & Delete Actions */}
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0 w-fit">
                       <Button
                         type="button"
                         variant="ghost"
@@ -824,7 +824,7 @@ function ArEditPageContent() {
                         disabled={originalIndex === 0 || isFiltered}
                         onClick={() => handleMoveItem(originalIndex, "up")}
                         title={isFiltered ? "清除搜尋條件以調整順序" : "上移"}
-                        className="h-8 w-8"
+                        className="w-fit shrink-0 h-8 w-8"
                       >
                         <ArrowUpIcon className="w-4 h-4" />
                       </Button>
@@ -837,7 +837,7 @@ function ArEditPageContent() {
                         }
                         onClick={() => handleMoveItem(originalIndex, "down")}
                         title={isFiltered ? "清除搜尋條件以調整順序" : "下移"}
-                        className="h-8 w-8"
+                        className="w-fit shrink-0 h-8 w-8"
                       >
                         <ArrowDownIcon className="w-4 h-4" />
                       </Button>
@@ -847,7 +847,7 @@ function ArEditPageContent() {
                         size="icon"
                         onClick={() => handleRemoveItem(originalIndex)}
                         title="移除"
-                        className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 ml-1"
+                        className="w-fit shrink-0 h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 ml-1"
                       >
                         <Trash2Icon className="w-4 h-4" />
                       </Button>
@@ -855,10 +855,10 @@ function ArEditPageContent() {
                   </div>
 
                   {/* Spacious 3-column media uploader grid */}
-                  <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="grid gap-4 sm:grid-cols-3 min-w-0">
                     {/* English Audio */}
-                    <div className="space-y-1.5 p-3 rounded-lg border bg-muted/20">
-                      <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground font-sans">
+                    <div className="space-y-1.5 p-3 rounded-lg border bg-muted/20 min-w-0 overflow-hidden">
+                      <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <MusicIcon className="w-3.5 h-3.5 text-primary" />
                           語音介紹 (英文)
@@ -892,8 +892,8 @@ function ArEditPageContent() {
                     </div>
 
                     {/* Chinese Audio */}
-                    <div className="space-y-1.5 p-3 rounded-lg border bg-muted/20">
-                      <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground font-sans">
+                    <div className="space-y-1.5 p-3 rounded-lg border bg-muted/20 min-w-0 overflow-hidden">
+                      <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <MusicIcon className="w-3.5 h-3.5 text-primary" />
                           語音介紹 (中文)
@@ -929,8 +929,8 @@ function ArEditPageContent() {
                     </div>
 
                     {/* Intro Video */}
-                    <div className="space-y-1.5 p-3 rounded-lg border bg-muted/20">
-                      <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground font-sans">
+                    <div className="space-y-1.5 p-3 rounded-lg border bg-muted/20 min-w-0 overflow-hidden">
+                      <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <VideoIcon className="w-3.5 h-3.5 text-primary" />
                           介紹影片
@@ -970,13 +970,13 @@ function ArEditPageContent() {
         </Card>
 
         {/* Floating Sticky Bottom Bar for convenient saving */}
-        <div className="sticky bottom-6 z-30 max-w-xl mx-auto p-2.5 rounded-full border bg-background/90 backdrop-blur-md shadow-2xl flex items-center justify-between px-5">
-          <div className="flex items-center gap-2 text-xs font-sans text-muted-foreground">
+        <div className="sticky bottom-6 z-30 max-w-xl w-[calc(100%-2rem)] mx-auto p-2.5 rounded-full border bg-background/90 backdrop-blur-md shadow-2xl flex items-center justify-between px-5">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             <span>共 {collectionFormData.items.length} 個角色項目</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard/ar">
+          <div className="flex items-center gap-2 shrink-0 w-fit">
+            <Link href="/dashboard/ar" className="w-fit">
               <Button
                 type="button"
                 variant="ghost"
@@ -986,7 +986,7 @@ function ArEditPageContent() {
                   createCollectionMutation.isPending ||
                   updateCollectionMutation.isPending
                 }
-                className="h-8 rounded-full text-xs text-muted-foreground hover:text-foreground"
+                className="w-fit shrink-0 h-8 rounded-full text-xs text-muted-foreground hover:text-foreground"
               >
                 取消
               </Button>
@@ -999,7 +999,7 @@ function ArEditPageContent() {
                 createCollectionMutation.isPending ||
                 updateCollectionMutation.isPending
               }
-              className="h-8 rounded-full px-5 text-xs font-semibold"
+              className="w-fit shrink-0 h-8 rounded-full px-5 text-xs font-semibold"
             >
               {createCollectionMutation.isPending || updateCollectionMutation.isPending ? (
                 <span className="w-3.5 h-3.5 border-2 border-background border-t-transparent rounded-full animate-spin mr-1.5" />

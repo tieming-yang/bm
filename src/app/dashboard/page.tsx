@@ -59,7 +59,7 @@ export default function DashboardPortalPage() {
   const showAR = Policy.canViewAR(role);
 
   return (
-    <div className="flex flex-col w-full px-4 py-10 mx-auto font-serif min-h-svh justify-center max-w-5xl gap-8">
+    <div className="flex flex-col w-full px-4 py-10 mx-auto font-mono min-h-svh justify-center max-w-5xl gap-8">
       <div className="text-center md:text-left">
         <h1 className="text-3xl font-bold tracking-tight">管理員主控台</h1>
         <p className="text-muted-foreground mt-2">請選擇您需要管理的系統模組。</p>
@@ -84,8 +84,8 @@ export default function DashboardPortalPage() {
                 提供完整的唯讀報名列表，支援關鍵字搜尋家長、兒童以及依照年級進行資料篩選。
               </p>
               <div className="mt-2 flex justify-end">
-                <Link href="/dashboard/summer-school" className="w-full sm:w-auto">
-                  <Button className="w-full flex items-center gap-2">
+                <Link href="/dashboard/summer-school" className="w-fit">
+                  <Button className="w-fit flex items-center gap-2">
                     進入管理
                     <ArrowRightIcon className="w-4 h-4" />
                   </Button>
@@ -113,8 +113,8 @@ export default function DashboardPortalPage() {
                 設定用於聖經學堂場景展示的 3D 立體模型及對應的 AR 裝置讀取配置。
               </p>
               <div className="mt-2 flex justify-end">
-                <Link href="/dashboard/ar" className="w-full sm:w-auto">
-                  <Button className="w-full flex items-center gap-2">
+                <Link href="/dashboard/ar" className="w-fit">
+                  <Button className="w-fit flex items-center gap-2">
                     進入管理
                     <ArrowRightIcon className="w-4 h-4" />
                   </Button>
