@@ -21,6 +21,7 @@ import enServices from "./locales/en/services.json";
 import enSchool from "./locales/en/school.json";
 import enAr from "./locales/en/ar.json";
 import enBibleCharacter from "./locales/en/bible-character.json";
+import enGreet from "./locales/en/greet.json";
 
 // Import Traditional Chinese translations
 import zhCommon from "./locales/zh-TW/common.json";
@@ -40,6 +41,7 @@ import zhServices from "./locales/zh-TW/services.json";
 import zhSchool from "./locales/zh-TW/school.json";
 import zhAr from "./locales/zh-TW/ar.json";
 import zhBibleCharacter from "./locales/zh-TW/bible-character.json";
+import zhGreet from "./locales/zh-TW/greet.json";
 
 // Check for encoding issues in development
 if (process.env.NODE_ENV !== "production") {
@@ -63,6 +65,7 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhSchool, "zh-TW/school.json");
   verifyTranslationEncoding(zhAr, "zh-TW/ar.json");
   verifyTranslationEncoding(zhBibleCharacter, "zh-TW/bible-character.json");
+  verifyTranslationEncoding(zhGreet, "zh-TW/greet.json");
 }
 
 // Initialize i18n instance
@@ -89,6 +92,7 @@ i18n
         school: enSchool,
         ar: enAr,
         "bible-character": enBibleCharacter,
+        greet: enGreet,
       },
       "zh-TW": {
         common: zhCommon,
@@ -108,6 +112,7 @@ i18n
         school: zhSchool,
         ar: zhAr,
         "bible-character": zhBibleCharacter,
+        greet: zhGreet,
       },
     },
     fallbackLng: "zh-TW",

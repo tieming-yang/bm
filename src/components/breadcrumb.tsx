@@ -8,6 +8,7 @@ const routeMap: Record<string, string> = {
   about: "nav.about",
   contact: "nav.contact",
   "bible-gallery": "nav.bibleGallery",
+  greet: "nav.greet",
   "bible-products": "nav.bibleProducts",
   services: "nav.services",
   donate: "nav.donate",
