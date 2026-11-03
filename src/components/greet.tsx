@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Download, Heart, ImageUp, Link2, Loader2, RefreshCw, Sparkles } from "lucide-react";
+import { Download, Heart, ImageUp, Languages, Link2, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import styles from "./greet.module.css";
 import useTranslation from "@/hooks/use-translation";
 import {
   getLocalGreetingContext,
@@ -31,7 +33,7 @@ type CardState =
     };
 
 export default function Greet() {
-  const { t, currentLanguage } = useTranslation("greet");
+  const { t, currentLanguage, changeLanguage } = useTranslation("greet");
   const locale: GreetingLocale = currentLanguage?.toLowerCase().startsWith("en") ? "en" : "zh-TW";
   const [context, setContext] = useState<GreetingRequest | null>(null);
   const [card, setCard] = useState<CardState>({ status: "loading" });
@@ -39,6 +41,12 @@ export default function Greet() {
   const [sharing, setSharing] = useState(false);
   const [shareOutcome, setShareOutcome] = useState<GreetingShareOutcome | null>(null);
   const requestKey = context ? `${context.date}/${context.period}/${locale}` : "";
+
+  useEffect(() => {
+    if (!shareOutcome) return;
+    const timeout = setTimeout(() => setShareOutcome(null), 8_000);
+    return () => clearTimeout(timeout);
+  }, [shareOutcome]);
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
@@ -155,27 +163,36 @@ export default function Greet() {
   }
 
   return (
-    <section className="relative mx-auto w-full max-w-3xl px-4 pt-10 pb-28 sm:px-8 sm:pt-14" aria-labelledby="greet-title">
-      <header className="mx-auto mb-8 max-w-xl text-center">
-        <p className="mb-4 inline-flex items-center gap-2 text-xs tracking-[0.18em] text-secondary uppercase">
-          <Sparkles className="size-4" aria-hidden="true" />
-          {t("eyebrow")}
-        </p>
-        <h1 id="greet-title" className="mb-4 font-display text-3xl leading-snug sm:text-4xl">{t("title")}</h1>
-        <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">{t("intro")}</p>
+    <section className={styles.screen} aria-labelledby="greet-title">
+      <header className={styles.topbar}>
+        <Link href="/" className={styles.home} aria-label={t("home")} title={t("home")}>
+          <Image src="/logos/logo.webp" alt="" width={36} height={36} />
+        </Link>
+        <h1 id="greet-title" className="sr-only">{t("title")}</h1>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={styles.iconButton}
+          aria-label={t(locale === "en" ? "switchToChinese" : "switchToEnglish")}
+          title={t(locale === "en" ? "switchToChinese" : "switchToEnglish")}
+          onClick={() => changeLanguage(locale === "en" ? "zh-TW" : "en")}
+        >
+          <Languages className="size-5" aria-hidden="true" />
+        </Button>
       </header>
 
-      <div className="mx-auto max-w-[540px]">
+      <div className={styles.cardArea}>
         {ready ? (
-          <figure className="overflow-hidden rounded-2xl bg-[#f5efe3] shadow-[0_20px_80px_#00000055] ring-1 ring-secondary/20">
+          <figure className={styles.card}>
             {/* The displayed Blob is also the file used for sharing and downloading. */}
             <img
               src={ready.imageUrl}
               alt={ready.description.artworkTitle}
-              aria-describedby="greet-card-text"
+              aria-describedby="greet-card-text greet-scripture"
               width={1080}
               height={1350}
-              className="block h-auto w-full"
+              className={styles.cardImage}
               onError={() => setCard((current) =>
                 current.status === "ready" && current.imageUrl === ready.imageUrl
                   ? { status: "failed", key: ready.key }
@@ -185,19 +202,16 @@ export default function Greet() {
             <figcaption id="greet-card-text" className="sr-only">
               <p>{ready.description.greeting}</p>
               <p>{ready.description.dateLabel}</p>
-              <p>{ready.description.verse}</p>
-              <p>{ready.description.reference}</p>
               <p>Beyond Media</p>
             </figcaption>
           </figure>
         ) : (
-          <div className="flex aspect-[4/5] flex-col items-center justify-center gap-5 rounded-2xl border border-secondary/20 bg-[#f5efe3] px-8 text-center text-[#344538]" role={failed ? "alert" : "status"} aria-live="polite">
+          <div className={styles.placeholder} role={failed ? "alert" : "status"} aria-live="polite">
             {failed ? (
               <>
                 <p className="max-w-xs text-base leading-relaxed">{t("loadFailed")}</p>
-                <Button type="button" variant="outline" className="w-auto gap-2 border-[#344538]/20 bg-transparent px-5 text-[#344538] hover:bg-[#e5dfd3] hover:text-[#344538]" onClick={() => setRetry((value) => value + 1)}>
-                  <RefreshCw className="size-4" aria-hidden="true" />
-                  {t("retry")}
+                <Button type="button" variant="ghost" size="icon" className={styles.iconButton} aria-label={t("retry")} title={t("retry")} onClick={() => setRetry((value) => value + 1)}>
+                  <RefreshCw className="size-5" aria-hidden="true" />
                 </Button>
               </>
             ) : (
@@ -208,30 +222,35 @@ export default function Greet() {
             )}
           </div>
         )}
-
-        <div className="mt-6 grid grid-cols-2 gap-3" aria-label={t("actions")}>
-          <Button type="button" variant="outline" className="h-12 gap-2 px-3" onClick={handleShareLink} disabled={sharing}>
-            <Link2 className="size-4 shrink-0" aria-hidden="true" />
-            {t("shareLink")}
-          </Button>
-          <Button type="button" variant="outline" className="h-12 gap-2 px-3" onClick={handleShareImage} disabled={!ready || sharing}>
-            <ImageUp className="size-4 shrink-0" aria-hidden="true" />
-            {t("shareCard")}
-          </Button>
-          <Button type="button" variant="outline" className="h-12 gap-2 px-3" onClick={handleDownload} disabled={!ready}>
-            <Download className="size-4 shrink-0" aria-hidden="true" />
-            {t("download")}
-          </Button>
-          <Button asChild className="h-12 gap-2 bg-secondary px-3 text-secondary-foreground hover:bg-secondary/90">
-            <Link href="/glory-share">
-              <Heart className="size-4 shrink-0" aria-hidden="true" />
-              {t("support")}
-            </Link>
-          </Button>
-        </div>
-        <p className="mt-3 min-h-6 text-center text-sm text-secondary" role="status" aria-live="polite">{shareMessage}</p>
-        <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">{t("closing")}</p>
       </div>
+
+      {ready && (
+        <section className={styles.scripture} aria-labelledby="greet-scripture-title">
+          <h2 id="greet-scripture-title" className={styles.scriptureTitle}>{t("scripture")}</h2>
+          <blockquote id="greet-scripture">
+            <p className={styles.verse}>{ready.description.verse}</p>
+            <cite className={styles.reference}>{ready.description.reference}</cite>
+          </blockquote>
+        </section>
+      )}
+
+      <div className={styles.actions} role="group" aria-label={t("actions")}>
+        <Button type="button" variant="ghost" size="icon" className={styles.iconButton} aria-label={t("shareLink")} title={t("shareLink")} onClick={handleShareLink} disabled={sharing}>
+          <Link2 className="size-5" aria-hidden="true" />
+        </Button>
+        <Button type="button" variant="ghost" size="icon" className={styles.iconButton} aria-label={t("shareCard")} title={t("shareCard")} onClick={handleShareImage} disabled={!ready || sharing}>
+          <ImageUp className="size-5" aria-hidden="true" />
+        </Button>
+        <Button type="button" variant="ghost" size="icon" className={styles.iconButton} aria-label={t("download")} title={t("download")} onClick={handleDownload} disabled={!ready}>
+          <Download className="size-5" aria-hidden="true" />
+        </Button>
+        <Button asChild variant="ghost" size="icon" className={`${styles.iconButton} ${styles.support}`}>
+          <Link href="/glory-share" aria-label={t("support")} title={t("support")}>
+            <Heart className="size-5" aria-hidden="true" />
+          </Link>
+        </Button>
+      </div>
+      <p className={shareMessage ? styles.message : "sr-only"} role="status" aria-live="polite">{shareMessage}</p>
     </section>
   );
 }
