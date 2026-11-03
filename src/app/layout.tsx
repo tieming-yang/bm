@@ -1,6 +1,4 @@
 import { Eagle_Lake, Yuji_Mai } from "next/font/google";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
 import { ThemeProvider } from "../components/theme-provider";
 import "../styles/globals.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -11,8 +9,7 @@ import ReactQueryProvider from "@/providers/react-query-provider";
 import ClientRoot from "./client-layout";
 import type { Metadata, Viewport } from "next";
 import rootMetadata from "./metadata";
-import Header from "@/components/header";
-import ChineseOnlyGuard from "@/components/chinese-only-guard";
+import SiteShell from "@/components/site-shell";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 
@@ -67,12 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           >
             <Suspense fallback={<Loading fullScreen />}>
               <ClientRoot>
-                <Header />
-                <main id="main-content" tabIndex={-1} className="relative flex min-h-svh flex-col pt-(--header-height) pb-8 outline-none">
-                  <ChineseOnlyGuard>{children}</ChineseOnlyGuard>
-                </main>
-                <Navbar />
-                <Footer />
+                <SiteShell>{children}</SiteShell>
               </ClientRoot>
               <Toaster position="top-center" />
             </Suspense>

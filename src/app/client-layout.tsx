@@ -29,8 +29,8 @@ function ClientRoot({ children }: React.PropsWithChildren) {
 
   return (
     <MotionConfig reducedMotion="user">
-    <motion.div initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} transition={{ duration: reducedMotion ? 0 : 1 }}>
-      {!reducedMotion && <motion.div
+    <motion.div initial={{ opacity: reducedMotion || pathname === "/greet" ? 1 : 0 }} animate={{ opacity: 1 }} transition={{ duration: reducedMotion || pathname === "/greet" ? 0 : 1 }}>
+      {!reducedMotion && pathname !== "/greet" && <motion.div
         aria-hidden="true"
         key={pathname}
         className="fixed inset-0 z-(--layer-transition) pointer-events-none bg-primary-gradient-50"
