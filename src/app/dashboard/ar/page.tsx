@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeftIcon,
   PlusIcon,
@@ -10,7 +9,6 @@ import {
   EditIcon,
   ArrowUpIcon,
   ArrowDownIcon,
-  UploadIcon,
   BoxIcon,
   FileCodeIcon,
   MusicIcon,
@@ -56,172 +54,22 @@ import useAuthUser from "@/hooks/use-auth-user";
 import Auth from "@/models/auth";
 import { Policy } from "@/lib/policy";
 import { AR, ARWrite, Model, ModelWrite } from "@/app/(works)/ar/data";
-import type { ModelUploadPersistence } from "@/app/api/admin/ar/upload/schema";
-
-function FileUploader({
-  accept,
-  type,
-  label,
-  value,
-  onChange,
-  onUploadStateChange,
-  disabled,
-  folder,
-  onBeforeUpload,
-  uploadPersistence,
-  id,
-  error,
-}: {
-  id?: string;
-  error?: string;
-  accept: string;
-  type: "model" | "audio" | "video" | "target";
-  label: string;
-  value: string;
-  onChange: (path: string) => void;
-  onUploadStateChange?: (uploading: boolean) => void;
-  disabled?: boolean;
-  folder: string;
-  onBeforeUpload?: () => boolean;
-  uploadPersistence?: ModelUploadPersistence;
-}) {
-  const { t } = useTranslation("dashboard");
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!folder || !folder.trim()) {
-      toast.error(type === "target" ? t("upload.projectRequired") : t("upload.nameRequired"));
-      return;
-    }
-
-    // Standard limits: 100MB for GLB/videos, 20MB for audio/targets
-    const limit = type === "model" || type === "video" ? 100 * 1024 * 1024 : 20 * 1024 * 1024;
-    if (file.size > limit) {
-      toast.error(t("upload.tooLarge", { limit: limit / (1024 * 1024) }));
-      return;
-    }
-
-    setUploading(true);
-    onUploadStateChange?.(true);
-    const toastId = toast.loading(t("upload.uploading", { name: file.name }));
-    try {
-      const token = await Auth.user?.getIdToken();
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("type", type);
-      formData.append("folder", folder);
-      if (uploadPersistence) {
-        formData.append("modelId", uploadPersistence.modelId);
-        formData.append("field", uploadPersistence.field);
-      }
-
-      const res = await fetch("/api/admin/ar/upload", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        let errMsg = errText;
-        try {
-          const parsed = JSON.parse(errText);
-          errMsg = parsed.error || errText;
-        } catch {}
-        throw new Error(errMsg || `HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
-      toast.success(t("upload.success", { name: file.name }), { id: toastId });
-      onChange(data.path);
-    } catch (err: any) {
-      console.error("AR file upload failed", err);
-      toast.error(t("upload.failed"), { id: toastId });
-    } finally {
-      setUploading(false);
-      onUploadStateChange?.(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  };
-
-  const handleButtonClick = () => {
-    if (onBeforeUpload && !onBeforeUpload()) {
-      return;
-    }
-    fileInputRef.current?.click();
-  };
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
-        <Input
-          type="file"
-          accept={accept}
-          onChange={handleFileChange}
-          disabled={disabled || uploading}
-          ref={fileInputRef}
-          className="hidden"
-          aria-label={label}
-        />
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          size="sm"
-          aria-invalid={Boolean(error)}
-          aria-describedby={error && id ? `${id}-error` : undefined}
-          disabled={disabled || uploading}
-          aria-busy={uploading}
-          onClick={handleButtonClick}
-          className="w-fit shrink-0 flex items-center gap-2 h-11"
-        >
-          {uploading ? (
-            <ActionSpinner />
-          ) : (
-            <UploadIcon className="w-4 h-4" />
-          )}
-          {label}
-        </Button>
-        {value ? (
-          <span className="text-xs text-muted-foreground truncate max-w-full min-w-0 flex-1" title={value}>
-            {t("upload.file", { name: value.substring(value.lastIndexOf("/") + 1) })}
-          </span>
-        ) : (
-          <span className="text-xs text-muted-foreground/60 italic">{t("upload.empty")}</span>
-        )}
-        {value && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            disabled={disabled || uploading}
-            onClick={() => onChange("")}
-            className="w-fit shrink-0 h-11 px-2 text-error hover:text-error hover:bg-destructive/5"
-          >
-            {t("upload.clear")}
-          </Button>
-        )}
-      </div>
-      {error && <p id={id ? `${id}-error` : undefined} role="alert" className="text-sm text-error">{error}</p>}
-    </div>
-  );
-}
+import { ARAuthoringUpload } from "@/components/ar-authoring-upload";
+import { useUnsavedChanges, useUnsavedNavigation } from "@/components/unsaved-changes-provider";
+import { modelFormErrors, modelFormValue } from "@/lib/ar/authoring";
 
 export default function ArDashboardPage() {
-  const router = useRouter();
+  const { requestDiscard } = useUnsavedNavigation();
+  const queryClient = useQueryClient();
   const { t, currentLanguage } = useTranslation("dashboard");
   const { authUser, isAuthUserLoading } = useAuthUser();
 
   // Authentication & Authorization checks
   useEffect(() => {
     if (!isAuthUserLoading && !authUser) {
-      router.replace("/signin?redirectTo=%2Fdashboard%2Far");
+      window.location.replace("/signin?redirectTo=%2Fdashboard%2Far");
     }
-  }, [authUser, isAuthUserLoading, router]);
+  }, [authUser, isAuthUserLoading]);
 
   const { data: profileData, isLoading: isRoleLoading, error: roleError, refetch: refetchRole } = useQuery({
     queryKey: ["profile-role", authUser?.uid],
@@ -247,9 +95,9 @@ export default function ArDashboardPage() {
 
   useEffect(() => {
     if (!isLoading && authUser && !roleError && !isAuthorized) {
-      router.replace("/not-found");
+      window.location.replace("/not-found");
     }
-  }, [authUser, isLoading, isAuthorized, roleError, router]);
+  }, [authUser, isLoading, isAuthorized, roleError]);
 
   // Data fetching
   const {
@@ -291,6 +139,7 @@ export default function ArDashboardPage() {
   // Dialog and Forms State
   const [activeUploads, setActiveUploads] = useState<number>(0);
   const isUploading = activeUploads > 0;
+  const operation = React.useRef<"upload" | "save" | null>(null);
 
   // Model states
   const [isModelDialogOpen, setIsModelDialogOpen] = useState(false);
@@ -302,27 +151,16 @@ export default function ArDashboardPage() {
     titleZh: "",
     modelPath: "",
   });
+  const [modelBaseline, setModelBaseline] = useState<ModelWrite>(modelFormData);
 
   const [modelFieldErrors, setModelFieldErrors] = useState<Partial<Record<"title" | "titleZh" | "modelPath", boolean>>>({});
 
   // Sync Form when Editing Model Changes
   useEffect(() => {
     setModelFieldErrors({});
-    if (editingModel) {
-      setModelFormData({
-        contentType: editingModel.contentType,
-        title: editingModel.title,
-        titleZh: editingModel.titleZh || "",
-        modelPath: editingModel.modelPath,
-      });
-    } else {
-      setModelFormData({
-        contentType: "character",
-        title: "",
-        titleZh: "",
-        modelPath: "",
-      });
-    }
+    const value = editingModel ? modelFormValue(editingModel) : { contentType: "character" as const, title: "", titleZh: "", modelPath: "" };
+    setModelFormData(value);
+    setModelBaseline(value);
   }, [editingModel, isModelDialogOpen]);
 
   const deleteCollectionMutation = useMutation({
@@ -363,11 +201,14 @@ export default function ArDashboardPage() {
       return res.json();
     },
     onSuccess: () => {
+      operation.current = null;
+      setModelBaseline(modelFormData);
       refetchModels();
       setIsModelDialogOpen(false);
       toast.success(t("ar.modelCreated"));
     },
     onError: (err: any) => {
+      operation.current = null;
       console.error("AR model creation failed", err);
       toast.error(t("ar.modelCreateFailed"));
     },
@@ -388,11 +229,14 @@ export default function ArDashboardPage() {
       return res.json();
     },
     onSuccess: () => {
+      operation.current = null;
+      setModelBaseline(modelFormData);
       refetchModels();
       setIsModelDialogOpen(false);
       toast.success(t("ar.modelUpdated"));
     },
     onError: (err: any) => {
+      operation.current = null;
       console.error("AR model update failed", err);
       toast.error(t("ar.modelUpdateFailed"));
     },
@@ -423,20 +267,15 @@ export default function ArDashboardPage() {
 
   const handleSaveModel = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isUploading || createModelMutation.isPending || updateModelMutation.isPending) return;
-
-    const form = e.currentTarget as HTMLFormElement;
-    const isFormValid = form.checkValidity();
-    const titleInvalid = !modelFormData.title.trim();
-    const modelPathInvalid = !modelFormData.modelPath;
-    setModelFieldErrors((previous) => ({ ...previous, title: titleInvalid, modelPath: modelPathInvalid }));
-    if (!isFormValid || titleInvalid || modelPathInvalid) {
-      const invalidField = form.querySelector<HTMLElement>(":invalid");
-      if (invalidField) invalidField.focus();
-      else document.getElementById(titleInvalid ? "mod-title" : "mod-file-upload")?.focus();
+    if (operation.current || isUploading || createModelMutation.isPending || updateModelMutation.isPending) return;
+    const errors = modelFormErrors(modelFormData);
+    setModelFieldErrors(errors);
+    if (Object.values(errors).some(Boolean)) {
+      document.getElementById(errors.title ? "mod-title" : errors.titleZh ? "mod-title-zh" : "mod-file-upload")?.focus();
       return;
     }
 
+    operation.current = "save";
     if (editingModel) {
       updateModelMutation.mutate({
         id: editingModel.id,
@@ -456,6 +295,11 @@ export default function ArDashboardPage() {
   };
 
   const isDeleting = deleteCollectionMutation.isPending || deleteModelMutation.isPending;
+  const isModelBusy = isUploading || createModelMutation.isPending || updateModelMutation.isPending;
+  useUnsavedChanges({ dirty: isModelDialogOpen && JSON.stringify(modelFormData) !== JSON.stringify(modelBaseline), busy: isModelBusy || isDeleting });
+  const closeModelDialog = () => {
+    if (!operation.current && !isModelBusy) requestDiscard(() => setIsModelDialogOpen(false));
+  };
 
   const formatTimestamp = (ts: any) => {
     if (!ts) return "—";
@@ -480,8 +324,15 @@ export default function ArDashboardPage() {
     }
   };
 
-  const handleUploadStateChange = (isUp: boolean) => {
-    setActiveUploads((prev) => (isUp ? prev + 1 : Math.max(0, prev - 1)));
+  const handleUploadStart = () => {
+    if (operation.current || isModelBusy) return false;
+    operation.current = "upload";
+    setActiveUploads(1);
+    return true;
+  };
+  const handleUploadEnd = () => {
+    operation.current = null;
+    setActiveUploads(0);
   };
 
   if (roleError) {
@@ -709,7 +560,8 @@ export default function ArDashboardPage() {
         }}
       />
       <Dialog open={isModelDialogOpen} onOpenChange={(open) => {
-        if (!isUploading && !createModelMutation.isPending && !updateModelMutation.isPending) setIsModelDialogOpen(open);
+        if (open) setIsModelDialogOpen(true);
+        else closeModelDialog();
       }}>
         <DialogContent className="max-w-6xl font-sans" closeDisabled={isUploading || createModelMutation.isPending || updateModelMutation.isPending} onEscapeKeyDown={(event) => {
           if (isUploading || createModelMutation.isPending || updateModelMutation.isPending) event.preventDefault();
@@ -724,6 +576,8 @@ export default function ArDashboardPage() {
           </DialogHeader>
 
           <form noValidate onSubmit={handleSaveModel} aria-busy={isUploading || createModelMutation.isPending || updateModelMutation.isPending} className="space-y-4 my-2">
+            <p className="text-sm text-muted-foreground">{t(editingModel ? "ar.existingModelNotice" : "ar.newModelNotice")}</p>
+            <fieldset disabled={isModelBusy} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="mod-content-type">{t("ar.contentTypeRequired")}</Label>
               <Select value={modelFormData.contentType} disabled>
@@ -746,7 +600,7 @@ export default function ArDashboardPage() {
                   event.preventDefault();
                   setModelFieldErrors((previous) => ({ ...previous, title: true }));
                 }}
-                onBlur={(event) => setModelFieldErrors((previous) => ({ ...previous, title: !event.target.value.trim() }))}
+                onBlur={() => setModelFieldErrors((previous) => ({ ...previous, title: modelFormErrors(modelFormData).title }))}
                 placeholder={t("ar.namePlaceholder")}
                 value={modelFormData.title}
                 onChange={(event) => {
@@ -769,13 +623,13 @@ export default function ArDashboardPage() {
                   event.preventDefault();
                   setModelFieldErrors((previous) => ({ ...previous, titleZh: true }));
                 }}
-                onBlur={(event) => setModelFieldErrors((previous) => ({ ...previous, titleZh: !event.target.validity.valid }))}
+                onBlur={() => setModelFieldErrors((previous) => ({ ...previous, titleZh: modelFormErrors(modelFormData).titleZh }))}
                 placeholder={t("ar.chineseNamePlaceholder")}
                 value={modelFormData.titleZh}
                 onChange={(event) => {
                   const titleZh = event.target.value;
                   setModelFormData((previous) => ({ ...previous, titleZh }));
-                  if (modelFieldErrors.titleZh) setModelFieldErrors((previous) => ({ ...previous, titleZh: !event.target.validity.valid }));
+                  if (modelFieldErrors.titleZh) setModelFieldErrors((previous) => ({ ...previous, titleZh: !titleZh }));
                 }}
                 required
               />
@@ -787,22 +641,26 @@ export default function ArDashboardPage() {
               <p className="text-xs text-muted-foreground mb-3">
                 {t("ar.modelFileDescription")}
               </p>
-              <FileUploader
+              <ARAuthoringUpload
                 id="mod-file-upload"
                 error={modelFieldErrors.modelPath ? t("ar.modelRequired") : undefined}
                 accept=".glb"
                 type="model"
                 label={t("ar.uploadModel")}
                 value={modelFormData.modelPath}
-                onChange={(path) => {
-                  setModelFormData((prev) => ({ ...prev, modelPath: path }));
-                  if (modelFieldErrors.modelPath) setModelFieldErrors((previous) => ({ ...previous, modelPath: !path }));
-                  if (editingModel) {
+                uploadKey={`model:${editingModel?.id ?? "new"}:modelPath`}
+                onChange={(change) => {
+                  setModelFormData((prev) => ({ ...prev, modelPath: change.path }));
+                  if (modelFieldErrors.modelPath) setModelFieldErrors((previous) => ({ ...previous, modelPath: !change.path }));
+                  if (editingModel && change.kind === "upload" && change.persisted) {
+                    setModelBaseline((previous) => ({ ...previous, modelPath: change.path }));
+                    queryClient.setQueryData<Model[]>(["admin-ar-models"], (previous) => previous?.map((model) => model.id === editingModel.id ? { ...model, modelPath: change.path } : model));
                     refetchModels();
                   }
                 }}
-                onUploadStateChange={handleUploadStateChange}
-                disabled={createModelMutation.isPending || updateModelMutation.isPending}
+                onUploadStart={handleUploadStart}
+                onUploadEnd={handleUploadEnd}
+                disabled={isModelBusy}
                 folder={modelFormData.title}
                 uploadPersistence={
                   editingModel
@@ -827,13 +685,13 @@ export default function ArDashboardPage() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setIsModelDialogOpen(false)}
+                onClick={closeModelDialog}
                 disabled={
                   isUploading || createModelMutation.isPending || updateModelMutation.isPending
                 }
                 className="w-fit shrink-0 rounded-full"
               >
-                {t("cancel")}
+                {t("ar.close")}
               </Button>
               <Button
                 type="submit"
@@ -848,6 +706,7 @@ export default function ArDashboardPage() {
                 {t("ar.saveModel")}
               </Button>
             </DialogFooter>
+            </fieldset>
           </form>
         </DialogContent>
       </Dialog>

@@ -85,10 +85,7 @@ function providerHarness() {
     history: { length: 2, back: () => calls.push({ back: true, warning: unload() }) },
   };
   globalThis.document = { addEventListener: add, removeEventListener: remove };
-  globalThis.Element = class {
-    constructor(anchor) { this.anchor = anchor; }
-    closest() { return this.anchor; }
-  };
+  globalThis.Element = { [Symbol.hasInstance]: (value) => Boolean(value?.isTestElement) };
   const { UnsavedChangesProvider } = loadSourceModule("src/components/unsaved-changes-provider.tsx", {
     react,
     sonner: { toast: { info: (message) => calls.push({ message }) } },
@@ -113,7 +110,7 @@ function providerHarness() {
     api: () => tree.props.value,
     dialog: () => tree.props.children[1],
     click(href, extra = {}) {
-      const event = { button: 0, target: new globalThis.Element({ href, target: "", hasAttribute: () => false }), preventDefault() { this.defaultPrevented = true; }, stopPropagation() {}, ...extra };
+      const event = { button: 0, target: { isTestElement: true, closest: () => ({ href, target: "", hasAttribute: () => false }) }, preventDefault() { this.defaultPrevented = true; }, stopPropagation() {}, ...extra };
       emit("click", event);
       return event;
     },

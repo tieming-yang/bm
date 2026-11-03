@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useMemo, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeftIcon,
@@ -9,7 +9,6 @@ import {
   Trash2Icon,
   ArrowUpIcon,
   ArrowDownIcon,
-  UploadIcon,
   MusicIcon,
   VideoIcon,
   ChevronDownIcon,
@@ -38,165 +37,12 @@ import useAuthUser from "@/hooks/use-auth-user";
 import Auth from "@/models/auth";
 import { Policy } from "@/lib/policy";
 import { AR, ARWrite, Model } from "@/app/(works)/ar/data";
-import type { CollectionUploadPersistence } from "@/app/api/admin/ar/upload/schema";
-
-function FileUploader({
-  accept,
-  type,
-  label,
-  value,
-  onChange,
-  onUploadStateChange,
-  disabled,
-  folder,
-  onBeforeUpload,
-  uploadPersistence,
-  id,
-  error,
-}: {
-  id?: string;
-  error?: string;
-  accept: string;
-  type: "model" | "audio" | "video" | "target";
-  label: string;
-  value: string;
-  onChange: (path: string) => void;
-  onUploadStateChange?: (uploading: boolean) => void;
-  disabled?: boolean;
-  folder: string;
-  onBeforeUpload?: () => boolean;
-  uploadPersistence?: CollectionUploadPersistence;
-}) {
-  const { t } = useTranslation("dashboard");
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!folder || !folder.trim()) {
-      toast.error(type === "target" ? t("upload.projectRequired") : t("upload.nameRequired"));
-      return;
-    }
-
-    const limit = type === "model" || type === "video" ? 100 * 1024 * 1024 : 20 * 1024 * 1024;
-    if (file.size > limit) {
-      toast.error(t("upload.tooLarge", { limit: limit / (1024 * 1024) }));
-      return;
-    }
-
-    setUploading(true);
-    onUploadStateChange?.(true);
-    const toastId = toast.loading(t("upload.uploading", { name: file.name }));
-    try {
-      const token = await Auth.user?.getIdToken();
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("type", type);
-      formData.append("folder", folder);
-      if (uploadPersistence) {
-        formData.append("collectionId", uploadPersistence.collectionId);
-        formData.append("field", uploadPersistence.field);
-        if ("modelId" in uploadPersistence) {
-          formData.append("modelId", uploadPersistence.modelId);
-        }
-      }
-
-      const res = await fetch("/api/admin/ar/upload", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        let errMsg = errText;
-        try {
-          const parsed = JSON.parse(errText);
-          errMsg = parsed.error || errText;
-        } catch {}
-        throw new Error(errMsg || `HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
-      toast.success(t("upload.success", { name: file.name }), { id: toastId });
-      onChange(data.path);
-    } catch (err: any) {
-      console.error("AR file upload failed", err);
-      toast.error(t("upload.failed"), { id: toastId });
-    } finally {
-      setUploading(false);
-      onUploadStateChange?.(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  };
-
-  const handleButtonClick = () => {
-    if (onBeforeUpload && !onBeforeUpload()) {
-      return;
-    }
-    fileInputRef.current?.click();
-  };
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
-        <Input
-          type="file"
-          accept={accept}
-          onChange={handleFileChange}
-          disabled={disabled || uploading}
-          ref={fileInputRef}
-          className="hidden"
-          aria-label={label}
-        />
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          size="sm"
-          aria-invalid={Boolean(error)}
-          aria-describedby={error && id ? `${id}-error` : undefined}
-          disabled={disabled || uploading}
-          aria-busy={uploading}
-          onClick={handleButtonClick}
-          className="w-fit shrink-0 flex items-center gap-2 h-11"
-        >
-          {uploading ? (
-            <ActionSpinner />
-          ) : (
-            <UploadIcon className="w-4 h-4" />
-          )}
-          {label}
-        </Button>
-        {value ? (
-          <span className="text-xs text-muted-foreground truncate max-w-full min-w-0 flex-1" title={value}>
-            {t("upload.file", { name: value.substring(value.lastIndexOf("/") + 1) })}
-          </span>
-        ) : (
-          <span className="text-xs text-muted-foreground/60 italic">{t("upload.empty")}</span>
-        )}
-        {value && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            disabled={disabled || uploading}
-            onClick={() => onChange("")}
-            className="w-fit shrink-0 h-11 px-2 text-error hover:text-error hover:bg-destructive/5"
-          >
-            {t("upload.clear")}
-          </Button>
-        )}
-      </div>
-      {error && <p id={id ? `${id}-error` : undefined} role="alert" className="text-sm text-error">{error}</p>}
-    </div>
-  );
-}
+import { ARAuthoringUpload, type ARUploadChange } from "@/components/ar-authoring-upload";
+import { useUnsavedChanges, useUnsavedNavigation } from "@/components/unsaved-changes-provider";
+import { applyItemMedia, projectFormErrors, projectFormValue, type ARItemMediaField } from "@/lib/ar/authoring";
 
 function ArEditPageContent() {
-  const router = useRouter();
+  const { leaveAfterSave } = useUnsavedNavigation();
   const { t, currentLanguage } = useTranslation("dashboard");
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
@@ -208,11 +54,11 @@ function ArEditPageContent() {
   // Authentication & Authorization checks
   useEffect(() => {
     if (!isAuthUserLoading && !authUser) {
-      router.replace(
+      window.location.replace(
         `/signin?redirectTo=${encodeURIComponent(window.location.pathname + window.location.search)}`
       );
     }
-  }, [authUser, isAuthUserLoading, router]);
+  }, [authUser, isAuthUserLoading]);
 
   const { data: profileData, isLoading: isRoleLoading, error: roleError, refetch: refetchRole } = useQuery({
     queryKey: ["profile-role", authUser?.uid],
@@ -238,13 +84,14 @@ function ArEditPageContent() {
 
   useEffect(() => {
     if (!isLoading && authUser && !roleError && !isAuthorized) {
-      router.replace("/not-found");
+      window.location.replace("/not-found");
     }
-  }, [authUser, isLoading, isAuthorized, roleError, router]);
+  }, [authUser, isLoading, isAuthorized, roleError]);
 
   // Form & Upload state
   const [activeUploads, setActiveUploads] = useState<number>(0);
   const isUploading = activeUploads > 0;
+  const operation = React.useRef<"upload" | "save" | null>(null);
 
   const [collectionFormData, setCollectionFormData] = useState<ARWrite>({
     title: "",
@@ -253,11 +100,18 @@ function ArEditPageContent() {
     targetsPath: "",
     items: [],
   });
+  const [collectionBaseline, setCollectionBaseline] = useState<ARWrite>(collectionFormData);
+  const initializedCollectionId = React.useRef<string | null>(null);
+  const latestForm = React.useRef(collectionFormData);
+  const latestBaseline = React.useRef(collectionBaseline);
+  latestForm.current = collectionFormData;
+  latestBaseline.current = collectionBaseline;
 
   const [collectionFieldErrors, setCollectionFieldErrors] = useState<Partial<Record<"title" | "version" | "targetsPath", boolean>>>({});
   const formRef = React.useRef<HTMLFormElement>(null);
   const [selectedModelId, setSelectedModelId] = useState<string>("");
   const [isMetaCollapsed, setIsMetaCollapsed] = useState<boolean>(false);
+  const [invalidFieldToFocus, setInvalidFieldToFocus] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Data fetching
@@ -292,23 +146,19 @@ function ArEditPageContent() {
   // Sync Form when Editing Collection loads
   useEffect(() => {
     if (collectionData && isEditing) {
-      setCollectionFormData({
-        title: collectionData.title,
-        description: collectionData.description,
-        version: collectionData.version,
-        targetsPath: collectionData.targetsPath,
-        items: collectionData.items.map((it) => ({
-          modelId: it.modelId,
-          title: it.title,
-          titleZh: it.titleZh || "",
-          modelPath: it.modelPath,
-          videoPath: it.videoPath || "",
-          audioPath: it.audioPath || "",
-          audioPathZh: it.audioPathZh || "",
-        })),
-      });
+      if (initializedCollectionId.current === id && JSON.stringify(latestForm.current) !== JSON.stringify(latestBaseline.current)) return;
+      const value = projectFormValue(collectionData);
+      initializedCollectionId.current = id;
+      setCollectionFormData(value);
+      setCollectionBaseline(value);
     }
-  }, [collectionData, isEditing]);
+  }, [collectionData, isEditing, id]);
+
+  useEffect(() => {
+    if (!invalidFieldToFocus || isMetaCollapsed) return;
+    document.getElementById(invalidFieldToFocus)?.focus();
+    setInvalidFieldToFocus(null);
+  }, [invalidFieldToFocus, isMetaCollapsed]);
 
   // Model deduplication logic with useMemo
   const addedModelIds = useMemo(
@@ -360,11 +210,14 @@ function ArEditPageContent() {
       return res.json();
     },
     onSuccess: () => {
+      operation.current = null;
+      setCollectionBaseline(collectionFormData);
       queryClient.invalidateQueries({ queryKey: ["admin-ar-collections"] });
       toast.success(t("ar.collectionCreated"));
-      router.push("/dashboard/ar");
+      leaveAfterSave("/dashboard/ar");
     },
     onError: (err: any) => {
+      operation.current = null;
       console.error("AR project creation failed", err);
       toast.error(t("ar.collectionCreateFailed"));
     },
@@ -385,27 +238,39 @@ function ArEditPageContent() {
       return res.json();
     },
     onSuccess: () => {
+      operation.current = null;
+      setCollectionBaseline(collectionFormData);
       queryClient.invalidateQueries({ queryKey: ["admin-ar-collections"] });
       if (id) {
         queryClient.invalidateQueries({ queryKey: ["admin-ar-collection", id] });
       }
       toast.success(t("ar.collectionUpdated"));
-      router.push("/dashboard/ar");
+      leaveAfterSave("/dashboard/ar");
     },
     onError: (err: any) => {
+      operation.current = null;
       console.error("AR project update failed", err);
       toast.error(t("ar.collectionUpdateFailed"));
     },
   });
 
   // Upload counter helper
-  const handleUploadStateChange = useCallback((uploading: boolean) => {
-    setActiveUploads((prev) => (uploading ? prev + 1 : Math.max(0, prev - 1)));
-  }, []);
+  const isBusy = isUploading || createCollectionMutation.isPending || updateCollectionMutation.isPending;
+  useUnsavedChanges({ dirty: JSON.stringify(collectionFormData) !== JSON.stringify(collectionBaseline), busy: isBusy });
+  const handleUploadStart = () => {
+    if (operation.current || isBusy) return false;
+    operation.current = "upload";
+    setActiveUploads(1);
+    return true;
+  };
+  const handleUploadEnd = () => {
+    operation.current = null;
+    setActiveUploads(0);
+  };
 
   // Collection Items actions
   const handleAddItem = useCallback(() => {
-    if (!selectedModelId) return;
+    if (operation.current || !selectedModelId) return;
     const model = models?.find((m) => m.id === selectedModelId);
     if (!model) return;
 
@@ -447,6 +312,7 @@ function ArEditPageContent() {
   }, [models, selectedModelId, currentLanguage, t]);
 
   const handleRemoveItem = useCallback((index: number) => {
+    if (operation.current) return;
     setCollectionFormData((prev) => ({
       ...prev,
       items: prev.items.filter((_, idx) => idx !== index),
@@ -454,6 +320,7 @@ function ArEditPageContent() {
   }, []);
 
   const handleMoveItem = useCallback((index: number, direction: "up" | "down") => {
+    if (operation.current) return;
     setCollectionFormData((prev) => {
       const targetIndex = direction === "up" ? index - 1 : index + 1;
       if (targetIndex < 0 || targetIndex >= prev.items.length) return prev;
@@ -472,15 +339,12 @@ function ArEditPageContent() {
 
   const handleUpdateItemField = useCallback(
     (
-      index: number,
-      field: keyof (typeof collectionFormData.items)[0],
-      value: string
+      modelId: string,
+      field: ARItemMediaField,
+      change: ARUploadChange
     ) => {
-      setCollectionFormData((prev) => {
-        const newItems = [...prev.items];
-        newItems[index] = { ...newItems[index], [field]: value };
-        return { ...prev, items: newItems };
-      });
+      setCollectionFormData((previous) => applyItemMedia(previous, modelId, field, change.path));
+      if (change.kind === "upload" && change.persisted) setCollectionBaseline((previous) => applyItemMedia(previous, modelId, field, change.path));
     },
     []
   );
@@ -490,21 +354,20 @@ function ArEditPageContent() {
     (e?: React.FormEvent) => {
       if (e) e.preventDefault();
       if (createCollectionMutation.isPending || updateCollectionMutation.isPending) return;
-      if (isUploading) {
+      if (operation.current || isUploading) {
         toast.error(t("ar.uploadsPending"));
         return;
       }
-      const form = formRef.current;
-      const isFormValid = form?.checkValidity() ?? false;
-      const targetsInvalid = !collectionFormData.targetsPath;
-      setCollectionFieldErrors((previous) => ({ ...previous, title: !collectionFormData.title, version: !isEditing && !collectionFormData.version, targetsPath: targetsInvalid }));
-      if (!isFormValid || targetsInvalid) {
-        const invalidField = form?.querySelector<HTMLElement>(":invalid");
-        if (invalidField) invalidField.focus();
-        else document.getElementById("col-targets-upload")?.focus();
+      const errors = projectFormErrors(collectionFormData);
+      errors.version = !isEditing && errors.version;
+      setCollectionFieldErrors(errors);
+      if (Object.values(errors).some(Boolean)) {
+        setIsMetaCollapsed(false);
+        setInvalidFieldToFocus(errors.title ? "col-title" : errors.version ? "col-version" : "col-targets-upload");
         return;
       }
 
+      operation.current = "save";
       if (isEditing) {
         updateCollectionMutation.mutate(collectionFormData);
       } else {
@@ -594,11 +457,11 @@ function ArEditPageContent() {
       </div>
 
       <form ref={formRef} noValidate onSubmit={handleSaveCollection} aria-busy={isUploading || createCollectionMutation.isPending || updateCollectionMutation.isPending} className="space-y-6">
+        <fieldset disabled={isBusy} className="min-w-0 space-y-6">
         {/* COLLAPSIBLE BASIC CONFIG CARD */}
         <Card className="shadow-sm border overflow-hidden">
           <div
-            className="p-4 flex items-center justify-between cursor-pointer select-none hover:bg-muted/30 transition-colors"
-            onClick={() => setIsMetaCollapsed((prev) => !prev)}
+            className="p-4 flex items-center justify-between select-none"
           >
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-sm font-bold shrink-0">
@@ -630,6 +493,10 @@ function ArEditPageContent() {
               type="button"
               variant="ghost"
               size="sm"
+              aria-expanded={!isMetaCollapsed}
+              aria-controls="ar-project-settings"
+              disabled={isBusy}
+              onClick={() => { if (!operation.current) setIsMetaCollapsed((previous) => !previous); }}
               className="w-fit shrink-0 flex items-center gap-1 text-xs text-muted-foreground"
             >
               <span>{isMetaCollapsed ? t("ar.expand") : t("ar.collapse")}</span>
@@ -642,7 +509,7 @@ function ArEditPageContent() {
           </div>
 
           {!isMetaCollapsed && (
-            <CardContent className="border-t p-5 pt-5 grid gap-6 md:grid-cols-12 bg-muted/5">
+            <CardContent id="ar-project-settings" className="border-t p-5 pt-5 grid gap-6 md:grid-cols-12 bg-muted/5">
               <div className="md:col-span-5 space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="col-title">{t("ar.projectNameRequired")}</Label>
@@ -654,7 +521,7 @@ function ArEditPageContent() {
                       event.preventDefault();
                       setCollectionFieldErrors((previous) => ({ ...previous, title: true }));
                     }}
-                    onBlur={(event) => setCollectionFieldErrors((previous) => ({ ...previous, title: !event.target.validity.valid }))}
+                    onBlur={() => setCollectionFieldErrors((previous) => ({ ...previous, title: projectFormErrors(collectionFormData).title }))}
                     placeholder={t("ar.projectNamePlaceholder")}
                     value={collectionFormData.title}
                     onChange={(event) => {
@@ -678,13 +545,13 @@ function ArEditPageContent() {
                         event.preventDefault();
                         setCollectionFieldErrors((previous) => ({ ...previous, version: true }));
                       }}
-                      onBlur={(event) => setCollectionFieldErrors((previous) => ({ ...previous, version: !event.target.validity.valid }))}
+                      onBlur={() => setCollectionFieldErrors((previous) => ({ ...previous, version: projectFormErrors(collectionFormData).version }))}
                       placeholder={t("ar.versionPlaceholder")}
                       value={collectionFormData.version}
                       onChange={(event) => {
                         const version = event.target.value;
                         setCollectionFormData((previous) => ({ ...previous, version }));
-                        if (collectionFieldErrors.version) setCollectionFieldErrors((previous) => ({ ...previous, version: !event.target.validity.valid }));
+                        if (collectionFieldErrors.version) setCollectionFieldErrors((previous) => ({ ...previous, version: !version }));
                       }}
                       required
                     />
@@ -722,21 +589,22 @@ function ArEditPageContent() {
                     {t("ar.targetDescription")}
                   </p>
                 </div>
-                <FileUploader
+                <ARAuthoringUpload
                   id="col-targets-upload"
                   error={collectionFieldErrors.targetsPath ? t("ar.targetsRequired") : undefined}
                   accept=".mind"
                   type="target"
                   label={t("ar.uploadTargets")}
                   value={collectionFormData.targetsPath}
-                  onChange={(path) => {
-                    setCollectionFormData((previous) => ({ ...previous, targetsPath: path }));
-                    if (collectionFieldErrors.targetsPath) setCollectionFieldErrors((previous) => ({ ...previous, targetsPath: !path }));
+                  uploadKey={`project:${id ?? "new"}:targetsPath`}
+                  onChange={(change) => {
+                    setCollectionFormData((previous) => ({ ...previous, targetsPath: change.path }));
+                    if (change.kind === "upload" && change.persisted) setCollectionBaseline((previous) => ({ ...previous, targetsPath: change.path }));
+                    if (collectionFieldErrors.targetsPath) setCollectionFieldErrors((previous) => ({ ...previous, targetsPath: !change.path }));
                   }}
-                  onUploadStateChange={handleUploadStateChange}
-                  disabled={
-                    createCollectionMutation.isPending || updateCollectionMutation.isPending
-                  }
+                  onUploadStart={handleUploadStart}
+                  onUploadEnd={handleUploadEnd}
+                  disabled={isBusy}
                   folder={collectionFormData.title}
                   uploadPersistence={
                     id
@@ -792,7 +660,7 @@ function ArEditPageContent() {
               {modelsError && <DashboardError onRetry={() => void refetchModels()} />}
               {/* Add Model Selector */}
               <div className="flex items-center gap-2 min-w-0">
-                <Select value={selectedModelId} onValueChange={setSelectedModelId}>
+                <Select value={selectedModelId} onValueChange={setSelectedModelId} disabled={isBusy}>
                   <SelectTrigger className="w-[180px] sm:w-[220px] h-11 text-sm" aria-label={t("ar.selectCharacter")}>
                     <SelectValue placeholder={t("ar.selectCharacter")} />
                   </SelectTrigger>
@@ -818,6 +686,7 @@ function ArEditPageContent() {
                   disabled={
                     !selectedModelId ||
                     selectedModelId === "none" ||
+                    isBusy ||
                     createCollectionMutation.isPending ||
                     updateCollectionMutation.isPending
                   }
@@ -869,7 +738,7 @@ function ArEditPageContent() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        disabled={originalIndex === 0 || isFiltered}
+                        disabled={isBusy || originalIndex === 0 || isFiltered}
                         onClick={() => handleMoveItem(originalIndex, "up")}
                         title={isFiltered ? t("ar.clearSearchToReorder") : t("ar.moveUp")}
                         aria-label={t("ar.moveUp")}
@@ -882,7 +751,7 @@ function ArEditPageContent() {
                         variant="ghost"
                         size="icon"
                         disabled={
-                          originalIndex === collectionFormData.items.length - 1 || isFiltered
+                          isBusy || originalIndex === collectionFormData.items.length - 1 || isFiltered
                         }
                         onClick={() => handleMoveItem(originalIndex, "down")}
                         title={isFiltered ? t("ar.clearSearchToReorder") : t("ar.moveDown")}
@@ -895,6 +764,7 @@ function ArEditPageContent() {
                         type="button"
                         variant="ghost"
                         size="icon"
+                        disabled={isBusy}
                         onClick={() => handleRemoveItem(originalIndex)}
                         title={t("ar.remove")}
                         aria-label={t("ar.remove")}
@@ -904,6 +774,8 @@ function ArEditPageContent() {
                       </Button>
                     </div>
                   </div>
+
+                  {isEditing && !collectionBaseline.items.some((savedItem) => savedItem.modelId === item.modelId) && <p className="text-sm text-muted-foreground">{t("ar.saveBeforeMedia")}</p>}
 
                   {/* Spacious 3-column media uploader grid */}
                   <div className="grid gap-4 sm:grid-cols-3 min-w-0">
@@ -918,17 +790,16 @@ function ArEditPageContent() {
                           <span className="text-[10px] text-primary font-medium">{t("ar.uploaded")}</span>
                         )}
                       </Label>
-                      <FileUploader
+                      <ARAuthoringUpload
                         accept=".mp3,audio/*"
                         type="audio"
                         label={t("ar.audio")}
                         value={item.audioPath || ""}
-                        onChange={(path) => handleUpdateItemField(originalIndex, "audioPath", path)}
-                        onUploadStateChange={handleUploadStateChange}
-                        disabled={
-                          createCollectionMutation.isPending ||
-                          updateCollectionMutation.isPending
-                        }
+                        uploadKey={`project:${id ?? "new"}:${item.modelId}:audioPath`}
+                        onChange={(change) => handleUpdateItemField(item.modelId, "audioPath", change)}
+                        onUploadStart={handleUploadStart}
+                        onUploadEnd={handleUploadEnd}
+                        disabled={isBusy || (isEditing && !collectionBaseline.items.some((savedItem) => savedItem.modelId === item.modelId))}
                         folder={item.title}
                         uploadPersistence={
                           id
@@ -953,19 +824,18 @@ function ArEditPageContent() {
                           <span className="text-[10px] text-primary font-medium">{t("ar.uploaded")}</span>
                         )}
                       </Label>
-                      <FileUploader
+                      <ARAuthoringUpload
                         accept=".mp3,audio/*"
                         type="audio"
                         label={t("ar.audio")}
                         value={item.audioPathZh || ""}
-                        onChange={(path) =>
-                          handleUpdateItemField(originalIndex, "audioPathZh", path)
+                        uploadKey={`project:${id ?? "new"}:${item.modelId}:audioPathZh`}
+                        onChange={(change) =>
+                          handleUpdateItemField(item.modelId, "audioPathZh", change)
                         }
-                        onUploadStateChange={handleUploadStateChange}
-                        disabled={
-                          createCollectionMutation.isPending ||
-                          updateCollectionMutation.isPending
-                        }
+                        onUploadStart={handleUploadStart}
+                        onUploadEnd={handleUploadEnd}
+                        disabled={isBusy || (isEditing && !collectionBaseline.items.some((savedItem) => savedItem.modelId === item.modelId))}
                         folder={item.title}
                         uploadPersistence={
                           id
@@ -990,17 +860,16 @@ function ArEditPageContent() {
                           <span className="text-[10px] text-primary font-medium">{t("ar.uploaded")}</span>
                         )}
                       </Label>
-                      <FileUploader
+                      <ARAuthoringUpload
                         accept=".mp4,.mov,video/*"
                         type="video"
                         label={t("ar.video")}
                         value={item.videoPath || ""}
-                        onChange={(path) => handleUpdateItemField(originalIndex, "videoPath", path)}
-                        onUploadStateChange={handleUploadStateChange}
-                        disabled={
-                          createCollectionMutation.isPending ||
-                          updateCollectionMutation.isPending
-                        }
+                        uploadKey={`project:${id ?? "new"}:${item.modelId}:videoPath`}
+                        onChange={(change) => handleUpdateItemField(item.modelId, "videoPath", change)}
+                        onUploadStart={handleUploadStart}
+                        onUploadEnd={handleUploadEnd}
+                        disabled={isBusy || (isEditing && !collectionBaseline.items.some((savedItem) => savedItem.modelId === item.modelId))}
                         folder={item.title}
                         uploadPersistence={
                           id
@@ -1038,7 +907,7 @@ function ArEditPageContent() {
                 }
                 className="w-fit shrink-0 h-11 rounded-full text-xs text-muted-foreground hover:text-foreground"
               ><Link href="/dashboard/ar">
-                {t("cancel")}
+                {t("ar.close")}
               </Link></Button>
             <Button
               type="submit"
@@ -1057,6 +926,7 @@ function ArEditPageContent() {
             </Button>
           </div>
         </div>
+        </fieldset>
       </form>
     </div>
   );

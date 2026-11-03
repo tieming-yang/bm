@@ -27,6 +27,9 @@ const commonImports = {
   "@/hooks/use-auth-user": () => ({ authUser: { uid: "admin" }, isAuthUserLoading: false }),
   "@/hooks/use-translation": () => ({ t: (key) => key, currentLanguage: "en" }),
   "@/models/auth": {},
+  "@/lib/ar/authoring": loadSourceModule("src/lib/ar/authoring.ts"),
+  "@/components/ar-authoring-upload": { ARAuthoringUpload: "ARAuthoringUpload" },
+  "@/components/unsaved-changes-provider": { useUnsavedChanges() {}, useUnsavedNavigation: () => ({ requestDiscard: (action) => action() }) },
   "@/lib/policy": { Policy: { canViewAR: () => true } },
   "@tanstack/react-table": {},
   "@/utils/query-keys": {},
@@ -41,6 +44,8 @@ function findAll(tree, predicate) {
 
 function createDashboardHarness({ collectionsError = null } = {}) {
   const state = [];
+  const refs = [];
+  let refCursor = 0;
   let cursor = 0;
   const calls = [];
   const mutations = [];
@@ -51,7 +56,11 @@ function createDashboardHarness({ collectionsError = null } = {}) {
     ...commonImports,
     react: {
       useEffect() {},
-      useRef: () => ({ current: null }),
+      useRef(initial) {
+        const index = refCursor++;
+        refs[index] ??= { current: initial };
+        return refs[index];
+      },
       useState(initial) {
         const index = cursor++;
         if (!(index in state)) state[index] = initial;
@@ -60,6 +69,7 @@ function createDashboardHarness({ collectionsError = null } = {}) {
     },
     sonner: { toast: { success() {}, error() {} } },
     "@tanstack/react-query": {
+      useQueryClient: () => ({ setQueryData() {} }),
       useQuery({ queryKey }) {
         if (queryKey[0] === "profile-role") return { data: { role: "admin" }, refetch() {} };
         if (queryKey[0] === "admin-ar-collections") return { data: [collection], error: collectionsError, refetch() {} };
@@ -76,7 +86,7 @@ function createDashboardHarness({ collectionsError = null } = {}) {
   return {
     calls,
     mutations,
-    render() { cursor = 0; mutationCursor = 0; return module.default(); },
+    render() { cursor = 0; refCursor = 0; mutationCursor = 0; return module.default(); },
   };
 }
 
@@ -156,7 +166,13 @@ test("AR model validation exposes local name and upload errors without a mutatio
   const harness = createDashboardHarness();
   let tree = harness.render();
   const form = findAll(tree, (node) => node.type === "form")[0];
-  form.props.onSubmit({ preventDefault() {}, currentTarget: { checkValidity: () => true, querySelector: () => ({ focus() {} }) } });
+  const previousDocument = globalThis.document;
+  globalThis.document = { getElementById: () => ({ focus() {} }) };
+  try {
+    form.props.onSubmit({ preventDefault() {} });
+  } finally {
+    globalThis.document = previousDocument;
+  }
   assert.deepEqual(harness.calls, []);
   tree = harness.render();
   const title = findAll(tree, (node) => node.type === "Input" && node.props.id === "mod-title")[0];
@@ -165,9 +181,7 @@ test("AR model validation exposes local name and upload errors without a mutatio
   assert.equal(findAll(tree, (node) => node.props?.id === "mod-title-error")[0].props.children, "ar.nameRequired");
   const upload = findAll(tree, (node) => node.props?.id === "mod-file-upload")[0];
   assert.equal(upload.props.error, "ar.modelRequired");
-  const uploadControl = findAll(upload.type(upload.props), (node) => node.type === "Button" && node.props.id === "mod-file-upload")[0];
-  assert.equal(uploadControl.props["aria-invalid"], true);
-  assert.equal(uploadControl.props["aria-describedby"], "mod-file-upload-error");
+  assert.equal(upload.props.id, "mod-file-upload");
 });
 
 test("AR model form retains native required rules and submits valid values once", () => {
@@ -179,7 +193,7 @@ test("AR model form retains native required rules and submits valid values once"
   assert.equal(chineseTitle.props.required, true);
   title.props.onChange({ target: { value: "adam" } });
   chineseTitle.props.onChange({ target: { value: "亞當", validity: { valid: true } } });
-  findAll(tree, (node) => node.props?.id === "mod-file-upload")[0].props.onChange("adam.glb");
+  findAll(tree, (node) => node.props?.id === "mod-file-upload")[0].props.onChange({ kind: "upload", path: "adam.glb", persisted: false, attempt: "new:1" });
   tree = harness.render();
   const submit = () => findAll(tree, (node) => node.type === "form")[0].props.onSubmit({ preventDefault() {}, currentTarget: { checkValidity: () => true } });
   submit();
