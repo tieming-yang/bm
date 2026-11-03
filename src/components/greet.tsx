@@ -161,7 +161,7 @@ export default function Greet() {
           <Sparkles className="size-4" aria-hidden="true" />
           {t("eyebrow")}
         </p>
-        <h1 id="greet-title" className="mb-4 font-serif text-3xl leading-snug sm:text-4xl">{t("title")}</h1>
+        <h1 id="greet-title" className="mb-4 font-display text-3xl leading-snug sm:text-4xl">{t("title")}</h1>
         <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">{t("intro")}</p>
       </header>
 

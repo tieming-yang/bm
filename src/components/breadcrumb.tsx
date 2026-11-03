@@ -7,7 +7,7 @@ import Books, { Book } from "@/data/books";
 import { breadcrumbEntries } from "@/lib/ui/navigation";
 
 const routeMap: Record<string, string> = {
-  about: "nav.about", contact: "nav.contact", "bible-gallery": "nav.bibleGallery",
+  about: "nav.about", contact: "nav.contact", "bible-gallery": "nav.bibleGallery", greet: "nav.greet",
   "bible-products": "nav.bibleProducts", donate: "nav.donate", signin: "nav.signin", signup: "nav.signup",
   settings: "nav.settings", "terms-of-service": "footer.termsOfService", "privacy-policy": "footer.privacyPolicy",
   "glory-share": "nav.gloryShare", ar: "nav.ar", join: "nav.join", "daily-grace-snacks": "nav.dailyGraceSnacks",

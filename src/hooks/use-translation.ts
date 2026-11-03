@@ -19,11 +19,11 @@ export const useTranslation = (namespace = "common", option: TranslationOptions 
   // Preload fonts when language changes
   useEffect(() => {
     // Dynamically load polyfill for language-specific font features if needed
-    const lang = i18n.language;
+    const lang = i18n.resolvedLanguage ?? i18n.language;
     document.documentElement.lang = lang;
 
 
-  }, [i18n.language]);
+  }, [i18n.language, i18n.resolvedLanguage]);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -34,7 +34,7 @@ export const useTranslation = (namespace = "common", option: TranslationOptions 
   return {
     t,
     i18n,
-    currentLanguage: i18n.language,
+    currentLanguage: i18n.resolvedLanguage ?? i18n.language,
     changeLanguage,
   };
 };
@@ -63,11 +63,11 @@ export const useMultiTranslation = (namespaces: string[] = ["common"]) => {
 
   // Preload fonts when language changes
   useEffect(() => {
-    const lang = i18n.language;
+    const lang = i18n.resolvedLanguage ?? i18n.language;
     document.documentElement.lang = lang;
 
 
-  }, [i18n.language]);
+  }, [i18n.language, i18n.resolvedLanguage]);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -77,7 +77,7 @@ export const useMultiTranslation = (namespaces: string[] = ["common"]) => {
   return {
     t,
     i18n,
-    currentLanguage: i18n.language,
+    currentLanguage: i18n.resolvedLanguage ?? i18n.language,
     changeLanguage,
   };
 };

@@ -36,7 +36,7 @@ export default function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-(--layer-header) flex h-(--header-height) items-center gap-4 px-3 pt-[env(safe-area-inset-top,0px)] sm:px-5">
-      <a href="#main-content" className="absolute left-3 top-2 -translate-y-24 rounded-full bg-primary px-4 py-3 text-primary-foreground focus:translate-y-0">{t("navigation.skip")}</a>
+      <a href="#main-content" className="absolute left-3 top-[calc(0.5rem+env(safe-area-inset-top,0px))] -translate-y-24 rounded-full bg-primary px-4 py-3 text-primary-foreground focus:translate-y-0">{t("navigation.skip")}</a>
       <div className="shrink-0">
         <Logo />
       </div>
