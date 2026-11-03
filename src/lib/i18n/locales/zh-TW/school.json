@@ -297,7 +297,25 @@
         "grade": "請選擇年級",
         "birthday": "請選擇生日",
         "state": "請選擇州"
-      }
+      },
+      "grades": {
+        "6_months_to_1_year": "6 個月至 1 歲",
+        "1_year_1_month_to_2_years": "1 歲 1 個月至 2 歲",
+        "2_years_1_month_to_3_years": "2 歲 1 個月至 3 歲",
+        "pre_k_4": "學前班（4 歲）",
+        "kinder": "幼稚園",
+        "1st": "一年級",
+        "2nd": "二年級",
+        "3rd": "三年級",
+        "4th": "四年級",
+        "5th": "五年級"
+      },
+      "removeChild": "移除第 {{index}} 位兒童",
+      "confirmProfileTitle": "更新已儲存的個人資料？",
+      "confirmProfileSync": "更新個人資料並報名",
+      "keepProfileDetails": "保留個人資料並報名",
+      "eventTitle": "2026 Ekklesia Beyond 兒童夏令營",
+      "countryValue": "美國"
     },
     "dashboard": {
       "title": "2026 Ekklesia Beyond Summer Camp 後台",

@@ -4,12 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { format, parseISO } from "date-fns";
+import { enUS, zhTW } from "react-day-picker/locale";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CalendarIcon, CheckCircle2Icon, PlusIcon, Trash2Icon, UserPlusIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import Loading from "@/app/loading";
+import Loading, { ActionSpinner } from "@/app/loading";
+import { getValidationMessageKey as getFieldErrorMessage } from "@/lib/forms/validation-message";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -68,28 +71,6 @@ const CHILD_BIRTHDAY_MIN_DATE = new Date(2010, 0, 1);
 const REGISTRATION_DRAFT_RESTORE_FLAG_KEY = `${REGISTRATION_DRAFT_STORAGE_KEY}:restore-once`;
 type RegistrationAuthFlow = "signup" | "signin";
 
-function getFieldErrorMessage(errorMap: Record<string, unknown>) {
-  const candidates = [errorMap.onBlur, errorMap.onSubmit, errorMap.onChange];
-
-  for (const candidate of candidates) {
-    if (Array.isArray(candidate)) {
-      const firstError = candidate.at(0);
-      if (firstError && typeof firstError === "object" && "message" in firstError) {
-        return typeof firstError.message === "string" ? firstError.message : null;
-      }
-    }
-
-    if (candidate && typeof candidate === "object" && "message" in candidate) {
-      return typeof candidate.message === "string" ? candidate.message : null;
-    }
-
-    if (typeof candidate === "string") {
-      return candidate;
-    }
-  }
-
-  return null;
-}
 
 function readRegistrationDraft() {
   if (typeof window === "undefined") return null;
@@ -481,13 +462,21 @@ function DatePickerDialogField({
   value,
   onChange,
   label,
+  id,
+  invalid,
+  errorId,
   closeLabel,
 }: {
   value: string;
   onChange: (value: string) => void;
   label: string;
+  id?: string;
+  invalid?: boolean;
+  errorId?: string;
   closeLabel: string;
 }) {
+  const { i18n } = useTranslation("school");
+  const locale = i18n.resolvedLanguage === "zh-TW" ? zhTW : enUS;
   const [open, setOpen] = useState(false);
   const selectedDate = value ? parseISO(value) : undefined;
   const today = new Date();
@@ -495,8 +484,8 @@ function DatePickerDialogField({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="button" variant="outline" className="justify-between">
-          <span>{value ? format(parseISO(value), "PPP") : label}</span>
+        <Button id={id} type="button" variant="outline" className="w-full justify-between" aria-invalid={invalid} aria-describedby={errorId}>
+          <span>{value ? format(parseISO(value), "PPP", { locale }) : label}</span>
           <CalendarIcon className="w-4 h-4 text-muted-foreground" />
         </Button>
       </DialogTrigger>
@@ -506,6 +495,7 @@ function DatePickerDialogField({
         </DialogHeader>
         <Calendar
           mode="single"
+          locale={locale}
           captionLayout="dropdown"
           startMonth={CHILD_BIRTHDAY_MIN_DATE}
           endMonth={today}
@@ -523,7 +513,7 @@ function DatePickerDialogField({
         />
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="outline">
               {closeLabel}
             </Button>
           </DialogClose>
@@ -539,17 +529,24 @@ function BooleanChoiceField({
   onChange,
   yesLabel,
   noLabel,
+  invalid,
+  errorId,
 }: {
   label: string;
   value: boolean | null;
   onChange: (value: boolean | null) => void;
   yesLabel: string;
   noLabel: string;
+  invalid?: boolean;
+  errorId?: string;
 }) {
   return (
     <div className="space-y-3">
       <Label>{label}</Label>
       <RadioGroup
+        aria-label={label}
+        aria-invalid={invalid}
+        aria-describedby={errorId}
         value={value === null ? "" : value ? "yes" : "no"}
         onValueChange={(nextValue) => {
           if (nextValue === "yes") {
@@ -587,8 +584,24 @@ export default function RegistrationClientPage() {
   const searchParams = useSearchParams();
   const { authUser, isAuthUserLoading } = useAuthUser();
   const { t } = useTranslation("school");
+  const { t: tUI } = useTranslation("ui");
   const { t: tCommon } = useTranslation("common");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isProfileConfirmationOpen, setIsProfileConfirmationOpen] = useState(false);
+  const profileConfirmationResolver = useRef<((value: boolean | null) => void) | null>(null);
+
+  const resolveProfileConfirmation = (syncProfileDetails: boolean) => {
+    const resolve = profileConfirmationResolver.current;
+    profileConfirmationResolver.current = null;
+    setIsProfileConfirmationOpen(false);
+    resolve?.(syncProfileDetails);
+  };
+
+  useEffect(() => () => {
+    const resolve = profileConfirmationResolver.current;
+    profileConfirmationResolver.current = null;
+    resolve?.(null);
+  }, []);
   const hasHydratedInitialValues = useRef(false);
   const event = SUMMER_CAMP_FORM_DEFINITION.event;
   const authFlow = getRegistrationAuthFlow(searchParams.get("authFlow"));
@@ -672,14 +685,22 @@ export default function RegistrationClientPage() {
         submittedProfileDetails
       );
       const shouldSyncProfileDetails = hasConflict
-        ? window.confirm(t("school.registration.confirmProfileDetailsUpdate"))
+        ? await new Promise<boolean | null>((resolve) => {
+            profileConfirmationResolver.current = resolve;
+            setIsProfileConfirmationOpen(true);
+          })
         : true;
+      if (shouldSyncProfileDetails === null) return;
 
-      submitMutation.mutate({
-        ...value,
-        syncFamilyProfile: true,
-        syncProfileDetails: shouldSyncProfileDetails,
-      });
+      try {
+        await submitMutation.mutateAsync({
+          ...value,
+          syncFamilyProfile: true,
+          syncProfileDetails: shouldSyncProfileDetails,
+        });
+      } catch {
+        // Keep the registration draft and the mutation's localized error state.
+      }
     },
   });
 
@@ -725,14 +746,24 @@ export default function RegistrationClientPage() {
   }
 
   return (
-    <div className="flex flex-col w-full max-w-5xl px-4 py-10 mx-auto font-serif gap-8">
+    <div className="flex flex-col w-full max-w-5xl px-4 py-10 mx-auto gap-8">
+      <ConfirmDialog
+        open={isProfileConfirmationOpen}
+        onOpenChange={setIsProfileConfirmationOpen}
+        title={t("school.registration.confirmProfileTitle")}
+        description={t("school.registration.confirmProfileDetailsUpdate")}
+        confirmLabel={t("school.registration.confirmProfileSync")}
+        cancelLabel={t("school.registration.keepProfileDetails")}
+        onConfirm={() => resolveProfileConfirmation(true)}
+        onCancel={() => resolveProfileConfirmation(false)}
+      />
       <Card className="overflow-hidden bg-primary-gradient-30">
         <CardHeader className="gap-4">
           <div className="inline-flex w-fit items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-xs uppercase tracking-[0.3em] text-primary">
             {t("school.registration.badge")}
           </div>
           <div className="space-y-3">
-            <CardTitle className="text-3xl">{event.title}</CardTitle>
+            <h1 className="font-display text-3xl leading-snug sm:text-4xl">{t("school.registration.eventTitle")}</h1>
             <div className="text-muted-foreground max-w-3xl text-base space-y-1">
               <p>{t("school.registration.description")}</p>
               <div className="flex flex-col gap-1">
@@ -743,7 +774,7 @@ export default function RegistrationClientPage() {
                   <p className="text-muted-foreground text-sm">
                     {capacity.remainingSlots > 0
                       ? t("school.registration.remainingSlots", { count: capacity.remainingSlots })
-                      : <span className="text-destructive font-semibold">{t("school.registration.full")}</span>
+                      : <span className="text-error font-semibold">{t("school.registration.full")}</span>
                     }
                   </p>
                 )}
@@ -756,7 +787,7 @@ export default function RegistrationClientPage() {
             <p className="text-sm text-muted-foreground">
               {t("school.registration.eventTitleLabel")}
             </p>
-            <p className="mt-2 text-lg font-semibold">{event.title}</p>
+            <p className="mt-2 text-lg font-semibold">{t("school.registration.eventTitle")}</p>
           </div>
           <div className="bg-background px-5 py-5 border rounded-3xl border-border">
             <p className="text-sm text-muted-foreground">
@@ -809,7 +840,7 @@ export default function RegistrationClientPage() {
       ) : capacity && capacity.remainingSlots <= 0 ? (
         <Card>
           <CardHeader className="gap-4">
-            <CardTitle className="text-3xl text-destructive">
+            <CardTitle className="text-3xl text-error">
               {t("school.registration.fullTitle")}
             </CardTitle>
             <CardDescription className="max-w-3xl text-base">
@@ -949,7 +980,8 @@ export default function RegistrationClientPage() {
                               <Button
                                 type="button"
                                 variant="ghost"
-                                className="w-auto px-3 text-destructive hover:text-destructive"
+                                className="w-auto px-3 text-error hover:text-error"
+                                aria-label={t("school.registration.removeChild", { index: index + 1 })}
                                 onClick={() => {
                                   if (children.length === 1) {
                                     form.setFieldValue("children", [
@@ -969,22 +1001,27 @@ export default function RegistrationClientPage() {
                               <form.Field
                                 name={`children[${index}].firstName`}
                                 children={(field) => {
-                                  const errorMessage = getFieldErrorMessage(
-                                    field.state.meta.errorMap
-                                  );
+                                  const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                                    ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                                   return (
                                     <div className="space-y-2">
                                       <Label htmlFor={`child-first-name-${index}`}>
                                         {t("school.registration.fields.firstName")}
                                       </Label>
                                       <Input
+                                        aria-invalid={!!errorMessage}
+                                        aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                         id={`child-first-name-${index}`}
                                         value={field.state.value}
-                                        onChange={(event) => field.handleChange(event.target.value)}
+                                        onChange={(event) => {
+                                          const hadError = !field.state.meta.isValid;
+                                          field.handleChange(event.target.value);
+                                          if (hadError) void field.validate("blur");
+                                        }}
                                         onBlur={field.handleBlur}
                                       />
                                       {errorMessage ? (
-                                        <p className="text-sm text-red-500">{errorMessage}</p>
+                                        <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                       ) : null}
                                     </div>
                                   );
@@ -994,22 +1031,27 @@ export default function RegistrationClientPage() {
                               <form.Field
                                 name={`children[${index}].lastName`}
                                 children={(field) => {
-                                  const errorMessage = getFieldErrorMessage(
-                                    field.state.meta.errorMap
-                                  );
+                                  const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                                    ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                                   return (
                                     <div className="space-y-2">
                                       <Label htmlFor={`child-last-name-${index}`}>
                                         {t("school.registration.fields.lastName")}
                                       </Label>
                                       <Input
+                                        aria-invalid={!!errorMessage}
+                                        aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                         id={`child-last-name-${index}`}
                                         value={field.state.value}
-                                        onChange={(event) => field.handleChange(event.target.value)}
+                                        onChange={(event) => {
+                                          const hadError = !field.state.meta.isValid;
+                                          field.handleChange(event.target.value);
+                                          if (hadError) void field.validate("blur");
+                                        }}
                                         onBlur={field.handleBlur}
                                       />
                                       {errorMessage ? (
-                                        <p className="text-sm text-red-500">{errorMessage}</p>
+                                        <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                       ) : null}
                                     </div>
                                   );
@@ -1019,12 +1061,11 @@ export default function RegistrationClientPage() {
                               <form.Field
                                 name={`children[${index}].grade`}
                                 children={(field) => {
-                                  const errorMessage = getFieldErrorMessage(
-                                    field.state.meta.errorMap
-                                  );
+                                  const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                                    ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                                   return (
                                     <div className="space-y-2">
-                                      <Label>{t("school.registration.fields.grade")}</Label>
+                                      <Label htmlFor={field.name}>{t("school.registration.fields.grade")}</Label>
                                       <Select
                                         value={field.state.value}
                                         onValueChange={(value) => {
@@ -1032,7 +1073,7 @@ export default function RegistrationClientPage() {
                                           field.handleBlur();
                                         }}
                                       >
-                                        <SelectTrigger>
+                                        <SelectTrigger id={field.name} aria-invalid={!!errorMessage} aria-describedby={errorMessage ? `${field.name}-error` : undefined}>
                                           <SelectValue
                                             placeholder={t(
                                               "school.registration.placeholders.grade"
@@ -1042,13 +1083,13 @@ export default function RegistrationClientPage() {
                                         <SelectContent>
                                           {GRADE_OPTIONS.map((option) => (
                                             <SelectItem key={option.value} value={option.value}>
-                                              {option.label}
+                                              {t("school.registration.grades." + option.value)}
                                             </SelectItem>
                                           ))}
                                         </SelectContent>
                                       </Select>
                                       {errorMessage ? (
-                                        <p className="text-sm text-red-500">{errorMessage}</p>
+                                        <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                       ) : null}
                                     </div>
                                   );
@@ -1058,13 +1099,15 @@ export default function RegistrationClientPage() {
                               <form.Field
                                 name={`children[${index}].birthday`}
                                 children={(field) => {
-                                  const errorMessage = getFieldErrorMessage(
-                                    field.state.meta.errorMap
-                                  );
+                                  const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                                    ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                                   return (
                                     <div className="space-y-2">
-                                      <Label>{t("school.registration.fields.birthday")}</Label>
+                                      <Label htmlFor={field.name}>{t("school.registration.fields.birthday")}</Label>
                                       <DatePickerDialogField
+                                  id={field.name}
+                                  invalid={!!errorMessage}
+                                  errorId={errorMessage ? `${field.name}-error` : undefined}
                                         value={field.state.value}
                                         onChange={(value) => {
                                           field.handleChange(value);
@@ -1074,7 +1117,7 @@ export default function RegistrationClientPage() {
                                         closeLabel={t("school.registration.closeCalendar")}
                                       />
                                       {errorMessage ? (
-                                        <p className="text-sm text-red-500">{errorMessage}</p>
+                                        <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                       ) : null}
                                     </div>
                                   );
@@ -1086,22 +1129,27 @@ export default function RegistrationClientPage() {
                               <form.Field
                                 name={`children[${index}].allergies`}
                                 children={(field) => {
-                                  const errorMessage = getFieldErrorMessage(
-                                    field.state.meta.errorMap
-                                  );
+                                  const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                                    ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                                   return (
                                     <div className="space-y-2">
                                       <Label htmlFor={`child-allergies-${index}`}>
                                         {t("school.registration.fields.allergies")}
                                       </Label>
                                       <Textarea
+                                        aria-invalid={!!errorMessage}
+                                        aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                         id={`child-allergies-${index}`}
                                         value={field.state.value}
-                                        onChange={(event) => field.handleChange(event.target.value)}
+                                        onChange={(event) => {
+                                          const hadError = !field.state.meta.isValid;
+                                          field.handleChange(event.target.value);
+                                          if (hadError) void field.validate("blur");
+                                        }}
                                         onBlur={field.handleBlur}
                                       />
                                       {errorMessage ? (
-                                        <p className="text-sm text-red-500">{errorMessage}</p>
+                                        <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                       ) : null}
                                     </div>
                                   );
@@ -1130,20 +1178,27 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="parent.firstName"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2">
                             <Label htmlFor="parent-first-name">
                               {t("school.registration.fields.firstName")}
                             </Label>
                             <Input
+                              aria-invalid={!!errorMessage}
+                              aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                               id="parent-first-name"
                               value={field.state.value}
-                              onChange={(event) => field.handleChange(event.target.value)}
+                              onChange={(event) => {
+                                const hadError = !field.state.meta.isValid;
+                                field.handleChange(event.target.value);
+                                if (hadError) void field.validate("blur");
+                              }}
                               onBlur={field.handleBlur}
                             />
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1153,20 +1208,27 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="parent.lastName"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2">
                             <Label htmlFor="parent-last-name">
                               {t("school.registration.fields.lastName")}
                             </Label>
                             <Input
+                              aria-invalid={!!errorMessage}
+                              aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                               id="parent-last-name"
                               value={field.state.value}
-                              onChange={(event) => field.handleChange(event.target.value)}
+                              onChange={(event) => {
+                                const hadError = !field.state.meta.isValid;
+                                field.handleChange(event.target.value);
+                                if (hadError) void field.validate("blur");
+                              }}
                               onBlur={field.handleBlur}
                             />
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1190,20 +1252,27 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="address.line1"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2 md:col-span-2">
                             <Label htmlFor="address-line-1">
                               {t("school.registration.fields.addressLine1")}
                             </Label>
                             <Input
+                              aria-invalid={!!errorMessage}
+                              aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                               id="address-line-1"
                               value={field.state.value}
-                              onChange={(event) => field.handleChange(event.target.value)}
+                              onChange={(event) => {
+                                const hadError = !field.state.meta.isValid;
+                                field.handleChange(event.target.value);
+                                if (hadError) void field.validate("blur");
+                              }}
                               onBlur={field.handleBlur}
                             />
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1220,7 +1289,11 @@ export default function RegistrationClientPage() {
                           <Input
                             id="address-line-2"
                             value={field.state.value}
-                            onChange={(event) => field.handleChange(event.target.value)}
+                            onChange={(event) => {
+                              const hadError = !field.state.meta.isValid;
+                              field.handleChange(event.target.value);
+                              if (hadError) void field.validate("blur");
+                            }}
                             onBlur={field.handleBlur}
                           />
                         </div>
@@ -1230,18 +1303,25 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="address.city"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2">
                             <Label htmlFor="city">{t("school.registration.fields.city")}</Label>
                             <Input
+                              aria-invalid={!!errorMessage}
+                              aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                               id="city"
                               value={field.state.value}
-                              onChange={(event) => field.handleChange(event.target.value)}
+                              onChange={(event) => {
+                                const hadError = !field.state.meta.isValid;
+                                field.handleChange(event.target.value);
+                                if (hadError) void field.validate("blur");
+                              }}
                               onBlur={field.handleBlur}
                             />
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1251,10 +1331,11 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="address.state"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2">
-                            <Label>{t("school.registration.fields.state")}</Label>
+                            <Label htmlFor={field.name}>{t("school.registration.fields.state")}</Label>
                             <Select
                               value={field.state.value}
                               onValueChange={(value) => {
@@ -1262,7 +1343,7 @@ export default function RegistrationClientPage() {
                                 field.handleBlur();
                               }}
                             >
-                              <SelectTrigger>
+                              <SelectTrigger id={field.name} aria-invalid={!!errorMessage} aria-describedby={errorMessage ? `${field.name}-error` : undefined}>
                                 <SelectValue
                                   placeholder={t("school.registration.placeholders.state")}
                                 />
@@ -1276,7 +1357,7 @@ export default function RegistrationClientPage() {
                               </SelectContent>
                             </Select>
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1288,7 +1369,7 @@ export default function RegistrationClientPage() {
                       children={(field) => (
                         <div className="space-y-2">
                           <Label htmlFor="country">{t("school.registration.fields.country")}</Label>
-                          <Input id="country" value={field.state.value} disabled readOnly />
+                          <Input id="country" value={t("school.registration.countryValue")} disabled readOnly />
                         </div>
                       )}
                     />
@@ -1296,20 +1377,27 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="address.zipCode"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2">
                             <Label htmlFor="zip-code">
                               {t("school.registration.fields.zipCode")}
                             </Label>
                             <Input
+                              aria-invalid={!!errorMessage}
+                              aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                               id="zip-code"
                               value={field.state.value}
-                              onChange={(event) => field.handleChange(event.target.value)}
+                              onChange={(event) => {
+                                const hadError = !field.state.meta.isValid;
+                                field.handleChange(event.target.value);
+                                if (hadError) void field.validate("blur");
+                              }}
                               onBlur={field.handleBlur}
                             />
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1333,21 +1421,28 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="parent.email"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2">
                             <Label htmlFor="parent-email">
                               {t("school.registration.fields.email")}
                             </Label>
                             <Input
+                              aria-invalid={!!errorMessage}
+                              aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                               id="parent-email"
                               type="email"
                               value={field.state.value}
-                              onChange={(event) => field.handleChange(event.target.value)}
+                              onChange={(event) => {
+                                const hadError = !field.state.meta.isValid;
+                                field.handleChange(event.target.value);
+                                if (hadError) void field.validate("blur");
+                              }}
                               onBlur={field.handleBlur}
                             />
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1357,21 +1452,28 @@ export default function RegistrationClientPage() {
                     <form.Field
                       name="parent.cellPhone"
                       children={(field) => {
-                        const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                        const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                          ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                         return (
                           <div className="space-y-2">
                             <Label htmlFor="parent-cell-phone">
                               {t("school.registration.fields.cellPhone")}
                             </Label>
                             <Input
+                              aria-invalid={!!errorMessage}
+                              aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                               id="parent-cell-phone"
                               type="tel"
                               value={field.state.value}
-                              onChange={(event) => field.handleChange(event.target.value)}
+                              onChange={(event) => {
+                                const hadError = !field.state.meta.isValid;
+                                field.handleChange(event.target.value);
+                                if (hadError) void field.validate("blur");
+                              }}
                               onBlur={field.handleBlur}
                             />
                             {errorMessage ? (
-                              <p className="text-sm text-red-500">{errorMessage}</p>
+                              <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                             ) : null}
                           </div>
                         );
@@ -1383,6 +1485,8 @@ export default function RegistrationClientPage() {
                     name="parent.isEbVolunteer"
                     children={(field) => (
                       <BooleanChoiceField
+                        invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                        errorId={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? `${field.name}-error` : undefined}
                         label={t("school.registration.fields.isEbVolunteer")}
                         value={field.state.value}
                         onChange={(value) => {
@@ -1428,20 +1532,27 @@ export default function RegistrationClientPage() {
                         <form.Field
                           name="emergencyContact.firstName"
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2">
                                 <Label htmlFor="emergency-first-name">
                                   {t("school.registration.fields.firstName")}
                                 </Label>
                                 <Input
+                                  aria-invalid={!!errorMessage}
+                                  aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                   id="emergency-first-name"
                                   value={field.state.value}
-                                  onChange={(event) => field.handleChange(event.target.value)}
+                                  onChange={(event) => {
+                                    const hadError = !field.state.meta.isValid;
+                                    field.handleChange(event.target.value);
+                                    if (hadError) void field.validate("blur");
+                                  }}
                                   onBlur={field.handleBlur}
                                 />
                                 {errorMessage ? (
-                                  <p className="text-sm text-red-500">{errorMessage}</p>
+                                  <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                 ) : null}
                               </div>
                             );
@@ -1451,20 +1562,27 @@ export default function RegistrationClientPage() {
                         <form.Field
                           name="emergencyContact.lastName"
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2">
                                 <Label htmlFor="emergency-last-name">
                                   {t("school.registration.fields.lastName")}
                                 </Label>
                                 <Input
+                                  aria-invalid={!!errorMessage}
+                                  aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                   id="emergency-last-name"
                                   value={field.state.value}
-                                  onChange={(event) => field.handleChange(event.target.value)}
+                                  onChange={(event) => {
+                                    const hadError = !field.state.meta.isValid;
+                                    field.handleChange(event.target.value);
+                                    if (hadError) void field.validate("blur");
+                                  }}
                                   onBlur={field.handleBlur}
                                 />
                                 {errorMessage ? (
-                                  <p className="text-sm text-red-500">{errorMessage}</p>
+                                  <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                 ) : null}
                               </div>
                             );
@@ -1474,21 +1592,28 @@ export default function RegistrationClientPage() {
                         <form.Field
                           name="emergencyContact.phoneNumber"
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2 md:col-span-2">
                                 <Label htmlFor="emergency-phone-number">
                                   {t("school.registration.fields.emergencyPhone")}
                                 </Label>
                                 <Input
+                                  aria-invalid={!!errorMessage}
+                                  aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                   id="emergency-phone-number"
                                   type="tel"
                                   value={field.state.value}
-                                  onChange={(event) => field.handleChange(event.target.value)}
+                                  onChange={(event) => {
+                                    const hadError = !field.state.meta.isValid;
+                                    field.handleChange(event.target.value);
+                                    if (hadError) void field.validate("blur");
+                                  }}
                                   onBlur={field.handleBlur}
                                 />
                                 {errorMessage ? (
-                                  <p className="text-sm text-red-500">{errorMessage}</p>
+                                  <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                                 ) : null}
                               </div>
                             );
@@ -1514,10 +1639,13 @@ export default function RegistrationClientPage() {
                   <form.Field
                     name="consents.liabilityMedicalRelease"
                     children={(field) => {
-                      const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                      const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                        ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                       return (
                         <div className="space-y-3">
                           <BooleanChoiceField
+                            invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                            errorId={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? `${field.name}-error` : undefined}
                             label={t("school.registration.fields.liabilityMedicalRelease")}
                             value={field.state.value}
                             onChange={(value) => {
@@ -1528,7 +1656,7 @@ export default function RegistrationClientPage() {
                             noLabel={tCommon("no")}
                           />
                           {errorMessage ? (
-                            <p className="text-sm text-red-500">{errorMessage}</p>
+                            <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                           ) : null}
                         </div>
                       );
@@ -1538,10 +1666,13 @@ export default function RegistrationClientPage() {
                   <form.Field
                     name="consents.imageRelease"
                     children={(field) => {
-                      const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                      const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                        ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                       return (
                         <div className="space-y-3">
                           <BooleanChoiceField
+                            invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                            errorId={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? `${field.name}-error` : undefined}
                             label={t("school.registration.fields.imageRelease")}
                             value={field.state.value}
                             onChange={(value) => {
@@ -1552,7 +1683,7 @@ export default function RegistrationClientPage() {
                             noLabel={tCommon("no")}
                           />
                           {errorMessage ? (
-                            <p className="text-sm text-red-500">{errorMessage}</p>
+                            <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                           ) : null}
                         </div>
                       );
@@ -1574,20 +1705,27 @@ export default function RegistrationClientPage() {
                   <form.Field
                     name="signatureFullName"
                     children={(field) => {
-                      const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                      const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                        ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                       return (
                         <div className="space-y-2">
                           <Label htmlFor="signature-full-name">
                             {t("school.registration.fields.signatureFullName")}
                           </Label>
                           <Input
+                            aria-invalid={!!errorMessage}
+                            aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                             id="signature-full-name"
                             value={field.state.value}
-                            onChange={(event) => field.handleChange(event.target.value)}
+                            onChange={(event) => {
+                              const hadError = !field.state.meta.isValid;
+                              field.handleChange(event.target.value);
+                              if (hadError) void field.validate("blur");
+                            }}
                             onBlur={field.handleBlur}
                           />
                           {errorMessage ? (
-                            <p className="text-sm text-red-500">{errorMessage}</p>
+                            <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p>
                           ) : null}
                         </div>
                       );
@@ -1603,16 +1741,19 @@ export default function RegistrationClientPage() {
                   : t("school.registration.submitDescriptionGuest")}
               </p>
               <form.Subscribe
-                selector={(state) => [state.canSubmit, state.isSubmitting] as const}
-                children={([canSubmit, isSubmitting]) => (
+                selector={(state) => state.isSubmitting}
+                children={(isSubmitting) => (
                   <Button
                     type="button"
-                    disabled={!canSubmit || isSubmitting || submitMutation.isPending}
+                    className="w-full sm:w-auto gap-2"
+                    disabled={isSubmitting || submitMutation.isPending}
+                    aria-busy={isSubmitting || submitMutation.isPending}
                     onClick={() => {
                       void form.handleSubmit();
                     }}
                   >
-                    {submitMutation.isPending ? <Loading /> : t("school.registration.submit")}
+                    {(isSubmitting || submitMutation.isPending) && <ActionSpinner />}
+                    {t("school.registration.submit")}
                   </Button>
                 )}
               />

@@ -17,7 +17,9 @@
     "closeMenu": "Close menu",
     "language": "Language",
     "profile": "Your profile",
-    "sandbox": "Sandbox"
+    "sandbox": "Sandbox",
+    "previous": "Previous lesson",
+    "next": "Next lesson"
   },
   "navigation": {
     "primary": "Main navigation",

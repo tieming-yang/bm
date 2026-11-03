@@ -11,18 +11,9 @@ import ReactPlayer from "react-player";
 import { Lesson, Curriculum, getCourses, Course } from "@/models/school";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { toSlug } from "@/utils/to-slug";
+
 const buildYouTubeLink = (videoId: string | undefined) => `https://youtu.be/${videoId}`;
-export function toSlug(raw: string): string {
-  if (!raw) return "";
-  return raw
-    .normalize("NFKD") // split accents from letters
-    .replace(/[\u0300-\u036f]/g, "") // remove diacritics
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, " and ") // common readability tweak
-    .replace(/[^a-z0-9]+/g, "-") // non-alphanumerics -> hyphen
-    .replace(/^-+|-+$/g, ""); // trim leading/trailing hyphens
-}
 
 const LESSON_KEY = "lesson";
 const COURSE_KEY = "course";
@@ -46,6 +37,7 @@ export default function SchoolPage() {
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { t, i18n } = useTranslation("school");
+  const { t: tUI } = useTranslation("ui");
   const { t: tEn } = useTranslation("school", { lng: "en" });
   const curriculums = (t("school.curriculums", { returnObjects: true }) as Curriculum) ?? {};
   const enCurriculums = (tEn("school.curriculums", { returnObjects: true }) as Curriculum) ?? {};
@@ -143,7 +135,7 @@ export default function SchoolPage() {
     <div className="relative w-full py-0 pb-16 space-y-7 no-scrollbar sm:py-16">
       <div
         ref={playerContainerRef}
-        className="sticky top-0 left-0 right-0 pb-3 border shadow-xl lg:hidden space-y-5 w-dvw z-100 rounded-b-3xl backdrop-blur-xl border-primary/20 bg-background/10 shadow-primary/20"
+        className="sticky top-(--header-height) left-0 right-0 pb-3 border shadow-xl lg:hidden space-y-5 w-full z-80 rounded-b-3xl backdrop-blur-xl border-primary/20 bg-background/10 shadow-primary/20"
       >
         {/* https://www.npmjs.com/package/react-player?activeTab=readme */}
         <ReactPlayer
@@ -185,9 +177,10 @@ export default function SchoolPage() {
 
                 setSelectedLesson(selectedLessons[nextIndex]);
               }}
-              size="sm"
+              size="icon"
+              aria-label={tUI("actions.previous")}
             >
-              <ChevronLeftIcon />
+              <ChevronLeftIcon aria-hidden="true" />
             </Button>
             <Button
               disabled={selectedLessons.length === 1}
@@ -201,9 +194,10 @@ export default function SchoolPage() {
 
                 setSelectedLesson(selectedLessons[nextIndex]);
               }}
-              size="sm"
+              size="icon"
+              aria-label={tUI("actions.next")}
             >
-              <ChevronRightIcon />
+              <ChevronRightIcon aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -212,11 +206,12 @@ export default function SchoolPage() {
       <div className="flex flex-col px-5 gap-y-7">
         <section className="grid gap-10 lg:grid-cols-2">
           <div className="space-y-6">
-            <div className="flex flex-row justify-between">
-              <h1 className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm uppercase tracking-[0.2em] text-primary">
+            <h1 className="page-title">{t("school.hero.title")}</h1>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm uppercase tracking-[0.2em] text-primary">
                 {t("school.badge")}
-              </h1>
-              <p className="italic text-md md:text-2xl font-chinese text-primary-foreground-gradient">
+              </p>
+              <p className="italic text-md md:text-2xl font-sans text-primary-foreground-gradient">
                 {t("school.hero.intro")}
               </p>
             </div>

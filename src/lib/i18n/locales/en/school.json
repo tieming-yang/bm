@@ -297,7 +297,25 @@
         "grade": "Select a grade",
         "birthday": "Select a birthday",
         "state": "Select a state"
-      }
+      },
+      "grades": {
+        "6_months_to_1_year": "6 mos. - 1 yr.",
+        "1_year_1_month_to_2_years": "1 yr. 1 mo. - 2 yrs.",
+        "2_years_1_month_to_3_years": "2 yrs. 1 mo. - 3 yrs.",
+        "pre_k_4": "Pre-K 4",
+        "kinder": "Kindergarten",
+        "1st": "1st grade",
+        "2nd": "2nd grade",
+        "3rd": "3rd grade",
+        "4th": "4th grade",
+        "5th": "5th grade"
+      },
+      "removeChild": "Remove child {{index}}",
+      "confirmProfileTitle": "Update saved profile details?",
+      "confirmProfileSync": "Update profile and register",
+      "keepProfileDetails": "Keep profile and register",
+      "eventTitle": "2026 Ekklesia Beyond Summer Camp",
+      "countryValue": "United States"
     },
     "dashboard": {
       "title": "2026 Ekklesia Beyond Summer Camp Dashboard",

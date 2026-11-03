@@ -1,5 +1,5 @@
 import enSchoolLocal from "@/lib/i18n/locales/en/school.json";
-import { toSlug } from "../page";
+import { toSlug } from "../../../../utils/to-slug.ts";
 import { exec } from "node:child_process";
 
 /**

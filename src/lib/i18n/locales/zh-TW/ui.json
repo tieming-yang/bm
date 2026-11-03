@@ -17,7 +17,9 @@
     "closeMenu": "關閉選單",
     "language": "語言",
     "profile": "個人檔案",
-    "sandbox": "實驗室"
+    "sandbox": "實驗室",
+    "previous": "上一課",
+    "next": "下一課"
   },
   "navigation": {
     "primary": "主要導覽",
