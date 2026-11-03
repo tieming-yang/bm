@@ -80,7 +80,8 @@ const Auth = {
       await firebase.auth.signOut();
       console.log("User signed out successfully");
     } catch (error) {
-      console.error("Error signing out with Google", error);
+      console.error("Sign-out failed", error);
+      throw error;
     }
   },
 
