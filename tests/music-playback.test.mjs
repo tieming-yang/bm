@@ -44,24 +44,37 @@ for (const repeat of ["none", "single", "all"]) {
 
 test("music-route provider retains its shuffled queue across tracks and rebuilds only for settings/catalogue changes", () => {
   let state;
+  let sessionRef;
+  let randomCalls = 0;
+  const originalRandom = Math.random;
+  Math.random = () => { randomCalls++; return 0.5; };
+  try {
   const { PlaybackQueueProvider } = loadSourceModule("src/app/(works)/beyond-music/components/playback-queue.tsx", {
     react: {
       createContext: () => ({ Provider: "QueueProvider" }), useContext() {}, useCallback: (callback) => callback, useMemo: (callback) => callback(),
       useState(initial) { state ??= initial; return [state, (next) => { state = typeof next === "function" ? next(state) : next; }]; },
+      useRef(initial) { sessionRef ??= { current: initial }; return sessionRef; },
     },
     "@/lib/music/playback": policy,
   });
   const value = () => PlaybackQueueProvider({ children: null }).props.value;
   value().register(["a", "b", "c"], "a", true);
+  assert.equal(randomCalls, 2);
   const initial = [...value().ids];
   value().register(["a", "b", "c"], "b", true);
+  assert.equal(randomCalls, 2);
   assert.deepEqual(value().ids, initial);
   assert.equal(value().ids[0], "a");
   value().register(["a", "b", "c", "d"], "b", true);
+  assert.equal(randomCalls, 5);
   assert.equal(value().ids[0], "b");
   assert.deepEqual([...value().ids].sort(), ["a", "b", "c", "d"]);
   value().register(["a", "b", "c", "d"], "b", false);
   assert.deepEqual(value().ids, ["a", "b", "c", "d"]);
+  assert.equal(randomCalls, 5);
+  } finally {
+    Math.random = originalRandom;
+  }
 });
 
 function playerHarness({ search = "lm=none&s=false&source=shared", track = songs[0], catalogue = songs } = {}) {

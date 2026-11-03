@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { createPlaybackQueue } from "@/lib/music/playback";
 
 type QueueSession = { catalogKey: string; shuffled: boolean; ids: readonly string[] };
@@ -19,10 +19,13 @@ function shuffle(ids: readonly string[]): string[] {
 /** Keep the ephemeral listening order across song routes without persisting user data. */
 export function PlaybackQueueProvider({ children }: React.PropsWithChildren) {
   const [session, setSession] = useState<QueueSession>({ catalogKey: "", shuffled: false, ids: [] });
+  const sessionRef = useRef(session);
   const register = useCallback((ids: readonly string[], currentId: string, shuffled: boolean) => {
     const catalogKey = JSON.stringify(ids);
+    if (sessionRef.current.catalogKey === catalogKey && sessionRef.current.shuffled === shuffled) return;
     const candidate = { catalogKey, shuffled, ids: createPlaybackQueue(ids, currentId, shuffled ? shuffle(ids) : undefined) };
-    setSession((current) => current.catalogKey === catalogKey && current.shuffled === shuffled ? current : candidate);
+    sessionRef.current = candidate;
+    setSession(candidate);
   }, []);
   const context = useMemo(() => ({ ...session, register }), [session, register]);
   return <PlaybackQueueContext.Provider value={context}>{children}</PlaybackQueueContext.Provider>;
