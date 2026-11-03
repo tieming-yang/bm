@@ -65,9 +65,9 @@ test("both endpoints reject duplicate, unknown, malformed and arbitrary URL/text
 
 test("unavailable dates and unknown or inactive versions do not trigger provider work", async () => {
   const noProvider = effects({ loadArtwork: async () => { assert.fail("Unavailable selection must not fetch artwork"); } });
-  assert.equal(handleGreetingCardRequest(request("date=2026-11-02&period=morning&locale=en"), rotations).status, 404);
+  assert.equal(handleGreetingCardRequest(request("date=2026-11-01&period=morning&locale=en"), rotations).status, 404);
   assert.equal((await handleGreetingImageRequest(request(`${query}&version=v99`), rotations, noProvider)).status, 404);
-  assert.equal((await handleGreetingImageRequest(request("date=2026-11-02&period=morning&locale=en&version=v1"), rotations, noProvider)).status, 404);
+  assert.equal((await handleGreetingImageRequest(request("date=2026-11-01&period=morning&locale=en&version=v1"), rotations, noProvider)).status, 404);
   const revised = [...rotations, { ...rotations[0], version: "v2", effectiveFrom: "2026-11-10" }];
   assert.equal((await handleGreetingImageRequest(request("date=2026-11-10&period=morning&locale=en&version=v1"), revised, noProvider)).status, 409);
 });

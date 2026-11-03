@@ -115,14 +115,22 @@ export function resolveGreetingSelection(
   if (requestedVersion !== undefined && !verified.some((rotation) => rotation.version === requestedVersion)) {
     return { kind: "unavailable", reason: "unknown-version" };
   }
-  const active = [...verified].reverse().find((rotation) => rotation.effectiveFrom <= value.date);
+  const requestDayMs = Date.parse(`${value.date}T00:00:00.000Z`);
+  const firstRotation = verified[0];
+  // At initial release, viewers across the world can still be on the previous local day.
+  // Extend only that first day without shifting any published rotation's date mapping.
+  const isPreviousLaunchDay = requestDayMs === Date.parse(`${firstRotation.effectiveFrom}T00:00:00.000Z`) - 86_400_000;
+  const active = [...verified].reverse().find((rotation) => rotation.effectiveFrom <= value.date)
+    ?? (isPreviousLaunchDay ? firstRotation : undefined);
   if (!active) return { kind: "unavailable", reason: "date-before-launch" };
   if (requestedVersion !== undefined && active.version !== requestedVersion) {
     return { kind: "unavailable", reason: "version-not-active" };
   }
-  const elapsedDays = (Date.parse(`${value.date}T00:00:00.000Z`) - Date.parse(`${active.effectiveFrom}T00:00:00.000Z`)) / 86_400_000;
-  if (!Number.isInteger(elapsedDays) || elapsedDays < 0) throw new Error("Greeting rotation day offset must be a nonnegative integer");
-  const entry = active.entries[elapsedDays % active.entries.length];
+  const elapsedDays = (requestDayMs - Date.parse(`${active.effectiveFrom}T00:00:00.000Z`)) / 86_400_000;
+  if (!Number.isInteger(elapsedDays) || (elapsedDays < 0 && !(isPreviousLaunchDay && active === firstRotation && elapsedDays === -1))) {
+    throw new Error("Greeting rotation day offset is outside its permitted calendar range");
+  }
+  const entry = active.entries[((elapsedDays % active.entries.length) + active.entries.length) % active.entries.length];
   if (!entry) throw new Error("Greeting rotation has no entry for the selected day");
   return { kind: "selected", date: value.date, version: active.version, entry };
 }

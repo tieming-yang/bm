@@ -49,7 +49,13 @@ test("future versions preserve earlier dates and reject incompatible pinned requ
   assert.equal(next.kind, "selected");
   if (next.kind !== "selected") assert.fail("Expected newly active version");
   assert.equal(next.entry.id, "next-version-entry");
-  assert.deepEqual(resolveGreetingSelection({ ...request, date: "2026-11-02" }, revised), { kind: "unavailable", reason: "date-before-launch" });
+  assert.deepEqual(resolveGreetingSelection({ ...request, date: "2026-11-01" }, revised), { kind: "unavailable", reason: "date-before-launch" });
+  const previousLaunchDay = resolveGreetingSelection({ ...request, date: "2026-11-02" }, revised, "v1");
+  assert.equal(previousLaunchDay.kind, "selected");
+  if (previousLaunchDay.kind !== "selected") assert.fail("Expected the initial previous local day");
+  assert.equal(previousLaunchDay.entry.id, "second-entry");
+  assert.deepEqual(resolveGreetingSelection({ ...request, date: "2026-11-02" }, revised, "v2"), { kind: "unavailable", reason: "version-not-active" });
+  assert.deepEqual(resolveGreetingSelection({ ...request, date: "2026-11-30" }, revised, "v2"), { kind: "unavailable", reason: "version-not-active" });
   assert.deepEqual(resolveGreetingSelection(request, revised, "v99"), { kind: "unavailable", reason: "unknown-version" });
   assert.deepEqual(resolveGreetingSelection(request, revised, "v2"), { kind: "unavailable", reason: "version-not-active" });
   assert.deepEqual(resolveGreetingSelection({ ...request, date: "2026-12-01" }, revised, "v1"), { kind: "unavailable", reason: "version-not-active" });

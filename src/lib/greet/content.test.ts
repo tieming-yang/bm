@@ -13,6 +13,20 @@ test("published v1 text, source mappings, effective date and ordering remain imm
   );
 });
 
+test("the previous launch-local day gets the last v1 entry without changing published dates", () => {
+  const request = { date: "2026-11-02", period: "night", locale: "en" } as const;
+  const previousDay = resolveGreetingSelection(request, greetingRotations, "v1");
+  if (previousDay.kind !== "selected") assert.fail("November 2 viewers must receive a launch greeting");
+  assert.equal(previousDay.entry.id, greetingRotations[0].entries.at(-1)?.id);
+  assert.equal(previousDay.entry.id, "genesis-12-2");
+  const launchDay = resolveGreetingSelection({ ...request, date: "2026-11-03" }, greetingRotations, "v1");
+  if (launchDay.kind !== "selected") assert.fail("Published November 3 must stay selectable");
+  assert.equal(launchDay.entry.id, "genesis-1-3");
+  assert.deepEqual(resolveGreetingSelection({ ...request, date: "2026-11-01" }, greetingRotations), {
+    kind: "unavailable", reason: "date-before-launch",
+  });
+});
+
 test("every curated translation is an exact excerpt of its captured live Notion source context", () => {
   const source = JSON.parse(readFileSync(new URL("./content-source.v1.json", import.meta.url), "utf8"));
   assert.equal(source.verifiedOn, "2026-11-03");
