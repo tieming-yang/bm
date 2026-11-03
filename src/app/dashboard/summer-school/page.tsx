@@ -2,7 +2,8 @@
 
 import { useDeferredValue, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, type Locale } from "date-fns";
+import { enUS, zhTW } from "date-fns/locale";
 import { useQuery } from "@tanstack/react-query";
 import {
   ColumnDef,
@@ -18,8 +19,9 @@ import { ArrowUpDownIcon, ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
 
 import Loading from "@/app/loading";
+import DashboardError from "@/app/dashboard/dashboard-error";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -87,7 +89,9 @@ function SortableHeader({ title, onClick }: { title: string; onClick: () => void
 
 function getColumns(
   t: (key: string, options?: Record<string, unknown>) => string,
-  tCommon: (key: string, options?: Record<string, unknown>) => string
+  tCommon: (key: string, options?: Record<string, unknown>) => string,
+  tDashboard: (key: string) => string,
+  locale: Locale
 ): ColumnDef<SummerCampDashboardStudentRow>[] {
   const columns: ColumnDef<SummerCampDashboardStudentRow>[] = [
     {
@@ -107,6 +111,7 @@ function getColumns(
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
       ),
+      cell: ({ row }) => tDashboard(`grades.${row.original.grade}`),
       filterFn: (row, columnId, filterValue) => {
         if (!filterValue) return true;
         return row.getValue(columnId) === filterValue;
@@ -120,7 +125,7 @@ function getColumns(
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
       ),
-      cell: ({ row }) => format(parseISO(row.original.birthday), "PPP"),
+      cell: ({ row }) => format(parseISO(row.original.birthday), "PPP", { locale }),
     },
     {
       accessorKey: "allergies",
@@ -247,7 +252,7 @@ function getColumns(
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
       ),
-      cell: ({ row }) => format(parseISO(row.original.submittedAt), "PPP p"),
+      cell: ({ row }) => format(parseISO(row.original.submittedAt), "PPP p", { locale }),
     },
   ];
 
@@ -257,7 +262,9 @@ function getColumns(
 export default function SummerSchoolDashboardPage() {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
-  const { t } = useTranslation("school");
+  const { t, currentLanguage } = useTranslation("school");
+  const { t: tDashboard } = useTranslation("dashboard");
+  const dateLocale = currentLanguage.startsWith("zh") ? zhTW : enUS;
   const { t: tCommon } = useTranslation("common");
   const [sorting, setSorting] = useState<SortingState>([{ id: "submittedAt", desc: true }]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -274,6 +281,7 @@ export default function SummerSchoolDashboardPage() {
     data: rows = [],
     isLoading: isRowsLoading,
     error: rowsError,
+    refetch: refetchRows,
   } = useQuery({
     queryKey: ["school", EVENT_SLUG, "dashboard-rows"],
     queryFn: async () => {
@@ -307,7 +315,7 @@ export default function SummerSchoolDashboardPage() {
 
   const table = useReactTable({
     data: rows,
-    columns: getColumns(t, tCommon),
+    columns: getColumns(t, tCommon, tDashboard, dateLocale),
     state: {
       sorting,
       globalFilter: deferredSearchQuery,
@@ -320,27 +328,29 @@ export default function SummerSchoolDashboardPage() {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (isAuthUserLoading || (authUser && isRowsLoading && !rowsError) || isForbidden) {
+  if (isAuthUserLoading || !authUser || isForbidden) {
+    return <Loading fullScreen />;
+  }
+
+  if (isRowsLoading && !rowsError) {
     return <Loading />;
   }
 
-  if (!authUser) {
-    return <Loading />;
+  if (rowsError) {
+    return <DashboardError onRetry={() => void refetchRows()} />;
   }
 
   return (
-    <div className="flex flex-col w-full px-4 py-10 mx-auto font-mono min-h-svh max-w-7xl gap-8 overflow-x-hidden">
+    <div className="flex flex-col w-full px-4 py-10 mx-auto font-sans min-h-svh max-w-7xl gap-8 overflow-x-hidden">
       <div className="flex items-center justify-between">
-        <Link href="/dashboard" className="w-fit">
-          <Button variant="outline" className="w-fit shrink-0 flex items-center gap-2 rounded-full">
+        <Button asChild variant="outline" className="w-fit shrink-0 flex items-center gap-2 rounded-full"><Link href="/dashboard">
             <ArrowLeftIcon className="w-4 h-4" />
-            返回管理首頁
-          </Button>
-        </Link>
+            {tDashboard("backDashboard")}
+          </Link></Button>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>{t("school.dashboard.title")}</CardTitle>
+          <h1 className="font-display text-3xl sm:text-4xl">{t("school.dashboard.title")}</h1>
           <CardDescription>{t("school.dashboard.description")}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
@@ -348,6 +358,7 @@ export default function SummerSchoolDashboardPage() {
             <Input
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
+              aria-label={t("school.dashboard.searchPlaceholder")}
               placeholder={t("school.dashboard.searchPlaceholder")}
               className="lg:max-w-xl"
             />
@@ -355,14 +366,14 @@ export default function SummerSchoolDashboardPage() {
               value={gradeFilter || "all"}
               onValueChange={(value) => setGradeFilter(value === "all" ? "" : value)}
             >
-              <SelectTrigger className="lg:max-w-xs">
+              <SelectTrigger className="lg:max-w-xs" aria-label={t("school.dashboard.gradeFilterPlaceholder")}>
                 <SelectValue placeholder={t("school.dashboard.gradeFilterPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("school.dashboard.gradeFilterAll")}</SelectItem>
                 {GRADE_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    {option.label}
+                    {tDashboard(`grades.${option.value}`)}
                   </SelectItem>
                 ))}
               </SelectContent>

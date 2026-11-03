@@ -9,6 +9,7 @@ import enGallery from "./locales/en/gallery.json";
 import enDonate from "./locales/en/donate.json";
 import enContact from "./locales/en/contact.json";
 import enUi from "./locales/en/ui.json";
+import enDashboard from "./locales/en/dashboard.json";
 import enSettings from "./locales/en/settings.json";
 import enBooks from "./locales/en/books.json";
 import enGloryShare from "./locales/en/glory-share.json";
@@ -29,6 +30,7 @@ import zhGallery from "./locales/zh-TW/gallery.json";
 import zhDonate from "./locales/zh-TW/donate.json";
 import zhContact from "./locales/zh-TW/contact.json";
 import zhUi from "./locales/zh-TW/ui.json";
+import zhDashboard from "./locales/zh-TW/dashboard.json";
 import zhSettings from "./locales/zh-TW/settings.json";
 import zhBooks from "./locales/zh-TW/books.json";
 import zhGloryShare from "./locales/zh-TW/glory-share.json";
@@ -53,6 +55,7 @@ if (process.env.NODE_ENV !== "production") {
   verifyTranslationEncoding(zhDonate, "zh-TW/donate.json");
   verifyTranslationEncoding(zhContact, "zh-TW/contact.json");
   verifyTranslationEncoding(zhUi, "zh-TW/ui.json");
+  verifyTranslationEncoding(zhDashboard, "zh-TW/dashboard.json");
   verifyTranslationEncoding(zhSettings, "zh-TW/settings.json");
   verifyTranslationEncoding(zhBooks, "zh-TW/books.json");
   verifyTranslationEncoding(zhGloryShare, "zh-TW/glory-share.json");
@@ -80,6 +83,7 @@ i18n
         donate: enDonate,
         contact: enContact,
         ui: enUi,
+        dashboard: enDashboard,
         settings: enSettings,
         books: enBooks,
         "glory-share": enGloryShare,
@@ -100,6 +104,7 @@ i18n
         donate: zhDonate,
         contact: zhContact,
         ui: zhUi,
+        dashboard: zhDashboard,
         settings: zhSettings,
         books: zhBooks,
         "glory-share": zhGloryShare,

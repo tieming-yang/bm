@@ -5,5 +5,5 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="font-mono min-h-svh w-full">{children}</div>;
+  return <div className="font-sans min-h-svh w-full">{children}</div>;
 }

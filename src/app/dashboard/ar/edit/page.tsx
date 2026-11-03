@@ -19,7 +19,9 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 
-import Loading from "@/app/loading";
+import Loading, { ActionSpinner } from "@/app/loading";
+import DashboardError from "@/app/dashboard/dashboard-error";
+import useTranslation from "@/hooks/use-translation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,7 +51,11 @@ function FileUploader({
   folder,
   onBeforeUpload,
   uploadPersistence,
+  id,
+  error,
 }: {
+  id?: string;
+  error?: string;
   accept: string;
   type: "model" | "audio" | "video" | "target";
   label: string;
@@ -61,6 +67,7 @@ function FileUploader({
   onBeforeUpload?: () => boolean;
   uploadPersistence?: CollectionUploadPersistence;
 }) {
+  const { t } = useTranslation("dashboard");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -69,19 +76,19 @@ function FileUploader({
     if (!file) return;
 
     if (!folder || !folder.trim()) {
-      toast.error(type === "target" ? "請先輸入專案名稱！" : "請先輸入英文名稱！");
+      toast.error(type === "target" ? t("upload.projectRequired") : t("upload.nameRequired"));
       return;
     }
 
     const limit = type === "model" || type === "video" ? 100 * 1024 * 1024 : 20 * 1024 * 1024;
     if (file.size > limit) {
-      toast.error(`檔案過大！該檔案類型限制為 ${limit / (1024 * 1024)}MB`);
+      toast.error(t("upload.tooLarge", { limit: limit / (1024 * 1024) }));
       return;
     }
 
     setUploading(true);
     onUploadStateChange?.(true);
-    const toastId = toast.loading(`正在上傳 ${file.name}...`);
+    const toastId = toast.loading(t("upload.uploading", { name: file.name }));
     try {
       const token = await Auth.user?.getIdToken();
       const formData = new FormData();
@@ -113,10 +120,11 @@ function FileUploader({
       }
 
       const data = await res.json();
-      toast.success(`${file.name} 上傳成功！`, { id: toastId });
+      toast.success(t("upload.success", { name: file.name }), { id: toastId });
       onChange(data.path);
     } catch (err: any) {
-      toast.error(`上傳失敗: ${err.message || String(err)}`, { id: toastId });
+      console.error("AR file upload failed", err);
+      toast.error(t("upload.failed"), { id: toastId });
     } finally {
       setUploading(false);
       onUploadStateChange?.(false);
@@ -141,18 +149,22 @@ function FileUploader({
           disabled={disabled || uploading}
           ref={fileInputRef}
           className="hidden"
-          id={`uploader-${type}-${label}-${Math.random().toString(36).substring(2, 6)}`}
+          aria-label={label}
         />
         <Button
+          id={id}
           type="button"
           variant="outline"
           size="sm"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error && id ? `${id}-error` : undefined}
           disabled={disabled || uploading}
+          aria-busy={uploading}
           onClick={handleButtonClick}
-          className="w-fit shrink-0 flex items-center gap-2 h-9"
+          className="w-fit shrink-0 flex items-center gap-2 h-11"
         >
           {uploading ? (
-            <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <ActionSpinner />
           ) : (
             <UploadIcon className="w-4 h-4" />
           )}
@@ -160,29 +172,32 @@ function FileUploader({
         </Button>
         {value ? (
           <span className="text-xs text-muted-foreground truncate max-w-full min-w-0 flex-1" title={value}>
-            已上傳: {value.substring(value.lastIndexOf("/") + 1)}
+            {t("upload.file", { name: value.substring(value.lastIndexOf("/") + 1) })}
           </span>
         ) : (
-          <span className="text-xs text-muted-foreground/60 italic">無上傳檔案</span>
+          <span className="text-xs text-muted-foreground/60 italic">{t("upload.empty")}</span>
         )}
         {value && (
           <Button
             type="button"
             variant="ghost"
             size="sm"
+            disabled={disabled || uploading}
             onClick={() => onChange("")}
-            className="w-fit shrink-0 h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/5"
+            className="w-fit shrink-0 h-11 px-2 text-error hover:text-error hover:bg-destructive/5"
           >
-            清除
+            {t("upload.clear")}
           </Button>
         )}
       </div>
+      {error && <p id={id ? `${id}-error` : undefined} role="alert" className="text-sm text-error">{error}</p>}
     </div>
   );
 }
 
 function ArEditPageContent() {
   const router = useRouter();
+  const { t, currentLanguage } = useTranslation("dashboard");
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -199,7 +214,7 @@ function ArEditPageContent() {
     }
   }, [authUser, isAuthUserLoading, router]);
 
-  const { data: profileData, isLoading: isRoleLoading } = useQuery({
+  const { data: profileData, isLoading: isRoleLoading, error: roleError, refetch: refetchRole } = useQuery({
     queryKey: ["profile-role", authUser?.uid],
     queryFn: async () => {
       const token = await Auth.user?.getIdToken();
@@ -222,10 +237,10 @@ function ArEditPageContent() {
   const isAuthorized = Policy.canViewAR(role);
 
   useEffect(() => {
-    if (!isLoading && authUser && !isAuthorized) {
+    if (!isLoading && authUser && !roleError && !isAuthorized) {
       router.replace("/not-found");
     }
-  }, [authUser, isLoading, isAuthorized, router]);
+  }, [authUser, isLoading, isAuthorized, roleError, router]);
 
   // Form & Upload state
   const [activeUploads, setActiveUploads] = useState<number>(0);
@@ -239,12 +254,14 @@ function ArEditPageContent() {
     items: [],
   });
 
+  const [collectionFieldErrors, setCollectionFieldErrors] = useState<Partial<Record<"title" | "version" | "targetsPath", boolean>>>({});
+  const formRef = React.useRef<HTMLFormElement>(null);
   const [selectedModelId, setSelectedModelId] = useState<string>("");
   const [isMetaCollapsed, setIsMetaCollapsed] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Data fetching
-  const { data: collectionData, isLoading: isCollectionLoading } = useQuery({
+  const { data: collectionData, isLoading: isCollectionLoading, error: collectionError, refetch: refetchCollection } = useQuery({
     queryKey: ["admin-ar-collection", id],
     queryFn: async () => {
       const token = await Auth.user?.getIdToken();
@@ -259,7 +276,7 @@ function ArEditPageContent() {
     refetchOnMount: "always",
   });
 
-  const { data: models } = useQuery({
+  const { data: models, error: modelsError, refetch: refetchModels } = useQuery({
     queryKey: ["admin-ar-models"],
     queryFn: async () => {
       const token = await Auth.user?.getIdToken();
@@ -344,11 +361,12 @@ function ArEditPageContent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-ar-collections"] });
-      toast.success("專案已成功建立！");
+      toast.success(t("ar.collectionCreated"));
       router.push("/dashboard/ar");
     },
     onError: (err: any) => {
-      toast.error(`建立專案失敗: ${err.message || String(err)}`);
+      console.error("AR project creation failed", err);
+      toast.error(t("ar.collectionCreateFailed"));
     },
   });
 
@@ -371,11 +389,12 @@ function ArEditPageContent() {
       if (id) {
         queryClient.invalidateQueries({ queryKey: ["admin-ar-collection", id] });
       }
-      toast.success("專案已成功更新！");
+      toast.success(t("ar.collectionUpdated"));
       router.push("/dashboard/ar");
     },
     onError: (err: any) => {
-      toast.error(`更新專案失敗: ${err.message || String(err)}`);
+      console.error("AR project update failed", err);
+      toast.error(t("ar.collectionUpdateFailed"));
     },
   });
 
@@ -419,13 +438,13 @@ function ArEditPageContent() {
     });
 
     if (isDuplicate) {
-      toast.error("此模型已存在於專案中！");
+      toast.error(t("ar.duplicateModel"));
       return;
     }
 
     setSelectedModelId("");
-    toast.success(`已加入「${model.titleZh || model.title}」`);
-  }, [models, selectedModelId]);
+    toast.success(t("ar.itemAdded", { name: currentLanguage === "zh-TW" ? model.titleZh || model.title : model.title }));
+  }, [models, selectedModelId, currentLanguage, t]);
 
   const handleRemoveItem = useCallback((index: number) => {
     setCollectionFormData((prev) => ({
@@ -470,12 +489,19 @@ function ArEditPageContent() {
   const handleSaveCollection = useCallback(
     (e?: React.FormEvent) => {
       if (e) e.preventDefault();
+      if (createCollectionMutation.isPending || updateCollectionMutation.isPending) return;
       if (isUploading) {
-        toast.error("尚有檔案正在上傳中，請稍候...");
+        toast.error(t("ar.uploadsPending"));
         return;
       }
-      if (!collectionFormData.targetsPath) {
-        toast.error("請上傳識別圖描述檔（.mind）！");
+      const form = formRef.current;
+      const isFormValid = form?.checkValidity() ?? false;
+      const targetsInvalid = !collectionFormData.targetsPath;
+      setCollectionFieldErrors((previous) => ({ ...previous, title: !collectionFormData.title, version: !isEditing && !collectionFormData.version, targetsPath: targetsInvalid }));
+      if (!isFormValid || targetsInvalid) {
+        const invalidField = form?.querySelector<HTMLElement>(":invalid");
+        if (invalidField) invalidField.focus();
+        else document.getElementById("col-targets-upload")?.focus();
         return;
       }
 
@@ -491,6 +517,7 @@ function ArEditPageContent() {
       isEditing,
       isUploading,
       updateCollectionMutation,
+      t,
     ]
   );
 
@@ -506,29 +533,26 @@ function ArEditPageContent() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleSaveCollection]);
 
-  if (isLoading || (isEditing && isCollectionLoading)) {
+  if (roleError) {
+    return <DashboardError onRetry={() => void refetchRole()} />;
+  }
+
+  if (isLoading || !authUser || !isAuthorized || (isEditing && isCollectionLoading)) {
     return <Loading />;
   }
 
+  if (collectionError) {
+    return <DashboardError onRetry={() => void refetchCollection()} />;
+  }
+
   return (
-    <div className="flex flex-col w-full px-4 py-8 mx-auto font-mono min-h-svh max-w-7xl gap-6 overflow-x-hidden">
+    <div className="flex flex-col w-full px-4 py-8 mx-auto font-sans min-h-svh max-w-7xl gap-6 overflow-x-hidden">
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b">
         <div>
-          <nav className="text-xs text-muted-foreground flex items-center gap-1.5 mb-1">
-            <span>首頁</span>
-            <span>/</span>
-            <span>dashboard</span>
-            <span>/</span>
-            <span>聖經AR</span>
-            <span>/</span>
-            <span className="text-foreground font-medium">
-              {isEditing ? "編輯專案" : "建立新專案"}
-            </span>
-          </nav>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight">
-              {isEditing ? "編輯 AR 專案" : "建立新 AR 專案"}
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              {isEditing ? t("ar.editCollectionTitle") : t("ar.newCollectionTitle")}
             </h1>
             {isEditing && (
               <span className="px-2 py-0.5 rounded text-xs font-mono bg-muted text-muted-foreground border">
@@ -536,18 +560,16 @@ function ArEditPageContent() {
               </span>
             )}
             <span className="px-2.5 py-0.5 rounded-full text-xs bg-primary/10 text-primary border border-primary/20 font-medium">
-              {collectionFormData.items.length} 個角色項目
+              {t("ar.characterCount", { count: collectionFormData.items.length })}
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-3 shrink-0 w-fit">
-          <Link href="/dashboard/ar" className="w-fit">
-            <Button variant="outline" className="w-fit shrink-0 flex items-center gap-2 rounded-full h-9">
+          <Button asChild variant="outline" className="w-fit shrink-0 flex items-center gap-2 rounded-full h-11"><Link href="/dashboard/ar">
               <ArrowLeftIcon className="w-4 h-4" />
-              返回列表
-            </Button>
-          </Link>
+              {t("ar.backList")}
+            </Link></Button>
           <Button
             type="button"
             onClick={() => handleSaveCollection()}
@@ -556,22 +578,22 @@ function ArEditPageContent() {
               createCollectionMutation.isPending ||
               updateCollectionMutation.isPending
             }
-            className="w-fit shrink-0 rounded-full h-9 px-5 font-semibold"
+            className="w-fit shrink-0 rounded-full h-11 px-5 font-semibold"
           >
             {createCollectionMutation.isPending || updateCollectionMutation.isPending ? (
-              <span className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
+              <ActionSpinner />
             ) : null}
-            儲存專案
+            {t("ar.saveCollection")}
           </Button>
         </div>
       </div>
 
       {/* Persistence Notice Alert */}
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-        已建立的專案中，重新上傳識別檔、音檔或影片會立即寫入資料庫；若資料庫寫入失敗，系統會移除剛上傳的檔案。新專案仍需按下儲存後才會建立資料。
+      <div className="rounded-lg border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-foreground">
+        {t("ar.persistenceNotice")}
       </div>
 
-      <form onSubmit={handleSaveCollection} className="space-y-6">
+      <form ref={formRef} noValidate onSubmit={handleSaveCollection} aria-busy={isUploading || createCollectionMutation.isPending || updateCollectionMutation.isPending} className="space-y-6">
         {/* COLLAPSIBLE BASIC CONFIG CARD */}
         <Card className="shadow-sm border overflow-hidden">
           <div
@@ -584,7 +606,7 @@ function ArEditPageContent() {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-sm font-semibold">專案基本配置與追蹤檔</h2>
+                  <h2 className="text-sm font-semibold">{t("ar.configuration")}</h2>
                   {collectionFormData.title && (
                     <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground font-mono">
                       {collectionFormData.title}
@@ -592,14 +614,14 @@ function ArEditPageContent() {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                  識別描述檔 (.mind):{" "}
+                  {t("ar.targetFileLabel")}{" "}
                   {collectionFormData.targetsPath ? (
                     <span className="text-primary font-mono">{collectionFormData.targetsPath}</span>
                   ) : (
-                    <span className="text-destructive">尚未上傳</span>
+                    <span className="text-error">{t("ar.notUploaded")}</span>
                   )}
                   <span className="mx-2 text-muted-foreground/40">•</span>
-                  <span>{isMetaCollapsed ? "點擊展開詳細設定" : "點擊收合"}</span>
+                  <span>{isMetaCollapsed ? t("ar.expandDetail") : t("ar.collapseDetail")}</span>
                 </p>
               </div>
             </div>
@@ -610,7 +632,7 @@ function ArEditPageContent() {
               size="sm"
               className="w-fit shrink-0 flex items-center gap-1 text-xs text-muted-foreground"
             >
-              <span>{isMetaCollapsed ? "展開設定" : "收合設定"}</span>
+              <span>{isMetaCollapsed ? t("ar.expand") : t("ar.collapse")}</span>
               {isMetaCollapsed ? (
                 <ChevronDownIcon className="w-4 h-4" />
               ) : (
@@ -623,38 +645,58 @@ function ArEditPageContent() {
             <CardContent className="border-t p-5 pt-5 grid gap-6 md:grid-cols-12 bg-muted/5">
               <div className="md:col-span-5 space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="col-title">專案名稱 *</Label>
+                  <Label htmlFor="col-title">{t("ar.projectNameRequired")}</Label>
                   <Input
                     id="col-title"
-                    placeholder="例如: collection-00 (限小寫英數、底線、連字號)"
+                    aria-invalid={Boolean(collectionFieldErrors.title)}
+                    aria-describedby={collectionFieldErrors.title ? "col-title-error" : undefined}
+                    onInvalid={(event) => {
+                      event.preventDefault();
+                      setCollectionFieldErrors((previous) => ({ ...previous, title: true }));
+                    }}
+                    onBlur={(event) => setCollectionFieldErrors((previous) => ({ ...previous, title: !event.target.validity.valid }))}
+                    placeholder={t("ar.projectNamePlaceholder")}
                     value={collectionFormData.title}
-                    onChange={(e) =>
-                      setCollectionFormData((prev) => ({ ...prev, title: e.target.value }))
-                    }
+                    onChange={(event) => {
+                      const title = event.target.value;
+                      setCollectionFormData((previous) => ({ ...previous, title }));
+                      if (collectionFieldErrors.title) setCollectionFieldErrors((previous) => ({ ...previous, title: !title.trim() }));
+                    }}
                     required
                   />
+                  {collectionFieldErrors.title && <p id="col-title-error" role="alert" className="text-sm text-error">{t("ar.projectBeforeUpload")}</p>}
                 </div>
 
                 {!isEditing && (
                   <div className="space-y-2">
-                    <Label htmlFor="col-version">專案版本 *</Label>
+                    <Label htmlFor="col-version">{t("ar.projectVersion")}</Label>
                     <Input
                       id="col-version"
-                      placeholder="例如: 1.0"
+                      aria-invalid={Boolean(collectionFieldErrors.version)}
+                      aria-describedby={collectionFieldErrors.version ? "col-version-error" : undefined}
+                      onInvalid={(event) => {
+                        event.preventDefault();
+                        setCollectionFieldErrors((previous) => ({ ...previous, version: true }));
+                      }}
+                      onBlur={(event) => setCollectionFieldErrors((previous) => ({ ...previous, version: !event.target.validity.valid }))}
+                      placeholder={t("ar.versionPlaceholder")}
                       value={collectionFormData.version}
-                      onChange={(e) =>
-                        setCollectionFormData((prev) => ({ ...prev, version: e.target.value }))
-                      }
+                      onChange={(event) => {
+                        const version = event.target.value;
+                        setCollectionFormData((previous) => ({ ...previous, version }));
+                        if (collectionFieldErrors.version) setCollectionFieldErrors((previous) => ({ ...previous, version: !event.target.validity.valid }));
+                      }}
                       required
                     />
+                    {collectionFieldErrors.version && <p id="col-version-error" role="alert" className="text-sm text-error">{t("ar.versionRequired")}</p>}
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="col-description">專案描述</Label>
+                  <Label htmlFor="col-description">{t("ar.projectDescription")}</Label>
                   <Textarea
                     id="col-description"
-                    placeholder="關於此專案的簡短介紹..."
+                    placeholder={t("ar.descriptionPlaceholder")}
                     value={collectionFormData.description}
                     onChange={(e) =>
                       setCollectionFormData((prev) => ({ ...prev, description: e.target.value }))
@@ -667,27 +709,30 @@ function ArEditPageContent() {
               <div className="md:col-span-7 flex flex-col justify-between p-4 border rounded-lg bg-background">
                 <div>
                   <div className="flex items-center justify-between">
-                    <Label className="font-semibold block mb-1">
-                      識別圖描述檔 (.mind) *
+                    <Label htmlFor="col-targets-upload" className="font-semibold block mb-1">
+                      {t("ar.targetFile")}
                     </Label>
                     {collectionFormData.targetsPath && (
                       <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
-                        已就緒
+                        {t("ar.ready")}
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground mb-3">
-                    上傳 MindAR 圖像特徵描述檔。角色順序應與編譯 Mind 檔時的圖片順序完全一致。
+                    {t("ar.targetDescription")}
                   </p>
                 </div>
                 <FileUploader
+                  id="col-targets-upload"
+                  error={collectionFieldErrors.targetsPath ? t("ar.targetsRequired") : undefined}
                   accept=".mind"
                   type="target"
-                  label="上傳 .mind 檔案"
+                  label={t("ar.uploadTargets")}
                   value={collectionFormData.targetsPath}
-                  onChange={(path) =>
-                    setCollectionFormData((prev) => ({ ...prev, targetsPath: path }))
-                  }
+                  onChange={(path) => {
+                    setCollectionFormData((previous) => ({ ...previous, targetsPath: path }));
+                    if (collectionFieldErrors.targetsPath) setCollectionFieldErrors((previous) => ({ ...previous, targetsPath: !path }));
+                  }}
                   onUploadStateChange={handleUploadStateChange}
                   disabled={
                     createCollectionMutation.isPending || updateCollectionMutation.isPending
@@ -703,7 +748,8 @@ function ArEditPageContent() {
                   }
                   onBeforeUpload={() => {
                     if (!collectionFormData.title.trim()) {
-                      toast.error("請先輸入專案名稱以建立儲存路徑");
+                      setCollectionFieldErrors((previous) => ({ ...previous, title: true }));
+                      document.getElementById("col-title")?.focus();
                       return false;
                     }
                     return true;
@@ -720,11 +766,11 @@ function ArEditPageContent() {
             <div>
               <div className="flex items-center gap-2">
                 <CardTitle className="text-lg font-bold">
-                  專案角色項目 ({collectionFormData.items.length})
+                  {t("ar.characterItems", { count: collectionFormData.items.length })}
                 </CardTitle>
               </div>
               <CardDescription className="mt-1">
-                排序必須精確對應識別圖 .mind 檔編譯時的 Target Index (索引)。
+                {t("ar.orderDescription")}
               </CardDescription>
             </div>
 
@@ -732,34 +778,36 @@ function ArEditPageContent() {
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto min-w-0">
               {/* Search box */}
               <div className="relative flex-1 sm:w-48 min-w-[140px]">
-                <SearchIcon className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-muted-foreground" />
+                <SearchIcon className="w-3.5 h-3.5 absolute left-2.5 top-4 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="搜尋角色名稱..."
+                  aria-label={t("ar.searchCharacters")}
+                  placeholder={t("ar.searchCharacters")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="text-xs pl-8 h-9"
+                  className="text-sm pl-8 h-11"
                 />
               </div>
 
+              {modelsError && <DashboardError onRetry={() => void refetchModels()} />}
               {/* Add Model Selector */}
               <div className="flex items-center gap-2 min-w-0">
                 <Select value={selectedModelId} onValueChange={setSelectedModelId}>
-                  <SelectTrigger className="w-[180px] sm:w-[220px] h-9 text-xs">
-                    <SelectValue placeholder="從模型庫中選擇角色..." />
+                  <SelectTrigger className="w-[180px] sm:w-[220px] h-11 text-sm" aria-label={t("ar.selectCharacter")}>
+                    <SelectValue placeholder={t("ar.selectCharacter")} />
                   </SelectTrigger>
                   <SelectContent>
                     {availableModels.length > 0 ? (
                       availableModels.map((model) => (
                         <SelectItem key={model.id} value={model.id}>
-                          {model.titleZh || model.title} ({model.title})
+                          {currentLanguage === "zh-TW" ? model.titleZh || model.title : model.title} ({model.title})
                         </SelectItem>
                       ))
                     ) : (
                       <SelectItem value="none" disabled>
                         {models && models.length > 0
-                          ? "所有模型已新增至專案"
-                          : "模型庫中無可用模型"}
+                          ? t("ar.allModelsAdded")
+                          : t("ar.noModelsAvailable")}
                       </SelectItem>
                     )}
                   </SelectContent>
@@ -774,10 +822,10 @@ function ArEditPageContent() {
                     updateCollectionMutation.isPending
                   }
                   size="sm"
-                  className="w-fit shrink-0 rounded-full h-9 px-3.5 flex items-center gap-1 font-semibold"
+                  className="w-fit shrink-0 rounded-full h-11 px-3.5 flex items-center gap-1 font-semibold"
                 >
                   <PlusIcon className="w-4 h-4" />
-                  加入項目
+                  {t("ar.addItem")}
                 </Button>
               </div>
             </div>
@@ -787,7 +835,7 @@ function ArEditPageContent() {
             {/* List of Character Cards */}
             {collectionFormData.items.length === 0 ? (
               <div className="p-12 text-center text-muted-foreground/60 text-sm border border-dashed rounded-lg bg-muted/5 italic">
-                尚未加入任何角色項目。請在上方選擇角色並點擊「加入項目」。
+                {t("ar.emptyItems")}
               </div>
             ) : (
               filteredItems.map(({ item, originalIndex }) => (
@@ -799,12 +847,12 @@ function ArEditPageContent() {
                     {/* Left: Index badge & Name */}
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <div className="flex items-center justify-center px-2.5 py-1 rounded-lg bg-muted border font-mono text-xs shrink-0">
-                        <span className="text-muted-foreground mr-1">IDX</span>
+                        <span className="text-muted-foreground mr-1">{t("ar.index")}</span>
                         <span className="font-bold text-primary">#{originalIndex}</span>
                       </div>
                       <div className="flex items-center gap-2 min-w-0 flex-1">
                         <span className="font-bold text-sm truncate">
-                          {item.titleZh || item.title}
+                          {currentLanguage === "zh-TW" ? item.titleZh || item.title : item.title}
                         </span>
                         <span className="text-muted-foreground text-xs font-mono shrink-0">
                           ({item.title})
@@ -823,8 +871,9 @@ function ArEditPageContent() {
                         size="icon"
                         disabled={originalIndex === 0 || isFiltered}
                         onClick={() => handleMoveItem(originalIndex, "up")}
-                        title={isFiltered ? "清除搜尋條件以調整順序" : "上移"}
-                        className="w-fit shrink-0 h-8 w-8"
+                        title={isFiltered ? t("ar.clearSearchToReorder") : t("ar.moveUp")}
+                        aria-label={t("ar.moveUp")}
+                        className="shrink-0 h-11 w-11"
                       >
                         <ArrowUpIcon className="w-4 h-4" />
                       </Button>
@@ -836,8 +885,9 @@ function ArEditPageContent() {
                           originalIndex === collectionFormData.items.length - 1 || isFiltered
                         }
                         onClick={() => handleMoveItem(originalIndex, "down")}
-                        title={isFiltered ? "清除搜尋條件以調整順序" : "下移"}
-                        className="w-fit shrink-0 h-8 w-8"
+                        title={isFiltered ? t("ar.clearSearchToReorder") : t("ar.moveDown")}
+                        aria-label={t("ar.moveDown")}
+                        className="shrink-0 h-11 w-11"
                       >
                         <ArrowDownIcon className="w-4 h-4" />
                       </Button>
@@ -846,8 +896,9 @@ function ArEditPageContent() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleRemoveItem(originalIndex)}
-                        title="移除"
-                        className="w-fit shrink-0 h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10 ml-1"
+                        title={t("ar.remove")}
+                        aria-label={t("ar.remove")}
+                        className="shrink-0 h-11 w-11 text-error hover:text-error hover:bg-destructive/10 ml-1"
                       >
                         <Trash2Icon className="w-4 h-4" />
                       </Button>
@@ -861,16 +912,16 @@ function ArEditPageContent() {
                       <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <MusicIcon className="w-3.5 h-3.5 text-primary" />
-                          語音介紹 (英文)
+                          {t("ar.audioEnglish")}
                         </span>
                         {item.audioPath && (
-                          <span className="text-[10px] text-primary font-medium">已上傳</span>
+                          <span className="text-[10px] text-primary font-medium">{t("ar.uploaded")}</span>
                         )}
                       </Label>
                       <FileUploader
                         accept=".mp3,audio/*"
                         type="audio"
-                        label="音檔"
+                        label={t("ar.audio")}
                         value={item.audioPath || ""}
                         onChange={(path) => handleUpdateItemField(originalIndex, "audioPath", path)}
                         onUploadStateChange={handleUploadStateChange}
@@ -896,16 +947,16 @@ function ArEditPageContent() {
                       <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <MusicIcon className="w-3.5 h-3.5 text-primary" />
-                          語音介紹 (中文)
+                          {t("ar.audioChinese")}
                         </span>
                         {item.audioPathZh && (
-                          <span className="text-[10px] text-primary font-medium">已上傳</span>
+                          <span className="text-[10px] text-primary font-medium">{t("ar.uploaded")}</span>
                         )}
                       </Label>
                       <FileUploader
                         accept=".mp3,audio/*"
                         type="audio"
-                        label="音檔"
+                        label={t("ar.audio")}
                         value={item.audioPathZh || ""}
                         onChange={(path) =>
                           handleUpdateItemField(originalIndex, "audioPathZh", path)
@@ -933,16 +984,16 @@ function ArEditPageContent() {
                       <Label className="text-xs font-semibold flex items-center justify-between text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <VideoIcon className="w-3.5 h-3.5 text-primary" />
-                          介紹影片
+                          {t("ar.videoIntroduction")}
                         </span>
                         {item.videoPath && (
-                          <span className="text-[10px] text-primary font-medium">已上傳</span>
+                          <span className="text-[10px] text-primary font-medium">{t("ar.uploaded")}</span>
                         )}
                       </Label>
                       <FileUploader
                         accept=".mp4,.mov,video/*"
                         type="video"
-                        label="影片"
+                        label={t("ar.video")}
                         value={item.videoPath || ""}
                         onChange={(path) => handleUpdateItemField(originalIndex, "videoPath", path)}
                         onUploadStateChange={handleUploadStateChange}
@@ -970,14 +1021,13 @@ function ArEditPageContent() {
         </Card>
 
         {/* Floating Sticky Bottom Bar for convenient saving */}
-        <div className="sticky bottom-6 z-30 max-w-xl w-[calc(100%-2rem)] mx-auto p-2.5 rounded-full border bg-background/90 backdrop-blur-md shadow-2xl flex items-center justify-between px-5">
+        <div className="sticky bottom-24 z-30 max-w-xl w-[calc(100%-2rem)] mx-auto p-2.5 rounded-full border bg-background/90 backdrop-blur-md shadow-2xl flex items-center justify-between px-5">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span>共 {collectionFormData.items.length} 個角色項目</span>
+            <span>{t("ar.totalCharacters", { count: collectionFormData.items.length })}</span>
           </div>
           <div className="flex items-center gap-2 shrink-0 w-fit">
-            <Link href="/dashboard/ar" className="w-fit">
-              <Button
+            <Button asChild
                 type="button"
                 variant="ghost"
                 size="sm"
@@ -986,11 +1036,10 @@ function ArEditPageContent() {
                   createCollectionMutation.isPending ||
                   updateCollectionMutation.isPending
                 }
-                className="w-fit shrink-0 h-8 rounded-full text-xs text-muted-foreground hover:text-foreground"
-              >
-                取消
-              </Button>
-            </Link>
+                className="w-fit shrink-0 h-11 rounded-full text-xs text-muted-foreground hover:text-foreground"
+              ><Link href="/dashboard/ar">
+                {t("cancel")}
+              </Link></Button>
             <Button
               type="submit"
               size="sm"
@@ -999,12 +1048,12 @@ function ArEditPageContent() {
                 createCollectionMutation.isPending ||
                 updateCollectionMutation.isPending
               }
-              className="w-fit shrink-0 h-8 rounded-full px-5 text-xs font-semibold"
+              className="w-fit shrink-0 h-11 rounded-full px-5 text-xs font-semibold"
             >
               {createCollectionMutation.isPending || updateCollectionMutation.isPending ? (
-                <span className="w-3.5 h-3.5 border-2 border-background border-t-transparent rounded-full animate-spin mr-1.5" />
+                <ActionSpinner />
               ) : null}
-              儲存專案
+              {t("ar.saveCollection")}
             </Button>
           </div>
         </div>
