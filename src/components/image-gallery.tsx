@@ -263,23 +263,21 @@ export function ImageGallery({
     };
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!selectedArtwork) return;
 
     const url = `${window.location.origin}${pathname}?image=${selectedArtwork.id}`;
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {})
-      .catch((err) => {
-        console.error(err);
-        toast.error(t("toast.linkCopied.error"), {
-          description: t("toast.linkCopied.description"),
-        });
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success(t("toast.linkCopied.title"), {
+        description: t("toast.linkCopied.description"),
       });
-
-    toast.success(t("toast.linkCopied.title"), {
-      description: t("toast.linkCopied.description"),
-    });
+    } catch (err) {
+      console.error(err);
+      toast.error(t("toast.copyFailed.title"), {
+        description: t("toast.copyFailed.description"),
+      });
+    }
   };
 
   const isFreeMember = !profile || profile?.memberType === "free";
