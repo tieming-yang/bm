@@ -10,6 +10,7 @@ import {
   getDoc,
   getDocs,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
   Timestamp,
@@ -17,6 +18,7 @@ import {
   where,
 } from "firebase/firestore";
 import Stripe from "stripe";
+import { z } from "zod";
 
 type ProfileInput = {
   uid: string;
@@ -94,6 +96,25 @@ type Subscription = {
   createdAt?: Timestamp;
 };
 
+/** Only fields owned by the existing client initialization workflow. */
+export const ProfileInitializationInputSchema = z.object({
+  uid: z.string().min(1).max(128).refine((value) => !value.includes("/") && value !== "." && value !== ".."),
+  displayName: z.string().nullable(),
+  email: z.string().email().nullable(),
+  photoURL: z.string().url().nullable().optional(),
+}).strict();
+export type ProfileInitializationInput = z.infer<typeof ProfileInitializationInputSchema>;
+const ProfileUidSchema = ProfileInitializationInputSchema.shape.uid;
+export type ProfileInitializationResult = { kind: "created" | "existing" } | { kind: "conflict"; reason: string };
+export type ProfileReadResult = { kind: "missing" } | { kind: "conflict"; reason: string } | { kind: "found"; profile: Profile };
+
+/** Validate only stable identity and timestamps owned by base profile initialization. */
+export function validateProfileInitializationIdentity(uid: string, data: unknown): void {
+  const parsed = z.object({ uid: ProfileUidSchema, createdAt: z.instanceof(Timestamp), updatedAt: z.instanceof(Timestamp) }).passthrough().safeParse(data);
+  const reason = !parsed.success ? "Stored profile identity or timestamps are malformed" : parsed.data.uid !== uid ? "Stored profile identity differs from its document path" : parsed.data.updatedAt.toMillis() < parsed.data.createdAt.toMillis() ? "Stored profile update timestamp predates creation" : null;
+  if (reason) throw Object.assign(new Error(reason), { code: "profile/setup-conflict" });
+}
+
 const Profile = {
   getRef(uid: string): DocumentReference {
     return doc(firebase.db, "profiles", uid);
@@ -115,28 +136,45 @@ const Profile = {
     });
   },
 
-  async create(values: ProfileInput) {
-    if (await Profile.isExits(values.uid)) throw new Error("Profile existed");
-
-    const profileRef = Profile.getRef(values.uid);
-
-    const data = await setDoc(
-      profileRef,
-      {
-        ...values,
+  /** Initialize only a missing owner profile; retries never rewrite existing state. */
+  async ensureInitialized(values: ProfileInitializationInput): Promise<ProfileInitializationResult> {
+    const seed = ProfileInitializationInputSchema.parse(values);
+    if (firebase.auth.currentUser?.uid !== seed.uid) throw new Error("Profile initialization requires the current authenticated owner");
+    return runTransaction(firebase.db, async (transaction) => {
+      const ref = Profile.getRef(seed.uid);
+      const existing = await transaction.get(ref);
+      if (firebase.auth.currentUser?.uid !== seed.uid) throw new Error("Profile initialization owner changed during the transaction");
+      if (existing.exists()) {
+        validateProfileInitializationIdentity(seed.uid, existing.data());
+        return { kind: "existing" };
+      }
+      transaction.set(ref, {
+        ...seed,
+        photoURL: seed.photoURL ?? null,
         newsletterOptIn: true,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
+      });
+      return { kind: "created" };
+    });
+  },
 
-    return data;
+  /** Distinguish absence from infrastructure failure and existing-state conflicts. */
+  async read(uid: string): Promise<ProfileReadResult> {
+    ProfileUidSchema.parse(uid);
+    const snap = await Profile.getSnap(uid);
+    if (!snap.exists()) return { kind: "missing" };
+    validateProfileInitializationIdentity(uid, snap.data());
+    return { kind: "found", profile: await Profile.fromSnapshot(uid, snap) };
   },
 
   async get(uid: string): Promise<Profile> {
     const snap = await Profile.getSnap(uid);
     if (!snap.exists()) throw new Error("M9KX - Profile not found");
+    return Profile.fromSnapshot(uid, snap);
+  },
+
+  async fromSnapshot(uid: string, snap: DocumentSnapshot): Promise<Profile> {
     const subscriptions = await Profile.getSubscriptions(uid);
 
     return {

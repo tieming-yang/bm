@@ -7,12 +7,9 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  UserCredential,
 } from "firebase/auth";
 
 import firebase from "../lib/firebase/firebase";
-import Profile from "./profiles";
-import { assertIsDefined } from "@/lib/utils";
 import * as v from "valibot";
 
 export const AuthMethod = {
@@ -30,10 +27,7 @@ export const EmailSignInSchema = v.omit(EmailSignUpSchema, ["displayName"]);
 
 export type EmailSignUpInput = v.InferOutput<typeof EmailSignUpSchema>;
 export type EmailSignInInput = Omit<EmailSignUpInput, "displayName">;
-export type AuthResult = {
-  user: User;
-  profileExisted: boolean;
-};
+export type AuthResult = { user: User };
 
 const Auth = {
   get user() {
@@ -45,34 +39,8 @@ const Auth = {
   },
 
   async signInWithGoogle(): Promise<AuthResult> {
-    const provider = new GoogleAuthProvider();
-    let user;
-    try {
-      const { user: authUser } = await signInWithPopup(firebase.auth, provider);
-      user = authUser;
-      const { uid, displayName, email, photoURL } = user;
-      const profileExisted = await Profile.isExits(uid);
-
-      //? Cloud function v2 don't have auth.onCreate yet, so we have to keep the sign up flow client
-      //? https://github.com/firebase/firebase-functions/issues/1383
-
-      if (!profileExisted) {
-        await Profile.create({
-          uid,
-          displayName,
-          email,
-          photoURL: photoURL || null,
-        });
-      }
-
-      return {
-        user,
-        profileExisted,
-      };
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const { user } = await signInWithPopup(firebase.auth, new GoogleAuthProvider());
+    return { user };
   },
 
   async signOut() {
@@ -86,42 +54,15 @@ const Auth = {
   },
 
   async signUpWithEmail(input: EmailSignUpInput): Promise<AuthResult> {
-    const { email, password, displayName } = input;
-    let userCredential: UserCredential | null = null;
-    try {
-      userCredential = await createUserWithEmailAndPassword(firebase.auth, email, password);
-    } catch (error) {
-      throw error;
-    }
-
-    const { uid } = userCredential.user;
-    const isProfileExist = await Profile.isExits(uid);
-    if (isProfileExist) {
-      throw new Error("Profile Exist");
-    }
-
-    await Profile.create({
-      uid,
-      displayName,
-      email,
-      photoURL: null,
-    });
-
-    return {
-      user: userCredential.user,
-      profileExisted: false,
-    };
+    const value = v.parse(EmailSignUpSchema, input);
+    const { user } = await createUserWithEmailAndPassword(firebase.auth, value.email, value.password);
+    return { user };
   },
 
   async signInWithEmail(input: EmailSignInInput): Promise<AuthResult> {
-    const { email, password } = input;
-    const { user } = await signInWithEmailAndPassword(firebase.auth, email, password);
-    const profileExisted = await Profile.isExits(user.uid);
-
-    return {
-      user,
-      profileExisted,
-    };
+    const value = v.parse(EmailSignInSchema, input);
+    const { user } = await signInWithEmailAndPassword(firebase.auth, value.email, value.password);
+    return { user };
   },
 };
 

@@ -7,6 +7,8 @@ import Link from "next/link";
 
 import Loading, { ActionSpinner } from "@/app/loading";
 import useAuthUser from "@/hooks/use-auth-user";
+import useProfile from "@/hooks/use-profile";
+import { AccountSetupFeedback } from "@/components/account-setup-feedback";
 import useTranslation from "@/hooks/use-translation";
 import Profile from "@/models/profiles";
 import { QueryKey } from "@/utils/query-keys";
@@ -53,7 +55,6 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const { t, i18n } = useTranslation("settings");
   const { t: tGloryShare } = useTranslation("glory-share");
   const { t: tCommon } = useTranslation("common");
-  const viewerUid = authUser?.uid ?? null;
   const redirectTo = `/profile/${userId}`;
 
   const [modal, setModal] = useState<Modal>("none");
@@ -69,16 +70,13 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
   const query = useQueryClient();
   const {
-    data: viewerProfile,
-    isLoading: isViewerProfileLoading,
-    isFetched: isViewerProfileFetched,
-    error: viewerProfileError,
-    refetch: refetchViewerProfile,
-  } = useQuery({
-    queryKey: QueryKey.profile(viewerUid ?? "viewer"),
-    queryFn: () => Profile.get(viewerUid!),
-    enabled: !!viewerUid,
-  });
+    profile: viewerProfile,
+    isProfileLoading: isViewerProfileLoading,
+    isProfileFetched: isViewerProfileFetched,
+    profileError: viewerProfileError,
+    refetchProfile: refetchViewerProfile,
+    accountSetupState,
+  } = useProfile();
   const canViewRequestedProfile =
     !!viewerProfile && (viewerProfile.uid === userId || Profile.isPrivilegedRole(viewerProfile.role));
   const {
@@ -235,6 +233,10 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     enabled: isOwnProfile && isGloryShareMember,
     staleTime: Infinity,
   });
+
+  if (authUser && ["authenticating", "checking", "initializing", "retryable_failure", "conflict"].includes(accountSetupState.kind)) {
+    return <div className="flex min-h-[60vh] items-center justify-center px-4 py-12"><AccountSetupFeedback /></div>;
+  }
 
   if (isAuthUserLoading || isLoading) {
     return <Loading />;

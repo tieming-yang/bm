@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -10,34 +10,34 @@ import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
+import { useAccountSetup } from "@/providers/account-setup-provider";
+import { AccountSetupFeedback } from "@/components/account-setup-feedback";
+import { getAuthReturnPath } from "@/lib/account/redirect";
+import { isARAuthoringPath } from "@/lib/ui/ar-authoring";
 import { assertIsDefined } from "@/lib/utils";
 import { useAppForm } from "@/hooks/use-app-form";
 
 type Props = {};
-const REGISTRATION_ROUTE_PREFIX = "/school/summer/2026/registration";
-
-function appendRegistrationAuthFlow(redirectTo: string, authFlow: "signup" | "signin") {
-  if (!redirectTo.startsWith(REGISTRATION_ROUTE_PREFIX)) return redirectTo;
-
-  const url = new URL(redirectTo, window.location.origin);
-  url.searchParams.set("authFlow", authFlow);
-
-  return `${url.pathname}${url.search}${url.hash}`;
-}
-
 export default function SignUpClientPage({}: Props) {
   const router = useRouter();
+  const account = useAccountSetup();
   const { authUser, isAuthUserLoading } = useAuthUser();
   const { t } = useTranslation("sign-up");
   const { t: tCommon } = useTranslation("common");
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo") ?? `/`;
   const prefillEmail = params.get("prefillEmail") ?? "";
-  const query = useQueryClient();
+  const navigatedTo = useRef<string | null>(null);
+  const navigate = useCallback((target: string) => {
+    if (navigatedTo.current === target) return;
+    navigatedTo.current = target;
+    if (isARAuthoringPath(target.split(/[?#]/)[0])) window.location.replace(target);
+    else router.replace(target);
+  }, [router]);
 
   const signInParams = new URLSearchParams({
     redirectTo,
@@ -72,34 +72,34 @@ export default function SignUpClientPage({}: Props) {
   const signUpMutation = useMutation({
     mutationKey: QueryKey.signUp,
     mutationFn: ({ method, payload }: { method: AuthMethod; payload?: EmailSignUpInput }) => {
-      if (method === "google") return Auth.signInWithGoogle();
+      if (method === "google") return account.authenticate(() => Auth.signInWithGoogle());
       if (method === "email" && payload) {
         assertIsDefined(payload.email, "Email is undefine");
         assertIsDefined(payload.password, "Password is undefine");
         assertIsDefined(payload.displayName, "Display Name is undefine");
-        return Auth.signUpWithEmail(payload);
+        return account.authenticate(() => Auth.signUpWithEmail(payload), payload.displayName);
       }
       throw new Error(`Unsupported method: ${method}`);
     },
     retry: 0,
-    onSuccess: async ({ user, profileExisted }) => {
-      query.setQueryData(QueryKey.authUser, user);
-      router.replace(
-        appendRegistrationAuthFlow(redirectTo, profileExisted ? "signin" : "signup")
-      );
+    onSuccess: (result) => {
+      if (result.kind !== "ready") return;
+      const target = getAuthReturnPath(redirectTo, "/");
+      navigate(target);
     },
     onError: (err: unknown) => {
-      console.error(err);
+      console.error("Sign-up failed", { errorType: err instanceof Error ? err.name : "UnknownError" });
     },
   });
 
   useEffect(() => {
-    if (!signUpMutation.isPending && !signUpMutation.isSuccess && !isAuthUserLoading && authUser) {
-      router.replace("/");
-    }
-  }, [authUser, isAuthUserLoading, router, signUpMutation.isPending, signUpMutation.isSuccess]);
+    if (!authUser || isAuthUserLoading || signUpMutation.isPending || account.state.kind !== "ready") return;
+    const target = getAuthReturnPath(redirectTo, "/");
+    navigate(target);
+  }, [authUser, isAuthUserLoading, signUpMutation.isPending, account.state.kind, redirectTo, navigate]);
 
   if (isAuthUserLoading) return <Loading />;
+  if (authUser && account.state.kind !== "ready") return <AccountSetupFeedback />;
 
   return (
     <div className="relative z-50 flex flex-col items-center justify-center px-5 md:px-0 gap-y-5 min-h-[70dvh] py-8">

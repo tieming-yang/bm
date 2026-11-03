@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
+import { AccountSetupProvider } from "./account-setup-provider";
 
 function ReactQueryProvider({ children }: React.PropsWithChildren) {
   const [client] = useState(
@@ -21,7 +22,7 @@ function ReactQueryProvider({ children }: React.PropsWithChildren) {
 
   return (
     <QueryClientProvider client={client}>
-      {children}
+      <AccountSetupProvider>{children}</AccountSetupProvider>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
     </QueryClientProvider>
   );

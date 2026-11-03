@@ -12,5 +12,15 @@
   "errors": {
     "email": "Enter a valid email address.",
     "password": "Use at least 8 characters."
+  },
+  "setup": {
+    "title": "Finishing your account",
+    "description": "Your sign-in is complete. We are preparing your profile.",
+    "failedTitle": "Finish setting up your account",
+    "failedDescription": "You are signed in, but your profile could not be prepared. Retry setup without creating another account.",
+    "conflictTitle": "Your account needs support",
+    "conflictDescription": "Your existing profile needs review. We have kept its information unchanged.",
+    "retry": "Retry account setup",
+    "support": "Contact account support"
   }
 }
