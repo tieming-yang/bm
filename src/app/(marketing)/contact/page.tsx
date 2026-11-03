@@ -4,20 +4,20 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin } from "lucide-react";
 import useTranslation from "@/hooks/use-translation";
 
-export const BEYOND_EMAIL = "beyonddigitalmedia.art@gmail.com";
+import { BEYOND_EMAIL } from "./constants";
 
 export default function Contact() {
   const { t } = useTranslation("contact");
 
   return (
-    <div className="container relative z-50 px-4 py-12 mx-auto h-svh">
+    <div className="container relative px-4 py-12 mx-auto min-h-svh">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
-        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
+        <h1 className="font-display mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
           {t("contact.title")}
         </h1>
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
@@ -25,21 +25,21 @@ export default function Contact() {
         </p>
       </motion.div>
 
-      <div className="w-full font-mono grid grid-cols-1 gap-12 place-items-center">
+      <div className="w-full grid grid-cols-1 gap-12 place-items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="space-y-8"
+          className="min-w-0 max-w-full space-y-8"
         >
-          <div className="flex items-start gap-4">
+          <div className="flex min-w-0 items-start gap-4">
             <div className="p-3 rounded-full bg-primary/10">
               <Mail className="w-6 h-6 text-primary" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h3 className="text-lg font-medium">{t("contact.email.title")}</h3>
               <a
-                className="underline text-foreground underline-offset-4"
+                className="break-all underline text-foreground underline-offset-4"
                 href={`mailto:${BEYOND_EMAIL}`}
               >
                 {BEYOND_EMAIL}

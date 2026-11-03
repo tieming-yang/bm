@@ -1,4 +1,4 @@
-import { BEYOND_EMAIL } from "@/app/(marketing)/contact/page";
+import { BEYOND_EMAIL } from "@/app/(marketing)/contact/constants";
 import Link from "next/link";
 
 const sections = [

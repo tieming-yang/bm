@@ -9,14 +9,14 @@ export default function ClientDonatePage() {
   const { t } = useTranslation("donate");
 
   return (
-    <div className="container relative z-50 px-4 py-12 mx-auto min-h-svh">
+    <div className="container relative px-4 py-12 mx-auto min-h-svh">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="mb-16 text-center"
       >
-        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
+        <h1 className="font-display mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
           {t("donate.title")}
         </h1>
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">

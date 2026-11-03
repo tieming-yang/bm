@@ -15,11 +15,11 @@ export default function ClientBeyondArtPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <h1 className="text-4xl leading-tight tracking-tight text-primary-foreground-gradient text-balance md:text-5xl">
+          <h1 className="font-display text-4xl leading-tight tracking-tight text-primary-foreground-gradient text-balance md:text-5xl">
             {t("services.beyond-art.hero.title")}
           </h1>
 
-          <p className="text-xl italic md:text-2xl font-chinese text-primary-foreground-gradient">
+          <p className="text-xl italic md:text-2xl text-primary-foreground-gradient">
             {t("services.beyond-art.hero.description")}
           </p>
         </motion.div>

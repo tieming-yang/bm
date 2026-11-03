@@ -1,22 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "../components/ui/button";
+import useTranslation from "@/hooks/use-translation";
 
 export default function NotFound() {
-  const router = useRouter();
+  const { t } = useTranslation("ui");
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center bg-background">
-      <h1 className="mb-4 text-4xl font-bold">404</h1>
-      <p className="mb-6 text-lg">
-        <span className="block">找不到您要的頁面。</span>
-        <span className="block">The page you are looking for does not exist.</span>
-        <span className="block">お探しのページは見つかりませんでした。</span>
-      </p>
-      <Button onClick={() => router.push("/")} className="px-8 rounded-3xl">
-        返回首頁 / Back to Home / ホームに戻る
+    <section className="container mx-auto flex min-h-[60svh] max-w-2xl flex-col items-center justify-center px-4 py-12 text-center">
+      <p className="mb-3 text-sm tracking-widest text-primary">404</p>
+      <h1 className="font-display mb-4 text-3xl sm:text-4xl">{t("notFound.title")}</h1>
+      <p className="mb-6 text-base leading-relaxed text-muted-foreground">{t("notFound.description")}</p>
+      <Button asChild className="w-full sm:w-auto">
+        <Link href="/">{t("notFound.home")}</Link>
       </Button>
-    </div>
+    </section>
   );
 }

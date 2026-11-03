@@ -51,7 +51,7 @@ export default function ServiceTypes() {
         <h2 className="font-semibold text-base/7 text-primary-foreground-gradient">
           {t("services.beyond-art.types.hero.plan")}
         </h2>
-        <p className="mt-2 text-2xl font-semibold tracking-wider text-white sm:leading-20 text-balance sm:text-6xl">
+        <p className="font-display mt-2 text-3xl font-semibold tracking-wider text-white sm:leading-20 text-balance sm:text-6xl">
           {t("services.beyond-art.types.hero.title")}
         </p>
       </div>
@@ -72,7 +72,7 @@ export default function ServiceTypes() {
             <div
               key={tier.id}
               className={cn(
-                "bg-neutral-900 font-mono rounded-3xl space-y-5 py-10 px-5 flex flex-col justify-between ring-1 ring-white/10 lg:mx-0"
+                "bg-card rounded-3xl space-y-5 py-10 px-5 flex flex-col justify-between ring-1 ring-white/10 lg:mx-0"
               )}
             >
               <h3
@@ -106,7 +106,7 @@ export default function ServiceTypes() {
                 role="list"
                 className={cn(
                   tier.featured ? "text-gray-300" : "text-gray-300",
-                  "space-y-3 text-xl font-mono"
+                  "space-y-3 text-base"
                 )}
               >
                 {features.map((feature) => (
@@ -125,7 +125,7 @@ export default function ServiceTypes() {
                 ))}
               </ul>
 
-              <Button className="self-center-safe">
+              <Button asChild className="w-full sm:w-auto sm:self-center">
                 <Link href="mailto:beyonddigitalmedia.art@gmail.com">
                   {t("services.beyond-art.contact")}
                 </Link>

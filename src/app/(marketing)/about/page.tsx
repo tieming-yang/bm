@@ -18,7 +18,7 @@ export default function About() {
   const yangMember = t("about.members.yangyi", { returnObjects: true }) as MemberContent;
 
   return (
-    <div className="container relative z-50 px-4 py-12 mx-auto font-serif">
+    <div className="container relative px-4 py-12 mx-auto font-sans">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -26,7 +26,7 @@ export default function About() {
         className="mb-16 text-center"
       >
         <Intro i18nKey="about.intro" />
-        <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
+        <h1 className="font-display mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
           {t("about.title")}
         </h1>
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
@@ -45,7 +45,7 @@ export default function About() {
             name={yangMember.name}
             role={yangMember.role}
             image={yangyiPicture}
-            imageAlt="楊毅"
+            imageAlt={yangMember.name}
           >
             {story.map((_, index) => (
               <p key={index}>
