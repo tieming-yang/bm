@@ -61,6 +61,10 @@ export async function POST(
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
 
+  if (getSchoolEventBySlug(eventSlug)?.event.registrationStatus === "closed") {
+    return NextResponse.json({ error: "REGISTRATION_CLOSED" }, { status: 410 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

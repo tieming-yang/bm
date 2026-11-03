@@ -220,11 +220,6 @@ export default function SchoolPage() {
 
             <p className="text-lg text-muted-foreground">{t("school.hero.description")}</p>
             <div className="flex flex-wrap gap-4 justify-center-safe">
-              <Button size="lg" variant="secondary" className="px-8 rounded-full" asChild>
-                <Link href="/school/summer/2026/registration">
-                  {t("school.hero.registerSummerCamp")}
-                </Link>
-              </Button>
               <Button size="lg" className="px-8 rounded-full border-primary/40" asChild>
                 <a href="/glory-share">{t("school.hero.joinGloryShare")}</a>
               </Button>

@@ -215,6 +215,10 @@
       }
     },
     "registration": {
+      "closedTitle": "Summer camp registration is closed",
+      "closedDescription": "The 2026 Ekklesia Beyond Summer Camp has finished. Thank you for joining us. Please contact us if you have questions about a past registration.",
+      "backToSchool": "Back to Bible School",
+      "contactUs": "Contact us",
       "badge": "Summer Camp Registration",
       "description": "Use this form to register children for the 2026 Ekklesia Beyond Summer Camp.",
       "price": "Material fee (per child): $",

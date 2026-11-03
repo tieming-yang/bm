@@ -220,9 +220,10 @@ export const pageMetadata = {
   },
   schoolSummer2026Registration: {
     path: "/school/summer/2026/registration",
-    title: "2026 Ekklesia Beyond Summer Camp Registration | Beyond Digital Media",
+    title: "Summer Camp Registration Closed | 夏令營報名已結束",
     description:
-      "Register children for the 2026 Ekklesia Beyond Summer Camp and manage family details for this year's event.",
+      "The 2026 Ekklesia Beyond Summer Camp has finished and registration is closed. 2026 Ekklesia Beyond 夏令營已結束，報名已關閉。",
+    robots: noIndexRobots,
   },
   dashboard: {
     path: "/dashboard",
@@ -269,7 +270,6 @@ export const publicSitemapRoutes = [
   { path: "/daily-blessing", changeFrequency: "daily", priority: 0.8 },
   { path: "/daily-grace-snacks", changeFrequency: "weekly", priority: 0.8 },
   { path: "/school", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/school/summer/2026/registration", changeFrequency: "weekly", priority: 0.6 },
   { path: "/ar", changeFrequency: "weekly", priority: 0.7 },
   { path: "/bible-products", changeFrequency: "weekly", priority: 0.7 },
   { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.2 },

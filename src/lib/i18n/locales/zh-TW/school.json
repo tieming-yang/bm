@@ -215,6 +215,10 @@
       }
     },
     "registration": {
+      "closedTitle": "夏令營報名已結束",
+      "closedDescription": "2026 Ekklesia Beyond 夏令營已結束。感謝您的參與，如有過往報名相關問題，歡迎與我們聯絡。",
+      "backToSchool": "返回聖經學校",
+      "contactUs": "聯絡我們",
       "badge": "夏令營報名",
       "description": "請使用此表單為兒童報名 2026 Ekklesia Beyond Summer Camp。",
       "price": "材料費（每孩童）：$",
