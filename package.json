@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "check:ui": "node src/scripts/check-ui.mjs",
     "test:greet": "node --conditions=react-server --test src/lib/greet/*.test.ts",
     "dev": "next dev --turbopack",
     "dev:https": "next dev --turbopack --experimental-https -H 0.0.0.0",
