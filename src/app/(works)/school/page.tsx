@@ -1,99 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useTranslation from "@/hooks/use-translation";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import ReactPlayer from "react-player";
+import { useReducedMotion } from "framer-motion";
 import { Lesson, Curriculum, getCourses, Course } from "@/models/school";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { toSlug } from "@/utils/to-slug";
+import { adjacentSchoolLesson, createSchoolLessons, isSchoolCourse, resolveSchoolSelection } from "@/lib/school/selection";
 
 const buildYouTubeLink = (videoId: string | undefined) => `https://youtu.be/${videoId}`;
 
 const LESSON_KEY = "lesson";
 const COURSE_KEY = "course";
-const DEFAULT_SLUG = "fish";
 
 export default function SchoolPage() {
   const router = useRouter();
+  const reducedMotion = useReducedMotion();
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const slug = searchParams.get(LESSON_KEY);
   const courseParam = searchParams.get(COURSE_KEY);
-  console.debug("🔎", { courseParam });
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
-  const [viewStatus, setViewStatus] = useState<"none" | "videoModal" | "loading">("loading");
 
   const courses = getCourses();
-  const [course, setCourse] = useState<Course>(Course.Genesis);
 
   const playerRef = useRef(null);
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const { t, i18n } = useTranslation("school");
+  const { t } = useTranslation("school");
   const { t: tUI } = useTranslation("ui");
   const { t: tEn } = useTranslation("school", { lng: "en" });
   const curriculums = (t("school.curriculums", { returnObjects: true }) as Curriculum) ?? {};
   const enCurriculums = (tEn("school.curriculums", { returnObjects: true }) as Curriculum) ?? {};
 
-  // Genesis
-  const genesisLessons = curriculums.genesis.lessons ?? [];
-  const enGenesisLessons = enCurriculums.genesis.lessons ?? [];
-  const renderGenesisLessons = genesisLessons.map((lesson, index) => {
-    return {
-      ...lesson,
-      slug: toSlug(enGenesisLessons[index].title),
-    };
-  });
-
-  // Characters
-  const charatersLessons = curriculums.characters.lessons ?? [];
-  const enCharatersLessons = enCurriculums.characters.lessons ?? [];
-  const renderCharactersLessons = charatersLessons.map((lesson, index) => {
-    return {
-      ...lesson,
-      slug: toSlug(enCharatersLessons[index].title),
-    };
-  });
-
-  const lessons = {
-    [Course.Genesis]: renderGenesisLessons,
-    [Course.Characters]: renderCharactersLessons,
-  };
-
+  const lessons = createSchoolLessons(curriculums, enCurriculums);
+  const { course, lesson: selectedLesson } = resolveSchoolSelection(lessons, { course: courseParam, lesson: slug });
   const selectedLessons = lessons[course];
 
-  // set default lesson
-  useEffect(() => {
-    let selected;
-    switch (courseParam) {
-      case Course.Characters:
-        selected =
-          renderCharactersLessons.find((lesson) => lesson.slug === slug) ??
-          renderCharactersLessons[0];
-        break;
-      case Course.Genesis:
-        selected =
-          renderGenesisLessons.find((lesson) => lesson.slug === slug) ?? renderGenesisLessons[0];
-        break;
-      default:
-        selected =
-          renderGenesisLessons.find((lesson) => lesson.slug === slug) ?? renderGenesisLessons[0];
-    }
-
-    setSelectedLesson(selected);
-  }, []);
-
-  useEffect(() => {
-    if (!courseParam) return;
-    setCourse(courseParam as Course);
-  }, []);
+  const selectLesson = useCallback((nextCourse: Course, lesson: Lesson) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(COURSE_KEY, nextCourse);
+    params.set(LESSON_KEY, lesson.slug);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [pathname, router, searchParams]);
 
   useEffect(() => {
     if (!selectedLesson) return;
@@ -101,34 +56,12 @@ export default function SchoolPage() {
     const selectedEpisode = document.getElementById(selectedLesson.id);
 
     selectedEpisode?.scrollIntoView({
-      behavior: "smooth",
+      behavior: reducedMotion ? "auto" : "smooth",
       block: "end",
     });
-  }, [selectedLesson]);
+  }, [course, selectedLesson.id, reducedMotion]);
 
 
-
-  /** * @see https://nextjs.org/docs/app/api-reference/functions/use-search-params#updating-searchparams
-   */
-  const createQueryString = useCallback(
-    (inputParams: [name: string, value: string][]) => {
-      const params = new URLSearchParams(searchParams.toString());
-      for (const [name, value] of inputParams) {
-        params.set(name, value);
-      }
-
-      return params.toString();
-    },
-    [searchParams]
-  );
-
-  if (renderGenesisLessons.length === 0) {
-    console.error(
-      "❌",
-      `renderLessons.length: ${renderGenesisLessons.length}, selectedLesson: ${selectedLesson}`
-    );
-    return null;
-  }
 
   const embedSrc = `https://www.youtube.com/embed/${selectedLesson?.videoId}`;
   const watchLink = buildYouTubeLink(selectedLesson?.videoId);
@@ -145,40 +78,14 @@ export default function SchoolPage() {
           style={{ width: "100%", height: "auto", aspectRatio: "16/9" }}
           src={embedSrc}
           controls
-          onReady={() => {
-            setViewStatus("none");
-          }}
-          onEnded={() => {
-            if (!selectedLesson) return;
-            let nextIndex = 0;
-            const currentIndex = selectedLessons.findIndex(
-              (lesson) => lesson.id === selectedLesson.id
-            );
-            if (currentIndex === selectedLessons.length - 1) {
-              nextIndex = 0;
-            } else {
-              nextIndex = currentIndex + 1;
-            }
-
-            setSelectedLesson(selectedLessons.at(nextIndex)!);
-          }}
+          onEnded={() => selectLesson(course, adjacentSchoolLesson(selectedLessons, selectedLesson.id, "next"))}
         />
 
         <div className="relative">
           <div className="flex flex-row mx-auto gap-x-5 max-w-32">
             <Button
               disabled={selectedLessons.length === 1}
-              onClick={() => {
-                if (!selectedLesson) return;
-                const currentIndex = selectedLessons.findIndex(
-                  (lesson) => lesson.id === selectedLesson.id
-                );
-                if (currentIndex === -1) return;
-                const nextIndex =
-                  (currentIndex - 1 + selectedLessons.length) % selectedLessons.length;
-
-                setSelectedLesson(selectedLessons[nextIndex]);
-              }}
+              onClick={() => selectLesson(course, adjacentSchoolLesson(selectedLessons, selectedLesson.id, "previous"))}
               size="icon"
               aria-label={tUI("actions.previous")}
             >
@@ -186,16 +93,7 @@ export default function SchoolPage() {
             </Button>
             <Button
               disabled={selectedLessons.length === 1}
-              onClick={() => {
-                if (!selectedLesson) return;
-                const currentIndex = selectedLessons.findIndex(
-                  (lesson) => lesson.id === selectedLesson.id
-                );
-                if (currentIndex === -1) return;
-                const nextIndex = (currentIndex + 1) % selectedLessons.length;
-
-                setSelectedLesson(selectedLessons[nextIndex]);
-              }}
+              onClick={() => selectLesson(course, adjacentSchoolLesson(selectedLessons, selectedLesson.id, "next"))}
               size="icon"
               aria-label={tUI("actions.next")}
             >
@@ -227,12 +125,12 @@ export default function SchoolPage() {
           </div>
           <div className="hidden overflow-hidden border shadow-xl h-fit lg:block rounded-3xl border-primary/20 bg-background/10 shadow-primary/20">
             <div className="w-full aspect-video">
-              <iframe
-                className="w-full h-full"
+              <ReactPlayer
+                style={{ width: "100%", height: "100%" }}
                 src={embedSrc}
-                title={t("school.playerTitle", { title: selectedLesson?.title })}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
+                title={t("school.playerTitle", { title: selectedLesson.title })}
+                controls
+                onEnded={() => selectLesson(course, adjacentSchoolLesson(selectedLessons, selectedLesson.id, "next"))}
               />
             </div>
           </div>
@@ -243,24 +141,11 @@ export default function SchoolPage() {
             defaultValue={courses[0]}
             className="w-full"
             value={course}
-            onValueChange={(v) => {
-              const nextCourse = v as Course;
-              const nextLesson = lessons[nextCourse][0]?.slug ?? DEFAULT_SLUG;
-
-              setCourse(nextCourse);
-              setSelectedLesson(lessons[nextCourse][0] ?? null);
-
-              router.replace(
-                pathname +
-                  "?" +
-                  createQueryString([
-                    [COURSE_KEY, nextCourse],
-                    [LESSON_KEY, nextLesson],
-                  ]),
-                {
-                  scroll: false,
-                }
-              );
+            onValueChange={(value) => {
+              if (!isSchoolCourse(value)) throw new Error("School tab selected an unsupported course");
+              const firstLesson = lessons[value][0];
+              if (!firstLesson) throw new Error("Selected school curriculum has no lessons");
+              selectLesson(value, firstLesson);
             }}
           >
             <TabsList className="flex mx-auto w-fit">
@@ -284,24 +169,11 @@ export default function SchoolPage() {
                       role="button"
                       tabIndex={0}
                       aria-pressed={isActive}
-                      onClick={() => {
-                        setSelectedLesson(lesson);
-                        router.replace(
-                          pathname +
-                            "?" +
-                            createQueryString([
-                              [COURSE_KEY, course],
-                              [LESSON_KEY, lesson.slug],
-                            ]),
-                          {
-                            scroll: false,
-                          }
-                        );
-                      }}
+                      onClick={() => selectLesson(course, lesson)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
-                          setSelectedLesson(lesson);
+                          selectLesson(course, lesson);
                         }
                       }}
                       className={`border bg-background/90 transition-all focus-visible:ring-2 focus-visible:ring-primary ${
