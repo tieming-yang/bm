@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, use } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   X,
@@ -366,7 +367,11 @@ export function ImageGallery({
                                 className="relative overflow-hidden"
                               >
                                 {showContentBlock(index) && (
-                                  <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
+                                  <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-background/90 p-5 text-center backdrop-blur-md">
+                                    <p className="text-lg font-semibold">{t("controls.lockedTitle")}</p>
+                                    <p className="max-w-sm text-sm text-muted-foreground">{t("controls.lockedDescription")}</p>
+                                    <Button asChild><Link href="/glory-share">{t("controls.membershipAction")}</Link></Button>
+                                  </div>
                                 )}
                                 {!showContentBlock(index) && !imageStates[artwork.id] && <div className="pointer-events-none absolute inset-0 flex items-center justify-center"><Loading isInlined /></div>}
                                 {!showContentBlock(index) && imageStates[artwork.id] === "error" && (

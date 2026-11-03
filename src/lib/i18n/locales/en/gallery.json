@@ -59,6 +59,9 @@
   },
   "loadMore": "Load More",
   "controls": {
+    "lockedTitle": "View the full artwork",
+    "lockedDescription": "This artwork is available to Glory Share members. You can keep browsing or explore membership.",
+    "membershipAction": "Explore Glory Share",
     "showVideo": "Show video",
     "showImage": "Show artwork",
     "playNarration": "Play narration",

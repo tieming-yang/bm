@@ -59,6 +59,9 @@
   },
   "loadMore": "載入更多",
   "controls": {
+    "lockedTitle": "欣賞完整畫作",
+    "lockedDescription": "這幅完整畫作開放榮耀份額會員欣賞。您可以繼續瀏覽，或了解會員方案。",
+    "membershipAction": "了解榮耀份額",
     "showVideo": "觀看影片",
     "showImage": "觀看畫作",
     "playNarration": "播放旁白",
