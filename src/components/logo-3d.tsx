@@ -21,12 +21,12 @@ export default function Logo3D() {
   const touchGestureRef = useRef<"pending" | "dragging" | "scrolling">("pending");
 
   if (reducedMotion) {
-    return <div className="flex h-svh items-center justify-center bg-background px-8"><img src={LOGO_URL} alt="" className="max-h-[65svh] max-w-full object-contain" /></div>;
+    return <div className="flex h-full w-full items-center justify-center p-8"><img src={LOGO_URL} alt="" className="h-full w-full object-contain" /></div>;
   }
 
   return (
     <div
-      className="relative h-svh w-full touch-pan-y overflow-hidden bg-[#08070c]"
+      className="relative h-full w-full touch-pan-y overflow-hidden"
       onPointerDown={(event) => {
         const pointer = {
           x: event.clientX,
@@ -97,19 +97,6 @@ export default function Logo3D() {
         };
       }}
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(135deg,#08070c_0%,#241142_34%,#172554_68%,#075985_100%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-55 mix-blend-screen bg-[linear-gradient(115deg,transparent_0%,rgba(168,85,247,0.38)_24%,transparent_43%,rgba(59,130,246,0.34)_62%,rgba(14,165,233,0.3)_84%,transparent_100%)]"
-      />
-      <div aria-hidden="true" className="absolute inset-0 bg-black/20 backdrop-blur-3xl" />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,7,12,0.18)_0%,transparent_35%,rgba(8,7,12,0.48)_100%)]"
-      />
       <Canvas className="relative z-10" camera={{ position: [0, 0, 7], fov: 45 }}>
         <LogoParticleObject imageUrl={LOGO_URL} rotationTargetRef={rotationTargetRef} />
       </Canvas>
