@@ -1,3 +1,10 @@
+:global(html):has(.screen),
+:global(body):has(.screen) {
+  background-color: #eee9de;
+  /* Override the site's inline dark scheme only while the greeting is present. */
+  color-scheme: light !important;
+}
+
 .screen {
   position: relative;
   display: grid;
