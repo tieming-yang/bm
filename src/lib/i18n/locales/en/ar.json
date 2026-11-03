@@ -36,12 +36,16 @@
             "description": "Once the 3D Bible character appears, interact and continue exploring the story."
           }
         ]
-      }
+      },
+      "loadError": "AR experiences could not be loaded."
     },
     "viewer": {
       "actions": {
         "tryAgain": "Try Again",
-        "rescan": "Rescan"
+        "rescan": "Rescan",
+        "showModel": "Show 3D model",
+        "showVideo": "Show video",
+        "toggleTitleLanguage": "Switch the character name and narration language"
       },
       "errors": {
         "missingAssetUrls": "Missing target or model URL."

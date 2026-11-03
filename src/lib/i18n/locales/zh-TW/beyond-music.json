@@ -29,10 +29,27 @@
       },
       "shareFailed": {
         "title": "無法複製連結"
+      },
+      "play": "播放",
+      "pause": "暫停",
+      "previous": "上一首",
+      "next": "下一首",
+      "shuffle": "隨機播放",
+      "position": "播放進度",
+      "loading": "音訊載入中…",
+      "playFailed": "無法開始播放，請再試一次。",
+      "audioError": "無法載入音訊。",
+      "seekTo": "從 {{time}} 開始播放",
+      "repeat": {
+        "none": "關閉循環播放",
+        "single": "單曲循環播放",
+        "all": "全部循環播放"
       }
     },
     "genres": {
       "others": "其他"
-    }
+    },
+    "empty": "目前尚無可播放的音樂。",
+    "notFound": "找不到這首歌曲。"
   }
 }

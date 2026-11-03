@@ -21,9 +21,10 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
 import { useRouter, useSearchParams } from "next/navigation";
-import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 import { sendGAEvent } from "@next/third-parties/google";
 import useTranslation from "@/hooks/use-translation";
+import { useReducedMotion } from "framer-motion";
+import { ContentState } from "@/components/ui/content-state";
 
 type AudioPlayerProps = {
   song: SongType;
@@ -68,6 +69,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
   const { song } = props;
   const { t } = useTranslation("beyond-music");
   const router = useRouter();
+  const reducedMotion = useReducedMotion();
   const searchParams = useSearchParams();
   const maybeSelectedLoopMode = searchParams.get("lm");
   const maybeIsShuffled = searchParams.get("s");
@@ -89,6 +91,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
   const [playerStatus, setPlayerStatus] = useState<PlayerStatue>("loading");
   const [currentTimestamp, setCurrentTimestamp] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [audioError, setAudioError] = useState(false);
   const [loopMode, setLoopMode] = useState<LoopMode>(() =>
     validateLoopMode(maybeSelectedLoopMode) ? maybeSelectedLoopMode : "none"
   );
@@ -101,7 +104,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
   const progress = duration ? (currentTimestamp / duration) * 100 : 0;
 
-  const lyrics = Song.formatLyrics(song.lyrics);
+  const lyrics = useMemo(() => Song.formatLyrics(song.lyrics), [song.lyrics]);
   const currentSongIndex = songs && songs.findIndex((_song) => _song.title === song.title);
   const shuffledSongs = songs && isShuffled ? Song.toShuffled(songs) : songs;
   const nextSong =
@@ -123,7 +126,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
       if (currentTimestamp >= here && currentTimestamp < next) return i;
     }
     return -1;
-  }, [song, currentTimestamp]);
+  }, [lyrics, currentTimestamp]);
 
   useEffect(() => {
     if (!song || activeLineIndex < 0 || !lyricsContainerRef.current) return;
@@ -132,10 +135,10 @@ export default function AudioPlayer(props: AudioPlayerProps) {
     const el = document.getElementById(idFor(sec)) as HTMLLIElement | null;
     if (el) {
       isProgrammaticScroll.current = true;
-      el.scrollIntoView({ block: "center", behavior: "smooth" });
+      el.scrollIntoView({ block: "center", behavior: reducedMotion ? "auto" : "smooth" });
       setTimeout(() => (isProgrammaticScroll.current = false), 800);
     }
-  }, [song, activeLineIndex]);
+  }, [song, lyrics, activeLineIndex, reducedMotion]);
 
   const handleShareCurrentUrl = async () => {
     try {
@@ -157,8 +160,14 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         loop={loopMode === "single"}
         onLoadedMetadata={() => {
           if (!audioRef.current) return;
-          setPlayerStatus("play");
+          setPlayerStatus(audioRef.current.paused ? "pause" : "play");
           setDuration(audioRef.current.duration);
+        }}
+        onPlay={() => setPlayerStatus("play")}
+        onPause={() => setPlayerStatus("pause")}
+        onError={() => {
+          setAudioError(true);
+          setPlayerStatus("pause");
         }}
         onTimeUpdate={() => {
           if (!audioRef.current) return;
@@ -176,45 +185,41 @@ export default function AudioPlayer(props: AudioPlayerProps) {
         }}
       ></audio>
 
+      {audioError && (
+        <ContentState kind="error" title={t("beyondMusic.player.audioError")} onRetry={() => {
+          setAudioError(false);
+          setPlayerStatus("loading");
+          audioRef.current?.load();
+        }} />
+      )}
       <ul
         ref={lyricsContainerRef}
-        className="flex flex-col font-serif text-xl text-gray-400 gap-y-3"
+        className="flex w-full max-w-3xl flex-col px-4 text-xl text-muted-foreground gap-y-3"
       >
         {lyrics.map((lyric, index) => {
           const { timestamp, text } = lyric;
           const isHighlight = index === activeLineIndex;
 
-          return text === "intro" ? (
-            <Music
-              key={timestamp}
-              id={idFor(timestamp)}
-              onClick={() => {
-                if (!audioRef.current) return;
-
-                audioRef.current.currentTime = timestamp;
-                audioRef.current.play();
-                setPlayerStatus("play");
-              }}
-              className={`transition-all duration-300 size-7 ${
-                isHighlight ? "text-white animate-pulse" : "text-white/50"
-              }`}
-            />
-          ) : (
-            <li
-              key={timestamp}
-              id={idFor(timestamp)}
-              className={`transition-all duration-500 ${
-                isHighlight ? "text-primary-foreground-gradient font-bold" : "text-white/50"
-              }`}
-              onClick={() => {
-                if (!audioRef.current) return;
-
-                audioRef.current.currentTime = timestamp;
-                audioRef.current.play();
-                setPlayerStatus("play");
-              }}
-            >
-              {text}
+          return (
+            <li key={timestamp} id={idFor(timestamp)}>
+              <button
+                type="button"
+                className={`min-h-11 rounded-xl px-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  isHighlight ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
+                }`}
+                aria-label={t("beyondMusic.player.seekTo", { time: Song.formatTimestamp(timestamp) })}
+                onClick={() => {
+                  if (!audioRef.current) return;
+                  audioRef.current.currentTime = timestamp;
+                  void audioRef.current.play().catch((error) => {
+                    console.error("Audio playback failed", error);
+                    toast.error(t("beyondMusic.player.playFailed"));
+                    setPlayerStatus("pause");
+                  });
+                }}
+              >
+                {text === "intro" ? <Music className="size-7" aria-hidden="true" /> : text}
+              </button>
             </li>
           );
         })}
@@ -225,6 +230,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           <div className="flex justify-end">
             <Button
               className="text-white rounded-full gap-2 border-white/20 bg-black/30 backdrop-blur-md hover:bg-black/45"
+              aria-label={t("beyondMusic.player.shareUrl")}
               onClick={handleShareCurrentUrl}
               type="button"
               variant="outline"
@@ -246,6 +252,9 @@ export default function AudioPlayer(props: AudioPlayerProps) {
               background: `linear-gradient(to right, #f1d7a4 0%, #f1d7a4 ${progress}%, #d1d5db ${progress}%, #d1d5db 100%)`,
             }}
             type="range"
+            aria-label={t("beyondMusic.player.position")}
+            aria-valuetext={`${formattedTimestamp} / ${formattedDuration}`}
+            disabled={isLoading || audioError}
             min={0}
             max={duration ?? 0}
             step={1}
@@ -279,12 +288,14 @@ export default function AudioPlayer(props: AudioPlayerProps) {
 
             <Button
               variant={"default"}
-              className={`${!isShuffled && "bg-primary/50"} size-10 border-none rounded-full`}
+              className={`${!isShuffled && "bg-primary/50"} size-11 border-none rounded-full`}
+              aria-label={t("beyondMusic.player.shuffle")}
+              aria-pressed={isShuffled}
               onClick={() => {
                 setIsShuffled((prev) => !prev);
               }}
             >
-              {isShuffled ? <ShuffleIcon /> : <ShuffleIcon className="text-white/40" />}
+              {isShuffled ? <ShuffleIcon /> : <ShuffleIcon className="opacity-50" />}
             </Button>
           </div>
 
@@ -292,7 +303,9 @@ export default function AudioPlayer(props: AudioPlayerProps) {
           <div className="flex items-center justify-center gap-x-3 sm:gap-x-7">
             <Button
               variant={"default"}
-              className="border-none rounded-full size-10"
+              className="border-none rounded-full size-11"
+              aria-label={t("beyondMusic.player.previous")}
+              disabled={!prevSong}
               onClick={() => {
                 if (!prevSong) return;
                 router.push(`/beyond-music/${encodeURIComponent(prevSong.title)}${playerSettings}`);
@@ -303,15 +316,20 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             <Button
               variant={"default"}
               className="relative border-none rounded-full size-15"
+              aria-label={playerStatus === "play" ? t("beyondMusic.player.pause") : t("beyondMusic.player.play")}
+              disabled={isLoading || audioError}
               onClick={() => {
                 if (!audioRef.current || playerStatus === "loading") {
-                  toast.warning("Loading");
+                  toast.warning(t("beyondMusic.player.loading"));
                   return;
                 }
 
                 if (playerStatus === "pause") {
-                  audioRef.current.play();
-                  setPlayerStatus("play");
+                  void audioRef.current.play().catch((error) => {
+                    console.error("Audio playback failed", error);
+                    toast.error(t("beyondMusic.player.playFailed"));
+                    setPlayerStatus("pause");
+                  });
                 } else if (playerStatus === "play") {
                   audioRef.current.pause();
                   setPlayerStatus("pause");
@@ -327,7 +345,9 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             </Button>
             <Button
               variant={"default"}
-              className="border-none rounded-full size-10"
+              className="border-none rounded-full size-11"
+              aria-label={t("beyondMusic.player.next")}
+              disabled={!nextSong}
               onClick={() => {
                 if (!nextSong) return;
                 router.push(`/beyond-music/${encodeURIComponent(nextSong.title)}${playerSettings}`);
@@ -343,7 +363,9 @@ export default function AudioPlayer(props: AudioPlayerProps) {
               variant={"default"}
               className={`${
                 loopMode === "none" && "bg-primary/50"
-              } size-10 border-none rounded-full`}
+              } size-11 border-none rounded-full`}
+              aria-label={t(`beyondMusic.player.repeat.${loopMode}`)}
+              aria-pressed={loopMode !== "none"}
               onClick={() => {
                 if (loopMode === "none") {
                   setLoopMode("single");
@@ -355,7 +377,7 @@ export default function AudioPlayer(props: AudioPlayerProps) {
               }}
             >
               {loopMode === "none" ? (
-                <RepeatIcon className="text-white/40" />
+                <RepeatIcon className="opacity-50" />
               ) : loopMode === "single" ? (
                 <Repeat1Icon />
               ) : (

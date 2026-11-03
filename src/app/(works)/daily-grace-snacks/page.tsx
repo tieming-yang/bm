@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import useTranslation from "@/hooks/use-translation";
 import Intro from "@/components/intro";
+import { ContentState } from "@/components/ui/content-state";
 
 type Episode = {
   number: string;
@@ -68,6 +69,7 @@ export default function DailyGraceSnacksPage() {
     data: playlistVideos = [],
     isLoading: isLoadingVideos,
     isError: isPlaylistError,
+    refetch,
   } = useQuery<PlaylistVideo[]>({
     queryKey: ["daily-grace-snacks-playlist", playlistId, apiKey],
     queryFn: async () => {
@@ -89,7 +91,7 @@ export default function DailyGraceSnacksPage() {
       const data = (await response.json()) as YouTubePlaylistResponse;
       const items =
         data.items
-          ?.map((item, index) => {
+          ?.map((item, index): PlaylistVideo | null => {
             const snippet = item.snippet ?? {};
             const resource = snippet.resourceId ?? {};
             const videoId = resource.videoId ?? item.contentDetails?.videoId;
@@ -160,13 +162,13 @@ export default function DailyGraceSnacksPage() {
   }, [activeVideoId, playlistId]);
 
   return (
-    <div className="container relative z-50 px-4 py-16 mx-auto space-y-16">
+    <div className="container relative px-4 py-16 mx-auto space-y-16">
       <section className="grid gap-10 lg:grid-cols-2">
         <div className="space-y-6">
           <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm uppercase tracking-[0.2em] text-primary">
             {t("dailyGraceSnacks.badge")}
           </span>
-          <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
+          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
             {t("dailyGraceSnacks.hero.title")}
           </h1>
           <Intro i18nKey="dailyGrace.intro" />
@@ -192,13 +194,17 @@ export default function DailyGraceSnacksPage() {
             <iframe
               className="w-full h-full"
               src={embedSrc}
-              title="Daily Grace Snacks Playlist"
+              title={t("dailyGraceSnacks.hero.title")}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           </div>
         </div>
       </section>
+
+      {isPlaylistError && (
+        <ContentState kind="error" title={statusError} onRetry={() => { void refetch(); }} />
+      )}
 
       <section className="space-y-6">
         <div className="text-center space-y-3">

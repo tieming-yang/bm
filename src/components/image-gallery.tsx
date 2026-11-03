@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { UseEmblaCarouselType } from "embla-carousel-react";
 import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import { ContentState } from "./ui/content-state";
 import type {
   BibleArtworksLocale,
   BibleArtworksCanonical,
@@ -80,7 +82,8 @@ export function ImageGallery({
   const { t: booksT } = useTranslation("books");
   const { t: tGloryShare } = useTranslation("glory-share");
   const { profile, isProfileLoading } = useProfile();
-  const [isSelectedArtworkLoading, setIsSelectedArtworkLoading] = useState(true);
+  const [imageStates, setImageStates] = useState<Record<string, "loaded" | "error">>({});
+  const [imageAttempts, setImageAttempts] = useState<Record<string, number>>({});
 
   const localeArtworks = BibleArtworks.toLocaleScripture(artworks, currentLanguage);
   const groupedBibleArtworks = BibleArtworks.toGrouped(localeArtworks);
@@ -183,16 +186,6 @@ export function ImageGallery({
   //   return () => observer.disconnect();
   // }, [infiniteScroll, displayCount, bibleArtworks.length]);
 
-  // Body scroll lock when lightbox is open
-  useEffect(() => {
-    if (!selectedArtworkId) return;
-
-    document.body.style.overflow = selectedArtworkId ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [selectedArtworkId]);
-
   // Event handlers
   const handleClose = () => {
     if (urlUpdatingRef.current) return;
@@ -286,20 +279,21 @@ export function ImageGallery({
   return (
     <>
       {/* Gallery Grid */}
+      {filteredBibleArtworks.length === 0 && <ContentState kind="empty" title={t("bibleGallery.empty")} />}
       <ul className="flex flex-col w-full gap-y-10">
         {filteredBibleArtworks.map(([book, artworks]) => (
           <li key={artworks[0].id} className="flex flex-col gap-y-3">
             {/* <a href={`#${book}`} className="anchor"> */}
             <h2
               id={book}
-              className="font-mono text-sm font-semibold md:text-2xl text-primary md:scroll-mt-20"
+              className="font-display text-xl font-semibold md:text-2xl text-primary md:scroll-mt-20"
             >
               {booksT(book)}
             </h2>
             {/* </a> */}
 
             {/* Artworks */}
-            <ul className="w-full font-mono grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
+            <ul className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-7">
               {artworks.map((artwork, index) => (
                 <li key={artwork.id} className="cursor-pointer group">
                   <Thumbnail
@@ -338,15 +332,13 @@ export function ImageGallery({
 
       {/* Lightbox using Carousel */}
       {selectedArtwork && (
-        <div className="fixed inset-0 flex flex-col md:px-3 z-100 md:mt-12 md:items-start">
-          {/* Backdrop with close handler */}
-          <div className="absolute inset-0 h-dvh bg-black/50" onClick={handleClose} />
-
-          {/* Lightbox Content */}
-          <div
-            className="relative z-101 h-[calc(100dvh-5rem)] md:h-[calc(100dvh-8rem)] max-w-9xl w-full bg-background/70 backdrop-blur-xl rounded-b-3xl overflow-hidden border border-primary/10 flex flex-col"
-            onClick={(e) => e.stopPropagation()}
+        <Dialog open onOpenChange={(open) => { if (!open) handleClose(); }}>
+          <DialogContent
+            showCloseButton={false}
+            aria-describedby={undefined}
+            className="flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-[calc(100%-1rem)] max-w-7xl flex-col gap-0 overflow-hidden rounded-3xl border-primary/10 bg-background/95 p-0 backdrop-blur-xl"
           >
+            <DialogTitle className="sr-only">{selectedArtwork.title ?? `${booksT(selectedArtwork.book)} ${selectedArtwork.section}`}</DialogTitle>
             <div className="w-full overflow-y-auto grow">
               <div className="flex flex-col h-full gap-6 justify-center-safe">
                 <div className="flex flex-col w-full">
@@ -376,12 +368,22 @@ export function ImageGallery({
                                 {showContentBlock(index) && (
                                   <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
                                 )}
-                                {!showContentBlock(index) && isSelectedArtworkLoading && (
-                                  <Loading isInlined show />
+                                {!showContentBlock(index) && !imageStates[artwork.id] && <div className="pointer-events-none absolute inset-0 flex items-center justify-center"><Loading isInlined /></div>}
+                                {!showContentBlock(index) && imageStates[artwork.id] === "error" && (
+                                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-background">
+                                    <ContentState kind="error" title={t("controls.imageError")} onRetry={() => {
+                                      setImageStates((states) => {
+                                        const { [artwork.id]: failed, ...remaining } = states;
+                                        return remaining;
+                                      });
+                                      setImageAttempts((attempts) => ({ ...attempts, [artwork.id]: (attempts[artwork.id] ?? 0) + 1 }));
+                                    }} />
+                                  </div>
                                 )}
                                 <Image
+                                  key={`${artwork.id}-${imageAttempts[artwork.id] ?? 0}`}
                                   src={artwork.imageUrl}
-                                  alt={"Slow Internet Connecting, Please Try It Again"}
+                                  alt={artwork.title ?? `${booksT(artwork.book)} ${artwork.section}`}
                                   fill
                                   preload
                                   className="object-contain"
@@ -395,8 +397,9 @@ export function ImageGallery({
                                       setLightboxCarouselInitialized(true);
                                     }
 
-                                    setIsSelectedArtworkLoading(false);
+                                    setImageStates((states) => ({ ...states, [artwork.id]: "loaded" }));
                                   }}
+                                  onError={() => setImageStates((states) => ({ ...states, [artwork.id]: "error" }))}
                                 />
                               </AspectRatio>
                             </CarouselItem>
@@ -416,7 +419,7 @@ export function ImageGallery({
                     <div className="flex flex-col px-2 gap-4 md:px-0">
                       {/* Title and Reference */}
                       <section className="flex items-start justify-between gap-4 md:pt-3 md:px-3">
-                        <h3 className="font-serif font-medium underline underline-offset-2">
+                        <h3 className="font-medium underline underline-offset-2">
                           {t("bibleGallery.properties.scripture") || "Scripture"}
                         </h3>
                         <span className="text-xs md:text-lg text-muted-foreground">
@@ -459,7 +462,8 @@ export function ImageGallery({
                     <Button
                       type="button"
                       variant="ghost"
-                      className="size-10"
+                      size="icon"
+                      aria-label={displayMode === "image" ? t("controls.showVideo") : t("controls.showImage")}
                       onClick={() => {
                         if (displayMode === "image") {
                           setDisplayMode("video");
@@ -471,15 +475,21 @@ export function ImageGallery({
                       {displayMode === "image" ? <ImagePlayIcon /> : <ImageIcon />}
                     </Button>
                   )}
-                  <Button
+                  {currentLanguage.startsWith("zh") && selectedArtwork.voUrl && <Button
                     type="button"
                     variant="ghost"
+                    size="icon"
+                    className="relative"
+                    aria-label={playerStatus === "play" ? t("controls.pauseNarration") : t("controls.playNarration")}
                     disabled={playerStatus === "loading"}
                     onClick={() => {
                       if (playerStatus === "pause") {
                         if (!voPlayerRef.current) return;
-                        voPlayerRef.current.play();
-                        setPlayerStatus("play");
+                        void voPlayerRef.current.play().catch((error) => {
+                          console.error("Narration playback failed", error);
+                          toast.error(t("controls.audioError"));
+                          setPlayerStatus("pause");
+                        });
                       } else if (playerStatus === "play") {
                         if (!voPlayerRef.current) return;
                         voPlayerRef.current.pause();
@@ -491,13 +501,14 @@ export function ImageGallery({
                     <SpeechIcon
                       className={`${playerStatus === "pause" ? "text-gray-400" : "text-white animate-pulse"}  `}
                     />
-                  </Button>
+                  </Button>}
                 </div>
 
                 <div className="flex items-center justify-between gap-3">
                   <Button
                     type="button"
                     variant="ghost"
+                    size="icon"
                     onClick={() => {
                       if (!selectedArtwork.videoUrl && displayMode === "video") {
                         setDisplayMode("image");
@@ -506,11 +517,12 @@ export function ImageGallery({
                     }}
                     disabled={!emblaApi?.canScrollPrev()}
                   >
-                    <ChevronLeft className="size-12" /> <span className="sr-only">Previous</span>
+                    <ChevronLeft className="size-6" /> <span className="sr-only">{t("controls.previous")}</span>
                   </Button>
                   <Button
                     type="button"
                     variant="ghost"
+                    size="icon"
                     onClick={() => {
                       if (!selectedArtwork.videoUrl && displayMode === "video") {
                         setDisplayMode("image");
@@ -519,17 +531,17 @@ export function ImageGallery({
                     }}
                     disabled={!emblaApi?.canScrollNext()}
                   >
-                    <ChevronRight className="size-12" />
-                    <span className="sr-only">Next</span>
+                    <ChevronRight className="size-6" />
+                    <span className="sr-only">{t("controls.next")}</span>
                   </Button>
                 </div>
-                <Button className="basis-0" type="button" variant="ghost" onClick={handleClose}>
+                <Button size="icon" type="button" variant="ghost" onClick={handleClose}>
                   <X />
-                  <span className="sr-only">Close</span>
+                  <span className="sr-only">{t("controls.close")}</span>
                 </Button>
               </div>
             </section>
-          </div>
+          </DialogContent>
 
           {currentLanguage.startsWith("zh") && (
             <div className="hidden pb-24 md:fixed md:left-5 md:bottom-25 z-1000 bg-black/70 backdrop-blur-3xl md:bg-transparent md:backdrop-blur-none md:pb-0">
@@ -543,15 +555,14 @@ export function ImageGallery({
                   margin: ".5rem auto 0",
                   padding: "0",
                 }}
-                onLoadedMetadata={() => {
-                  if (!voPlayerRef.current) return;
-                  console.debug("🔎", "loaded audio data");
-                  setPlayerStatus("pause");
-                }}
+                onLoadedMetadata={() => setPlayerStatus("pause")}
+                onPlay={() => setPlayerStatus("play")}
+                onPause={() => setPlayerStatus("pause")}
+                onError={() => setPlayerStatus("pause")}
               ></audio>
             </div>
           )}
-        </div>
+        </Dialog>
       )}
 
       {/* Donation Sheet */}
@@ -574,10 +585,12 @@ function Thumbnail({
   tGloryShare: TFunction<string, undefined>;
 }) {
   return (
-    <AspectRatio
-      ratio={Config.aspectRatio}
-      className="relative overflow-hidden shadow-xl cursor-pointer group"
-      onClick={() => {
+    <button
+      type="button"
+      aria-label={artwork.title ?? artwork.section}
+      className="relative block w-full overflow-hidden rounded-2xl text-left shadow-xl group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      onClick={(event) => {
+        event.currentTarget.focus({ preventScroll: true });
         if (isBlur) {
           toast.info(tGloryShare("gallary.joinToEnjoyArtwork"), {
             action: {
@@ -590,13 +603,14 @@ function Thumbnail({
         onClick(artwork.id);
       }}
     >
+      <AspectRatio ratio={Config.aspectRatio}>
       {isBlur && (
         <div className="absolute inset-0 z-50 pointer-events-none bg-black/20 backdrop-blur-md" />
       )}
 
       <Image
         src={artwork.imageUrl}
-        alt={artwork.title || "Bible Artwork"}
+        alt={artwork.title ?? artwork.section}
         fill
         className={`object-cover transition-transform duration-500 ${
           !isBlur && "group-hover:scale-110"
@@ -605,6 +619,7 @@ function Thumbnail({
         placeholder="blur"
         blurDataURL="/placeholders/blur-noise-placeholder.webp"
       />
-    </AspectRatio>
+      </AspectRatio>
+    </button>
   );
 }

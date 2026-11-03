@@ -36,12 +36,16 @@
             "description": "看見立體聖經人物後，即可開始互動並探索故事內容。"
           }
         ]
-      }
+      },
+      "loadError": "無法載入 AR 體驗。"
     },
     "viewer": {
       "actions": {
         "tryAgain": "再試一次",
-        "rescan": "重新掃描"
+        "rescan": "重新掃描",
+        "showModel": "觀看 3D 模型",
+        "showVideo": "觀看影片",
+        "toggleTitleLanguage": "切換人物名稱與旁白語言"
       },
       "errors": {
         "missingAssetUrls": "缺少辨識圖或模型網址。"

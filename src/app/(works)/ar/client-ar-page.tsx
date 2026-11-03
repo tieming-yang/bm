@@ -10,6 +10,7 @@ import { getR2URL } from "../../../utils/get-r2-path";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ContentState } from "@/components/ui/content-state";
 
 type ExperienceStep = {
   number: string;
@@ -26,30 +27,29 @@ export default function ClientARPage() {
   const {
     data: arData,
     isLoading: isARDataLoading,
-    error,
     isError,
+    refetch,
   } = useQuery({
     queryKey: QueryKey.ar,
     queryFn: readAR,
   });
 
+  if (isARDataLoading) return <Loading />;
   if (isError) {
-    console.error("❌", error);
+    return <ContentState kind="error" title={t("ar.page.loadError")} onRetry={() => { void refetch(); }} />;
   }
-
-  if (!arData) {
-    return null;
+  if (!arData?.length) {
+    return <ContentState kind="empty" title={t("ar.page.empty")} />;
   }
 
   return (
-    <main className="container relative z-50 flex flex-col px-4 py-16 mx-auto min-h-svh gap-7">
-      <Loading show={isARDataLoading} />
+    <div className="container relative flex flex-col px-4 py-16 mx-auto min-h-svh gap-7">
       <section>
-        <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
+        <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
           {t("ar.page.title")}
         </h1>
         <div className="py-10 text-center">
-          <p className="italic text-md md:text-2xl font-chinese text-primary-foreground-gradient">
+          <p className="italic text-md md:text-2xl text-primary-foreground-gradient">
             {t("ar.page.intro")}
           </p>
         </div>
@@ -60,10 +60,10 @@ export default function ClientARPage() {
               <p className="text-sm uppercase tracking-[0.4em] text-primary/70">
                 {t("ar.page.experience.badge")}
               </p>
-              <h2 className="text-3xl font-semibold text-balance font-chinese">
+              <h2 className="text-3xl font-semibold text-balance">
                 {t("ar.page.experience.title")}
               </h2>
-              <p className="max-w-2xl text-muted-foreground font-chinese">
+              <p className="max-w-2xl text-muted-foreground">
                 {t("ar.page.experience.description")}
               </p>
             </div>
@@ -77,8 +77,8 @@ export default function ClientARPage() {
                         {step.number}
                       </div>
                       <div className="space-y-2">
-                        <h3 className="text-lg font-semibold font-chinese">{step.title}</h3>
-                        <p className="text-sm leading-6 text-muted-foreground font-chinese">
+                        <h3 className="text-lg font-semibold">{step.title}</h3>
+                        <p className="text-sm leading-6 text-muted-foreground">
                           {step.description}
                         </p>
                       </div>
@@ -110,7 +110,7 @@ export default function ClientARPage() {
           </Button>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 

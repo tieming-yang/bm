@@ -3,6 +3,7 @@
 import { toast } from "sonner";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/loading";
+import { ContentState } from "@/components/ui/content-state";
 import logger from "@/utils/logger";
 import { Button } from "@/components/ui/button";
 import { useStableTranslation } from "@/hooks/use-translation";
@@ -46,6 +47,8 @@ export default function ARViewer({
   const { t, stableT } = useStableTranslation("ar");
   const hasAutoStartedRef = useRef(false);
   const [librariesReady, setLibrariesReady] = useState(false);
+  const [libraryError, setLibraryError] = useState(false);
+  const [libraryAttempt, setLibraryAttempt] = useState(0);
   const [started, setStarted] = useState(false);
   const [scanUiEnabled, setScanUiEnabled] = useState(true);
   const scanUiEnabledRef = useRef(true);
@@ -73,6 +76,7 @@ export default function ARViewer({
     let mounted = true;
 
     async function loadMindAr() {
+      setLibraryError(false);
       try {
         await import("aframe");
         await import("mind-ar/dist/mindar-image-aframe.prod.js");
@@ -82,7 +86,10 @@ export default function ARViewer({
         setStatus(stableT("ar.viewer.status.ready"));
       } catch (error) {
         console.error("Failed to load MindAR", error);
-        if (mounted) setStatus(stableT("ar.viewer.status.failedToLoadLibraries"));
+        if (mounted) {
+          setStatus(stableT("ar.viewer.status.failedToLoadLibraries"));
+          setLibraryError(true);
+        }
       }
     }
 
@@ -93,7 +100,7 @@ export default function ARViewer({
       removeMindArUiOverlays();
       stopCameraVideos(sceneRef.current?.parentElement);
     };
-  }, [stableT]);
+  }, [stableT, libraryAttempt]);
 
   const startAR = React.useCallback(async () => {
     setCameraError(false);
@@ -225,11 +232,16 @@ export default function ARViewer({
   const activeAudioZhURL =
     activeDataItem?.audioPathZh ? getR2URL(activeDataItem.audioPathZh) : undefined;
 
-  const isLoading = !librariesReady;
+  const isLoading = !librariesReady && !libraryError;
 
   return (
     <main className="fixed inset-0 z-50 overflow-hidden text-white bg-black">
-      <Loading show={isLoading} />
+      {isLoading && <div className="absolute inset-0 z-20 flex items-center justify-center bg-background"><Loading /></div>}
+      {libraryError && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-background">
+          <ContentState kind="error" title={t("ar.viewer.status.failedToLoadLibraries")} onRetry={() => setLibraryAttempt((attempt) => attempt + 1)} />
+        </div>
+      )}
       <div className="relative w-full overflow-hidden bg-transparent ar-camera-stage isolate h-dvh">
         {!started ? (
           <div className="flex flex-col items-center justify-center h-full px-6 text-center gap-4">
@@ -298,7 +310,7 @@ export default function ARViewer({
                 setScanUiEnabled(true);
                 scanUiEnabledRef.current = true;
                 setMindArScanningOverlay(true);
-                setStatus("reopen scanner");
+                setStatus(stableT("ar.viewer.status.pointAtTarget"));
               }}
             >
               {t("ar.viewer.actions.rescan")}

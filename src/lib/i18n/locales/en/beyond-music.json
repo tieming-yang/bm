@@ -29,10 +29,27 @@
       },
       "shareFailed": {
         "title": "Could not copy link"
+      },
+      "play": "Play",
+      "pause": "Pause",
+      "previous": "Previous song",
+      "next": "Next song",
+      "shuffle": "Shuffle",
+      "position": "Playback position",
+      "loading": "Loading audio…",
+      "playFailed": "Could not start audio. Please try again.",
+      "audioError": "Audio could not be loaded.",
+      "seekTo": "Play from {{time}}",
+      "repeat": {
+        "none": "Repeat off",
+        "single": "Repeat this song",
+        "all": "Repeat all songs"
       }
     },
     "genres": {
       "others": "Others"
-    }
+    },
+    "empty": "No music is available yet.",
+    "notFound": "This song could not be found."
   }
 }

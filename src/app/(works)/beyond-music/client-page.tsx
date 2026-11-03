@@ -5,8 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/utils/query-keys";
 import Song from "@/models/song";
 import Link from "next/link";
-import { toast } from "sonner";
 import Loading from "@/app/loading";
+import { ContentState } from "@/components/ui/content-state";
 import { sendGAEvent } from "@next/third-parties/google";
 import Intro from "@/components/intro";
 import ProtectedRoute from "@/components/protected-route";
@@ -19,21 +19,12 @@ export default function ClientBeyondMusicPage() {
     data: songs,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: [QueryKey.songs],
     queryFn: () => Song.getAll(),
     staleTime: Infinity,
   });
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (error) {
-    toast.error(tUI("loading.error.title"), {
-      description: tUI("loading.error.message"),
-    });
-  }
 
   // Group songs by split genre tags
   const groupedSongs: Record<string, typeof songs> = {};
@@ -61,12 +52,23 @@ export default function ClientBeyondMusicPage() {
 
   return (
     <ProtectedRoute>
-      <div className="container px-4 pt-3 mx-auto min-w-svw bg-primary-gradient-30 pb-50 min-h-svh">
-        <h1 className="text-4xl leading-tight tracking-tight text-center text-balance md:text-5xl">
+      <div className="container px-4 py-12 mx-auto bg-primary-gradient-30 min-h-svh sm:py-16">
+        <h1 className="font-display text-4xl leading-tight tracking-tight text-center text-balance md:text-5xl">
           {t("beyondMusic.hero.title")}
         </h1>
         <Intro i18nKey="beyondMusic.intro" />
-        {sortedGenres.length > 0 && (
+        {isLoading ? (
+          <Loading />
+        ) : error ? (
+          <ContentState
+            kind="error"
+            title={tUI("loading.error.title")}
+            description={tUI("loading.error.message")}
+            onRetry={() => { void refetch(); }}
+          />
+        ) : sortedGenres.length === 0 ? (
+          <ContentState kind="empty" title={t("beyondMusic.empty")} />
+        ) : (
           <div className="max-w-xl mx-auto space-y-10 mt-10">
             {sortedGenres.map((genre) => (
               <section key={genre} className="space-y-4">
@@ -84,7 +86,7 @@ export default function ClientBeyondMusicPage() {
                           onClick={() => sendGAEvent("event", "listening", { value: title })}
                           className="hover:text-white/80 transition-colors inline-block"
                         >
-                          <p className="font-serif text-xl">{title}</p>
+                          <p className="text-lg">{title}</p>
                         </Link>
                       </li>
                     );

@@ -3,10 +3,11 @@
 import toTitle from "@/utils/to-title";
 import { Center, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BoxIcon, PlayIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import type { Group } from "three";
+import useTranslation from "@/hooks/use-translation";
 
 type ModelOverlayProps = {
   modelURL: string;
@@ -207,6 +208,7 @@ function TitleOverlay({
   audioURL?: string;
   audioZhURL?: string;
 }) {
+  const { t } = useTranslation("ar");
   const [showTitleZh, setShowTitleZh] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [shouldBounce, setShouldBounce] = useState(true);
@@ -304,6 +306,7 @@ function TitleOverlay({
         {canToggleLanguage ? (
           <button
             type="button"
+            aria-label={t("ar.viewer.actions.toggleTitleLanguage")}
             aria-pressed={showTitleZh}
             aria-busy={isAudioPlaying}
             disabled={isAudioPlaying}
@@ -364,11 +367,12 @@ function TitleOverlay({
 }
 
 function VideoToggleButton({ showVideo, onClick }: { showVideo: boolean; onClick: () => void }) {
+  const { t } = useTranslation("ar");
   return (
     <div className="absolute z-30 bottom-20 left-5">
       <button
         type="button"
-        aria-label={showVideo ? "Show 3D model" : "Show video"}
+        aria-label={showVideo ? t("ar.viewer.actions.showModel") : t("ar.viewer.actions.showVideo")}
         className="pointer-events-auto inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/45 text-white shadow-[0_12px_28px_rgba(0,0,0,0.35)] backdrop-blur-sm transition hover:bg-black/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         onClick={onClick}
       >
@@ -379,6 +383,7 @@ function VideoToggleButton({ showVideo, onClick }: { showVideo: boolean; onClick
 }
 
 function RotatingGLB({ modelURL }: { modelURL: string }) {
+  const reducedMotion = useReducedMotion();
   const { scene } = useGLTF(modelURL);
   const groupRef = useRef<Group>(null);
   const animTimeRef = useRef(0);
@@ -389,12 +394,13 @@ function RotatingGLB({ modelURL }: { modelURL: string }) {
   useEffect(() => {
     animTimeRef.current = 0;
     if (groupRef.current) {
-      groupRef.current.scale.set(0, 0, 0);
-      groupRef.current.rotation.y = rotatoinOffset;
+      groupRef.current.scale.setScalar(reducedMotion ? 1 : 0);
+      groupRef.current.rotation.y = reducedMotion ? 0 : rotatoinOffset;
     }
-  }, [modelURL]);
+  }, [modelURL, reducedMotion]);
 
   useFrame((state, delta) => {
+    if (reducedMotion) return;
     if (animTimeRef.current < duration) {
       animTimeRef.current = Math.min(animTimeRef.current + delta, duration);
       const t = animTimeRef.current / duration;

@@ -36,7 +36,8 @@
       "scripture": "經文",
       "reference": "參考",
       "biblicalPeriod": "聖經時期"
-    }
+    },
+    "empty": "此處目前尚無畫作。"
   },
   "toast": {
     "linkCopied": {
@@ -56,5 +57,16 @@
       "description": "請稍後再試"
     }
   },
-  "loadMore": "載入更多"
+  "loadMore": "載入更多",
+  "controls": {
+    "showVideo": "觀看影片",
+    "showImage": "觀看畫作",
+    "playNarration": "播放旁白",
+    "pauseNarration": "暫停旁白",
+    "previous": "上一幅畫作",
+    "next": "下一幅畫作",
+    "close": "關閉畫作",
+    "audioError": "無法播放旁白，請再試一次。",
+    "imageError": "無法載入畫作。"
+  }
 }

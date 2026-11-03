@@ -5,17 +5,17 @@ import useTranslation from "@/hooks/use-translation";
 import { ImageGallery } from "./image-gallery";
 import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import useProfile from "@/hooks/use-profile";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Profile from "@/models/profiles";
 import Intro from "./intro";
 import { QueryKey } from "@/utils/query-keys";
-import { Shimmer } from "shimmer-from-structure";
+import Loading from "@/app/loading";
+import { ContentState } from "@/components/ui/content-state";
 
 export default function BibleGalleryContent({ params }: { params?: { book?: string } }) {
-  const { t, currentLanguage } = useTranslation("gallery");
+  const { t } = useTranslation("gallery");
   const { t: tUI } = useTranslation("ui");
   const { t: tGloryShare } = useTranslation("glory-share");
   const book = params?.book;
@@ -26,24 +26,19 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
     data: artworks,
     isLoading: isArtworksLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: [QueryKey.artworks],
     queryFn: () => BibleArtworks.getAll(),
     staleTime: Infinity,
   });
 
-  if (error) {
-    toast.error(tUI("loading.error.title"), {
-      description: tUI("loading.error.message"),
-    });
-  }
-
   const isGloryShareMember = Profile.isGloryShareMember(profile);
   const isLoading = isProfileLoading || isArtworksLoading;
 
   return (
-    <Shimmer loading={isLoading}>
-      <div className="relative z-50">
+    <>
+      <div className="relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -51,33 +46,31 @@ export default function BibleGalleryContent({ params }: { params?: { book?: stri
           className="mb-16 text-center space-y-10"
         >
           <div>
-            <h1 className="mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
+            <h1 className="font-display mb-6 text-4xl font-bold text-transparent md:text-6xl bg-linear-to-r from-primary to-secondary bg-clip-text">
               {t("bibleGallery.title")}
             </h1>
             <Intro i18nKey="bibleGallery.intro" />
           </div>
 
           {!isGloryShareMember && (
-            <Link href={"/glory-share"}>
-              <Button
-                variant={"outline"}
-                className="py-10 font-serif rounded-full md:px-5 text-secondary"
-              >
-                <h2 className="text-md md:text-xl text-wrap">
-                  {tGloryShare("gallary.joinToEnjoyArtwork")}
-                </h2>
-              </Button>
-            </Link>
+            <Button asChild variant="outline" className="h-auto min-h-11 py-4 px-6 text-secondary">
+              <Link href="/glory-share">
+                <span className="text-base md:text-lg text-wrap">{tGloryShare("gallary.joinToEnjoyArtwork")}</span>
+              </Link>
+            </Button>
           )}
         </motion.div>
 
-        <ImageGallery
-          artworks={artworks ?? []}
-          infiniteScroll={false}
-          book={book}
-          isGloryShareMember={isGloryShareMember}
-        />
+        {isLoading ? (
+          <Loading />
+        ) : error ? (
+          <ContentState kind="error" title={tUI("loading.error.title")} description={tUI("loading.error.message")} onRetry={() => { void refetch(); }} />
+        ) : !artworks?.length ? (
+          <ContentState kind="empty" title={t("bibleGallery.empty")} />
+        ) : (
+          <ImageGallery artworks={artworks} infiniteScroll={false} book={book} isGloryShareMember={isGloryShareMember} />
+        )}
       </div>
-    </Shimmer>
+    </>
   );
 }

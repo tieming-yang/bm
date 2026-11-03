@@ -36,7 +36,8 @@
       "scripture": "Scripture",
       "reference": "Reference",
       "biblicalPeriod": "Biblical Period"
-    }
+    },
+    "empty": "No artworks are available here yet."
   },
   "toast": {
     "linkCopied": {
@@ -56,5 +57,16 @@
       "description": "Please try again later"
     }
   },
-  "loadMore": "Load More"
+  "loadMore": "Load More",
+  "controls": {
+    "showVideo": "Show video",
+    "showImage": "Show artwork",
+    "playNarration": "Play narration",
+    "pauseNarration": "Pause narration",
+    "previous": "Previous artwork",
+    "next": "Next artwork",
+    "close": "Close artwork",
+    "audioError": "Could not play narration. Please try again.",
+    "imageError": "The artwork could not be loaded."
+  }
 }
