@@ -171,8 +171,9 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
       try {
         const token = await Auth.user?.getIdToken();
+        if (!token) return { status: "rejected" as const };
 
-        await fetch(`/api/profiles/${uid}/organization-email`, {
+        const response = await fetch(`/api/profiles/${uid}/organization-email`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -180,14 +181,19 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
           },
           body: JSON.stringify({ newOrganizationEmail }),
         });
+        if (!response.ok) return { status: "rejected" as const };
       } catch (error) {
         throw error;
       }
 
-      return { uid };
+      return { status: "updated" as const, uid };
     },
     onSuccess: (result) => {
       setModal("none");
+      if (result.status === "rejected") {
+        toast.error(t("organization.toast.error"));
+        return;
+      }
       toast.success(t("organization.toast.success"));
       query.invalidateQueries({
         queryKey: QueryKey.profile(result.uid),
