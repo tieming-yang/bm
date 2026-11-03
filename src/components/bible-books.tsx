@@ -13,6 +13,7 @@ import Loading from "../app/loading";
 import { ContentState } from "@/components/ui/content-state";
 import { useState } from "react";
 import { QueryKey } from "@/utils/query-keys";
+import type { BibleArtworksLocale } from "@/types/bible-artwork";
 
 type Props = {};
 
@@ -66,7 +67,7 @@ export default function BibleBooks({}: Props) {
   );
 }
 
-function BookCover({ book, artwork }: { book: string; artwork: { id: string; imageUrl: string } }) {
+function BookCover({ book, artwork }: { book: string; artwork: Pick<BibleArtworksLocale, "id" | "imageUrl"> }) {
   const { t } = useTranslation("ui");
   const { t: tBook } = useTranslation("books");
   const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
