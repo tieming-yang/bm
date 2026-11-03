@@ -19,6 +19,7 @@ function renderShell(pathname) {
       mounted.push("guard");
       return children;
     },
+    "./unsaved-changes-provider": { UnsavedChangesProvider: ({ children }) => children },
   });
   return {
     html: renderToStaticMarkup(React.createElement(SiteShell, null, React.createElement("p", null, "Greeting content"))),

@@ -14,6 +14,8 @@ import { TFunction } from "i18next";
 import Config from "@/models/config";
 import { ADMIN_UID } from "@/utils/constants";
 import { isRouteActive } from "@/lib/ui/navigation";
+import { isARAuthoringPath } from "@/lib/ui/ar-authoring";
+import { useUnsavedNavigation } from "@/components/unsaved-changes-provider";
 
 export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
@@ -34,6 +36,7 @@ export const navRoutes = [
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const unsavedNavigation = useUnsavedNavigation();
   const { t } = useTranslation();
   const { t: tUI } = useTranslation("ui");
   const { authUser } = useAuthUser();
@@ -61,7 +64,7 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-          {pathname !== "/" && <Button className="min-[1800px]:hidden" variant="outline" size="icon" aria-label={tUI("actions.back")} onClick={() => router.back()}><ChevronLeftIcon aria-hidden="true" /></Button>}
+          {pathname !== "/" && <Button className="min-[1800px]:hidden" variant="outline" size="icon" aria-label={tUI("actions.back")} onClick={() => isARAuthoringPath(pathname) ? unsavedNavigation.back() : router.back()}><ChevronLeftIcon aria-hidden="true" /></Button>}
           {isMounted && <>
             {(!Config.isProd || authUser?.uid === ADMIN_UID) && <Button variant="outline" size="icon" asChild><Link href="/sandbox" aria-label={tUI("actions.sandbox")}><Axe aria-hidden="true" /></Link></Button>}
             <div className="hidden min-[1800px]:block"><LanguageSwitcher /></div>
