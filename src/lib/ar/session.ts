@@ -93,7 +93,11 @@ export function startARSession(
   };
   const onReady = () => {
     if (!active) {
-      effects.microtask(stop);
+      effects.microtask(() => {
+        // Target loading can reinitialize this controller after its earlier disposal.
+        disposedController = undefined;
+        stop();
+      });
       scene.removeEventListener("arReady", onReady);
       return;
     }

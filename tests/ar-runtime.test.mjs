@@ -113,6 +113,19 @@ test("late permission result is stopped after exit without starting the engine",
   assert.equal(attempt.timers.size, 0);
 });
 
+test("late target loading is disposed again even when it reuses the same controller", () => {
+  const attempt = camera();
+  attempt.grant();
+  attempt.cleanup();
+  assert.equal(attempt.stops(), 1);
+  attempt.system.controller.processVideo();
+  assert.equal(attempt.frames(), 0);
+  attempt.scene.emit("arReady");
+  attempt.flush();
+  assert.equal(attempt.stops(), 2);
+  assert.notEqual(attempt.statuses.at(-1), "pointAtTarget");
+});
+
 test("SDK teardown failure still stops camera tracks", () => {
   const attempt = camera({ throwOnStop: true });
   attempt.grant();
