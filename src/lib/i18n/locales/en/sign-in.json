@@ -11,7 +11,7 @@
   },
   "errors": {
     "email": "Enter a valid email address.",
-    "password": "Use at least 8 characters."
+    "password": "Enter your password."
   },
   "setup": {
     "title": "Finishing your account",
@@ -22,5 +22,17 @@
     "conflictDescription": "Your existing profile needs review. We have kept its information unchanged.",
     "retry": "Retry account setup",
     "support": "Contact account support"
+  },
+  "reset": {
+    "link": "Forgot password?",
+    "title": "Reset your password",
+    "description": "Enter your email to request a password reset link.",
+    "sent": "If this address can receive a password reset email, a link has been sent. Check your inbox and spam folder.",
+    "back": "Back to sign in",
+    "cancel": "Cancel",
+    "submit": "Send reset link",
+    "sending": "Sending…",
+    "rate_limited": "Too many requests. Please wait before trying again.",
+    "unavailable": "The request could not be completed. Check your connection and try again."
   }
 }

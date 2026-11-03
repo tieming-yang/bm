@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -20,6 +20,7 @@ import { getAuthReturnPath } from "@/lib/account/redirect";
 import { isARAuthoringPath } from "@/lib/ui/ar-authoring";
 import { assertIsDefined } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { PasswordResetDialog } from "@/components/password-reset-dialog";
 
 type Props = {};
 export default function SignInClientPage({}: Props) {
@@ -31,6 +32,7 @@ export default function SignInClientPage({}: Props) {
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
   const prefillEmail = params.get("prefillEmail") ?? "";
+  const [resetEmail, setResetEmail] = useState<string | null>(null);
   const navigatedTo = useRef<string | null>(null);
   const navigate = useCallback((target: string) => {
     if (navigatedTo.current === target) return;
@@ -213,6 +215,9 @@ export default function SignInClientPage({}: Props) {
           />
         </div>
       </form>
+
+      <Button type="button" variant="link" onClick={() => setResetEmail(form.state.values.email)}>{t("reset.link")}</Button>
+      {resetEmail !== null && <PasswordResetDialog open initialEmail={resetEmail} onOpenChange={(open) => { if (!open) setResetEmail(null); }} />}
 
       {signInMutation.isError && (
         <p className="w-full max-w-md text-sm text-error" role="alert">{tCommon("toast.signInError")}</p>

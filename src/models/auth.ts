@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 import firebase from "../lib/firebase/firebase";
@@ -23,11 +24,16 @@ export const EmailSignUpSchema = v.object({
   password: v.pipe(v.string(), v.minLength(8)),
   displayName: v.pipe(v.string(), v.maxLength(30)),
 });
-export const EmailSignInSchema = v.omit(EmailSignUpSchema, ["displayName"]);
+export const EmailSignInSchema = v.object({
+  email: EmailSignUpSchema.entries.email,
+  password: v.pipe(v.string(), v.minLength(1)),
+});
 
 export type EmailSignUpInput = v.InferOutput<typeof EmailSignUpSchema>;
 export type EmailSignInInput = Omit<EmailSignUpInput, "displayName">;
 export type AuthResult = { user: User };
+export const PasswordResetInputSchema = v.pick(EmailSignUpSchema, ["email"]);
+export type PasswordResetResult = { kind: "sent" | "rate_limited" | "unavailable" };
 
 const Auth = {
   get user() {
@@ -63,6 +69,22 @@ const Auth = {
     const value = v.parse(EmailSignInSchema, input);
     const { user } = await signInWithEmailAndPassword(firebase.auth, value.email, value.password);
     return { user };
+  },
+
+  /** Request Firebase's hosted recovery flow without disclosing account existence. */
+  async requestPasswordReset(email: string, language: "en" | "zh-TW"): Promise<PasswordResetResult> {
+    const value = v.parse(PasswordResetInputSchema, { email });
+    firebase.auth.languageCode = v.parse(v.picklist(["en", "zh-TW"]), language);
+    try {
+      await sendPasswordResetEmail(firebase.auth, value.email);
+      return { kind: "sent" };
+    } catch (error) {
+      const code = error && typeof error === "object" && "code" in error ? error.code : null;
+      if (code === "auth/user-not-found") return { kind: "sent" };
+      if (code === "auth/too-many-requests") return { kind: "rate_limited" };
+      if (code === "auth/network-request-failed") return { kind: "unavailable" };
+      throw error;
+    }
   },
 };
 
