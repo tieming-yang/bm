@@ -49,7 +49,7 @@ function pageHarness() {
   const { default: Page } = loadSourceModule("src/app/(works)/school/page.tsx", {
     react: { useCallback: (callback) => callback, useEffect() {}, useRef: () => ({ current: null }) },
     "next/navigation": { usePathname: () => "/school", useSearchParams: () => new URLSearchParams(search), useRouter: () => ({ replace: (href) => { navigation.push(href); search = href.split("?")[1] ?? ""; } }) },
-    "next/link": "Link", "react-player": "Player", "framer-motion": { useReducedMotion: () => true },
+    "next/link": "Link", "./components/school-video-player": "Player", "framer-motion": { useReducedMotion: () => true },
     "@/components/ui/button": { Button: "Button" },
     "@/components/ui/card": Object.fromEntries(["Card", "CardHeader", "CardTitle", "CardDescription"].map((name) => [name, name])),
     "@/components/ui/tabs": Object.fromEntries(["Tabs", "TabsContent", "TabsList", "TabsTrigger"].map((name) => [name, name])),

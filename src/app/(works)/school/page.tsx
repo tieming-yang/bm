@@ -7,7 +7,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import useTranslation from "@/hooks/use-translation";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import ReactPlayer from "react-player";
+import SchoolVideoPlayer from "./components/school-video-player";
 import { useReducedMotion } from "framer-motion";
 import { Lesson, Curriculum, getCourses, Course } from "@/models/school";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,7 +30,6 @@ export default function SchoolPage() {
 
   const courses = getCourses();
 
-  const playerRef = useRef(null);
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
 
   const { t } = useTranslation("school");
@@ -73,8 +72,8 @@ export default function SchoolPage() {
         className="sticky top-(--header-height) left-0 right-0 pb-3 border shadow-xl lg:hidden space-y-5 w-full z-80 rounded-b-3xl backdrop-blur-xl border-primary/20 bg-background/10 shadow-primary/20"
       >
         {/* https://www.npmjs.com/package/react-player?activeTab=readme */}
-        <ReactPlayer
-          ref={playerRef}
+        <SchoolVideoPlayer
+          title={t("school.playerTitle", { title: selectedLesson.title })}
           style={{ width: "100%", height: "auto", aspectRatio: "16/9" }}
           src={embedSrc}
           controls
@@ -125,7 +124,7 @@ export default function SchoolPage() {
           </div>
           <div className="hidden overflow-hidden border shadow-xl h-fit lg:block rounded-3xl border-primary/20 bg-background/10 shadow-primary/20">
             <div className="w-full aspect-video">
-              <ReactPlayer
+              <SchoolVideoPlayer
                 style={{ width: "100%", height: "100%" }}
                 src={embedSrc}
                 title={t("school.playerTitle", { title: selectedLesson.title })}
