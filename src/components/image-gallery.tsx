@@ -361,7 +361,7 @@ export function ImageGallery({
                       >
                         <CarouselContent>
                           {currentBook?.map((artwork: BibleArtworksLocale, index) => (
-                            <CarouselItem key={artwork.id}>
+                            <CarouselItem key={artwork.id} inert={artwork.id !== selectedArtworkId} aria-hidden={artwork.id !== selectedArtworkId}>
                               <AspectRatio
                                 ratio={Config.aspectRatio}
                                 className="relative overflow-hidden"

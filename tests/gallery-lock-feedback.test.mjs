@@ -8,11 +8,11 @@ function all(tree, predicate) {
   return [...(predicate(tree) ? [tree] : []), ...all(tree.props?.children, predicate)];
 }
 
-function renderGallery(memberType) {
+function renderGallery(memberType, ids = ["a", "b", "c", "d"]) {
   const states = [];
   let cursor = 0;
   const effects = [];
-  const artworks = ["a", "b", "c", "d"].map((id) => ({ id, book: "Genesis", title: id.toUpperCase(), section: id, imageUrl: `${id}.jpg`, scripture: "Text", videoUrl: null, voUrl: "" }));
+  const artworks = ids.map((id) => ({ id, book: "Genesis", title: id.toUpperCase(), section: id, imageUrl: `${id}.jpg`, scripture: "Text", videoUrl: null, voUrl: "" }));
   const { ImageGallery } = loadSourceModule("src/components/image-gallery.tsx", {
     react: { useState(initial) { const index = cursor++; if (!(index in states)) states[index] = initial; return [states[index], (next) => { states[index] = typeof next === "function" ? next(states[index]) : next; }]; }, useRef: () => ({ current: null }), useEffect: (effect) => effects.push(effect) },
     "next/navigation": { useRouter: () => ({ replace() { throw new Error("Rendering a gallery must not navigate"); } }), usePathname: () => "/bible-gallery", useSearchParams: () => new URLSearchParams("image=d") },
@@ -47,4 +47,13 @@ test("an eligible member sees the same artwork without the membership explanatio
   const tree = renderGallery("lifeTime");
   assert.equal(all(tree, (node) => node.type === "DialogTitle")[0].props.children, "D");
   assert.equal(all(tree, (node) => node.type === "Link" && node.props.href === "/glory-share").length, 0);
+});
+
+test("only the selected artwork exposes its membership action to keyboard and assistive technology", () => {
+  const slides = all(renderGallery("free", ["a", "b", "c", "d", "e", "f"]), (node) => node.type === "CarouselItem");
+  const active = slides.filter((slide) => !slide.props["aria-hidden"]);
+  assert.equal(active.length, 1);
+  assert.equal(active[0].key, "d");
+  assert.equal(all(active, (node) => node.type === "Link" && node.props.href === "/glory-share").length, 1);
+  for (const slide of slides) assert.equal(slide.props.inert, slide.key !== "d");
 });
