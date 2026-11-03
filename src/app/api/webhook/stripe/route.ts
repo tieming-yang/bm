@@ -4,7 +4,40 @@ import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
 import Profile, { AccountType, MemberType } from "@/models/profiles";
 import Stripe from "stripe";
+import { z } from "zod";
+import { createMembershipEffects } from "@/lib/membership/runtime";
+import { readLegacySessionOwner } from "@/lib/membership/provider";
+import { MembershipSubscriptionIdSchema } from "@/lib/membership/domain";
+import { synchronizeRecurringMembership } from "@/lib/membership/workflow";
+import { recordLegacyRecurringReceipt } from "@/lib/membership/legacy-receipt";
 
+const InvoiceSubscriptionSchema = z.object({
+  object: z.literal("invoice"),
+  parent: z.object({
+    type: z.literal("subscription_details"),
+    subscription_details: z.object({ subscription: MembershipSubscriptionIdSchema }),
+  }).nullish(),
+  subscription: MembershipSubscriptionIdSchema.nullish(),
+});
+
+async function reconcileRecurringEvent(subscriptionId: string, event: Stripe.Event) {
+  const effects = createMembershipEffects();
+  const routing = await effects.provider.readSubscriptionRouting(subscriptionId);
+  if (!routing) throw new Error("Membership event subscription is missing");
+  const result = await effects.provider.readSubscriptionSnapshot(subscriptionId, { id: event.id, createdMs: event.created * 1000 });
+  if (result.kind !== "snapshot") {
+    if (result.kind === "not_found") throw new Error("Membership event checkout is missing");
+    return;
+  }
+  // Initial legacy invoice events can precede checkout completion attaching its UID.
+  if (routing.source === "legacy" && !routing.ownerUid) return;
+  const outcome = await synchronizeRecurringMembership(result.snapshot, routing.ownerUid, effects);
+  if (outcome.kind === "profile_pending" || outcome.kind === "not_found" ||
+    (outcome.kind === "payment_pending" && result.snapshot.paymentState === "paid")) throw new Error("Membership is not ready for recurring reconciliation");
+  console.info("membership.webhook.reconciled", { eventType: event.type, outcome: outcome.kind });
+}
+
+/** Verify Stripe's signature before routing recurring membership or legacy one-time purchases. */
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("stripe-signature");
   const body = await req.text();
@@ -14,18 +47,36 @@ export async function POST(req: NextRequest) {
   let event;
   try {
     event = stripe.webhooks.constructEvent(body, signature!, STRIPE_WEBHOOK_SECRET);
-  } catch (err) {
-    console.log(signature);
-    const error = err instanceof Error ? err.message : "Error on Stripe Webhook";
-    return NextResponse.json({ error: `Invalid signature: ${error}` }, { status: 400 });
+  } catch {
+    return NextResponse.json({ error: "Invalid Stripe signature" }, { status: 400 });
   }
 
   console.log("📧 Incoming Event from Stripe:", event.type, "↓↓↓↓↓↓↓↓")
 
   try {
     switch (event.type) {
-      case "checkout.session.completed": {
+      case "checkout.session.completed":
+      case "checkout.session.async_payment_succeeded":
+      case "checkout.session.async_payment_failed": {
         const session = event.data.object;
+        if (session.mode === "subscription") {
+          const effects = createMembershipEffects();
+          const result = await effects.provider.readSessionSnapshot(session.id, { id: event.id, createdMs: event.created * 1000 });
+          if (result.kind === "snapshot") {
+            const legacyUid = readLegacySessionOwner(session) ?? undefined;
+            const outcome = await synchronizeRecurringMembership(result.snapshot, legacyUid, effects);
+            if (outcome.kind === "profile_pending" || outcome.kind === "not_found" ||
+              (outcome.kind === "payment_pending" && result.snapshot.paymentState === "paid")) throw new Error("Membership is not ready for checkout reconciliation");
+            if (legacyUid && ["claimed", "already_claimed", "payment_inactive"].includes(outcome.kind)) {
+              await recordLegacyRecurringReceipt(session, result.snapshot, legacyUid);
+            }
+            console.info("membership.webhook.reconciled", { eventType: event.type, outcome: outcome.kind });
+          } else if (result.kind === "not_found") {
+            throw new Error("Membership checkout was not found");
+          }
+          break;
+        }
+        if (event.type !== "checkout.session.completed") break;
         // console.log("========================session=====================")
         // console.log(session)
         // console.log("========================session=====================")
@@ -92,113 +143,26 @@ export async function POST(req: NextRequest) {
               createdAt: FieldValue.serverTimestamp(),
             }),
           ]);
-        } else if (session.mode === "subscription") {
-          const subscriptionId = session.subscription as string
-          if (!subscriptionId) {
-            throw new Error("Missing subscription id in session")
-          }
-
-          await stripe.subscriptions.update(subscriptionId, {
-            metadata: {
-              uid: uid,
-            }
-          });
-
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-          const subscriptionItem = subscription.items.data[0]
-
-          const subscriptionRef = profileRef.collection("subscriptions").doc(subscriptionId)
-
-          await Promise.all([
-            profileRef.set(
-              {
-                memberType: session.amount_total === 770 ? MemberType.Monthly : MemberType.Yearly,
-                lastTransactionId: transactionRef.id,
-                lastSubscriptionId: subscriptionId,
-                memberDetails,
-                updatedAt: FieldValue.serverTimestamp()
-              },
-              { merge: true }
-            ),
-            transactionRef.set({
-              ...transactionData,
-              updatedAt: FieldValue.serverTimestamp(),
-              createdAt: FieldValue.serverTimestamp(),
-            }),
-            subscriptionRef.set({
-              id: subscriptionId,
-              status: subscription.status,
-              startDate: subscription.start_date,
-              endAt: subscription.ended_at,
-              currentPeriodStart: subscriptionItem.current_period_start,
-              currentPeriodEnd: subscriptionItem.current_period_end,
-              updatedAt: FieldValue.serverTimestamp(),
-              createdAt: FieldValue.serverTimestamp(),
-            }, { merge: true })
-          ]);
         }
         break;
       }
 
-      /**
-       * Renew
-       */
-      case "invoice.paid": {
-        const invoice = event.data.object;
-        if (invoice.billing_reason === 'subscription_cycle') {
-          if (invoice.lines.data.length > 1) {
-            throw new Error("Invoice contains multiple items")
-          }
-
-          const lineItem = invoice.lines.data[0] as Stripe.InvoiceLineItem;
-          const subscriptionId = lineItem.parent?.subscription_item_details?.subscription
-          if (!subscriptionId) {
-            throw new Error("Missing subscription id in invoice")
-          }
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-
-          const uid = invoice.parent?.subscription_details?.metadata?.uid ?? subscription.metadata.uid
-          if (!uid) {
-            throw new Error("Missing uid in subscription")
-          }
-
-          const subscriptionItem = subscription.items.data[0]
-
-          const profileRef = firebaseAdmin.db.doc(`profiles/${uid}`);
-          const subscriptionRef = profileRef.collection("subscriptions").doc(subscriptionId)
-
-          await subscriptionRef.set({
-            status: subscription.status,
-            startDate: subscription.start_date,
-            endAt: subscription.ended_at,
-            currentPeriodStart: subscriptionItem.current_period_start,
-            currentPeriodEnd: subscriptionItem.current_period_end,
-            updatedAt: FieldValue.serverTimestamp()
-          }, { merge: true })
+      case "invoice.paid":
+      case "invoice.payment_failed": {
+        const invoice = InvoiceSubscriptionSchema.parse(event.data.object);
+        const subscriptionId = invoice.parent?.subscription_details.subscription ?? invoice.subscription;
+        if (!subscriptionId) break;
+        if (invoice.parent?.subscription_details.subscription && invoice.subscription && invoice.parent.subscription_details.subscription !== invoice.subscription) {
+          throw new Error("Stripe invoice subscription references disagree");
         }
+        await reconcileRecurringEvent(subscriptionId, event);
         break;
       }
 
-      case 'customer.subscription.deleted': {
-        const cancelledSubscription = event.data.object;
-        const { id: subscriptionId, metadata, status, start_date, ended_at, canceled_at } = cancelledSubscription
-        const uid = metadata.uid
-        if (!uid) {
-          throw new Error("Missing Uid in subscription deleted")
-        }
-
-        const profileRef = firebaseAdmin.db.doc(`profiles/${uid}`);
-        const subscriptionRef = profileRef.collection("subscriptions").doc(subscriptionId)
-
-        await Promise.all([
-          subscriptionRef.set({
-            status: status,
-            canceledAt: canceled_at,
-            startDate: start_date,
-            endAt: ended_at,
-            updatedAt: FieldValue.serverTimestamp()
-          }, { merge: true })
-        ]);
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted": {
+        const subscriptionId = MembershipSubscriptionIdSchema.parse(event.data.object.id);
+        await reconcileRecurringEvent(subscriptionId, event);
         break;
       }
 
@@ -210,8 +174,8 @@ export async function POST(req: NextRequest) {
 
     }
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ received: true, error: error }, { status: 500 })
+    console.error("membership.webhook.failed", { eventType: event.type, errorType: error instanceof Error ? error.name : "UnknownError" });
+    return NextResponse.json({ received: false, error: "Unable to process Stripe event" }, { status: 500 })
   }
 
 
