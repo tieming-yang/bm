@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import Loading from "@/app/loading";
+import Loading, { ActionSpinner } from "@/app/loading";
 import Auth, { AuthMethod, EmailSignUpInput, EmailSignUpSchema } from "@/models/auth";
 import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
@@ -57,9 +57,15 @@ export default function SignUpClientPage({}: Props) {
     defaultValues: defaultEmailSignUpInputs,
     validators: {
       onBlur: EmailSignUpSchema,
+      onSubmit: EmailSignUpSchema,
     },
-    onSubmit: ({ value }) => {
-      signUpMutation.mutate({ method: "email", payload: value });
+    onSubmit: async ({ value }) => {
+      if (signUpMutation.isPending) return;
+      try {
+        await signUpMutation.mutateAsync({ method: "email", payload: value });
+      } catch {
+        // The mutation retains the error for the form to display.
+      }
     },
   });
 
@@ -83,28 +89,34 @@ export default function SignUpClientPage({}: Props) {
       );
     },
     onError: (err: unknown) => {
-      toast.error(tCommon("toast.signUpError"));
+      console.error(err);
     },
   });
 
   useEffect(() => {
-    if (!signUpMutation.isPending && !isAuthUserLoading && authUser) {
+    if (!signUpMutation.isPending && !signUpMutation.isSuccess && !isAuthUserLoading && authUser) {
       router.replace("/");
     }
-  }, [authUser, isAuthUserLoading, router, signUpMutation.isPending]);
+  }, [authUser, isAuthUserLoading, router, signUpMutation.isPending, signUpMutation.isSuccess]);
 
   if (isAuthUserLoading) return <Loading />;
 
   return (
-    <div className="relative z-50 flex flex-col items-center justify-center px-5 font-mono md:px-0 gap-y-5 min-h-dvh">
+    <div className="relative z-50 flex flex-col items-center justify-center px-5 md:px-0 gap-y-5 min-h-[70dvh] py-8">
       <Button
         variant="default"
-        className="flex items-center shadow-lg gap-3"
+        className="flex w-full max-w-md items-center shadow-lg gap-3"
+        disabled={signUpMutation.isPending}
+        aria-busy={signUpMutation.isPending}
         onClick={() => {
           signUpMutation.mutate({ method: AuthMethod.Google });
         }}
       >
-        <FcGoogle className="w-7 h-7" />
+        {signUpMutation.isPending && signUpMutation.variables?.method === AuthMethod.Google ? (
+          <ActionSpinner />
+        ) : (
+          <FcGoogle className="w-6 h-6" aria-hidden="true" />
+        )}
         {tCommon("nav.signupWithGoogle")}
       </Button>
 
@@ -116,7 +128,8 @@ export default function SignUpClientPage({}: Props) {
 
       {/* Email sign up */}
       <form
-        className="w-full max-w-md py-5 border rounded-4xl px-7 bg-card"
+        className="w-full max-w-md py-6 border rounded-3xl px-5 sm:px-7 bg-card"
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -124,7 +137,7 @@ export default function SignUpClientPage({}: Props) {
           void form.handleSubmit();
         }}
       >
-        <h2 className="text-2xl">{t("formTitle")}</h2>
+        <h1 className="text-3xl">{t("formTitle")}</h1>
         <div className="flex flex-col py-5 gap-y-5">
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">{t("labels.email")}</Label>
@@ -134,14 +147,23 @@ export default function SignUpClientPage({}: Props) {
                 <>
                   <field.Input
                     id="email"
+                    type="email"
+                    autoComplete="email"
+                    aria-invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                    aria-describedby={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? "email-error" : undefined}
+                    disabled={signUpMutation.isPending}
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(e) => {
+                      const hadError = !field.state.meta.isValid;
+                      field.handleChange(e.target.value);
+                      if (hadError) void field.validate("blur");
+                    }}
                     onBlur={field.handleBlur}
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-red-500">
-                      {field.state.meta.errorMap["onBlur"]?.at(0)?.message}
-                    </em>
+                  {!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) && (
+                    <p id="email-error" className="text-sm text-error" role="alert">
+                      {t("errors.email")}
+                    </p>
                   )}
                 </>
               )}
@@ -155,14 +177,23 @@ export default function SignUpClientPage({}: Props) {
                 <>
                   <field.Input
                     id="password"
+                    type="password"
+                    autoComplete="new-password"
+                    aria-invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                    aria-describedby={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? "password-error" : undefined}
+                    disabled={signUpMutation.isPending}
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(e) => {
+                      const hadError = !field.state.meta.isValid;
+                      field.handleChange(e.target.value);
+                      if (hadError) void field.validate("blur");
+                    }}
                     onBlur={field.handleBlur}
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-red-500">
-                      {field.state.meta.errorMap["onBlur"]?.at(0)?.message}
-                    </em>
+                  {!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) && (
+                    <p id="password-error" className="text-sm text-error" role="alert">
+                      {t("errors.password")}
+                    </p>
                   )}
                 </>
               )}
@@ -176,31 +207,43 @@ export default function SignUpClientPage({}: Props) {
                 <>
                   <field.Input
                     id="displayName"
+                    type="text"
+                    autoComplete="name"
+                    aria-invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                    aria-describedby={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? "displayName-error" : undefined}
+                    disabled={signUpMutation.isPending}
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(e) => {
+                      const hadError = !field.state.meta.isValid;
+                      field.handleChange(e.target.value);
+                      if (hadError) void field.validate("blur");
+                    }}
                     onBlur={field.handleBlur}
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-red-500">
-                      {field.state.meta.errorMap["onBlur"]?.at(0)?.message}
-                    </em>
+                  {!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) && (
+                    <p id="displayName-error" className="text-sm text-error" role="alert">
+                      {t("errors.displayName")}
+                    </p>
                   )}
                 </>
               )}
             />
           </div>
           <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-            children={([canSubmit, isSubmitting]) => {
-              return (
-                <Button className="relative" type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? <Loading isInlined /> : t("actions.submit")}
-                </Button>
-              );
-            }}
+            selector={(state) => state.isSubmitting}
+            children={(isSubmitting) => (
+              <Button className="w-full gap-2" type="submit" disabled={isSubmitting || signUpMutation.isPending} aria-busy={isSubmitting || signUpMutation.isPending}>
+                {(isSubmitting || signUpMutation.isPending) && <ActionSpinner />}
+                {isSubmitting || signUpMutation.isPending ? t("actions.processing") : t("actions.submit")}
+              </Button>
+            )}
           />
         </div>
       </form>
+
+      {signUpMutation.isError && (
+        <p className="w-full max-w-md text-sm text-error" role="alert">{tCommon("toast.signUpError")}</p>
+      )}
 
       <p className="text-sm text-muted-foreground">
         {tCommon("auth.haveAccount")}{" "}

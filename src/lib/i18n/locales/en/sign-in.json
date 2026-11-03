@@ -6,6 +6,11 @@
     "password": "Password"
   },
   "actions": {
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "processing": "Signing in…"
+  },
+  "errors": {
+    "email": "Enter a valid email address.",
+    "password": "Use at least 8 characters."
   }
 }

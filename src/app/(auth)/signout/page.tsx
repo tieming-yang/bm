@@ -1,31 +1,30 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import Loading from "@/app/loading";
-import Auth from "@/models/auth";
 import useAuthUser from "@/hooks/use-auth-user";
-import useTranslation from "@/hooks/use-translation";
-import { Sign } from "crypto";
 import SignOutButton from "./signout-button";
 
 type Props = {};
 export default function SignOutPage({}: Props) {
   const router = useRouter();
-  const { user, initializing } = useAuthUser();
-  const { t } = useTranslation("common");
+  const { authUser, isAuthUserLoading } = useAuthUser();
 
-  if (initializing) {
+  useEffect(() => {
+    if (!isAuthUserLoading && !authUser) router.replace("/signin");
+  }, [authUser, isAuthUserLoading, router]);
+
+  if (isAuthUserLoading) {
     return <Loading />;
   }
-  if (!user) {
-    router.push("/signin");
+  if (!authUser) {
     return null;
   }
 
   return (
-    <div className="flex items-center justify-center min-h-dvh">
+    <div className="flex items-center justify-center min-h-[60dvh] px-4">
       <SignOutButton />
     </div>
   );

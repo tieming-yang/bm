@@ -7,6 +7,12 @@
     "displayName": "Display Name"
   },
   "actions": {
-    "submit": "Sign up"
+    "submit": "Sign up",
+    "processing": "Creating account…"
+  },
+  "errors": {
+    "email": "Enter a valid email address.",
+    "password": "Use at least 8 characters.",
+    "displayName": "Use 30 characters or fewer."
   }
 }

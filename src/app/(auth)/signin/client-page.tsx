@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import Loading from "@/app/loading";
+import Loading, { ActionSpinner } from "@/app/loading";
 import Auth, { AuthMethod, EmailSignInInput, EmailSignInSchema } from "@/models/auth";
 import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
@@ -57,9 +57,15 @@ export default function SignInClientPage({}: Props) {
     defaultValues: defaultEmailSignInInputs,
     validators: {
       onBlur: EmailSignInSchema,
+      onSubmit: EmailSignInSchema,
     },
-    onSubmit: ({ value }) => {
-      signInMutation.mutate({ method: "email", payload: value });
+    onSubmit: async ({ value }) => {
+      if (signInMutation.isPending) return;
+      try {
+        await signInMutation.mutateAsync({ method: "email", payload: value });
+      } catch {
+        // The mutation retains the error for the form to display.
+      }
     },
   });
 
@@ -92,29 +98,34 @@ export default function SignInClientPage({}: Props) {
     },
     onError: (err: unknown) => {
       const msg = err instanceof Error ? err.message : "Sign up failed";
-      toast.error(tCommon("toast.signInError"));
       console.error(msg);
     },
   });
 
   useEffect(() => {
-    if (!signInMutation.isPending && !isAuthUserLoading && authUser) {
+    if (!signInMutation.isPending && !signInMutation.isSuccess && !isAuthUserLoading && authUser) {
       router.replace("/");
     }
-  }, [authUser, isAuthUserLoading, router, signInMutation.isPending]);
+  }, [authUser, isAuthUserLoading, router, signInMutation.isPending, signInMutation.isSuccess]);
 
   if (isAuthUserLoading) return <Loading />;
 
   return (
-    <div className="relative z-50 flex flex-col items-center justify-center font-mono gap-y-5 min-h-dvh">
+    <div className="relative z-50 flex flex-col items-center justify-center px-4 gap-y-5 min-h-[70dvh] py-8">
       <Button
         variant="default"
-        className="flex items-center shadow-lg gap-3"
+        className="flex w-full max-w-md items-center shadow-lg gap-3"
+        disabled={signInMutation.isPending}
+        aria-busy={signInMutation.isPending}
         onClick={() => {
           signInMutation.mutate({ method: AuthMethod.Google });
         }}
       >
-        <FcGoogle className="w-7 h-7" />
+        {signInMutation.isPending && signInMutation.variables?.method === AuthMethod.Google ? (
+          <ActionSpinner />
+        ) : (
+          <FcGoogle className="w-6 h-6" aria-hidden="true" />
+        )}
         {tCommon("nav.signinWithGoogle")}
       </Button>
 
@@ -126,7 +137,8 @@ export default function SignInClientPage({}: Props) {
 
       {/* Email sign in*/}
       <form
-        className="w-full max-w-md py-5 border rounded-4xl px-7 bg-card"
+        className="w-full max-w-md py-6 border rounded-3xl px-5 sm:px-7 bg-card"
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -134,7 +146,7 @@ export default function SignInClientPage({}: Props) {
           void form.handleSubmit();
         }}
       >
-        <h2 className="text-2xl">{t("formTitle")}</h2>
+        <h1 className="text-3xl">{t("formTitle")}</h1>
         <div className="flex flex-col py-5 gap-y-5">
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">{t("labels.email")}</Label>
@@ -144,14 +156,23 @@ export default function SignInClientPage({}: Props) {
                 <>
                   <field.Input
                     id="email"
+                    type="email"
+                    autoComplete="email"
+                    aria-invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                    aria-describedby={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? "email-error" : undefined}
+                    disabled={signInMutation.isPending}
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(e) => {
+                      const hadError = !field.state.meta.isValid;
+                      field.handleChange(e.target.value);
+                      if (hadError) void field.validate("blur");
+                    }}
                     onBlur={field.handleBlur}
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-red-500">
-                      {field.state.meta.errorMap["onBlur"]?.at(0)?.message}
-                    </em>
+                  {!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) && (
+                    <p id="email-error" className="text-sm text-error" role="alert">
+                      {t("errors.email")}
+                    </p>
                   )}
                 </>
               )}
@@ -165,14 +186,23 @@ export default function SignInClientPage({}: Props) {
                 <>
                   <field.Input
                     id="password"
+                    type="password"
+                    autoComplete="current-password"
+                    aria-invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+                    aria-describedby={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? "password-error" : undefined}
+                    disabled={signInMutation.isPending}
                     value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
+                    onChange={(e) => {
+                      const hadError = !field.state.meta.isValid;
+                      field.handleChange(e.target.value);
+                      if (hadError) void field.validate("blur");
+                    }}
                     onBlur={field.handleBlur}
                   />
-                  {!field.state.meta.isValid && (
-                    <em className="text-red-500">
-                      {field.state.meta.errorMap["onBlur"]?.at(0)?.message}
-                    </em>
+                  {!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) && (
+                    <p id="password-error" className="text-sm text-error" role="alert">
+                      {t("errors.password")}
+                    </p>
                   )}
                 </>
               )}
@@ -180,17 +210,20 @@ export default function SignInClientPage({}: Props) {
           </div>
 
           <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-            children={([canSubmit, isSubmitting]) => {
-              return (
-                <Button className="relative" type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? <Loading isInlined /> : t("actions.submit")}
-                </Button>
-              );
-            }}
+            selector={(state) => state.isSubmitting}
+            children={(isSubmitting) => (
+              <Button className="w-full gap-2" type="submit" disabled={isSubmitting || signInMutation.isPending} aria-busy={isSubmitting || signInMutation.isPending}>
+                {(isSubmitting || signInMutation.isPending) && <ActionSpinner />}
+                {isSubmitting || signInMutation.isPending ? t("actions.processing") : t("actions.submit")}
+              </Button>
+            )}
           />
         </div>
       </form>
+
+      {signInMutation.isError && (
+        <p className="w-full max-w-md text-sm text-error" role="alert">{tCommon("toast.signInError")}</p>
+      )}
 
       <p className="text-sm text-muted-foreground">
         {tCommon("auth.noAccount")}{" "}
