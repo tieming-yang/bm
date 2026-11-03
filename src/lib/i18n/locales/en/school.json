@@ -16,6 +16,7 @@
     },
     "curriculums": {
       "genesis": {
+        "title": "Genesis",
         "lessons": [
           {
             "id": "01",
@@ -202,6 +203,7 @@
         ]
       },
       "characters": {
+        "title": "Bible Characters",
         "lessons": [
           {
             "id": "adam",
