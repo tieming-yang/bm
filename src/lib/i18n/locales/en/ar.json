@@ -41,6 +41,10 @@
     },
     "viewer": {
       "actions": {
+        "exit": "Exit AR",
+        "play": "Play narration",
+        "pause": "Pause narration",
+        "stop": "Stop narration",
         "tryAgain": "Try Again",
         "rescan": "Rescan",
         "showModel": "Show 3D model",
@@ -51,6 +55,11 @@
         "missingAssetUrls": "Missing target or model URL."
       },
       "status": {
+        "startingEngine": "Preparing image recognition...",
+        "engineTimeout": "Image recognition could not start. Check your connection and try again.",
+        "audioUnavailable": "Narration is unavailable in this language.",
+        "audioBlocked": "Tap Play to start narration.",
+        "audioFailed": "Narration could not be loaded. Try playing it again.",
         "loadingLibraries": "Loading AR libraries...",
         "ready": "Ready. Tap Start AR to request camera access.",
         "failedToLoadLibraries": "Failed to load AR libraries.",

@@ -41,6 +41,10 @@
     },
     "viewer": {
       "actions": {
+        "exit": "離開 AR",
+        "play": "播放旁白",
+        "pause": "暫停旁白",
+        "stop": "停止旁白",
         "tryAgain": "再試一次",
         "rescan": "重新掃描",
         "showModel": "觀看 3D 模型",
@@ -51,6 +55,11 @@
         "missingAssetUrls": "缺少辨識圖或模型網址。"
       },
       "status": {
+        "startingEngine": "正在準備影像辨識…",
+        "engineTimeout": "無法啟動影像辨識，請檢查網路連線後再試一次。",
+        "audioUnavailable": "此語言尚未提供旁白。",
+        "audioBlocked": "請按播放以開始旁白。",
+        "audioFailed": "無法載入旁白，請再按播放重試。",
         "loadingLibraries": "AR 資源載入中...",
         "ready": "準備好了。請允許相機權限以開始 AR。",
         "failedToLoadLibraries": "AR 資源載入失敗。",

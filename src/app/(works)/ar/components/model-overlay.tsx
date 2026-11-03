@@ -8,6 +8,8 @@ import { BoxIcon, PlayIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import type { Group } from "three";
 import useTranslation from "@/hooks/use-translation";
+import { Button } from "@/components/ui/button";
+import { bindNarration, type NarrationStatus } from "@/lib/ar/narration";
 
 type ModelOverlayProps = {
   modelURL: string;
@@ -43,6 +45,7 @@ export default function ModelOverlay({
         <FigureModel modelURL={modelURL} />
       )}
       <TitleOverlay
+        key={modelURL}
         modelURL={modelURL}
         title={title}
         titleZh={titleZh}
@@ -208,159 +211,76 @@ function TitleOverlay({
   audioURL?: string;
   audioZhURL?: string;
 }) {
-  const { t } = useTranslation("ar");
-  const [showTitleZh, setShowTitleZh] = useState(false);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const { t, currentLanguage } = useTranslation("ar");
+  const reducedMotion = useReducedMotion();
+  const appLanguage = currentLanguage === "zh-TW" ? "zh-TW" : "en";
+  const [language, setLanguage] = useState(appLanguage);
+  const showTitleZh = language === "zh-TW";
+  const source = showTitleZh ? audioZhURL : audioURL;
   const [shouldBounce, setShouldBounce] = useState(true);
-  const [audioRequest, setAudioRequest] = useState<{ token: number; url: string } | null>(null);
+  const [audioStatus, setAudioStatus] = useState<NarrationStatus | "unavailable">(() => source ? "loading" : "unavailable");
   const audioRef = useRef<HTMLAudioElement>(null);
-  const playbackTokenRef = useRef(0);
-  const canToggleLanguage = typeof titleZh === "string" && titleZh.trim().length > 0;
-  const englishTitle = toTitle(title);
+  const transportRef = useRef<ReturnType<typeof bindNarration> | null>(null);
+  const playingIntentRef = useRef(true);
+  const displayedTitle = showTitleZh && titleZh ? titleZh : toTitle(title);
 
+  useEffect(() => { setLanguage(appLanguage); }, [appLanguage]);
   useEffect(() => {
-    setShowTitleZh(false);
-    setShouldBounce(true);
-    playbackTokenRef.current += 1;
-
-    if (audioURL) {
-      setAudioRequest({ token: playbackTokenRef.current, url: audioURL });
+    const audio = audioRef.current;
+    if (!source || !audio) {
+      setAudioStatus("unavailable");
       return;
     }
-
-    setAudioRequest(null);
-    setIsAudioPlaying(false);
-  }, [audioURL, audioZhURL, modelURL, title, titleZh]);
-
-  useEffect(() => {
-    const audioElement = audioRef.current;
-
-    if (!audioElement || !audioRequest) {
-      return;
-    }
-
-    setIsAudioPlaying(true);
-    audioElement.pause();
-    audioElement.currentTime = 0;
-    audioElement.load();
-
-    // `HTMLMediaElement.play()` is async and may reject later, even after a newer
-    // playback request has already started.
-    //
-    // Why this matters:
-    // 1. We may start English audio.
-    // 2. Before that `play()` promise settles, the component may request a different
-    //    audio clip (for example after a language toggle or a model reset).
-    // 3. Starting the newer clip can cause the older `play()` promise to reject
-    //    asynchronously because that earlier playback attempt was interrupted.
-    //
-    // `playbackTokenRef` is a monotonically increasing "request version".
-    // Every new playback request gets a new token and becomes the current one.
-    //
-    // When a `play()` promise rejects, we only clear `isAudioPlaying` if the failed
-    // promise belongs to the latest request. This prevents an outdated rejection
-    // from an older clip from unlocking the toggle while a newer clip is currently
-    // playing or still starting.
-    //
-    // In short:
-    // - current request fails -> unlock the toggle
-    // - old request fails -> ignore it
-    const playPromise = audioElement.play();
-
-    if (playPromise) {
-      void playPromise.catch(() => {
-        if (playbackTokenRef.current === audioRequest.token) {
-          setIsAudioPlaying(false);
-        }
-      });
-    }
-
+    const transport = bindNarration(audio, (next) => {
+      setAudioStatus(next);
+      if (["blocked", "failed", "ended"].includes(next)) playingIntentRef.current = false;
+    }, playingIntentRef.current);
+    transportRef.current = transport;
     return () => {
-      audioElement.pause();
-      audioElement.currentTime = 0;
+      transportRef.current = null;
+      transport.dispose();
     };
-  }, [audioRequest]);
+  }, [source]);
 
-  const handleToggle = () => {
-    if (isAudioPlaying) return;
-
-    const nextShowTitleZh = !showTitleZh;
-    const nextAudioURL = nextShowTitleZh ? audioZhURL : audioURL;
-
-    setShowTitleZh(nextShowTitleZh);
-    setShouldBounce(false);
-    playbackTokenRef.current += 1;
-
-    if (nextAudioURL) {
-      setAudioRequest({ token: playbackTokenRef.current, url: nextAudioURL });
-      return;
-    }
-
-    setAudioRequest(null);
-    setIsAudioPlaying(false);
-  };
+  const isPlaying = audioStatus === "playing" || audioStatus === "loading";
+  const message = audioStatus === "unavailable" ? "audioUnavailable" : audioStatus === "blocked" ? "audioBlocked" : audioStatus === "failed" ? "audioFailed" : null;
 
   return (
     <div className="absolute inset-x-0 z-20 flex justify-center px-4 pointer-events-none top-20">
-      <div className="flex flex-col items-center max-w-md text-center">
-        {canToggleLanguage ? (
-          <button
-            type="button"
-            aria-label={t("ar.viewer.actions.toggleTitleLanguage")}
-            aria-pressed={showTitleZh}
-            aria-busy={isAudioPlaying}
-            disabled={isAudioPlaying}
-            className={`relative pointer-events-auto min-h-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-70 md:min-h-24 ${
-              shouldBounce ? "animate-bounce" : ""
-            }`}
-            style={{ perspective: 1200 }}
-            onClick={handleToggle}
-          >
-            <AnimatePresence initial={false} mode="wait">
-              <motion.span
-                key={showTitleZh ? `zh-title-${titleZh}` : `en-title-${englishTitle}`}
-                initial={{ opacity: 0, y: 16, rotateX: -18, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -16, rotateX: 18, filter: "blur(6px)" }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className={
-                  showTitleZh
-                    ? "block text-4xl font-chinese md:text-6xl"
-                    : "block text-4xl font-semibold tracking-[0.12em] uppercase text-white md:text-6xl"
-                }
-                style={{
-                  transformOrigin: "50% 50%",
-                  textShadow: showTitleZh
-                    ? "0 1px 0 rgba(255,255,255,0.35), 0 2px 0 rgba(152,166,138,0.5), 0 8px 18px rgba(0,0,0,0.38)"
-                    : "0 1px 0 rgba(241,215,164,0.85), 0 2px 0 rgba(152,166,138,0.72), 0 3px 0 rgba(19,19,19,0.9), 0 14px 28px rgba(0,0,0,0.45)",
-                }}
-              >
-                {showTitleZh ? titleZh : englishTitle}
-              </motion.span>
-            </AnimatePresence>
-          </button>
-        ) : (
-          <div className="relative flex items-center justify-center min-h-16 md:min-h-24">
-            <span
-              className="block text-4xl font-semibold tracking-[0.12em] uppercase text-white md:text-6xl"
-              style={{
-                textShadow:
-                  "0 1px 0 rgba(241,215,164,0.85), 0 2px 0 rgba(152,166,138,0.72), 0 3px 0 rgba(19,19,19,0.9), 0 14px 28px rgba(0,0,0,0.45)",
-              }}
-            >
-              {englishTitle}
-            </span>
-          </div>
-        )}
-        <audio
-          ref={audioRef}
-          key={audioRequest?.url ?? "overlay-audio"}
-          src={audioRequest?.url ?? undefined}
-          className="hidden"
-          preload="auto"
-          onEnded={() => setIsAudioPlaying(false)}
-          onError={() => setIsAudioPlaying(false)}
-        />
+      <div className="flex flex-col items-center max-w-md gap-3 text-center">
+        <button
+          type="button"
+          aria-label={t("ar.viewer.actions.toggleTitleLanguage")}
+          aria-pressed={showTitleZh}
+          className={`relative pointer-events-auto min-h-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:min-h-24 ${shouldBounce && !reducedMotion ? "animate-bounce" : ""}`}
+          style={{ perspective: 1200 }}
+          onClick={() => { setLanguage(showTitleZh ? "en" : "zh-TW"); setShouldBounce(false); }}
+        >
+          <AnimatePresence initial={false} mode="wait">
+            <motion.span
+              key={`${language}-${displayedTitle}`}
+              initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 16, rotateX: -18, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }}
+              exit={reducedMotion ? { opacity: 1 } : { opacity: 0, y: -16, rotateX: 18, filter: "blur(6px)" }}
+              transition={{ duration: reducedMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className={showTitleZh ? "block text-4xl font-chinese md:text-6xl" : "block text-4xl font-semibold tracking-[0.12em] uppercase text-white md:text-6xl"}
+              style={{ transformOrigin: "50% 50%", textShadow: "0 1px 0 rgba(241,215,164,0.85), 0 2px 0 rgba(152,166,138,0.72), 0 3px 0 rgba(19,19,19,0.9), 0 14px 28px rgba(0,0,0,0.45)" }}
+            >{displayedTitle}</motion.span>
+          </AnimatePresence>
+        </button>
+        <div className="flex flex-wrap justify-center gap-2 pointer-events-auto rounded-2xl bg-black/70 p-2">
+          <Button type="button" size="sm" disabled={!source} aria-busy={audioStatus === "loading"} onClick={() => {
+            setShouldBounce(false);
+            playingIntentRef.current = !isPlaying;
+            if (isPlaying) transportRef.current?.pause(); else void transportRef.current?.play();
+          }}>{isPlaying ? t("ar.viewer.actions.pause") : t("ar.viewer.actions.play")}</Button>
+          <Button type="button" size="sm" variant="outline" disabled={!source || audioStatus === "stopped"} onClick={() => {
+            playingIntentRef.current = false;
+            transportRef.current?.stop();
+          }}>{t("ar.viewer.actions.stop")}</Button>
+        </div>
+        {message && <p role="status" className="rounded-2xl bg-black/80 px-3 py-2 text-sm">{t(`ar.viewer.status.${message}`)}</p>}
+        <audio ref={audioRef} key={source ?? "unavailable"} src={source} className="hidden" preload="auto" />
       </div>
     </div>
   );
