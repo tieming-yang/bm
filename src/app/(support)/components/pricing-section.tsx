@@ -108,7 +108,7 @@ export default function PriceSection() {
     },
     onError: (error) => {
       console.error(error);
-      t("gloryShare.toast.checkoutError");
+      toast.error(t("gloryShare.toast.checkoutError"));
     },
   });
 
