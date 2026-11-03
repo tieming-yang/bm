@@ -106,13 +106,7 @@ export default function SchoolPage() {
     });
   }, [selectedLesson]);
 
-  if (renderGenesisLessons.length === 0) {
-    console.error(
-      "❌",
-      `renderLessons.length: ${renderGenesisLessons.length}, selectedLesson: ${selectedLesson}`
-    );
-    return null;
-  }
+
 
   /** * @see https://nextjs.org/docs/app/api-reference/functions/use-search-params#updating-searchparams
    */
@@ -127,6 +121,14 @@ export default function SchoolPage() {
     },
     [searchParams]
   );
+
+  if (renderGenesisLessons.length === 0) {
+    console.error(
+      "❌",
+      `renderLessons.length: ${renderGenesisLessons.length}, selectedLesson: ${selectedLesson}`
+    );
+    return null;
+  }
 
   const embedSrc = `https://www.youtube.com/embed/${selectedLesson?.videoId}`;
   const watchLink = buildYouTubeLink(selectedLesson?.videoId);

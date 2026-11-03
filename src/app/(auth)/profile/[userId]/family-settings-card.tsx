@@ -95,7 +95,7 @@ function DatePickerDialogField({
         </DialogHeader>
         <Calendar
           mode="single"
-          captionLayout="dropdown"
+          // Year dropdowns impose implicit bounds; family dates retain their existing unrestricted navigation.
           defaultMonth={selectedDate}
           locale={locale}
           selected={selectedDate}
