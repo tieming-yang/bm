@@ -35,6 +35,7 @@ import { useEffect, useState } from "react";
 import Auth from "@/models/auth";
 import Coupon from "@/models/coupons";
 import { CancellationResultSchema, type CancellationResult } from "@/lib/subscriptions/cancellation";
+import { hasOpenRecurringBilling } from "@/lib/subscriptions/billing";
 import FamilySettingsCard from "./family-settings-card";
 
 type Modal = "none" | "cancel" | "save";
@@ -109,9 +110,11 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
   const isOwnProfile = profile && authUser?.uid === profile.uid;
   const isGloryShareMember = Profile.isGloryShareMember(profile);
+  const hasOpenBilling = hasOpenRecurringBilling(profile);
   const locale = i18n.resolvedLanguage === "zh-TW" ? "zh-TW" : "en-US";
 
-  const gloryShareEndAtSecs = profile?.subscriptions?.at(-1)?.currentPeriodEnd;
+  const currentSubscription = profile?.subscriptions?.find((subscription) => subscription.id === profile.lastSubscriptionId);
+  const gloryShareEndAtSecs = currentSubscription?.currentPeriodEnd;
   const gloryShareEndAtDate = gloryShareEndAtSecs ? new Date(gloryShareEndAtSecs * 1000) : null;
   const gloryShareEndAtString = gloryShareEndAtDate
     ? new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(gloryShareEndAtDate)
@@ -325,6 +328,51 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     );
   }
 
+  const subscriptionControls = profile.memberType !== "lifeTime" && (
+    hasOpenBilling ? (
+      <Dialog open={modal === "cancel"} onOpenChange={(open) => { if (!cancelMutation.isPending) setModal(open ? "cancel" : "none"); }}>
+        <DialogTrigger asChild>
+          <Button id="cancel" variant="outline" className="w-full max-w-md" onClick={() => setModal("cancel")}>
+            {t(isGloryShareMember ? "gloryShareBadge.cancelGloryShare" : "billing.cancel")}
+          </Button>
+        </DialogTrigger>
+        <DialogContent closeDisabled={cancelMutation.isPending} onEscapeKeyDown={(event) => { if (cancelMutation.isPending) event.preventDefault(); }} onPointerDownOutside={(event) => { if (cancelMutation.isPending) event.preventDefault(); }}>
+          <DialogHeader>
+            <DialogTitle>{t(isGloryShareMember ? "gloryShareBadge.cancelGloryShareTitle" : "billing.cancelTitle")}</DialogTitle>
+            <DialogDescription>{t(isGloryShareMember ? "gloryShareBadge.cancelGloryShareDescription" : "billing.cancelDescription")}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="destructive"
+              disabled={cancelMutation.isPending}
+              aria-busy={cancelMutation.isPending}
+              onClick={() => {
+                if (!profile.lastSubscriptionId) {
+                  console.error("Missing current subscription reference");
+                  return;
+                }
+                cancelMutation.mutate({ uid: userId, subscriptionId: profile.lastSubscriptionId });
+              }}
+            >
+              {cancelMutation.isPending && <ActionSpinner />}
+              {t(isGloryShareMember ? "gloryShareBadge.cancelGloryShare" : "billing.cancel")}
+            </Button>
+            <DialogClose asChild>
+              <Button variant="outline" disabled={cancelMutation.isPending} onClick={() => setModal("none")}>
+                {t(isGloryShareMember ? "gloryShareBadge.continueSupport" : "billing.keep")}
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    ) : isGloryShareMember && currentSubscription?.status === "canceled" ? (
+      <div>
+        <span>{t("gloryShareBadge.gloryShareWillBeEndedAt")}</span>{" "}
+        <span>{gloryShareEndAtString}</span>
+      </div>
+    ) : null
+  );
+
   return (
     <motion.div
       className="flex flex-col items-center justify-center px-4 py-12 h-fit gap-8"
@@ -383,62 +431,18 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                   </Button>
                 )}
 
-                {profile?.subscriptions?.at(-1)?.status !== "canceled" ? (
-                  <Dialog open={modal === "cancel"} onOpenChange={(open) => { if (!cancelMutation.isPending) setModal(open ? "cancel" : "none"); }}>
-                    {(profile.memberType === "monthly" || profile.memberType === "yearly") && (
-                        <DialogTrigger asChild>
-                          <Button id="cancel" variant="outline" className="w-full max-w-md" onClick={() => setModal("cancel")}>
-                            {t("gloryShareBadge.cancelGloryShare")}
-                          </Button>
-                        </DialogTrigger>
-                      )}
-
-                    <DialogContent closeDisabled={cancelMutation.isPending} onEscapeKeyDown={(event) => { if (cancelMutation.isPending) event.preventDefault(); }} onPointerDownOutside={(event) => { if (cancelMutation.isPending) event.preventDefault(); }}>
-                      <DialogHeader>
-                        <DialogTitle>{t("gloryShareBadge.cancelGloryShareTitle")}</DialogTitle>
-                        <DialogDescription>
-                          {t("gloryShareBadge.cancelGloryShareDescription")}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <Button
-                          variant={"destructive"}
-                          disabled={cancelMutation.isPending}
-                          aria-busy={cancelMutation.isPending}
-                          // className="w-full max-w-md"
-                          onClick={() => {
-                            if (!profile || !profile.lastSubscriptionId) {
-                              console.error("Missing necessary arguments");
-                              return;
-                            }
-                            cancelMutation.mutate({
-                              uid: userId,
-                              subscriptionId: profile.lastSubscriptionId,
-                            });
-                          }}
-                        >
-                          {cancelMutation.isPending && <ActionSpinner />}
-                          {t("gloryShareBadge.cancelGloryShare")}
-                        </Button>
-                        <DialogClose asChild>
-                          <Button variant="outline" disabled={cancelMutation.isPending} onClick={() => setModal("none")}>
-                            {t("gloryShareBadge.continueSupport")}
-                          </Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                ) : (
-                  profile?.memberType !== "lifeTime" && (
-                    <div>
-                      <span>{t("gloryShareBadge.gloryShareWillBeEndedAt")}</span>{" "}
-                      <span>{gloryShareEndAtString}</span>
-                    </div>
-                  )
-                )}
+                {subscriptionControls}
               </CardFooter>
             </div>
           </div>
+        </Card>
+      )}
+
+      {!isGloryShareMember && hasOpenBilling && (
+        <Card className="w-full max-w-3xl">
+          <CardHeader><CardTitle>{t("billing.title")}</CardTitle></CardHeader>
+          <CardContent><p className="leading-relaxed text-muted-foreground">{t("billing.description")}</p></CardContent>
+          <CardFooter>{subscriptionControls}</CardFooter>
         </Card>
       )}
 
@@ -474,7 +478,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
         </CardContent>
         {isOwnProfile && (
           <CardFooter className="flex flex-col justify-center gap-y-3">
-            {!isGloryShareMember && (
+            {!isGloryShareMember && !hasOpenBilling && (
               <Button
                 variant={"default"}
                 className="px-8 rounded-full"

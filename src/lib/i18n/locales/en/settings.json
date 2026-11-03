@@ -25,6 +25,14 @@
   "donation": {
     "donate": "Donate"
   },
+  "billing": {
+    "title": "Manage your subscription",
+    "description": "Your paid member access is inactive, but your Stripe subscription is still open and payment retries may continue. You can cancel it here before starting another subscription.",
+    "cancel": "Cancel subscription",
+    "cancelTitle": "Cancel this subscription?",
+    "cancelDescription": "This cancels the current recurring subscription linked to your account.",
+    "keep": "Keep subscription"
+  },
   "gloryShareBadge": {
     "label": "Glory Share Member",
     "firstMemberLabel": "You are our first Glory Share member. Thank you for supporting our art ministry!",

@@ -108,7 +108,11 @@ const Profile = {
     const profileRef = Profile.getRef(uid);
     const subsRef = collection(profileRef, "subscriptions");
     const snap = await getDocs(subsRef);
-    return snap.docs.map((doc) => doc.data() as Subscription);
+    return snap.docs.map((doc) => {
+      const data = doc.data();
+      if (data.id !== undefined && data.id !== doc.id) throw new Error("Stored subscription ID differs from its document path");
+      return { ...data, id: doc.id } as Subscription;
+    });
   },
 
   async create(values: ProfileInput) {

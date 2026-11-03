@@ -25,6 +25,14 @@
   "donation": {
     "donate": "捐款"
   },
+  "billing": {
+    "title": "管理訂閱",
+    "description": "你的付費會員權益目前未啟用，但 Stripe 訂閱仍未結束，可能會繼續重試付款。你可以先在此取消，再開始其他訂閱。",
+    "cancel": "取消訂閱",
+    "cancelTitle": "要取消此訂閱嗎？",
+    "cancelDescription": "此操作會取消目前連結至你帳號的定期訂閱。",
+    "keep": "保留訂閱"
+  },
   "gloryShareBadge": {
     "label": "榮耀份額成員",
     "firstMemberLabel": "您是首位加入榮耀份額的成員，感謝您對藝術事奉的支持！",

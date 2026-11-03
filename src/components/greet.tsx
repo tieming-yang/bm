@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Download, Heart, ImageUp, Languages, Link2, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import styles from "./greet.module.css";
 import useTranslation from "@/hooks/use-translation";
+import useAuthUser from "@/hooks/use-auth-user";
+import Auth from "@/models/auth";
+import Profile from "@/models/profiles";
+import { QueryKey } from "@/utils/query-keys";
+import { requestMembershipCheckout } from "@/lib/membership/client";
+import type { MembershipCheckoutInput } from "@/lib/membership/contracts";
+import { hasOpenRecurringBilling } from "@/lib/subscriptions/billing";
 import {
   getLocalGreetingContext,
   millisecondsUntilNextGreetingBoundary,
@@ -34,13 +43,27 @@ type CardState =
 
 export default function Greet() {
   const { t, currentLanguage, changeLanguage } = useTranslation("greet");
+  const { authUser, isAuthUserLoading } = useAuthUser();
+  const router = useRouter();
+  const query = useQueryClient();
   const locale: GreetingLocale = currentLanguage?.toLowerCase().startsWith("en") ? "en" : "zh-TW";
   const [context, setContext] = useState<GreetingRequest | null>(null);
   const [card, setCard] = useState<CardState>({ status: "loading" });
   const [retry, setRetry] = useState(0);
   const [sharing, setSharing] = useState(false);
   const [shareOutcome, setShareOutcome] = useState<GreetingShareOutcome | null>(null);
+  const [supportState, setSupportState] = useState<"idle" | "opening" | "failed">("idle");
+  const supportRequest = useRef<AbortController | null>(null);
+  const supportAttempt = useRef<MembershipCheckoutInput | null>(null);
   const requestKey = context ? `${context.date}/${context.period}/${locale}` : "";
+
+  useEffect(() => {
+    setSupportState("idle");
+    return () => {
+      supportRequest.current?.abort();
+      supportRequest.current = null;
+    };
+  }, [authUser?.uid]);
 
   useEffect(() => {
     if (!shareOutcome) return;
@@ -143,6 +166,42 @@ export default function Greet() {
     anchor.remove();
   };
 
+  const handleSupport = async () => {
+    if (supportRequest.current || isAuthUserLoading) return;
+    const controller = new AbortController();
+    supportRequest.current = controller;
+    setSupportState("opening");
+    try {
+      const uid = authUser?.uid;
+      if (uid) {
+        const profile = await query.fetchQuery({
+          queryKey: QueryKey.profile(uid),
+          queryFn: () => Profile.get(uid),
+          staleTime: 0,
+        });
+        controller.signal.throwIfAborted();
+        if (Auth.user?.uid !== uid) throw new Error("Membership checkout account changed");
+        if (Profile.isGloryShareMember(profile) || hasOpenRecurringBilling(profile)) {
+          router.push(`/profile/${uid}`);
+          setSupportState("idle");
+          return;
+        }
+      }
+      if (Auth.user?.uid !== uid) throw new Error("Membership checkout account changed");
+      supportAttempt.current ??= { attemptId: crypto.randomUUID(), locale };
+      const result = await requestMembershipCheckout(supportAttempt.current, fetch, controller.signal);
+      if (result.kind !== "checkout") {
+        setSupportState("failed");
+        return;
+      }
+      window.location.assign(result.url);
+    } catch {
+      if (!controller.signal.aborted) setSupportState("failed");
+    } finally {
+      if (supportRequest.current === controller) supportRequest.current = null;
+    }
+  };
+
   let shareMessage = "";
   switch (shareOutcome) {
     case "copied":
@@ -161,6 +220,8 @@ export default function Greet() {
     default:
       shareOutcome satisfies never;
   }
+  const actionMessage = shareMessage || (supportState === "opening" ? t("supportOpening")
+    : supportState === "failed" ? t("supportFailed") : "");
 
   return (
     <section className={styles.screen} aria-labelledby="greet-title">
@@ -236,13 +297,11 @@ export default function Greet() {
         <Button type="button" variant="ghost" size="icon" className={styles.iconButton} aria-label={t("download")} title={t("download")} onClick={handleDownload} disabled={!ready}>
           <Download className="size-5" aria-hidden="true" />
         </Button>
-        <Button asChild variant="ghost" size="icon" className={`${styles.iconButton} ${styles.support}`}>
-          <Link href="/glory-share" aria-label={t("support")} title={t("support")}>
-            <Heart className="size-5" aria-hidden="true" />
-          </Link>
+        <Button type="button" variant="ghost" size="icon" className={`${styles.iconButton} ${styles.support}`} aria-label={t(supportState === "failed" ? "supportRetry" : "support")} title={t(supportState === "failed" ? "supportRetry" : "support")} onClick={handleSupport} disabled={isAuthUserLoading || supportState === "opening"} aria-busy={supportState === "opening"}>
+          {supportState === "opening" ? <Loader2 className="size-5 animate-spin motion-reduce:animate-none" aria-hidden="true" /> : <Heart className="size-5" aria-hidden="true" />}
         </Button>
       </div>
-      <p className={shareMessage ? styles.message : "sr-only"} role="status" aria-live="polite">{shareMessage}</p>
+      <p className={actionMessage ? styles.message : "sr-only"} role="status" aria-live="polite">{actionMessage}</p>
     </section>
   );
 }

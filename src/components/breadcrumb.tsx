@@ -11,6 +11,7 @@ const routeMap: Record<string, string> = {
   "bible-products": "nav.bibleProducts", donate: "nav.donate", signin: "nav.signin", signup: "nav.signup",
   settings: "nav.settings", "terms-of-service": "footer.termsOfService", "privacy-policy": "footer.privacyPolicy",
   "glory-share": "nav.gloryShare", ar: "nav.ar", join: "nav.join", "daily-grace-snacks": "nav.dailyGraceSnacks",
+  claim: "nav.claimMembership",
   "beyond-music": "nav.beyondMusic", school: "nav.bibleSchool", profile: "nav.profile", "beyond-art": "nav.beyond-art",
 };
 const interfaceRoutes: Record<string, string> = { dashboard: "dashboard", "summer-school": "summerSchool", summer: "summer", registration: "registration", edit: "edit", cart: "cart", orders: "orders", success: "success" };
