@@ -28,7 +28,9 @@ export function Breadcrumb() {
       <ol className="flex min-h-6 items-center gap-2 whitespace-nowrap">
         <li><Link href="/" className="text-muted-foreground hover:text-primary">{t("nav.home")}</Link></li>
         {breadcrumbEntries(pathname).map((entry) => {
-          const label = Books.order.includes(entry.segment as Book) ? tBooks(entry.segment) : routeMap[entry.segment] ? t(routeMap[entry.segment]) : interfaceRoutes[entry.segment] ? tUI(`routes.${interfaceRoutes[entry.segment]}`) : entry.segment.replace(/-/g, " ");
+          let displaySegment = entry.segment;
+          try { displaySegment = decodeURIComponent(entry.segment); } catch { /* Keep malformed URL text readable without changing its destination. */ }
+          const label = Books.order.includes(entry.segment as Book) ? tBooks(entry.segment) : routeMap[entry.segment] ? t(routeMap[entry.segment]) : interfaceRoutes[entry.segment] ? tUI(`routes.${interfaceRoutes[entry.segment]}`) : displaySegment.replace(/-/g, " ");
           return <li key={entry.href} className="flex min-w-0 items-center gap-2"><span aria-hidden="true" className="text-muted-foreground">/</span>{entry.current || !entry.linkable ? <span aria-current={entry.current ? "page" : undefined} className="max-w-52 truncate text-foreground">{label}</span> : <Link href={entry.href} className="text-muted-foreground hover:text-primary">{label}</Link>}</li>;
         })}
       </ol>
