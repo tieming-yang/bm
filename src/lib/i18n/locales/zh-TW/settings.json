@@ -24,6 +24,7 @@
   },
   "gloryShareBadge": {
     "label": "榮耀份額成員",
+    "firstMemberLabel": "您是首位加入榮耀份額的成員，感謝您對藝術事奉的支持！",
     "title": "感謝您以榮耀份額同行事工",
     "description": "您的奉獻點亮了我們的藝術事工，也為您開啟一系列專屬資源與榮耀回饋。",
     "joinedAt": "加入於 {{date}}",
@@ -41,6 +42,8 @@
     "continueSupport": "繼續支持藝術事奉！",
     "gloryShareWillBeEndedAt": "榮耀份額到期日：",
     "toast": {
+      "couponCopied": "專屬優惠折扣已複製到了您的剪貼簿！",
+      "couponCopyFailed": "專屬優惠折扣複製失敗，請再試一次",
       "cancelSuccessfully": "榮耀份額已經取消，謝謝您的支持！",
       "cancelFailed": "取消失敗，請稍後再試，或請通過官方郵件聯繫我們，萬分感謝！",
       "canceledAlready": "您的榮耀成員已經取消了"
@@ -84,6 +87,7 @@
     "gradePlaceholder": "請選擇年級",
     "birthday": "生日",
     "birthdayPlaceholder": "請選擇生日",
+    "close": "關閉",
     "allergies": "過敏資訊",
     "save": "儲存家庭檔案",
     "toast": {

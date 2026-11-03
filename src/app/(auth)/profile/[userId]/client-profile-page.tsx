@@ -42,7 +42,7 @@ type Errors = Record<string, ErrorValues>;
 export default function ClientProfilePage({ userId }: { userId: string }) {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
-  const { t, currentLanguage } = useTranslation("settings");
+  const { t, i18n } = useTranslation("settings");
   const { t: tGloryShare } = useTranslation("glory-share");
   const { t: tCommon } = useTranslation("common");
   const viewerUid = authUser?.uid ?? null;
@@ -98,7 +98,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
   const isOwnProfile = profile && authUser?.uid === profile.uid;
   const isGloryShareMember = Profile.isGloryShareMember(profile);
-  const locale = currentLanguage === "zh-TW" ? "zh-TW" : "en-US";
+  const locale = i18n.resolvedLanguage === "zh-TW" ? "zh-TW" : "en-US";
 
   const gloryShareEndAtSecs = profile?.subscriptions?.at(-1)?.currentPeriodEnd;
   const gloryShareEndAtDate = gloryShareEndAtSecs ? new Date(gloryShareEndAtSecs * 1000) : null;
@@ -312,7 +312,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                   <div className="text-left space-y-1">
                     <p className="text-xs uppercase tracking-[0.5em] text-amber-200 drop-shadow">
                       {profile.uid === "9gD5LvY70wZzyQjNwEVnsnnfGf62"
-                        ? "您是首位加入榮耀份額的成員，感謝您對藝術事奉的支持！"
+                        ? t("gloryShareBadge.firstMemberLabel")
                         : t("gloryShareBadge.label")}
                     </p>
                     <CardTitle className="text-2xl text-white drop-shadow-[0_4px_15px_rgba(0,0,0,0.45)]">
@@ -332,10 +332,10 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                     onClick={async () => {
                       try {
                         await navigator.clipboard.writeText(coupon);
-                        toast.success("專屬優惠折扣已複製到了您的剪貼簿！");
+                        toast.success(t("gloryShareBadge.toast.couponCopied"));
                       } catch (error) {
                         console.error("Copy failed", error);
-                        toast.error("專屬優惠折扣複製失敗，請再試一次");
+                        toast.error(t("gloryShareBadge.toast.couponCopyFailed"));
                       }
                     }}
                   >

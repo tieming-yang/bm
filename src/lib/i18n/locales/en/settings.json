@@ -24,6 +24,7 @@
   },
   "gloryShareBadge": {
     "label": "Glory Share Member",
+    "firstMemberLabel": "You are our first Glory Share member. Thank you for supporting our art ministry!",
     "title": "Thank you for honoring God with your Glory Share",
     "description": "Your membership fuels Activate Creation projects and unlocks exclusive resources prepared for our honor partners.",
     "joinedAt": "Joined on {{date}}",
@@ -41,6 +42,8 @@
     "continueSupport": "Keep supporting the art ministry!",
     "gloryShareWillBeEndedAt": "Glory Share will be ended at:",
     "toast": {
+      "couponCopied": "Your exclusive coupon code has been copied to your clipboard!",
+      "couponCopyFailed": "Failed to copy your exclusive coupon code. Please try again.",
       "cancelSuccessfully": "Your Glory Share has been canceled. Thank you for your support!",
       "cancelFailed": "Cancellation failed. Please try again later or contact us via our official email. Thank you!",
       "canceledAlready": "Your Glory Share has canceled already"
@@ -84,6 +87,7 @@
     "gradePlaceholder": "Select a grade",
     "birthday": "Birthday",
     "birthdayPlaceholder": "Select a birthday",
+    "close": "Close",
     "allergies": "Allergies",
     "save": "Save Family Profile",
     "toast": {

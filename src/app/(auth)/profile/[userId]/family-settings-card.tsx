@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
+import { enUS, zhTW } from "react-day-picker/locale";
 import { useForm } from "@tanstack/react-form-nextjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarIcon, PlusIcon, Trash2Icon } from "lucide-react";
@@ -90,6 +91,8 @@ function DatePickerDialogField({
   onChange: (value: string) => void;
   label: string;
 }) {
+  const { t, i18n } = useTranslation("settings");
+  const locale = i18n.resolvedLanguage === "zh-TW" ? zhTW : enUS;
   const [open, setOpen] = useState(false);
   const selectedDate = value ? parseISO(value) : undefined;
 
@@ -97,7 +100,7 @@ function DatePickerDialogField({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline" className="justify-between">
-          <span>{value ? format(parseISO(value), "PPP") : label}</span>
+          <span>{value ? format(parseISO(value), "PPP", { locale }) : label}</span>
           <CalendarIcon className="w-4 h-4 text-muted-foreground" />
         </Button>
       </DialogTrigger>
@@ -107,6 +110,7 @@ function DatePickerDialogField({
         </DialogHeader>
         <Calendar
           mode="single"
+          locale={locale}
           selected={selectedDate}
           onSelect={(date) => {
             if (!date) return;
@@ -117,7 +121,7 @@ function DatePickerDialogField({
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary">
-              Close
+              {t("family.close")}
             </Button>
           </DialogClose>
         </DialogFooter>
