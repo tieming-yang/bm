@@ -29,6 +29,10 @@ export const checkSubscriptionExpiry = onSchedule(
 
       const currentPeriodEnd = subSnap.get("currentPeriodEnd");
       const status = subSnap.get("status");
+      const entitlementPolicy = subSnap.get("entitlementPolicy");
+      if (entitlementPolicy !== undefined && entitlementPolicy !== "paid_period_v1") {
+        throw new Error("Subscription has an invalid entitlement policy");
+      }
       if (!Number.isSafeInteger(currentPeriodEnd) || currentPeriodEnd < 0) {
         throw new Error("Subscription has an invalid current period end");
       }
@@ -36,7 +40,8 @@ export const checkSubscriptionExpiry = onSchedule(
         throw new Error("Subscription has an invalid status");
       }
 
-      if (status === "canceled" && currentPeriodEnd <= nowSeconds) {
+      // New projections end at proven payment coverage, including failed renewals.
+      if ((entitlementPolicy === "paid_period_v1" || status === "canceled") && currentPeriodEnd <= nowSeconds) {
         transaction.set(profileDoc.ref, {memberType: "free", updatedAt: FieldValue.serverTimestamp()}, {merge: true});
       }
     }));

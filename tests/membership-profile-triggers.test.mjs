@@ -147,6 +147,24 @@ for (const subscription of [{ status: "active", currentPeriodEnd: 0 }, { status:
   });
 }
 
+for (const status of ["active", "past_due", "unpaid", "canceled"]) {
+  test(`paid-period ${status} membership expires exactly at its paid-through boundary`, async (t) => {
+    t.mock.timers.enable({ apis: ["Date"], now: 100000 });
+    const state = setup({ [profileRef]: initialized, [oldSubRef]: { status, currentPeriodEnd: 100, entitlementPolicy: "paid_period_v1" } });
+    await state.expire();
+    assert.equal(state.documents.get(profileRef).memberType, "free");
+    const stillPaid = setup({ [profileRef]: initialized, [oldSubRef]: { status, currentPeriodEnd: 101, entitlementPolicy: "paid_period_v1" } });
+    await stillPaid.expire();
+    assert.equal(stillPaid.writes.length, 0);
+  });
+}
+
+test("expiry rejects an unknown paid-period policy", async () => {
+  const state = setup({ [profileRef]: initialized, [oldSubRef]: { status: "active", currentPeriodEnd: 0, entitlementPolicy: "unknown" } });
+  await assert.rejects(state.expire(), /Subscription has an invalid entitlement policy/);
+  assert.equal(state.writes.length, 0);
+});
+
 for (const subscription of [{ status: "unknown", currentPeriodEnd: 0 }, { status: "canceled", currentPeriodEnd: "0" }, { status: "canceled", currentPeriodEnd: -1 }]) {
   test(`expiry rejects malformed persisted subscription ${JSON.stringify(subscription)}`, async () => {
     const state = setup({ [profileRef]: initialized, [oldSubRef]: subscription });
