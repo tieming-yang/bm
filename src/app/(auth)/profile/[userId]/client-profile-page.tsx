@@ -34,6 +34,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Auth from "@/models/auth";
 import Coupon from "@/models/coupons";
+import { CancellationResultSchema, type CancellationResult } from "@/lib/subscriptions/cancellation";
 import FamilySettingsCard from "./family-settings-card";
 
 type Modal = "none" | "cancel" | "save";
@@ -108,7 +109,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const hasOrgEmailUpdated = profile && (profile.organizationEmailUpdateCount ?? 0) > 0;
 
   const cancelMutation = useMutation<
-    { uid: string },
+    { uid: string; status: CancellationResult["outcome"] | "rejected" },
     Error,
     { uid: string; subscriptionId: string }
   >({
@@ -119,28 +120,37 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
       const payload = { uid };
 
       try {
+        const token = await Auth.user?.getIdToken();
+        if (!token) return { uid, status: "rejected" };
         const rawResponse = await fetch(`/api/subscriptions/${subscriptionId}/cancel`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         });
 
-        const response = await rawResponse.json();
         if (!rawResponse.ok) {
-          console.debug(response);
-          throw new Error(response?.error);
+          return { uid, status: "rejected" };
         }
+        const response = CancellationResultSchema.parse(await rawResponse.json());
+        return { uid, status: response.outcome };
       } catch (error) {
         throw error;
       }
-
-      return { uid };
     },
     onSuccess: (result) => {
       setModal("none");
-      toast.success(t("gloryShareBadge.toast.cancelSuccessfully"));
+      if (result.status === "rejected") {
+        toast.error(t("gloryShareBadge.toast.cancelFailed"));
+        return;
+      }
+      if (result.status === "already_canceled") {
+        toast.warning(t("gloryShareBadge.toast.canceledAlready"));
+      } else {
+        toast.success(t("gloryShareBadge.toast.cancelSuccessfully"));
+      }
       query.invalidateQueries({
         queryKey: QueryKey.profile(result.uid),
       });
@@ -148,10 +158,6 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     onError: (error) => {
       console.error(error);
       setModal("none");
-      if (error.message.includes("No such subscription:")) {
-        toast.warning(t("gloryShareBadge.toast.canceledAlready"));
-        return;
-      }
       toast.error(t("gloryShareBadge.toast.cancelFailed"));
     },
   });
@@ -351,8 +357,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
                 {profile?.subscriptions?.at(-1)?.status !== "canceled" ? (
                   <Dialog open={modal === "cancel"}>
-                    {profile.memberType === "monthly" ||
-                      (profile.memberType === "yearly" && (
+                    {(profile.memberType === "monthly" || profile.memberType === "yearly") && (
                         <DialogTrigger
                           id="cancel"
                           className="w-full max-w-md"
@@ -360,7 +365,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                         >
                           {t("gloryShareBadge.cancelGloryShare")}
                         </DialogTrigger>
-                      ))}
+                      )}
 
                     <DialogContent className="font-mono">
                       <DialogHeader>
@@ -372,14 +377,15 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                       <DialogFooter>
                         <Button
                           variant={"destructive"}
+                          disabled={cancelMutation.isPending}
                           // className="w-full max-w-md"
                           onClick={() => {
-                            if (!profile || !profile.uid || !profile.lastSubscriptionId) {
+                            if (!profile || !profile.lastSubscriptionId) {
                               console.error("Missing necessary arguments");
                               return;
                             }
                             cancelMutation.mutate({
-                              uid: profile.uid,
+                              uid: userId,
                               subscriptionId: profile.lastSubscriptionId,
                             });
                           }}
