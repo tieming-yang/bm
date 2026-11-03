@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CheckCircle2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useTranslation from "@/hooks/use-translation";
-import { BEYOND_EMAIL } from "@/app/(marketing)/contact/page";
+import { BEYOND_EMAIL } from "@/app/(marketing)/contact/constants";
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
@@ -14,15 +14,16 @@ type Props = {
 
 export function GloryShareSuccessContent({ email }: Props) {
   const { t } = useTranslation();
+  const { t: tGloryShare } = useTranslation("glory-share");
 
   return (
-    <section className="container relative z-50 max-w-3xl px-6 py-16 mx-auto h-svh">
-      <div className="px-10 pt-3 pb-10 text-center border shadow-xl space-y-6 rounded-3xl border-primary/15 bg-background/80 shadow-primary/10 backdrop-blur">
+    <section className="container relative max-w-3xl px-4 py-12 mx-auto min-h-svh sm:py-16">
+      <div className="px-5 sm:px-10 pt-3 pb-10 text-center border shadow-xl space-y-6 rounded-3xl border-primary/15 bg-background/80 shadow-primary/10 backdrop-blur">
         <div className="relative flex items-center justify-center mx-auto rounded-full h-55 w-55 md:h-77 md:w-77 bg-primary/10 text-primary">
-          <Image src={"/glory-share/join-success-badge.jpg"} fill alt="Glory Share Badge" className="rounded-full" />
+          <Image src={"/glory-share/join-success-badge.jpg"} fill alt={tGloryShare("join.successBadge")} className="rounded-full" />
         </div>
         <div className="space-y-3">
-          <h1 className="text-3xl font-semibold">{t("gloryShareSuccess.title")}</h1>
+          <h1 className="font-display text-3xl font-semibold">{t("gloryShareSuccess.title")}</h1>
           <p className="text-base text-muted-foreground">
             {email
               ? t("gloryShareSuccess.subtitleWithEmail", { email })
@@ -36,10 +37,10 @@ export function GloryShareSuccessContent({ email }: Props) {
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4">
-          <Button asChild className="px-8 rounded-full">
+          <Button asChild className="w-full px-8 rounded-full sm:w-auto">
             <Link href="/">{t("gloryShareSuccess.cta.backHome")}</Link>
           </Button>
-          <Button variant="outline" asChild className="px-8 rounded-full border-primary/30">
+          <Button variant="outline" asChild className="w-full px-8 rounded-full border-primary/30 sm:w-auto">
             <Link href="/bible-gallery">{t("gloryShareSuccess.cta.viewGallery")}</Link>
           </Button>
         </div>

@@ -105,7 +105,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
 
   if (isProfileLoading) return <Loading />;
   return (
-    <div className="container relative z-50 px-4 py-16 mx-auto space-y-16">
+    <div className="container relative px-4 py-16 mx-auto space-y-16">
       <section className="grid gap-10 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -116,7 +116,7 @@ export default function GlorySharePage(props: PageProps<"/glory-share">) {
           <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-sm uppercase tracking-[0.2em] text-primary">
             {t("gloryShare.badge")}
           </span>
-          <h1 className="text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
+          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl">
             {t("gloryShare.hero.title")}
           </h1>
           <Intro i18nKey="gloryShare.intro" />

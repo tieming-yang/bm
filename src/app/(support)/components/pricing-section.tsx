@@ -1,8 +1,7 @@
 "use client";
 
-import Loading from "@/app/loading";
+import Loading, { ActionSpinner } from "@/app/loading";
 import { Button } from "@/components/ui/button";
-import useInnerWidth from "@/hooks/use-inner-width";
 import useProfile from "@/hooks/use-profile";
 import { cn } from "@/lib/utils";
 import Price from "@/models/prices";
@@ -11,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import useTranslation from "@/hooks/use-translation";
 import { toast } from "sonner";
 
 const tiers = [
@@ -67,7 +66,7 @@ const tiers = [
 ];
 
 export default function PriceSection() {
-  const { t } = useTranslation("glory-share");
+  const { t, currentLanguage } = useTranslation("glory-share");
   const { profile, isProfileLoading } = useProfile();
   const router = useRouter();
   const currentPathname = usePathname();
@@ -112,8 +111,12 @@ export default function PriceSection() {
     },
   });
 
-  const innerWidth = useInnerWidth();
   const renderTiers = tiers;
+  const priceFormatter = new Intl.NumberFormat(currentLanguage, {
+    style: "currency",
+    currency: "USD",
+    currencyDisplay: "code",
+  });
 
   if (isProfileLoading) {
     return <Loading />;
@@ -122,7 +125,7 @@ export default function PriceSection() {
   const isGloryShareMember = Profile.isGloryShareMember(profile);
 
   return (
-    <div className="relative px-6 py-24 bg-gray-900 isolate sm:py-32 lg:px-8">
+    <div className="relative px-6 py-24 bg-card isolate sm:py-24 lg:px-8">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 overflow-hidden -top-3 -z-10 transform-gpu px-36 blur-3xl"
@@ -139,7 +142,7 @@ export default function PriceSection() {
         <h2 className="font-semibold text-base/7 text-primary-foreground-gradient">
           {t("join.hero.plan")}
         </h2>
-        <p className="mt-2 text-2xl font-semibold tracking-wider text-white sm:leading-20 text-balance sm:text-6xl">
+        <p className="font-display mt-2 text-3xl font-semibold tracking-wider text-white sm:leading-20 text-balance sm:text-6xl">
           {t("join.hero.title")}
         </p>
       </div>
@@ -148,13 +151,13 @@ export default function PriceSection() {
       </p>
       <div
         className={cn(
-          "mx-auto mt-16 grid grid-cols-1 gap-y-6 sm:gap-x-5 sm:mt-20 xl:max-w-360",
+          "mx-auto mt-12 grid grid-cols-1 gap-6 max-w-360",
           tiers.length === 1 && "md:grid-cols-1",
           tiers.length === 2 && "md:grid-cols-2",
           tiers.length >= 3 && "md:grid-cols-2 xl:grid-cols-4"
         )}
       >
-        {renderTiers.map((tier, tierIdx) => {
+        {renderTiers.map((tier) => {
           const features = t(tier.features, { returnObjects: true }) as string[];
           const isLifeTime = tier.name.includes("lifeTime");
           const isOnSale = Boolean(tier.discount);
@@ -182,20 +185,19 @@ export default function PriceSection() {
                   {t(tier.promotion!, { code: tier.coupon!.code })}
                 </p>
               )}
-              <p className="flex items-baseline mt-4 text-5xl gap-x-2 text-primary-foreground-gradient">
-                <span className="text-3xl text-white">$</span>
+              <p className="flex flex-wrap items-baseline mt-4 text-3xl gap-x-2 gap-y-1 text-primary sm:text-4xl">
                 <span
                   className={cn(
                     isOnSale &&
-                      "text-4xl line-through decoration-3 decoration-wavy decoration-pink-500",
+                      "text-2xl line-through decoration-2",
                     "font-mono font-semibold tracking-tight"
                   )}
                 >
-                  {tier.price}
+                  {priceFormatter.format(Number(tier.price))}
                 </span>
                 {isOnSale && (
                   <span className="font-mono">
-                    {Math.floor(Number(tier.price) * tier.discount!)}
+                    {priceFormatter.format(Math.floor(Number(tier.price) * tier.discount!))}
                   </span>
                 )}
                 <span
@@ -237,8 +239,11 @@ export default function PriceSection() {
               ) : (
                 <Button
                   size="lg"
-                  className="w-full px-8 mx-auto mt-5 rounded-full"
+                  className="w-full px-6 mx-auto mt-5 rounded-full"
+                  disabled={joinMutation.isPending}
+                  aria-busy={joinMutation.isPending && joinMutation.variables?.priceId === tier.priceId}
                   onClick={() => {
+                    if (joinMutation.isPending) return;
                     if (!profile) {
                       toast.warning(t("gloryShare.toast.requestSignIn"));
                       router.push(`/signin?redirectTo=${currentPathname}`);
@@ -250,9 +255,9 @@ export default function PriceSection() {
                     joinMutation.mutate({ priceId: tier.priceId, couponId });
                   }}
                 >
-                  {joinMutation.isPending
-                    ? t("gloryShare.hero.processingCta")
-                    : t("gloryShare.hero.primaryCta")}
+                  {joinMutation.isPending && joinMutation.variables?.priceId === tier.priceId ? (
+                    <><ActionSpinner /> {t("gloryShare.hero.processingCta")}</>
+                  ) : t("gloryShare.hero.primaryCta")}
                 </Button>
               )}
             </div>
