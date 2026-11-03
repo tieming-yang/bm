@@ -8,8 +8,8 @@
 .screen {
   position: relative;
   display: grid;
-  grid-template-areas: "topbar" "card" "scripture" "actions";
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "topbar" "card" "actions";
+  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 12px;
   width: 100%;
   height: 100svh;
@@ -64,38 +64,6 @@
   justify-content: center;
   gap: 20px;
   text-align: center;
-}
-
-.scripture {
-  grid-area: scripture;
-  justify-self: center;
-  width: 100%;
-  max-width: 560px;
-  text-align: center;
-}
-
-.scriptureTitle {
-  margin-bottom: 6px;
-  color: #666b5b;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.verse {
-  font-size: clamp(14px, 1.8vh, 17px);
-  line-height: 1.5;
-  text-wrap: pretty;
-  user-select: text;
-}
-
-.reference {
-  display: block;
-  margin-top: 5px;
-  color: #666b5b;
-  font-size: 12px;
-  font-style: normal;
 }
 
 .actions {
@@ -158,22 +126,5 @@
 @media (max-height: 650px) {
   .screen {
     gap: 8px;
-  }
-}
-
-@media (max-height: 560px) and (min-width: 640px) {
-  .screen {
-    grid-template-areas: "topbar topbar" "card scripture" "card actions";
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    column-gap: 24px;
-  }
-
-  .scripture {
-    align-self: center;
-  }
-
-  .message {
-    left: calc(50% + 12px);
   }
 }

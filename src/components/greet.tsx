@@ -189,7 +189,7 @@ export default function Greet() {
             <img
               src={ready.imageUrl}
               alt={ready.description.artworkTitle}
-              aria-describedby="greet-card-text greet-scripture"
+              aria-describedby="greet-card-text"
               width={1080}
               height={1350}
               className={styles.cardImage}
@@ -202,6 +202,8 @@ export default function Greet() {
             <figcaption id="greet-card-text" className="sr-only">
               <p>{ready.description.greeting}</p>
               <p>{ready.description.dateLabel}</p>
+              <p>{ready.description.verse}</p>
+              <p>{ready.description.reference}</p>
               <p>Beyond Media</p>
             </figcaption>
           </figure>
@@ -223,16 +225,6 @@ export default function Greet() {
           </div>
         )}
       </div>
-
-      {ready && (
-        <section className={styles.scripture} aria-labelledby="greet-scripture-title">
-          <h2 id="greet-scripture-title" className={styles.scriptureTitle}>{t("scripture")}</h2>
-          <blockquote id="greet-scripture">
-            <p className={styles.verse}>{ready.description.verse}</p>
-            <cite className={styles.reference}>{ready.description.reference}</cite>
-          </blockquote>
-        </section>
-      )}
 
       <div className={styles.actions} role="group" aria-label={t("actions")}>
         <Button type="button" variant="ghost" size="icon" className={styles.iconButton} aria-label={t("shareLink")} title={t("shareLink")} onClick={handleShareLink} disabled={sharing}>
