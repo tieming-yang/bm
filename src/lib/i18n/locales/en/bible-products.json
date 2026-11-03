@@ -40,5 +40,24 @@
       "ctaSecondary": "Book a consultation",
       "note": "Send us your event date or collector goals and we will curate samples, pricing, and delivery timelines."
     }
+  },
+  "handoff": {
+    "catalog": {
+      "title": "Shop Bible Gifts",
+      "description": "Browse our current collection and purchase through our Shopify store."
+    },
+    "cart": {
+      "title": "Continue shopping on Shopify",
+      "description": "Our store and checkout are now on Shopify. Open the store to choose your items and complete your purchase.",
+      "cartNotice": "Items from the previous website cart are not transferred automatically. Your previous cart has not been cleared."
+    },
+    "orders": {
+      "title": "Help with a past order",
+      "description": "Use your order confirmation email to review a purchase. This page does not confirm a payment or provide a receipt."
+    },
+    "shopAction": "Open Shopify store",
+    "supportAction": "Contact order support",
+    "homeAction": "Back to home",
+    "orderHelp": "For help with a past purchase, contact us with your order confirmation email."
   }
 }

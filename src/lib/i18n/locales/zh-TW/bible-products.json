@@ -40,5 +40,24 @@
       "ctaSecondary": "預約諮詢",
       "note": "請提供活動日期或收藏需求，我們將整理樣品、報價與交期供您選擇。"
     }
+  },
+  "handoff": {
+    "catalog": {
+      "title": "選購聖經禮品",
+      "description": "請前往我們的 Shopify 商店，瀏覽最新商品並完成購買。"
+    },
+    "cart": {
+      "title": "前往 Shopify 繼續選購",
+      "description": "我們的商店與結帳服務已移至 Shopify。請開啟商店重新選擇商品並完成購買。",
+      "cartNotice": "舊網站購物車的商品不會自動轉移；原有購物車資料並未清除。"
+    },
+    "orders": {
+      "title": "過往訂單協助",
+      "description": "請透過訂單確認電子郵件查看購買資訊。本頁不代表付款已完成，亦不提供付款收據。"
+    },
+    "shopAction": "前往 Shopify 商店",
+    "supportAction": "聯絡訂單客服",
+    "homeAction": "返回首頁",
+    "orderHelp": "如需過往訂單協助，請附上訂單確認電子郵件與我們聯絡。"
   }
 }
