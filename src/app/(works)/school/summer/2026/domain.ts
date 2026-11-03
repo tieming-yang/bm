@@ -92,6 +92,7 @@ export const SUMMER_CAMP_FORM_DEFINITION = {
   },
   event: {
     slug: EVENT_SLUG,
+    registrationStatus: "closed",
     title: EVENT_TITLE,
     type: EVENT_TYPE,
     scheduleDisplay: EVENT_SCHEDULE_DISPLAY,

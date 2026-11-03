@@ -1,5 +1,5 @@
 import API from "@/app/api/api";
-import { isSupportedEventSlug } from "@/app/(works)/school/summer/2026/domain";
+import { getSchoolEventBySlug, isSupportedEventSlug } from "@/app/(works)/school/summer/2026/domain";
 import firebaseAdmin from "@/lib/firebase/firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,6 +15,10 @@ export async function GET(
 
   if (!isSupportedEventSlug(eventSlug)) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
+  }
+
+  if (getSchoolEventBySlug(eventSlug)?.event.registrationStatus === "closed") {
+    return NextResponse.json({ error: "REGISTRATION_CLOSED" }, { status: 410 });
   }
 
   try {
