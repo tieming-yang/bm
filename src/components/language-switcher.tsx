@@ -6,6 +6,7 @@ import useTranslation from "../hooks/use-translation";
 
 export default function LanguageSwitcher() {
   const { currentLanguage, changeLanguage } = useTranslation();
+  const { t } = useTranslation("ui");
   const [mounted, setMounted] = useState(false);
 
   // Hydration fix
@@ -16,7 +17,7 @@ export default function LanguageSwitcher() {
   if (!mounted) {
     return (
       <div className="inline-flex h-10 w-[168px] rounded-full border border-border/70 bg-background/60 p-1">
-        <span className="sr-only">Switch language</span>
+        <span className="sr-only">{t("actions.language")}</span>
       </div>
     );
   }
@@ -25,7 +26,7 @@ export default function LanguageSwitcher() {
 
   return (
     <div
-      aria-label="Switch language"
+      aria-label={t("actions.language")}
       className="relative inline-flex p-1 overflow-hidden border rounded-full isolate border-border/70 bg-background/60 shadow-sm backdrop-blur-md"
       role="group"
     >
@@ -39,7 +40,7 @@ export default function LanguageSwitcher() {
       <button
         aria-pressed={!isChinese}
         className={cn(
-          "relative z-10 h-8 min-w-20 rounded-full px-3 text-sm font-medium",
+          "relative z-10 min-h-11 min-w-20 rounded-full px-3 text-sm font-medium",
           !isChinese ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
         )}
         onClick={() => changeLanguage("en")}
@@ -50,7 +51,7 @@ export default function LanguageSwitcher() {
       <button
         aria-pressed={isChinese}
         className={cn(
-          "relative z-10 h-8 min-w-20 rounded-full px-3 text-sm font-medium",
+          "relative z-10 min-h-11 min-w-20 rounded-full px-3 text-sm font-medium",
           isChinese ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
         )}
         onClick={() => changeLanguage("zh-TW")}

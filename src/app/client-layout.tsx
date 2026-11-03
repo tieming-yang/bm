@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import "../lib/i18n";
-import { motion } from "framer-motion";
+import { motion, MotionConfig, useReducedMotion } from "framer-motion";
 import ShoppingCartProvider from "@/providers/shopping-cart-provider";
 import { useQuery } from "@tanstack/react-query";
 import BibleArtworks from "@/models/bible-artworks";
@@ -12,7 +12,8 @@ import Song from "@/models/song";
 
 function ClientRoot({ children }: React.PropsWithChildren) {
   const pathname = usePathname();
-  const { currentLanguage } = useTranslation();
+  useTranslation();
+  const reducedMotion = useReducedMotion();
 
   useQuery({
     queryKey: [QueryKey.artworks],
@@ -27,16 +28,19 @@ function ClientRoot({ children }: React.PropsWithChildren) {
   });
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-      <motion.div
+    <MotionConfig reducedMotion="user">
+    <motion.div initial={{ opacity: reducedMotion ? 1 : 0 }} animate={{ opacity: 1 }} transition={{ duration: reducedMotion ? 0 : 1 }}>
+      {!reducedMotion && <motion.div
+        aria-hidden="true"
         key={pathname}
-        className="fixed inset-0 z-50 pointer-events-none bg-primary-gradient-50"
+        className="fixed inset-0 z-(--layer-transition) pointer-events-none bg-primary-gradient-50"
         initial={{ opacity: 1, backdropFilter: "blur(20px)" }}
         animate={{ opacity: 0, backdropFilter: "blur(0px)" }}
         transition={{ duration: 1.5, ease: "easeOut" }}
-      />
+      />}
       <ShoppingCartProvider>{children}</ShoppingCartProvider>
     </motion.div>
+    </MotionConfig>
   );
 }
 

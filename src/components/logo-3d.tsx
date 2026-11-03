@@ -3,10 +3,12 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { useReducedMotion } from "framer-motion";
 
 const LOGO_URL = "/logos/logo-metalic.webp";
 
 export default function Logo3D() {
+  const reducedMotion = useReducedMotion();
   const rotationTargetRef = useRef({
     x: 0,
     y: 0,
@@ -17,6 +19,10 @@ export default function Logo3D() {
   const lastPointerRef = useRef({ x: 0, y: 0 });
   const pointerStartRef = useRef({ x: 0, y: 0 });
   const touchGestureRef = useRef<"pending" | "dragging" | "scrolling">("pending");
+
+  if (reducedMotion) {
+    return <div className="flex h-svh items-center justify-center bg-background px-8"><img src={LOGO_URL} alt="" className="max-h-[65svh] max-w-full object-contain" /></div>;
+  }
 
   return (
     <div

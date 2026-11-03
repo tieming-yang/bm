@@ -22,11 +22,7 @@ export const useTranslation = (namespace = "common", option: TranslationOptions 
     const lang = i18n.language;
     document.documentElement.lang = lang;
 
-    // Force re-render of text with new font configuration
-    document.body.style.opacity = "0.99";
-    setTimeout(() => {
-      document.body.style.opacity = "1";
-    }, 50);
+
   }, [i18n.language]);
 
   const changeLanguage = (lng: string) => {
@@ -70,11 +66,7 @@ export const useMultiTranslation = (namespaces: string[] = ["common"]) => {
     const lang = i18n.language;
     document.documentElement.lang = lang;
 
-    // Force re-render of text with new font configuration
-    document.body.style.opacity = "0.99";
-    setTimeout(() => {
-      document.body.style.opacity = "1";
-    }, 50);
+
   }, [i18n.language]);
 
   const changeLanguage = (lng: string) => {

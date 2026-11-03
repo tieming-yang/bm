@@ -1,22 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Axe, ChevronLeftIcon, Moon, ShoppingCartIcon, Sun, User } from "lucide-react";
-
-import { useTheme } from "next-themes";
+import { motion, useReducedMotion } from "framer-motion";
+import { Axe, ChevronLeftIcon, Menu, User } from "lucide-react";
 import LanguageSwitcher from "./language-switcher";
 import useTranslation from "../hooks/use-translation";
 import useAuthUser from "@/hooks/use-auth-user";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TFunction } from "i18next";
-import { useShoppingCart } from "@/providers/shopping-cart-provider";
-import Cart from "@/models/cart";
 import Config from "@/models/config";
 import { ADMIN_UID } from "@/utils/constants";
+import { isRouteActive } from "@/lib/ui/navigation";
 
 export const navRoutes = [
   { href: "/", label: (t: TFunction<string, undefined>) => t("nav.home") },
@@ -25,218 +22,68 @@ export const navRoutes = [
   { href: "/ar", label: (t: TFunction<string, undefined>) => t("nav.ar") },
   { href: "/beyond-music", label: (t: TFunction<string, undefined>) => t("nav.beyondMusic") },
   { href: "/bible-gallery", label: (t: TFunction<string, undefined>) => t("nav.bibleGallery") },
-  { href: "/greet", label: (t: TFunction<string, undefined>) => t("nav.greet") },
-  {
-    href: "/daily-grace-snacks",
-    label: (t: TFunction<string, undefined>) => t("nav.dailyGraceSnacks"),
-  },
+  { href: "/daily-grace-snacks", label: (t: TFunction<string, undefined>) => t("nav.dailyGraceSnacks") },
   { href: "/school", label: (t: TFunction<string, undefined>) => t("nav.bibleSchool") },
-  {
-    href: "https://shop.beyond-media.art/",
-    label: (t: TFunction<string, undefined>) => t("nav.bibleProducts"),
-  },
+  { href: "https://shop.beyond-media.art/", label: (t: TFunction<string, undefined>) => t("nav.bibleProducts") },
   { href: "/contact", label: (t: TFunction<string, undefined>) => t("nav.contact") },
   { href: "/beyond-art", label: (t: TFunction<string, undefined>) => t("nav.beyond-art") },
   { href: "/donate", label: (t: TFunction<string, undefined>) => t("nav.donate") },
-  // { href: "/signin", label:(t: TFunction<string, undefined>) => t("nav.signin") },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
+  const { t: tUI } = useTranslation("ui");
+  const { authUser } = useAuthUser();
+  const reducedMotion = useReducedMotion();
   const [isMounted, setIsMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const shoppingCart = useShoppingCart();
-  const cartItems = Cart.getItemsCount(shoppingCart);
-
+  useEffect(() => { setIsMounted(true); }, []);
+  useEffect(() => { setIsMenuOpen(false); }, [pathname]);
   useEffect(() => {
-    setIsMounted(true);
+    const query = window.matchMedia("(min-width: 1800px)");
+    const closeOnDesktop = () => { if (query.matches) setIsMenuOpen(false); };
+    query.addEventListener("change", closeOnDesktop);
+    return () => query.removeEventListener("change", closeOnDesktop);
   }, []);
 
-  // Close menu when route changes
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
-
-  // Prevent scrolling when menu is open
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isMenuOpen]);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const { authUser } = useAuthUser();
-
   return (
-    <>
-      <nav className="fixed px-5 font-serif bottom-3 min-w-svw z-120 h-fit">
-        <div className="flex items-center min-w-full gap-x-5">
-          <div className="hidden py-3 flex-1 items-center max-w-fit gap-6 px-4 xl:flex xl:border xl:rounded-full xl:shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)] xl:backdrop-blur-xl xl:bg-primary-gradient-10 xl:border-black/10">
+    <Dialog open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+      <nav aria-label={tUI("navigation.primary")} className="fixed inset-x-0 bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] z-(--layer-navigation) px-3 sm:px-5">
+        <div className="mx-auto flex w-fit max-w-full items-center gap-2 rounded-full border bg-background/90 p-2 shadow-xl backdrop-blur-xl sm:gap-3">
+          <div className="hidden items-center gap-5 px-3 min-[1800px]:flex">
             {navRoutes.map((route) => (
-              <Link
-                key={route.href}
-                href={route.href}
-                className={`xl:text-sm font-medium transition-colors hover:text-primary ${
-                  pathname?.includes(route.href) && route.href !== "/"
-                    ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
-                    : ""
-                } ${
-                  pathname === route.href && route.href === "/"
-                    ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
-                    : ""
-                }`}
-              >
+              <Link key={route.href} href={route.href} aria-current={isRouteActive(pathname, route.href) ? "page" : undefined} className={`whitespace-nowrap text-sm font-medium transition-colors hover:text-primary ${isRouteActive(pathname, route.href) ? "text-primary underline decoration-primary/60 underline-offset-8" : "text-foreground"}`}>
                 {route.label(t)}
               </Link>
             ))}
           </div>
-
-          <section className="z-50 flex self-end justify-end ml-auto gap-5 shrink-0">
-            {pathname !== "/" && (
-              <Button
-                className="xl:hidden"
-                variant={"outline"}
-                size="icon"
-                onClick={() => router.back()}
-              >
-                <ChevronLeftIcon />
-              </Button>
-            )}
-            {isMounted && (
-              <div className="flex gap-x-5">
-                {(!Config.isProd || authUser?.uid === ADMIN_UID) && (
-                  <Link href="/sandbox">
-                    <Button variant={"outline"} size={"default"}>
-                      <Axe />
-                    </Button>
-                  </Link>
-                )}
-                <div className="hidden xl:block">
-                  <LanguageSwitcher />
-                </div>
-                {authUser ? (
-                  <Link
-                    href={`/profile/${authUser.uid}`}
-                    className="font-medium text-primary-foreground"
-                  >
-                    <Button size="icon">
-                      <User />
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href="/signin">
-                    <Button variant={"outline"} size={"default"}>
-                      {t("nav.signin")}
-                    </Button>
-                  </Link>
-                )}
-
-                {/* <Link href={"/cart"}>
-                  <Button size={"icon"} variant={"secondary"} className="relative">
-                    {cartItems > 0 && (
-                      <span className="absolute inline-flex items-center justify-center px-1 font-mono font-semibold text-white bg-red-500 rounded-full -top-3 -right-3 min-w-7 h-7 backdrop-blur-3xl text-md">
-                        {cartItems}
-                      </span>
-                    )}
-                    <ShoppingCartIcon />
-                  </Button>
-                </Link> */}
-              </div>
-            )}
-          </section>
-          <Button
-            onClick={toggleMenu}
-            type="button"
-            variant={"outline"}
-            size="icon"
-            className="relative flex flex-col items-center justify-center z-60 xl:hidden focus:outline-hidden"
-            aria-label="Menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span
-              className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
-                isMenuOpen ? "rotate-45 translate-y-0.5" : "-translate-y-1"
-              }`}
-            ></span>
-            <span
-              className={`block w-6 h-0.5 bg-foreground rounded-full transition-all duration-300 ease-out ${
-                isMenuOpen ? "-rotate-45 translate-y-0" : "translate-y-1"
-              }`}
-            ></span>
-          </Button>
+          {pathname !== "/" && <Button className="min-[1800px]:hidden" variant="outline" size="icon" aria-label={tUI("actions.back")} onClick={() => router.back()}><ChevronLeftIcon aria-hidden="true" /></Button>}
+          {isMounted && <>
+            {(!Config.isProd || authUser?.uid === ADMIN_UID) && <Button variant="outline" size="icon" asChild><Link href="/sandbox" aria-label={tUI("actions.sandbox")}><Axe aria-hidden="true" /></Link></Button>}
+            <div className="hidden min-[1800px]:block"><LanguageSwitcher /></div>
+            {authUser ? <Button size="icon" asChild><Link href={`/profile/${authUser.uid}`} aria-label={tUI("actions.profile")}><User aria-hidden="true" /></Link></Button> : <Button variant="outline" asChild><Link href="/signin">{t("nav.signin")}</Link></Button>}
+          </>}
+          <DialogTrigger asChild><Button type="button" variant="outline" size="icon" className="min-[1800px]:hidden" aria-label={tUI("actions.menu")}><Menu aria-hidden="true" /></Button></DialogTrigger>
         </div>
       </nav>
-
-      {/* Full screen mobile menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 font-serif z-110 xl:hidden bg-primary-gradient-50"
-          >
-            <div className="flex flex-col h-full px-6 pt-5 pb-10">
-              <div className="flex flex-col items-center justify-center gap-4 sm:gap-y-7">
-                {navRoutes.map((route, index) => (
-                  <motion.div
-                    key={route.href}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
-                    <Link
-                      href={route.href}
-                      className={`text-xl sm:text-2xl duration-300 transition-all font-medium  hover:text-primary ${
-                        pathname?.includes(route.href) && route.href !== "/"
-                          ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
-                          : ""
-                      } ${
-                        pathname === route.href && route.href === "/"
-                          ? "bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent"
-                          : ""
-                      }`}
-                    >
-                      {route.label(t)}
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.5 }}
-                className="flex flex-col mt-auto gap-4"
-              >
-                {isMounted && (
-                  <div className="flex justify-center">
-                    <LanguageSwitcher />
-                  </div>
-                )}
-                <div className="pt-6 border-t border-primary/10">
-                  <p className="text-sm text-muted-foreground">
-                    &copy; {new Date().getFullYear()} 彼岸數位媒體
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+      <DialogContent className="inset-0 left-0 top-0 h-dvh w-full max-h-dvh max-w-none translate-x-0 translate-y-0 rounded-none border-0 bg-primary-gradient-50 px-6 pt-[calc(3.5rem+env(safe-area-inset-top,0px))] pb-[calc(2rem+env(safe-area-inset-bottom,0px))]">
+        <DialogTitle className="sr-only">{tUI("navigation.menuTitle")}</DialogTitle>
+        <DialogDescription className="sr-only">{tUI("navigation.primary")}</DialogDescription>
+        <div className="mx-auto flex w-full max-w-xl flex-col gap-6">
+          <nav aria-label={tUI("navigation.primary")}>
+            <ul className="flex flex-col items-stretch gap-2">
+              {navRoutes.map((route, index) => <motion.li key={route.href} initial={reducedMotion ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reducedMotion ? 0 : 0.3, delay: reducedMotion ? 0 : index * 0.1 }}>
+                <Link href={route.href} onClick={() => setIsMenuOpen(false)} aria-current={isRouteActive(pathname, route.href) ? "page" : undefined} className={`flex min-h-11 items-center justify-center rounded-full px-4 py-2 text-center text-lg font-medium hover:bg-primary/10 ${isRouteActive(pathname, route.href) ? "text-primary" : "text-foreground"}`}>{route.label(t)}</Link>
+              </motion.li>)}
+            </ul>
+          </nav>
+          <div className="flex justify-center"><LanguageSwitcher /></div>
+          <p className="border-t pt-5 text-center text-xs text-muted-foreground">{t("footer.copyright", { year: new Date().getFullYear() })}</p>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

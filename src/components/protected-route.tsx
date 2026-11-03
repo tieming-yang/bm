@@ -20,7 +20,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
     router.replace(`/signin?redirectTo=${encodeURIComponent(pathname)}`);
   }, [authUser, isAuthUserLoading, pathname, router, tCommon]);
 
-  if (isAuthUserLoading) return <Loading />;
+  if (isAuthUserLoading) return <Loading fullScreen />;
   if (!authUser) return null;
 
   return <>{children}</>;

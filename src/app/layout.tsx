@@ -1,4 +1,4 @@
-import { Kings, Eagle_Lake, Yuji_Mai } from "next/font/google";
+import { Eagle_Lake, Yuji_Mai } from "next/font/google";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import { ThemeProvider } from "../components/theme-provider";
@@ -15,13 +15,6 @@ import Header from "@/components/header";
 import ChineseOnlyGuard from "@/components/chinese-only-guard";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
-
-const kings = Kings({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-kings",
-  display: "swap",
-});
 
 const eagleLake = Eagle_Lake({
   weight: ["400"],
@@ -72,10 +65,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             enableColorScheme
             disableTransitionOnChange
           >
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<Loading fullScreen />}>
               <ClientRoot>
                 <Header />
-                <main className="relative flex flex-col">
+                <main id="main-content" tabIndex={-1} className="relative flex min-h-svh flex-col pt-(--header-height) pb-8 outline-none">
                   <ChineseOnlyGuard>{children}</ChineseOnlyGuard>
                 </main>
                 <Navbar />

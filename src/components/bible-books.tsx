@@ -10,7 +10,7 @@ import Config from "@/models/config";
 import BibleArtworks from "@/models/bible-artworks";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../app/loading";
-import { toast } from "sonner";
+import { ContentState } from "@/components/ui/content-state";
 import { useState } from "react";
 import { QueryKey } from "@/utils/query-keys";
 
@@ -25,6 +25,7 @@ export default function BibleBooks({}: Props) {
     data: artworks,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: [QueryKey.artworks],
     queryFn: () => BibleArtworks.getAll(),
@@ -36,12 +37,12 @@ export default function BibleBooks({}: Props) {
   }
 
   if (error || !artworks) {
-    toast.error(tUI("loading.error.title"), {
-      description: tUI("loading.error.message"),
-    });
+    return <ContentState title={tUI("loading.error.title")} description={tUI("loading.error.message")} onRetry={() => { void refetch(); }} />;
   }
 
-  const localedArtworks = BibleArtworks.toLocaleScripture(artworks!, currentLanguage);
+  if (artworks.length === 0) return <ContentState kind="empty" title={tUI("content.emptyTitle")} description={tUI("content.emptyDescription")} />;
+
+  const localedArtworks = BibleArtworks.toLocaleScripture(artworks, currentLanguage);
   const groupedArtworks = BibleArtworks.toGrouped(localedArtworks);
   const sortedCanonicalBooks = BibleArtworks.toSoredGroupsCanonical(
     groupedArtworks,
@@ -52,7 +53,7 @@ export default function BibleBooks({}: Props) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="h-dvh"
+      className="min-h-48"
     >
       <ul className="z-20 px-3 pb-20 grid grid-cols-1 md:grid-cols-2 w-svw md:px-5 xl:px-7 place-content-center gap-10">
         {sortedCanonicalBooks.map(([book, artworks]) => (
@@ -62,7 +63,7 @@ export default function BibleBooks({}: Props) {
                 ratio={Config.aspectRatio}
                 className="relative overflow-hidden shadow-xl"
               >
-                <Loading isInlined show={isImageLoading} />
+                {isImageLoading && <div className="absolute inset-0 flex items-center justify-center"><Loading isInlined /></div>}
                 <Image
                   src={artworks[0].imageUrl}
                   alt={artworks[0].id}
@@ -78,7 +79,7 @@ export default function BibleBooks({}: Props) {
                 />
               </AspectRatio>
             </Link>
-            <h2 className="font-mono text-sm font-semibold md:text-md text-primary">{t(book)}</h2>
+            <h2 className="font-sans text-sm font-semibold md:text-md text-primary">{t(book)}</h2>
           </li>
         ))}
       </ul>

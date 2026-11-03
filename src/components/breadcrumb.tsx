@@ -1,96 +1,36 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import useTranslation from "../hooks/use-translation";
 import Books, { Book } from "@/data/books";
+import { breadcrumbEntries } from "@/lib/ui/navigation";
 
 const routeMap: Record<string, string> = {
-  about: "nav.about",
-  contact: "nav.contact",
-  "bible-gallery": "nav.bibleGallery",
-  greet: "nav.greet",
-  "bible-products": "nav.bibleProducts",
-  services: "nav.services",
-  donate: "nav.donate",
-  signin: "nav.signin",
-  signup: "nav.signup",
-  settings: "nav.settings",
-  "terms-of-service": "footer.termsOfService",
-  "privacy-policy": "footer.privacyPolicy",
-  "glory-share": "nav.gloryShare",
-  ar: "nav.ar",
-  join: "nav.join",
-  "daily-grace-snacks": "nav.dailyGraceSnacks",
-  "beyond-music": "nav.beyondMusic",
-  school: "nav.bibleSchool",
-  success: "gloryShareSuccess.breadcrumb",
-  profile: "nav.profile",
-  "beyond-art": "nav.beyond-art",
+  about: "nav.about", contact: "nav.contact", "bible-gallery": "nav.bibleGallery",
+  "bible-products": "nav.bibleProducts", donate: "nav.donate", signin: "nav.signin", signup: "nav.signup",
+  settings: "nav.settings", "terms-of-service": "footer.termsOfService", "privacy-policy": "footer.privacyPolicy",
+  "glory-share": "nav.gloryShare", ar: "nav.ar", join: "nav.join", "daily-grace-snacks": "nav.dailyGraceSnacks",
+  "beyond-music": "nav.beyondMusic", school: "nav.bibleSchool", profile: "nav.profile", "beyond-art": "nav.beyond-art",
 };
-
-const UUID_LENGTH = 20;
+const interfaceRoutes: Record<string, string> = { dashboard: "dashboard", "summer-school": "summerSchool", summer: "summer", registration: "registration", edit: "edit", cart: "cart", orders: "orders", success: "success" };
 
 export function Breadcrumb() {
-  const router = useRouter();
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { t: tUI } = useTranslation("ui");
   const { t: tBooks } = useTranslation("books");
-
   if (!pathname || pathname === "/") return null;
 
-  const segments = pathname
-    .split("/")
-    .filter(Boolean)
-    .filter((path) => path.length < UUID_LENGTH);
-
-  const handleNavigation = (index: number) => {
-    const path = "/" + segments.slice(0, index + 1).join("/");
-    router.push(path);
-  };
-
-  const translateSegment = (segment: string | Book): string | null => {
-    if (Books.order.includes(segment as Book)) {
-      return tBooks(segment);
-    }
-    const key = routeMap[segment];
-    if (key) {
-      return t(key);
-    }
-    return segment.replace(/-/g, " ");
-  };
-
   return (
-    <>
-      {segments.includes("beyond-music") ? null : (
-        <nav className="px-5 py-1 mx-auto font-serif text-sm rounded-full bg-slate-900/50 backdrop-blur-xl text-muted-foreground">
-          <ul className="flex space-x-2">
-            <li>
-              <button
-                onClick={() => router.push("/")}
-                className="hover:underline text-muted-foreground"
-              >
-                {t("nav.home")}
-              </button>
-            </li>
-            {segments.map((segment, index) => {
-              const isBookSegment = Books.order.includes(segment as Book);
-              const hasExcludes = ["profile"].includes(segment);
-              return (
-                <li key={index}>
-                  <span className="text-gray-600 dark:text-gray-400">/ </span>
-                  <button
-                    onClick={() => handleNavigation(index)}
-                    className="hover:underline text-primary-foreground"
-                    disabled={isBookSegment || hasExcludes}
-                  >
-                    {translateSegment(segment)}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      )}
-    </>
+    <nav aria-label={tUI("navigation.breadcrumb")} className="min-w-0 overflow-x-auto rounded-full border bg-background/90 px-4 py-2 text-sm backdrop-blur-xl">
+      <ol className="flex min-h-6 items-center gap-2 whitespace-nowrap">
+        <li><Link href="/" className="text-muted-foreground hover:text-primary">{t("nav.home")}</Link></li>
+        {breadcrumbEntries(pathname).map((entry) => {
+          const label = Books.order.includes(entry.segment as Book) ? tBooks(entry.segment) : routeMap[entry.segment] ? t(routeMap[entry.segment]) : interfaceRoutes[entry.segment] ? tUI(`routes.${interfaceRoutes[entry.segment]}`) : entry.segment.replace(/-/g, " ");
+          return <li key={entry.href} className="flex min-w-0 items-center gap-2"><span aria-hidden="true" className="text-muted-foreground">/</span>{entry.current || !entry.linkable ? <span aria-current={entry.current ? "page" : undefined} className="max-w-52 truncate text-foreground">{label}</span> : <Link href={entry.href} className="text-muted-foreground hover:text-primary">{label}</Link>}</li>;
+        })}
+      </ol>
+    </nav>
   );
 }

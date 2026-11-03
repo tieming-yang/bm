@@ -10,7 +10,7 @@ type Props = {};
 export default function ClientHome({}: Props) {
   const { t } = useTranslation();
   return (
-    <div className="relative z-20 pb-50 md:pb-0">
+    <div className="relative z-20">
       <Logo3D />
       <motion.section
         initial={{ opacity: 0, y: 20, scale: 0.7 }}
@@ -31,7 +31,7 @@ export default function ClientHome({}: Props) {
         </h1>
       </motion.section>
 
-      <h2 className="mb-5 text-2xl text-center">{t("nav.bibleGallery")}</h2>
+      <h2 className="section-title mb-8 text-center">{t("nav.bibleGallery")}</h2>
       <BibleBooks />
     </div>
   );

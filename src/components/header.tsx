@@ -3,6 +3,7 @@
 import Logo from "./logo";
 import { Breadcrumb } from "./breadcrumb";
 import { usePathname } from "next/navigation";
+import useTranslation from "@/hooks/use-translation";
 
 type HeaderExcludeRule = {
   base: string;
@@ -25,6 +26,7 @@ const HEADER_EXCLUDE_RULES: HeaderExcludeRule[] = [
 
 export default function Header() {
   const currentPathname = usePathname();
+  const { t } = useTranslation("ui");
 
   const isExcludedRoute = HEADER_EXCLUDE_RULES.some((rule) =>
     matchesExcludeRule(currentPathname, rule)
@@ -33,11 +35,12 @@ export default function Header() {
   if (isExcludedRoute) return null;
 
   return (
-    <header className="fixed flex items-start justify-center w-full pt-1 z-100 h-fit">
-      <div className="fixed left-3">
+    <header className="fixed inset-x-0 top-0 z-(--layer-header) flex h-(--header-height) items-center gap-4 px-3 pt-[env(safe-area-inset-top,0px)] sm:px-5">
+      <a href="#main-content" className="absolute left-3 top-2 -translate-y-24 rounded-full bg-primary px-4 py-3 text-primary-foreground focus:translate-y-0">{t("navigation.skip")}</a>
+      <div className="shrink-0">
         <Logo />
       </div>
-      <Breadcrumb />
+      <div className="mx-auto min-w-0 max-w-[calc(100%_-_5rem)]"><Breadcrumb /></div>
     </header>
   );
 }
