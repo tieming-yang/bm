@@ -112,7 +112,7 @@ test("profile cancellation reports network failures through its error callback",
 });
 
 function renderControls(memberType, status = "active", isPending = false, mutate = () => {}) {
-  const components = ["Dialog", "DialogTrigger", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "DialogClose", "Button"];
+  const components = ["Dialog", "DialogTrigger", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "DialogClose", "Button", "ActionSpinner"];
   return runInNewContext(controlsCode, {
     React,
     ...Object.fromEntries(components.map((name) => [name, name])),
@@ -124,12 +124,12 @@ function renderControls(memberType, status = "active", isPending = false, mutate
   });
 }
 
-function findElement(node, type) {
-  if (node?.type === type) return node;
+function findElement(node, type, predicate = () => true) {
+  if (node?.type === type && predicate(node)) return node;
   const children = React.Children.toArray(node?.props?.children);
   for (const child of children) {
     if (child && typeof child === "object") {
-      const found = findElement(child, type);
+      const found = findElement(child, type, predicate);
       if (found) return found;
     }
   }
@@ -149,13 +149,13 @@ test("canceled subscriptions show their end date instead of cancellation control
 });
 
 test("pending cancellation disables repeat confirmation clicks", () => {
-  const button = findElement(renderControls("monthly", "active", true), "Button");
+  const button = findElement(renderControls("monthly", "active", true), "Button", (node) => node.props.variant === "destructive");
   assert.equal(button.props.disabled, true);
 });
 
 test("cancellation targets the canonical requested account instead of an editable profile UID", () => {
   const requests = [];
-  const button = findElement(renderControls("yearly", "active", false, (value) => requests.push(value)), "Button");
+  const button = findElement(renderControls("yearly", "active", false, (value) => requests.push(value)), "Button", (node) => node.props.variant === "destructive");
   button.props.onClick();
   assert.equal(requests.length, 1);
   assert.equal(requests[0].uid, "canonical-owner");

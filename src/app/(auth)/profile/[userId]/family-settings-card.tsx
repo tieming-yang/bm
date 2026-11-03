@@ -8,7 +8,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
-import Loading from "@/app/loading";
+import Loading, { ActionSpinner } from "@/app/loading";
+import { getValidationMessageKey as getFieldErrorMessage } from "@/lib/forms/validation-message";
 import Auth from "@/models/auth";
 import type ProfileModel from "@/models/profiles";
 import { QueryKey } from "@/utils/query-keys";
@@ -52,28 +53,6 @@ function getClientId() {
   return `child-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-function getFieldErrorMessage(errorMap: Record<string, unknown>) {
-  const candidates = [errorMap.onBlur, errorMap.onSubmit, errorMap.onChange];
-
-  for (const candidate of candidates) {
-    if (Array.isArray(candidate)) {
-      const firstError = candidate.at(0);
-      if (firstError && typeof firstError === "object" && "message" in firstError) {
-        return typeof firstError.message === "string" ? firstError.message : null;
-      }
-    }
-
-    if (candidate && typeof candidate === "object" && "message" in candidate) {
-      return typeof candidate.message === "string" ? candidate.message : null;
-    }
-
-    if (typeof candidate === "string") {
-      return candidate;
-    }
-  }
-
-  return null;
-}
 
 function createSavedChildFormValue(): ProfileSavedChild {
   return {
@@ -86,10 +65,16 @@ function DatePickerDialogField({
   value,
   onChange,
   label,
+  id,
+  invalid,
+  errorId,
 }: {
   value: string;
   onChange: (value: string) => void;
   label: string;
+  id?: string;
+  invalid?: boolean;
+  errorId?: string;
 }) {
   const { t, i18n } = useTranslation("settings");
   const locale = i18n.resolvedLanguage === "zh-TW" ? zhTW : enUS;
@@ -99,7 +84,7 @@ function DatePickerDialogField({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="button" variant="outline" className="justify-between">
+        <Button id={id} type="button" variant="outline" className="w-full justify-between" aria-invalid={invalid} aria-describedby={errorId}>
           <span>{value ? format(parseISO(value), "PPP", { locale }) : label}</span>
           <CalendarIcon className="w-4 h-4 text-muted-foreground" />
         </Button>
@@ -110,6 +95,8 @@ function DatePickerDialogField({
         </DialogHeader>
         <Calendar
           mode="single"
+          captionLayout="dropdown"
+          defaultMonth={selectedDate}
           locale={locale}
           selected={selectedDate}
           onSelect={(date) => {
@@ -120,7 +107,7 @@ function DatePickerDialogField({
         />
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="outline">
               {t("family.close")}
             </Button>
           </DialogClose>
@@ -136,17 +123,24 @@ function BooleanChoiceField({
   onChange,
   yesLabel,
   noLabel,
+  invalid,
+  errorId,
 }: {
   label: string;
   value: boolean | null;
   onChange: (value: boolean | null) => void;
   yesLabel: string;
   noLabel: string;
+  invalid?: boolean;
+  errorId?: string;
 }) {
   return (
     <div className="space-y-3">
       <Label>{label}</Label>
       <RadioGroup
+        aria-label={label}
+        aria-invalid={invalid}
+        aria-describedby={errorId}
         value={value === null ? "" : value ? "yes" : "no"}
         onValueChange={(nextValue) => {
           if (nextValue === "yes") {
@@ -184,6 +178,7 @@ export default function FamilySettingsCard({
   userId: string;
 }) {
   const { t } = useTranslation("settings");
+  const { t: tUI } = useTranslation("ui");
   const query = useQueryClient();
   const initialValues: FamilyProfileFormInput = {
     isEbVolunteer: profile.isEbVolunteer ?? null,
@@ -228,7 +223,11 @@ export default function FamilySettingsCard({
       onSubmit: FamilyProfileFormSchema,
     },
     onSubmit: async ({ value }) => {
-      saveMutation.mutate(value);
+      try {
+        await saveMutation.mutateAsync(value);
+      } catch {
+        // Keep the form values; the mutation displays its localized failure.
+      }
     },
   });
 
@@ -249,6 +248,8 @@ export default function FamilySettingsCard({
           name="isEbVolunteer"
           children={(field) => (
             <BooleanChoiceField
+              invalid={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0)}
+              errorId={!field.state.meta.isValid && (field.state.meta.isBlurred || form.state.submissionAttempts > 0) ? `${field.name}-error` : undefined}
               label={t("family.volunteerLabel")}
               value={field.state.value}
               onChange={(value) => {
@@ -297,7 +298,8 @@ export default function FamilySettingsCard({
                         <Button
                           type="button"
                           variant="ghost"
-                          className="w-auto px-3 text-destructive hover:text-destructive"
+                          className="w-auto px-3 text-error hover:text-error"
+                          aria-label={t("family.removeChild", { index: index + 1 })}
                           onClick={() => {
                             void form.removeFieldValue("savedChildren", index);
                           }}
@@ -310,19 +312,26 @@ export default function FamilySettingsCard({
                         <form.Field
                           name={`savedChildren[${index}].firstName`}
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2">
                                 <Label htmlFor={`saved-child-first-name-${index}`}>
                                   {t("family.firstName")}
                                 </Label>
                                 <Input
+                                  aria-invalid={!!errorMessage}
+                                  aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                   id={`saved-child-first-name-${index}`}
                                   value={field.state.value}
-                                  onChange={(event) => field.handleChange(event.target.value)}
+                                  onChange={(event) => {
+                                    const hadError = !field.state.meta.isValid;
+                                    field.handleChange(event.target.value);
+                                    if (hadError) void field.validate("blur");
+                                  }}
                                   onBlur={field.handleBlur}
                                 />
-                                {errorMessage ? <p className="text-sm text-red-500">{errorMessage}</p> : null}
+                                {errorMessage ? <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p> : null}
                               </div>
                             );
                           }}
@@ -331,19 +340,26 @@ export default function FamilySettingsCard({
                         <form.Field
                           name={`savedChildren[${index}].lastName`}
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2">
                                 <Label htmlFor={`saved-child-last-name-${index}`}>
                                   {t("family.lastName")}
                                 </Label>
                                 <Input
+                                  aria-invalid={!!errorMessage}
+                                  aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                   id={`saved-child-last-name-${index}`}
                                   value={field.state.value}
-                                  onChange={(event) => field.handleChange(event.target.value)}
+                                  onChange={(event) => {
+                                    const hadError = !field.state.meta.isValid;
+                                    field.handleChange(event.target.value);
+                                    if (hadError) void field.validate("blur");
+                                  }}
                                   onBlur={field.handleBlur}
                                 />
-                                {errorMessage ? <p className="text-sm text-red-500">{errorMessage}</p> : null}
+                                {errorMessage ? <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p> : null}
                               </div>
                             );
                           }}
@@ -352,10 +368,11 @@ export default function FamilySettingsCard({
                         <form.Field
                           name={`savedChildren[${index}].grade`}
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2">
-                                <Label>{t("family.grade")}</Label>
+                                <Label htmlFor={field.name}>{t("family.grade")}</Label>
                                 <Select
                                   value={field.state.value}
                                   onValueChange={(value) => {
@@ -363,18 +380,18 @@ export default function FamilySettingsCard({
                                     field.handleBlur();
                                   }}
                                 >
-                                  <SelectTrigger>
+                                  <SelectTrigger id={field.name} aria-invalid={!!errorMessage} aria-describedby={errorMessage ? `${field.name}-error` : undefined}>
                                     <SelectValue placeholder={t("family.gradePlaceholder")} />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {GRADE_OPTIONS.map((option) => (
                                       <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
+                                        {t("family.grades." + option.value)}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
                                 </Select>
-                                {errorMessage ? <p className="text-sm text-red-500">{errorMessage}</p> : null}
+                                {errorMessage ? <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p> : null}
                               </div>
                             );
                           }}
@@ -383,11 +400,15 @@ export default function FamilySettingsCard({
                         <form.Field
                           name={`savedChildren[${index}].birthday`}
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2">
-                                <Label>{t("family.birthday")}</Label>
+                                <Label htmlFor={field.name}>{t("family.birthday")}</Label>
                                 <DatePickerDialogField
+                                  id={field.name}
+                                  invalid={!!errorMessage}
+                                  errorId={errorMessage ? `${field.name}-error` : undefined}
                                   value={field.state.value}
                                   onChange={(value) => {
                                     field.handleChange(value);
@@ -395,7 +416,7 @@ export default function FamilySettingsCard({
                                   }}
                                   label={t("family.birthdayPlaceholder")}
                                 />
-                                {errorMessage ? <p className="text-sm text-red-500">{errorMessage}</p> : null}
+                                {errorMessage ? <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p> : null}
                               </div>
                             );
                           }}
@@ -406,19 +427,26 @@ export default function FamilySettingsCard({
                         <form.Field
                           name={`savedChildren[${index}].allergies`}
                           children={(field) => {
-                            const errorMessage = getFieldErrorMessage(field.state.meta.errorMap);
+                            const errorMessage = field.state.meta.isBlurred || form.state.submissionAttempts > 0
+                              ? getFieldErrorMessage(field.state.meta.errorMap) : null;
                             return (
                               <div className="space-y-2">
                                 <Label htmlFor={`saved-child-allergies-${index}`}>
                                   {t("family.allergies")}
                                 </Label>
                                 <Textarea
+                                  aria-invalid={!!errorMessage}
+                                  aria-describedby={errorMessage ? `${field.name}-error` : undefined}
                                   id={`saved-child-allergies-${index}`}
                                   value={field.state.value}
-                                  onChange={(event) => field.handleChange(event.target.value)}
+                                  onChange={(event) => {
+                                    const hadError = !field.state.meta.isValid;
+                                    field.handleChange(event.target.value);
+                                    if (hadError) void field.validate("blur");
+                                  }}
                                   onBlur={field.handleBlur}
                                 />
-                                {errorMessage ? <p className="text-sm text-red-500">{errorMessage}</p> : null}
+                                {errorMessage ? <p id={`${field.name}-error`} className="text-sm text-error" role="alert">{tUI(errorMessage)}</p> : null}
                               </div>
                             );
                           }}
@@ -434,20 +462,19 @@ export default function FamilySettingsCard({
       </CardContent>
       <CardFooter className="justify-end">
         <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting] as const}
-          children={([canSubmit, isSubmitting]) => (
+          selector={(state) => state.isSubmitting}
+          children={(isSubmitting) => (
             <Button
               type="button"
-              disabled={!canSubmit || saveMutation.isPending}
+              className="w-full sm:w-auto gap-2"
+              disabled={isSubmitting || saveMutation.isPending}
+              aria-busy={isSubmitting || saveMutation.isPending}
               onClick={() => {
                 void form.handleSubmit();
               }}
             >
-              {isSubmitting || saveMutation.isPending ? (
-                <Loading isInlined />
-              ) : (
-                t("family.save")
-              )}
+              {(isSubmitting || saveMutation.isPending) && <ActionSpinner />}
+              {t("family.save")}
             </Button>
           )}
         />

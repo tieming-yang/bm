@@ -8,7 +8,10 @@
     "notFoundTitle": "找不到帳戶資料",
     "notFoundDescription": "無法載入所要求的帳戶資料。",
     "backToOwnProfile": "回到我的帳戶",
-    "goToDashboard": "前往儀表板"
+    "goToDashboard": "前往儀表板",
+    "loadErrorTitle": "無法載入個人檔案",
+    "loadErrorDescription": "載入個人檔案時發生問題，請再試一次。",
+    "retry": "重試"
   },
   "donator": {
     "title": "個人資訊",
@@ -93,6 +96,19 @@
     "toast": {
       "success": "家庭檔案更新成功。",
       "error": "家庭檔案更新失敗。"
-    }
+    },
+    "grades": {
+      "6_months_to_1_year": "6 個月至 1 歲",
+      "1_year_1_month_to_2_years": "1 歲 1 個月至 2 歲",
+      "2_years_1_month_to_3_years": "2 歲 1 個月至 3 歲",
+      "pre_k_4": "學前班（4 歲）",
+      "kinder": "幼稚園",
+      "1st": "一年級",
+      "2nd": "二年級",
+      "3rd": "三年級",
+      "4th": "四年級",
+      "5th": "五年級"
+    },
+    "removeChild": "移除第 {{index}} 位兒童"
   }
 }

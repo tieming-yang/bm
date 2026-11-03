@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-import Loading from "@/app/loading";
+import Loading, { ActionSpinner } from "@/app/loading";
 import useAuthUser from "@/hooks/use-auth-user";
 import useTranslation from "@/hooks/use-translation";
 import Profile from "@/models/profiles";
@@ -40,6 +40,12 @@ import FamilySettingsCard from "./family-settings-card";
 type Modal = "none" | "cancel" | "save";
 type ErrorValues = { isError: boolean; message: string | null };
 type Errors = Record<string, ErrorValues>;
+
+function validateOrganizationEmail(email: string): ErrorValues {
+  return /^.+@.+\..+$/.test(email.trim())
+    ? { isError: false, message: null }
+    : { isError: true, message: "organization.invalidEmailFormat" };
+}
 export default function ClientProfilePage({ userId }: { userId: string }) {
   const router = useRouter();
   const { authUser, isAuthUserLoading } = useAuthUser();
@@ -65,6 +71,8 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     data: viewerProfile,
     isLoading: isViewerProfileLoading,
     isFetched: isViewerProfileFetched,
+    error: viewerProfileError,
+    refetch: refetchViewerProfile,
   } = useQuery({
     queryKey: QueryKey.profile(viewerUid ?? "viewer"),
     queryFn: () => Profile.get(viewerUid!),
@@ -75,6 +83,8 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
   const {
     data: requestedProfile,
     isLoading: isRequestedProfileLoading,
+    error: requestedProfileError,
+    refetch: refetchRequestedProfile,
   } = useQuery({
     queryKey: QueryKey.profile(userId),
     queryFn: () => Profile.get(userId),
@@ -231,6 +241,23 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
     return <Loading />;
   }
 
+  const profileLoadError = viewerProfileError ?? requestedProfileError;
+  if (profileLoadError && !(profileLoadError instanceof Error && profileLoadError.message === "M9KX - Profile not found")) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-xl">
+          <CardHeader><CardTitle>{t("profile.loadErrorTitle")}</CardTitle></CardHeader>
+          <CardContent><p className="text-muted-foreground" role="alert">{t("profile.loadErrorDescription")}</p></CardContent>
+          <CardFooter>
+            <Button onClick={() => { void (viewerProfileError ? refetchViewerProfile() : refetchRequestedProfile()); }}>
+              {t("profile.retry")}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
   if (!viewerProfile && !isViewerProfileFetched) {
     return <Loading />;
   }
@@ -305,6 +332,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
+      <h1 className="section-title">{tCommon("nav.profile")}</h1>
       {isGloryShareMember && (
         <Card className="w-full max-w-3xl bg-transparent border-0 shadow-none">
           <div className="rounded-3xl border-2 border-transparent bg-linear-to-bl from-amber-400/30 via-purple-400/30 to-pink-400/20 p-px shadow-[0_0_35px_rgba(251,191,36,0.35)]">
@@ -315,7 +343,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                     <div className="relative w-full h-full rounded-full bg-gray-950">
                       <Image
                         src="/glory-share/join-success-badge.jpg"
-                        alt="Glory Share badge"
+                        alt={t("gloryShareBadge.label")}
                         fill
                         className="rounded-full object-cover drop-shadow-[0_6px_20px_rgba(0,0,0,0.45)]"
                       />
@@ -356,18 +384,16 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 )}
 
                 {profile?.subscriptions?.at(-1)?.status !== "canceled" ? (
-                  <Dialog open={modal === "cancel"}>
+                  <Dialog open={modal === "cancel"} onOpenChange={(open) => { if (!cancelMutation.isPending) setModal(open ? "cancel" : "none"); }}>
                     {(profile.memberType === "monthly" || profile.memberType === "yearly") && (
-                        <DialogTrigger
-                          id="cancel"
-                          className="w-full max-w-md"
-                          onClick={() => setModal("cancel")}
-                        >
-                          {t("gloryShareBadge.cancelGloryShare")}
+                        <DialogTrigger asChild>
+                          <Button id="cancel" variant="outline" className="w-full max-w-md" onClick={() => setModal("cancel")}>
+                            {t("gloryShareBadge.cancelGloryShare")}
+                          </Button>
                         </DialogTrigger>
                       )}
 
-                    <DialogContent className="font-mono">
+                    <DialogContent closeDisabled={cancelMutation.isPending} onEscapeKeyDown={(event) => { if (cancelMutation.isPending) event.preventDefault(); }} onPointerDownOutside={(event) => { if (cancelMutation.isPending) event.preventDefault(); }}>
                       <DialogHeader>
                         <DialogTitle>{t("gloryShareBadge.cancelGloryShareTitle")}</DialogTitle>
                         <DialogDescription>
@@ -378,6 +404,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                         <Button
                           variant={"destructive"}
                           disabled={cancelMutation.isPending}
+                          aria-busy={cancelMutation.isPending}
                           // className="w-full max-w-md"
                           onClick={() => {
                             if (!profile || !profile.lastSubscriptionId) {
@@ -390,10 +417,11 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                             });
                           }}
                         >
+                          {cancelMutation.isPending && <ActionSpinner />}
                           {t("gloryShareBadge.cancelGloryShare")}
                         </Button>
                         <DialogClose asChild>
-                          <Button variant="default" onClick={() => setModal("none")}>
+                          <Button variant="outline" disabled={cancelMutation.isPending} onClick={() => setModal("none")}>
                             {t("gloryShareBadge.continueSupport")}
                           </Button>
                         </DialogClose>
@@ -448,8 +476,8 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
           <CardFooter className="flex flex-col justify-center gap-y-3">
             {!isGloryShareMember && (
               <Button
-                variant={"secondary"}
-                className="px-8 text-gray-900 rounded-full"
+                variant={"default"}
+                className="px-8 rounded-full"
                 onClick={() => {
                   router.push("/glory-share/join");
                 }}
@@ -488,35 +516,25 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 <div className="flex flex-col w-full gap-2">
                   <Input
                     id="organization-email"
-                    className="flex-1 w-full font-mono"
+                    className="flex-1 w-full"
+                    autoComplete="email"
+                    aria-invalid={errors.email.isError}
+                    aria-describedby={errors.email.isError ? "organization-email-error" : undefined}
                     type="email"
                     value={updates.organizationEmail}
                     disabled={hasOrgEmailUpdated}
                     onChange={(e) => {
                       const updates = e.target.value;
-                      const emailRegex = /^.+@.+\..+$/;
-                      const isEmail = emailRegex.test(updates.trim());
-
-                      let newError: ErrorValues = {
-                        isError: false,
-                        message: null,
-                      };
-                      if (!isEmail) {
-                        newError.isError = true;
-                        newError.message = "organization.invalidEmailFormat";
+                      if (errors.email.isError) {
+                        setErrors((prev) => ({ ...prev, email: validateOrganizationEmail(updates) }));
                       }
-                      setErrors((prev) => {
-                        return {
-                          ...prev,
-                          email: newError,
-                        };
-                      });
 
                       setUpdates((prev) => ({ ...prev, organizationEmail: updates }));
                     }}
+                    onBlur={() => setErrors((prev) => ({ ...prev, email: validateOrganizationEmail(updates.organizationEmail) }))}
                   ></Input>
                   {errors.email.isError && (
-                    <p className="text-red-700">{t(errors.email.message ?? "")}</p>
+                    <p id="organization-email-error" className="text-sm text-error" role="alert">{t(errors.email.message ?? "")}</p>
                   )}
                 </div>
               </div>
@@ -525,7 +543,7 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 <p className="italic">{t("organization.emailInstructionDefault")}</p>
                 <p className="italic">
                   {t("organization.emailChangeLimitPrefix")}
-                  <span className="text-red-500">
+                  <span className="text-error">
                     {t("organization.emailChangeLimitHighlight")}
                   </span>
                   {t("organization.emailChangeLimitSuffix")}
@@ -536,16 +554,19 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
 
           <CardFooter className="flex flex-col justify-center gap-y-3">
             {!hasOrgEmailUpdated ? (
-              <Dialog open={modal === "save"}>
+              <Dialog open={modal === "save"} onOpenChange={(open) => { if (!saveMutation.isPending) setModal(open ? "save" : "none"); }}>
+                <DialogTrigger asChild>
                 <Button
                   variant={"default"}
                   disabled={
                     updates.organizationEmail === profile.organizationEmail ||
                     updates.organizationEmail === ""
                   }
-                  onClick={() => {
-                    const hasError = Object.values(errors).every((error) => error.isError === true);
-                    if (hasError) {
+                  onClick={(event) => {
+                    const emailError = validateOrganizationEmail(updates.organizationEmail);
+                    setErrors((prev) => ({ ...prev, email: emailError }));
+                    if (emailError.isError) {
+                      event.preventDefault();
                       toast.error(t("organization.invalidInputTitle"), {
                         description: t("organization.invalidInputDescription"),
                       });
@@ -558,8 +579,9 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                 >
                   {t("organization.save")}
                 </Button>
+                </DialogTrigger>
 
-                <DialogContent className="font-mono">
+                <DialogContent closeDisabled={saveMutation.isPending} onEscapeKeyDown={(event) => { if (saveMutation.isPending) event.preventDefault(); }} onPointerDownOutside={(event) => { if (saveMutation.isPending) event.preventDefault(); }}>
                   <DialogHeader>
                     <DialogTitle>{t("organization.confirmSaveTitle")}</DialogTitle>
                     <DialogDescription>
@@ -569,6 +591,8 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                   <DialogFooter>
                     <Button
                       variant={"default"}
+                      disabled={saveMutation.isPending}
+                      aria-busy={saveMutation.isPending}
                       onClick={() => {
                         if (!profile || profile.organizationEmailUpdateCount === undefined) {
                           return;
@@ -581,10 +605,11 @@ export default function ClientProfilePage({ userId }: { userId: string }) {
                         });
                       }}
                     >
+                      {saveMutation.isPending && <ActionSpinner />}
                       {t("organization.confirmSaveCta")}
                     </Button>
                     <DialogClose asChild>
-                      <Button variant="secondary" onClick={() => setModal("none")}>
+                      <Button variant="outline" disabled={saveMutation.isPending} onClick={() => setModal("none")}>
                         {t("organization.cancel")}
                       </Button>
                     </DialogClose>
