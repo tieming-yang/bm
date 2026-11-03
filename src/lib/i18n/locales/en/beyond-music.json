@@ -40,6 +40,8 @@
       "playFailed": "Could not start audio. Please try again.",
       "audioError": "Audio could not be loaded.",
       "seekTo": "Play from {{time}}",
+      "followingLyrics": "Following lyrics",
+      "resumeLyrics": "Follow current lyric",
       "repeat": {
         "none": "Repeat off",
         "single": "Repeat this song",

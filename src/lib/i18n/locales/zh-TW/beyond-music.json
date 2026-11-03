@@ -40,6 +40,8 @@
       "playFailed": "無法開始播放，請再試一次。",
       "audioError": "無法載入音訊。",
       "seekTo": "從 {{time}} 開始播放",
+      "followingLyrics": "跟隨歌詞中",
+      "resumeLyrics": "跟隨目前歌詞",
       "repeat": {
         "none": "關閉循環播放",
         "single": "單曲循環播放",

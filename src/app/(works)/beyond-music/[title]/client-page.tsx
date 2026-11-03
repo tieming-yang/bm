@@ -38,7 +38,7 @@ export default function ClientPlayerPage({ title }: ClientPlayerPageProps) {
             <h1 className="font-display text-2xl text-center">{selectedSong.title}</h1>
           </header>
 
-          <AudioPlayer song={selectedSong} />
+          <AudioPlayer key={selectedSong.id} song={selectedSong} />
         </div>
       )}
     </div> 
