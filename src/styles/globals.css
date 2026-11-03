@@ -18,7 +18,8 @@
 }
 
 @theme {
-  --font-sans: var(--font-eagle-lake), var(--font-yuji-mai), system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-eagle-lake), var(--font-yuji-mai), ui-serif, serif;
   --font-chinese: var(--font-yuji-mai), system-ui, sans-serif;
 
   --color-border: var(--border);
@@ -36,7 +37,8 @@
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
 
-  --color-muted: var(--muted);
+  --color-muted: hsl(var(--muted));
+  --color-error: #fca5a5;
   --color-muted-foreground: hsl(var(--muted-foreground));
 
   --color-accent: hsl(var(--accent));
@@ -94,6 +96,14 @@
 
 @layer base {
   :root {
+    --layer-header: 100;
+    --layer-navigation: 120;
+    --layer-transition: 90;
+    --layer-overlay: 300;
+    --layer-dialog: 301;
+    --layer-popover: 400;
+    --header-height: calc(4rem + env(safe-area-inset-top, 0px));
+    --navigation-height: calc(5rem + env(safe-area-inset-bottom, 0px));
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: #131313;
@@ -125,7 +135,7 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: #98a68a;
-    --primary-foreground: 355 100% 97%;
+    --primary-foreground: 0 0% 7.5%;
     --secondary: #f1d7a4;
     --secondary-foreground: #131313;
     --muted: 240 3.7% 15.9%;
@@ -145,12 +155,25 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
     /* font-family: var(--font-inter), var(--font-noto-sans-tc), system-ui, sans-serif; */
   }
 
   h1 {
-    @apply text-primary-foreground-gradient;
+    @apply font-display text-primary-foreground-gradient;
+  }
+
+  html {
+    scroll-padding-top: var(--header-height);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+
+  [aria-invalid="true"] {
+    border-color: var(--color-error);
   }
 
   /* Add specific class for Chinese text if needed */
@@ -186,4 +209,28 @@ input[type="number"]::-webkit-outer-spin-button {
 
 @utility no-scrollbar {
   @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
+@utility page-shell {
+  @apply relative mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16;
+}
+
+@utility page-title {
+  @apply font-display text-4xl leading-tight text-balance sm:text-5xl lg:text-6xl;
+}
+
+@utility section-title {
+  @apply font-display text-2xl leading-snug text-balance sm:text-3xl;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

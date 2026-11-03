@@ -2,38 +2,31 @@
 
 import useTranslation from "@/hooks/use-translation";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type LoadingProps = {
   isInlined?: boolean;
   show?: boolean;
+  fullScreen?: boolean;
 };
 
-export default function Loading({ isInlined = false, show = true }: LoadingProps) {
-  if (!show) return null;
-
+/** Compact progress for an action; the containing button supplies its action label. */
+export function ActionSpinner() {
   const { t } = useTranslation("ui");
+  return <span role="status" className="inline-flex shrink-0 items-center"><Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden="true" /><span className="sr-only">{t("loading.title")}</span></span>;
+}
 
-  if (isInlined) {
-    return (
-      <div className="absolute z-50 flex justify-center w-full h-full rounded-full bg-black/30 backdrop-blur-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center-safe">
-        <Loader2 className="animate-spin text-primary" />
-      </div>
-    );
-  }
+export default function Loading({ isInlined = false, show = true, fullScreen = false }: LoadingProps) {
+  const { t } = useTranslation("ui");
+  if (!show) return null;
+  if (isInlined) return <ActionSpinner />;
 
   return (
-    <div className="fixed top-0 left-0 flex flex-col items-center justify-center w-full h-full min-h-screen p-4 bg-black z-200">
-      <div className="flex flex-col items-center gap-4">
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-t-2 border-[#7ec0cd] animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-r-2 border-[#7ec0cd]/50 animate-spin"></div>
-          <div className="absolute inset-4 rounded-full border-b-2 border-[#7ec0cd]/30 animate-spin"></div>
-        </div>
-
-        <div className="text-center space-y-1">
-          <p className="text-[#7ec0cd] font-medium">{t("loading.title")}</p>
-          <p className="text-sm text-gray-400">{t("loading.message")}</p>
-        </div>
+    <div role="status" aria-live="polite" className={cn("flex flex-col items-center justify-center gap-4 px-4 py-12 text-center", fullScreen ? "fixed inset-0 z-(--layer-overlay) bg-background" : "min-h-48 w-full")}>
+      <Loader2 className="h-8 w-8 animate-spin text-primary motion-reduce:animate-none" aria-hidden="true" />
+      <div className="space-y-1">
+        <p className="font-medium text-foreground">{t("loading.title")}</p>
+        <p className="text-sm text-muted-foreground">{t("loading.message")}</p>
       </div>
     </div>
   );

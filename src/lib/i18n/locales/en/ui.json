@@ -6,5 +6,58 @@
       "title": "Loading failed",
       "message": "Please try again later."
     }
+  },
+  "actions": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "retry": "Try again",
+    "back": "Back",
+    "menu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "profile": "Your profile",
+    "sandbox": "Sandbox"
+  },
+  "navigation": {
+    "primary": "Main navigation",
+    "breadcrumb": "Breadcrumb",
+    "skip": "Skip to content",
+    "home": "Home",
+    "menuTitle": "Explore Beyond Media"
+  },
+  "routes": {
+    "dashboard": "Dashboard",
+    "summerSchool": "Summer school",
+    "summer": "Summer",
+    "registration": "Registration",
+    "edit": "Edit",
+    "cart": "Shop",
+    "orders": "Past orders",
+    "success": "Confirmation",
+    "profile": "Profile",
+    "page": "Page"
+  },
+  "content": {
+    "chineseTitle": "Creative content in Chinese",
+    "chineseDescription": "Music and its creative content are in Chinese. Interface controls follow your selected language.",
+    "emptyTitle": "Nothing to show yet",
+    "emptyDescription": "Please check back soon."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "email": "Enter a valid email address.",
+    "phone": "Enter a valid phone number.",
+    "zip": "Enter a valid ZIP code.",
+    "dateFormat": "Use the YYYY-MM-DD format.",
+    "date": "Select a valid date.",
+    "choice": "Please choose an option.",
+    "children": "Add at least one child.",
+    "invalid": "Check this field and try again."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for is unavailable or has moved.",
+    "home": "Back to home"
   }
 }

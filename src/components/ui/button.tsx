@@ -7,7 +7,7 @@ export const topGlowBorder =
   "shadow-[inset_0_1px_2px_#ffffff70,0_2px_4px_rgba(0,0,0,0.19),0_4px_8px_rgba(0,0,0,0.08)]";
 
 const buttonVariants = cva(
-  `${topGlowBorder} w-full max-w-md inline-flex items-center justify-center whitespace-nowrap rounded-3xl text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50`,
+  `${topGlowBorder} inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50`,
   {
     variants: {
       variant: {
@@ -19,9 +19,9 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 p-2",
-        sm: "h-9 rounded-3xl px-3",
-        lg: "h-11 rounded-3xl px-8",
+        default: "h-11 px-5 py-2",
+        sm: "min-h-11 px-3 py-2",
+        lg: "h-12 px-8",
         icon: "h-11 w-11 p-2",
       },
     },

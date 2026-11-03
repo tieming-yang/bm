@@ -6,5 +6,58 @@
       "title": "載入失敗",
       "message": "請稍後再試一次。"
     }
+  },
+  "actions": {
+    "close": "關閉",
+    "cancel": "取消",
+    "confirm": "確認",
+    "retry": "再試一次",
+    "back": "返回",
+    "menu": "開啟選單",
+    "closeMenu": "關閉選單",
+    "language": "語言",
+    "profile": "個人檔案",
+    "sandbox": "實驗室"
+  },
+  "navigation": {
+    "primary": "主要導覽",
+    "breadcrumb": "頁面路徑",
+    "skip": "跳至主要內容",
+    "home": "首頁",
+    "menuTitle": "探索彼岸"
+  },
+  "routes": {
+    "dashboard": "管理後台",
+    "summerSchool": "暑期學校",
+    "summer": "暑期課程",
+    "registration": "報名",
+    "edit": "編輯",
+    "cart": "商店",
+    "orders": "過往訂單",
+    "success": "確認",
+    "profile": "個人檔案",
+    "page": "頁面"
+  },
+  "content": {
+    "chineseTitle": "中文創作內容",
+    "chineseDescription": "音樂與創作內容以中文呈現；介面操作會使用您選擇的語言。",
+    "emptyTitle": "目前尚無內容",
+    "emptyDescription": "歡迎稍後再回來看看。"
+  },
+  "validation": {
+    "required": "此欄位為必填。",
+    "email": "請輸入有效的電子郵件地址。",
+    "phone": "請輸入有效的電話號碼。",
+    "zip": "請輸入有效的美國郵遞區號。",
+    "dateFormat": "請使用 YYYY-MM-DD 格式。",
+    "date": "請選擇有效的日期。",
+    "choice": "請選擇一個選項。",
+    "children": "請至少新增一位兒童。",
+    "invalid": "請確認此欄位後再試一次。"
+  },
+  "notFound": {
+    "title": "找不到頁面",
+    "description": "您要瀏覽的頁面目前無法使用，或已移至其他位置。",
+    "home": "返回首頁"
   }
 }

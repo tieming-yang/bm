@@ -10,6 +10,8 @@ import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
+import useTranslation from "@/hooks/use-translation"
+import { enUS, zhTW } from "react-day-picker/locale"
 
 function Calendar({
   className,
@@ -19,14 +21,18 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
+  locale,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
 }) {
   const defaultClassNames = getDefaultClassNames()
+  const { currentLanguage } = useTranslation()
+  const calendarLocale = locale ?? (currentLanguage.startsWith("zh") ? zhTW : enUS)
 
   return (
     <DayPicker
+      locale={calendarLocale}
       showOutsideDays={showOutsideDays}
       className={cn(
         "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
@@ -37,7 +43,7 @@ function Calendar({
       captionLayout={captionLayout}
       formatters={{
         formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
+          date.toLocaleString(calendarLocale.code, { month: "short" }),
         ...formatters,
       }}
       classNames={{
