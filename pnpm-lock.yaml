@@ -221,6 +221,12 @@ importers:
       recharts:
         specifier: 2.15.0
         version: 2.15.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      server-only:
+        specifier: 0.0.1
+        version: 0.0.1
+      sharp:
+        specifier: 0.34.5
+        version: 0.34.5
       shimmer-from-structure:
         specifier: ^2.5.0
         version: 2.5.0(@angular/common@21.2.10(@angular/core@21.2.10(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.10(rxjs@7.8.2))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(solid-js@1.9.10)(svelte@5.55.5)(vue@3.5.33(typescript@5.8.3))
@@ -4489,6 +4495,9 @@ packages:
   seroval@1.3.2:
     resolution: {integrity: sha512-RbcPH1n5cfwKrru7v7+zrZvjLurgHhGyso3HTyGtRivGWgYjbOmGuivCQaORNELjNONoK35nj28EoWul9sb1zQ==}
     engines: {node: '>=10'}
+
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
@@ -9493,6 +9502,8 @@ snapshots:
       seroval: 1.3.2
 
   seroval@1.3.2: {}
+
+  server-only@0.0.1: {}
 
   set-blocking@2.0.0: {}
 

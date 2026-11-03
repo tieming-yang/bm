@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test:greet": "node --conditions=react-server --test src/lib/greet/*.test.ts",
     "dev": "next dev --turbopack",
     "dev:https": "next dev --turbopack --experimental-https -H 0.0.0.0",
     "build": "next build",
@@ -88,6 +89,8 @@
     "react-player": "^3.4.0",
     "react-resizable-panels": "^2.1.9",
     "recharts": "2.15.0",
+    "server-only": "0.0.1",
+    "sharp": "0.34.5",
     "shimmer-from-structure": "^2.5.0",
     "sonner": "^1.7.4",
     "stripe": "^19.3.0",
