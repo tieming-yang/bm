@@ -26,8 +26,8 @@ function renderShell(pathname) {
   };
 }
 
-test("greet server markup contains only the accessible padding-free page shell", () => {
-  const { html, mounted } = renderShell("/greet");
+test("daily blessing server markup contains only the accessible padding-free page shell", () => {
+  const { html, mounted } = renderShell("/daily-blessing");
   assert.deepEqual(mounted, []);
   assert.match(html, /<main id="main-content" tabindex="-1"/);
   assert.match(html, /Greeting content/);
@@ -35,7 +35,7 @@ test("greet server markup contains only the accessible padding-free page shell",
 });
 
 test("ordinary and similarly named routes retain the full site shell and language guard", () => {
-  for (const pathname of ["/", "/about", "/glory-share", "/greeting", "/greet/details"]) {
+  for (const pathname of ["/", "/about", "/glory-share", "/greet", "/greeting", "/daily-blessing/details"]) {
     const { html, mounted } = renderShell(pathname);
     assert.deepEqual(mounted, ["header", "guard", "nav", "footer"]);
     assert.match(html, /<main id="main-content" tabindex="-1"/);
@@ -44,11 +44,11 @@ test("ordinary and similarly named routes retain the full site shell and languag
   }
 });
 
-test("greet is visible immediately without the site fade or blur while keeping its provider", () => {
+test("daily blessing is visible immediately without the site fade or blur while keeping its provider", () => {
   const motionProps = [];
   let providerRendered = false;
   const { default: ClientRoot } = loadSourceModule("src/app/client-layout.tsx", {
-    "next/navigation": { usePathname: () => "/greet" },
+    "next/navigation": { usePathname: () => "/daily-blessing" },
     "../lib/i18n": {},
     "framer-motion": {
       useReducedMotion: () => false,

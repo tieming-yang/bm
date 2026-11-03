@@ -19,10 +19,10 @@ const response = new ImageResponse(
       h("div", { style: { fontSize: 49, lineHeight: 1.35 } }, "打開今日祝福"),
       h("div", { style: { fontSize: 40, lineHeight: 1.4, marginTop: 18 } }, "Open today's blessing"),
       h("div", { style: { width: 70, height: 2, background: "#b89a62", marginTop: 38, marginBottom: 24 } }),
-      h("div", { style: { fontSize: 20, color: "#5e6c61" } }, "beyond-media.art/greet"))),
+      h("div", { style: { fontSize: 20, color: "#5e6c61" } }, "beyond-media.art/daily-blessing"))),
   { width: 1200, height: 630, fonts: [{ name: "Greeting", data: font, weight: 400, style: "normal" }] }
 );
-const destination = new URL("src/app/greet/opengraph-image.png", root);
-await mkdir(new URL("src/app/greet/", root), { recursive: true });
+const destination = new URL("src/app/daily-blessing/opengraph-image.png", root);
+await mkdir(new URL("src/app/daily-blessing/", root), { recursive: true });
 await writeFile(destination, Buffer.from(await response.arrayBuffer()));
 console.log(`Generated fixed invitation: ${fileURLToPath(destination)}`);

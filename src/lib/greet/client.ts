@@ -4,7 +4,7 @@ import {
   type GreetingRequest,
 } from "./contracts.ts";
 
-export const GREET_SHARE_URL = "https://beyond-media.art/greet";
+export const GREET_SHARE_URL = "https://beyond-media.art/daily-blessing";
 
 type FetchGreeting = (input: string, init: RequestInit) => Promise<Response>;
 
@@ -16,7 +16,7 @@ export async function loadGreetingCard(
 ): Promise<{ description: GreetingCardDescription; blob: Blob }> {
   signal.throwIfAborted();
   const params = new URLSearchParams(request);
-  const response = await fetchGreeting(`/api/greet/card?${params}`, { signal });
+  const response = await fetchGreeting(`/api/daily-blessing/card?${params}`, { signal });
   if (!response.ok) throw new Error("Failed to load greeting description");
 
   const description = GreetingCardDescriptionSchema.parse(await response.json());

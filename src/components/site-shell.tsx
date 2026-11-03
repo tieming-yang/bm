@@ -9,7 +9,7 @@ import ChineseOnlyGuard from "./chinese-only-guard";
 export default function SiteShell({ children }: React.PropsWithChildren) {
   const pathname = usePathname();
 
-  if (pathname === "/greet") {
+  if (pathname === "/daily-blessing") {
     return <main id="main-content" tabIndex={-1} className="relative min-h-dvh outline-none">{children}</main>;
   }
 

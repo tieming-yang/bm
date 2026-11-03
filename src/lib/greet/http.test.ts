@@ -19,7 +19,7 @@ const png = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10, 0]);
 const query = "date=2026-11-03&period=morning&locale=en";
 
 function request(params: string, path = "image") {
-  return new Request(`https://beyond-media.art/api/greet/${path}?${params}`);
+  return new Request(`https://beyond-media.art/api/daily-blessing/${path}?${params}`);
 }
 
 function effects(overrides: Partial<GreetingImageEffects> = {}): GreetingImageEffects {
@@ -37,7 +37,7 @@ test("card endpoint returns only safe public fields and a pinned image URL", asy
   const body = await response.json();
   assert.equal(body.entryId, "creation-light");
   assert.equal(body.reference, "Genesis 1:3");
-  assert.equal(body.imageUrl, `/api/greet/image?${query}&version=v1`);
+  assert.equal(body.imageUrl, `/api/daily-blessing/image?${query}&version=v1`);
   const serialized = JSON.stringify(body);
   assert.equal(serialized.includes("11111111"), false);
   assert.equal(serialized.includes("provenance"), false);

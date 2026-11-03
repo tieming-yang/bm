@@ -69,7 +69,7 @@ export function formatGreetingDate(value: string, locale: GreetingLocale): strin
 /** Build the sole same-origin image endpoint accepted in public card descriptions. */
 export function createGreetingImageUrl(request: GreetingImageRequest): string {
   const value = GreetingImageRequestSchema.parse(request);
-  return `/api/greet/image?${new URLSearchParams({
+  return `/api/daily-blessing/image?${new URLSearchParams({
     date: value.date,
     period: value.period,
     locale: value.locale,

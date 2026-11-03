@@ -81,7 +81,7 @@ export async function renderGreetingCard(
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", borderTop: "1px solid #d9ceba", paddingTop: 18, fontSize: 20, color: "#81775f", letterSpacing: 2 }}>
-        beyond-media.art/greet
+        beyond-media.art/daily-blessing
       </div>
     </div>,
     {

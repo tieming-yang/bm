@@ -195,12 +195,12 @@ export const pageMetadata = {
     ],
   },
   greet: {
-    path: "/greet",
+    path: "/daily-blessing",
     title: "Daily Blessing | 每日祝福 | Beyond Digital Media",
     description:
       "Open today's blessing: Bible art and Scripture for your day. Share a greeting or save a card. 打開今日祝福，以聖經藝術與經文陪伴每一天，分享或下載一張祝福卡。",
     image: {
-      url: new URL("/greet/opengraph-image.png", siteMetadata.url).href,
+      url: new URL("/daily-blessing/opengraph-image.png", siteMetadata.url).href,
       width: 1200,
       height: 630,
       alt: "Open today’s blessing / 打開今日祝福 — Beyond Media",
@@ -266,7 +266,7 @@ export const publicSitemapRoutes = [
   { path: "/beyond-art", changeFrequency: "monthly", priority: 0.7 },
   { path: "/beyond-music", changeFrequency: "weekly", priority: 0.8 },
   { path: "/bible-gallery", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/greet", changeFrequency: "daily", priority: 0.8 },
+  { path: "/daily-blessing", changeFrequency: "daily", priority: 0.8 },
   { path: "/daily-grace-snacks", changeFrequency: "weekly", priority: 0.8 },
   { path: "/school", changeFrequency: "weekly", priority: 0.8 },
   { path: "/school/summer/2026/registration", changeFrequency: "weekly", priority: 0.6 },

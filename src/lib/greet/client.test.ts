@@ -18,7 +18,7 @@ const description: GreetingCardDescription = {
   verse: "And God said, Let there be light: and there was light.",
   reference: "Genesis 1:3",
   artworkTitle: "Genesis 1:1-31",
-  imageUrl: "/api/greet/image?date=2026-11-03&period=morning&locale=en&version=v1",
+  imageUrl: "/api/daily-blessing/image?date=2026-11-03&period=morning&locale=en&version=v1",
   filename: "beyond-greeting-2026-11-03-morning-en-v1.png",
 };
 const png = Uint8Array.from([137, 80, 78, 71, 13, 10, 26, 10, 1, 2, 3]);
@@ -32,7 +32,7 @@ test("loads the descriptor and preserves exact image bytes for display and expor
     return calls.length === 1 ? Response.json(description) : pngResponse();
   }, signal());
   assert.deepEqual(calls, [
-    "/api/greet/card?date=2026-11-03&period=morning&locale=en",
+    "/api/daily-blessing/card?date=2026-11-03&period=morning&locale=en",
     description.imageUrl,
   ]);
   assert.deepEqual(new Uint8Array(await result.blob.arrayBuffer()), png);
@@ -57,8 +57,8 @@ test("rejects malformed descriptions, changed context, and provider field leaks 
 test("rejects external image URLs and image context mismatches", async () => {
   for (const imageUrl of [
     "https://untrusted.example/image.png",
-    "/api/greet/image?date=2026-11-04&period=morning&locale=en&version=v1",
-    "/api/greet/image?date=2026-11-03&period=night&locale=en&version=v1",
+    "/api/daily-blessing/image?date=2026-11-04&period=morning&locale=en&version=v1",
+    "/api/daily-blessing/image?date=2026-11-03&period=night&locale=en&version=v1",
     `${description.imageUrl}&date=2026-11-04`,
     `${description.imageUrl}&artworkUrl=https://untrusted.example/image.png`,
   ]) {
@@ -114,7 +114,8 @@ test("link sharing starts immediately with the canonical invitation URL", async 
   const pending = shareGreetingLink("Today’s blessing", {
     share: async (data) => { shared = data; },
   });
-  assert.deepEqual(shared, { title: "Today’s blessing", url: GREET_SHARE_URL });
+  assert.equal(GREET_SHARE_URL, "https://beyond-media.art/daily-blessing");
+  assert.deepEqual(shared, { title: "Today’s blessing", url: "https://beyond-media.art/daily-blessing" });
   assert.equal(await pending, "shared");
 });
 
